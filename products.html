@@ -564,9 +564,9 @@
                     <span>${unitSuffix}</span>
                   </div>
                 </div>
-                <p class="stock ${p.stock<=5?'text-danger':'text-success'} mb-1">
-                  ${p.stock>0 ? (p.stock<=5 ? `Low stock: ${p.stock} left` : `In stock: ${p.stock} units`) : '<strong>Out of stock</strong>'}
-                </p>
+                <p class="stock ${p.stock===0 ? 'text-danger' : (p.stock<=5 ? 'text-warning' : 'text-success')} mb-1">
+  ${p.stock===0 ? '<strong>Out of stock</strong>' : (p.stock<=5 ? '<strong>Low stock</strong>' : '<strong>In stock</strong>')}
+</p>
                 <button class="btn btn-success btn-add mt-auto"
                         ${p.stock===0?'disabled':''}
                         onclick="event.stopPropagation(); openModal(${i})">
@@ -650,7 +650,12 @@
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalName').textContent  = p.name;
       document.getElementById('modalPrice').textContent = `£${Number(p.price || 0).toFixed(2)}`;
-      document.getElementById('modalStock').innerHTML   = `In stock – ${p.stock} units`;
+      document.getElementById('modalStock').innerHTML =
+  (p.stock === 0)
+    ? '<span class="text-danger fw-bold">Out of stock</span>'
+    : (p.stock <= 5)
+      ? '<span class="text-warning fw-bold">Low stock</span>'
+      : '<span class="text-success fw-bold">In stock</span>';
 
       const descEl = document.getElementById('modalDescription');
       const nameLower = (p.name || '').toLowerCase();
