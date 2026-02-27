@@ -2031,19 +2031,18 @@
 
   init();
 
-  // ✅ Back to top button
+  // ✅ Back to top button (debug)
 const backToTopBtn = document.getElementById("backToTop");
-
-window.addEventListener("scroll", () => {
-  if (!backToTopBtn) return;
-  backToTopBtn.style.display = window.scrollY > 600 ? "inline-flex" : "none";
-}, { passive: true });
+console.log("backToTopBtn =", backToTopBtn);
 
 if (backToTopBtn) {
+  backToTopBtn.style.display = "inline-flex";   // force show
+  backToTopBtn.style.alignItems = "center";
+  backToTopBtn.style.gap = "6px";
   backToTopBtn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
-
+}
 
   // ------- INACTIVITY LOGOUT -------
   const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
