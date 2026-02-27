@@ -82,6 +82,61 @@
     flex-wrap:wrap;
     margin-top:10px;
   }
+
+  /* ✅ NEW UI bits */
+  .kpi-pill{
+    background:#0f172a;
+    color:#fff;
+    border-radius:999px;
+    padding:6px 10px;
+    font-size:.85rem;
+    font-weight:700;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+  }
+  .kpi-pill span{ opacity:.9; font-weight:600; }
+
+  .controls-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+    margin-top:10px;
+  }
+  @media (min-width: 992px){
+    .controls-grid{
+      grid-template-columns: 1.4fr 1fr;
+      align-items:start;
+    }
+  }
+
+  .filter-row{
+    display:flex;
+    gap:6px;
+    flex-wrap:wrap;
+  }
+
+  .bulk-bar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.08);
+    border-radius:12px;
+    padding:10px;
+  }
+
+  .note-area{
+    width:100%;
+    min-height:64px;
+    resize:vertical;
+    font-size:.9rem;
+  }
+
+  .small-input{
+    font-size:.85rem;
+  }
 </style>
 </head>
 
@@ -122,19 +177,118 @@
 <div class="container mt-4">
   <!-- ORDERS -->
   <div class="section-card mb-4">
-    <h3>Orders</h3>
+    <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
+      <h3 class="mb-0">Orders</h3>
+
+      <!-- ✅ NEW: KPI bar (populated by JS) -->
+      <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
+    </div>
 
     <!-- ✅ NEW: Export buttons -->
-    <div class="d-flex gap-2 flex-wrap mt-2">
+    <div class="d-flex gap-2 flex-wrap mt-3">
       <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">
         ⬇️ Export ALL (CSV)
       </button>
       <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">
         ⬇️ Export SHIPPED (CSV)
       </button>
+      <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">
+        ⬇️ Export SELECTED (CSV)
+      </button>
     </div>
 
-    <p id="admin-status" class="text-muted">Checking access…</p>
+    <!-- ✅ NEW: Search + Filters + Pack Queue + Pagination -->
+    <div class="controls-grid">
+      <div>
+        <div class="input-group mt-3">
+          <span class="input-group-text">🔎</span>
+          <input id="order-search" class="form-control" placeholder="Search ref, name, email, postcode, tracking (loaded orders)" />
+          <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
+        </div>
+
+        <div class="filter-row mt-2">
+          <button class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All</button>
+          <button class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending</button>
+          <button class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid</button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed</button>
+          <button class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled</button>
+          <button class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
+        </div>
+
+        <div class="d-flex gap-3 flex-wrap mt-2">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
+            <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
+            <label class="form-check-label" for="flt-noaddr">No address</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
+            <label class="form-check-label" for="flt-noemail">No email</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
+            <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
+          </div>
+        </div>
+
+        <div class="mt-2">
+          <small class="text-muted">
+            Search/filters apply to <strong>loaded orders</strong>. If you want full search across everything, click “Load all”.
+          </small>
+        </div>
+      </div>
+
+      <div>
+        <div class="bulk-bar mt-3">
+          <div class="d-flex align-items-center gap-2">
+            <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+            <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+          </div>
+
+          <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">
+            ✅ Bulk Mark Packed
+          </button>
+
+          <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">
+            📦 Bulk Mark Shipped (no email)
+          </button>
+
+          <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">
+            📋 Copy selected addresses
+          </button>
+
+          <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">
+            ⬇️ Export selected
+          </button>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
+            <span class="text-muted small" id="page-indicator">Page …</span>
+          </div>
+
+          <div class="d-flex align-items-center gap-2">
+            <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
+              <option value="25" selected>25/page</option>
+              <option value="50">50/page</option>
+              <option value="100">100/page</option>
+            </select>
+
+            <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">
+              ⬇️ Load all
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p id="admin-status" class="text-muted mt-3">Checking access…</p>
     <div id="admin-warning"></div>
     <div id="orders-list" class="mt-3"></div>
   </div>
@@ -175,9 +329,24 @@
   const logoutBtn     = document.getElementById("logout-btn");
   const reviewsStatus = document.getElementById("reviews-status");
   const reviewsEl     = document.getElementById("reviews-list");
+  const kpiBar        = document.getElementById("kpi-bar");
+  const searchInput   = document.getElementById("order-search");
+  const pageIndicator = document.getElementById("page-indicator");
 
   // Cache orders so buttons can reference them
   const ordersCache = {};
+
+  // ✅ NEW: paging + filtering state
+  let PAGE_SIZE = 25;
+  let currentPage = 0;
+  let totalCount = 0;
+
+  let statusFilter = "all";     // all | Pending | Paid | Packed | Shipped | Cancelled
+  let packQueueOnly = false;    // Paid and not Packed/Shipped/Cancelled
+  let filteredOrderIds = [];    // what we're currently showing (for select all)
+
+  // ✅ NEW: selected orders for bulk actions
+  const selectedIds = new Set();
 
   function badge(status) {
     status = (status || "Pending").toLowerCase();
@@ -282,9 +451,65 @@
       .replaceAll("'","&#039;");
   }
 
+  // ✅ NEW: simple validation to prevent Royal Mail nightmares
+  function validateAddress(order){
+    const c = getCustomer(order);
+    const warnings = [];
+    const name = String(c.name || "").trim();
+    const a1 = String(c.address1 || "").trim();
+    const city = String(c.city || "").trim();
+    const pc = String(c.postcode || "").trim();
+    const email =
+      String(c.email || order.customer_email || order.email || "").trim();
+
+    if(!name) warnings.push("Missing customer name");
+    if(!a1) warnings.push("Missing address line 1");
+    if(!city) warnings.push("Missing city");
+    if(!pc || pc.length < 5) warnings.push("Missing/short postcode");
+    if(!email) warnings.push("Missing email");
+
+    return warnings;
+  }
+
+  function confirmProceedWithWarnings(warnings, title="Proceed?"){
+    if(!warnings || warnings.length === 0) return true;
+    return confirm(`${title}\n\n⚠️ Issues found:\n- ${warnings.join("\n- ")}\n\nDo you still want to continue?`);
+  }
+
+  // ✅ NEW: mailto fallback (if EmailJS fails)
+  function openMailto(toEmail, subject, body){
+    const s = encodeURIComponent(subject || "");
+    const b = encodeURIComponent(body || "");
+    const to = encodeURIComponent(toEmail || "");
+    const url = `mailto:${to}?subject=${s}&body=${b}`;
+    window.open(url, "_blank");
+  }
+
+  function buildShippedEmailText(order){
+    const customer = order.details?.customer || {};
+    const ref = order.reference || order.id;
+    const items = buildItemsText(order);
+    const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+    const tracking = String(order.details?.meta?.tracking_number || "").trim() || "Not provided";
+    return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}\n\nThanks,\nLumina Weight`;
+  }
+
+  function buildPaidEmailText(order){
+    const customer = order.details?.customer || {};
+    const ref = order.reference || order.id;
+    const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+    return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}\n\nThanks,\nLumina Weight`;
+  }
+
+  function buildCancelledEmailText(order){
+    const customer = order.details?.customer || {};
+    const ref = order.reference || order.id;
+    return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina Weight`;
+  }
+
   // ---------- ✅ NEW: EXPORT ORDERS (CSV for Excel) ----------
   function exportOrdersCsv(mode = "all") {
-    // mode: "all" or "shipped"
+    // mode: "all" or "shipped" or "selected"
     const rows = [];
     const header = [
       "Order ID",
@@ -299,25 +524,27 @@
       "City",
       "Postcode",
       "Tracking",
+      "Payment Reference",
       "Total",
-      "Items"
+      "Items",
+      "Admin Note"
     ];
     rows.push(header);
 
-    const orders = Object.values(ordersCache || {});
-    const filtered = orders.filter(o => {
-      const s = String(o.status || "").toLowerCase();
-      if (mode === "shipped") return s === "shipped";
-      return true;
-    });
+    let orders = Object.values(ordersCache || {});
+    if(mode === "shipped"){
+      orders = orders.filter(o => String(o.status || "").toLowerCase() === "shipped");
+    }
+    if(mode === "selected"){
+      orders = orders.filter(o => selectedIds.has(o.id));
+    }
 
     const csvSafe = (v) => {
       const s = String(v ?? "");
-      // Wrap in quotes and escape quotes for CSV safety
       return `"${s.replaceAll('"', '""')}"`;
     };
 
-    filtered.forEach(order => {
+    orders.forEach(order => {
       const c = order?.details?.customer || {};
       const created = order.created_at ? new Date(order.created_at).toISOString() : "";
       const ref = order.reference || order.id || "";
@@ -326,9 +553,10 @@
       const name  = c.name || order.customer_name || order.name || "";
       const phone = c.phone || "";
       const tracking = order.details?.meta?.tracking_number || "";
+      const payref = order.details?.meta?.payment_reference || "";
+      const note = order.details?.meta?.admin_note || "";
       const total = Number(order.total_amount || 0).toFixed(2);
 
-      // One-line items for CSV
       const itemsArr = order?.details?.items || [];
       const itemsOneLine = itemsArr.map(i => {
         const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
@@ -352,8 +580,10 @@
         c.city || "",
         c.postcode || "",
         tracking,
+        payref,
         total,
-        itemsOneLine
+        itemsOneLine,
+        note
       ]);
     });
 
@@ -363,7 +593,9 @@
     const filename =
       mode === "shipped"
         ? `lumina_orders_shipped_${new Date().toISOString().slice(0,10)}.csv`
-        : `lumina_orders_all_${new Date().toISOString().slice(0,10)}.csv`;
+        : mode === "selected"
+          ? `lumina_orders_selected_${new Date().toISOString().slice(0,10)}.csv`
+          : `lumina_orders_all_${new Date().toISOString().slice(0,10)}.csv`;
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -373,6 +605,173 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  }
+
+  // ✅ NEW: search + filter helpers (client-side over loaded orders)
+  function clearSearch(){
+    searchInput.value = "";
+    applyClientFilters();
+  }
+
+  function setStatusFilter(v){
+    statusFilter = v;
+    packQueueOnly = false; // turning on a status filter disables pack queue mode
+    currentPage = 0;
+    selectedIds.clear();
+    document.getElementById("select-all").checked = false;
+    loadOrders();
+  }
+
+  function togglePackQueue(){
+    packQueueOnly = !packQueueOnly;
+    if(packQueueOnly) statusFilter = "all";
+    currentPage = 0;
+    selectedIds.clear();
+    document.getElementById("select-all").checked = false;
+    loadOrders();
+  }
+
+  function applyClientFilters(){
+    // just re-render currently loaded cache in the UI (does not refetch)
+    renderOrdersFromCache();
+  }
+
+  searchInput.addEventListener("input", () => applyClientFilters());
+
+  function changePageSize(v){
+    PAGE_SIZE = Math.max(1, Number(v || 25));
+    currentPage = 0;
+    selectedIds.clear();
+    document.getElementById("select-all").checked = false;
+    loadOrders();
+  }
+
+  function prevPage(){
+    currentPage = Math.max(0, currentPage - 1);
+    selectedIds.clear();
+    document.getElementById("select-all").checked = false;
+    loadOrders();
+  }
+
+  function nextPage(){
+    const maxPage = Math.max(0, Math.ceil(totalCount / PAGE_SIZE) - 1);
+    currentPage = Math.min(maxPage, currentPage + 1);
+    selectedIds.clear();
+    document.getElementById("select-all").checked = false;
+    loadOrders();
+  }
+
+  function toggleSelectAll(checked){
+    if(!filteredOrderIds.length) return;
+    if(checked){
+      filteredOrderIds.forEach(id => selectedIds.add(id));
+    }else{
+      filteredOrderIds.forEach(id => selectedIds.delete(id));
+    }
+    // update checkboxes in UI
+    filteredOrderIds.forEach(id => {
+      const cb = document.getElementById(`sel-${id}`);
+      if(cb) cb.checked = checked;
+    });
+  }
+
+  function toggleSelectOne(orderId, checked){
+    if(checked) selectedIds.add(orderId);
+    else selectedIds.delete(orderId);
+
+    // update select-all state (only if all shown are selected)
+    const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+    document.getElementById("select-all").checked = allSelected;
+  }
+
+  // ✅ NEW: Bulk actions
+  async function bulkMarkPacked(){
+    const ids = Array.from(selectedIds);
+    if(!ids.length) return alert("No orders selected.");
+    if(!confirm(`Mark ${ids.length} order(s) as PACKED?`)) return;
+
+    // validate addresses (warn only)
+    const warnings = [];
+    ids.forEach(id => {
+      const o = ordersCache[id];
+      if(!o) return;
+      const w = validateAddress(o);
+      if(w.length) warnings.push(`${o.reference || o.id}: ${w.join(", ")}`);
+    });
+    if(warnings.length){
+      const ok = confirm(`⚠️ Some selected orders have issues:\n\n${warnings.slice(0,15).join("\n")}${warnings.length>15 ? "\n…and more" : ""}\n\nContinue anyway?`);
+      if(!ok) return;
+    }
+
+    try{
+      // do updates sequentially to keep it simple/robust
+      for(const id of ids){
+        const { error } = await supabaseClient.from("Orders").update({ status: "Packed" }).eq("id", id);
+        if(error) throw error;
+        if(ordersCache[id]) ordersCache[id].status = "Packed";
+      }
+      alert("Bulk packed ✅");
+      loadOrders();
+    }catch(e){
+      console.error("Bulk packed failed", e);
+      alert("Bulk packed failed — check console.");
+    }
+  }
+
+  async function bulkMarkShippedNoEmail(){
+    const ids = Array.from(selectedIds);
+    if(!ids.length) return alert("No orders selected.");
+    if(!confirm(`Mark ${ids.length} order(s) as SHIPPED (no emails)?`)) return;
+
+    // warn if missing address
+    const warnings = [];
+    ids.forEach(id => {
+      const o = ordersCache[id];
+      if(!o) return;
+      const w = validateAddress(o).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+      if(w.length) warnings.push(`${o.reference || o.id}: ${w.join(", ")}`);
+    });
+    if(warnings.length){
+      const ok = confirm(`⚠️ Some selected orders are missing address details:\n\n${warnings.slice(0,15).join("\n")}${warnings.length>15 ? "\n…and more" : ""}\n\nContinue anyway?`);
+      if(!ok) return;
+    }
+
+    try{
+      for(const id of ids){
+        const { error } = await supabaseClient.from("Orders").update({ status: "Shipped" }).eq("id", id);
+        if(error) throw error;
+        if(ordersCache[id]) ordersCache[id].status = "Shipped";
+      }
+      alert("Bulk shipped ✅");
+      loadOrders();
+    }catch(e){
+      console.error("Bulk shipped failed", e);
+      alert("Bulk shipped failed — check console.");
+    }
+  }
+
+  async function bulkCopyAddresses(){
+    const ids = Array.from(selectedIds);
+    if(!ids.length) return alert("No orders selected.");
+
+    const text = ids
+      .map(id => {
+        const o = ordersCache[id];
+        if(!o) return "";
+        const ref = o.reference || o.id;
+        const addr = buildAddressText(o);
+        return `--- ${ref} ---\n${addr || "(No address)"}\n`;
+      })
+      .filter(Boolean)
+      .join("\n");
+
+    try{
+      await navigator.clipboard.writeText(text);
+      alert("Addresses copied ✅");
+    }catch(e){
+      console.error("Copy failed", e);
+      alert("Copy failed — your browser blocked it.");
+    }
   }
 
   // ---------- COPY ADDRESS ----------
@@ -499,10 +898,93 @@
     w.print();
   }
 
+  // ---------- ✅ NEW: SAVE ADMIN NOTE ----------
+  async function saveAdminNote(orderId){
+    const order = ordersCache[orderId];
+    if(!order) return alert("Order not found.");
+
+    const ta = document.getElementById(`note-${orderId}`);
+    const val = String(ta?.value || "").trim();
+
+    const details = order.details || {};
+    const meta = details.meta || {};
+
+    const session = await supabaseClient.auth.getSession();
+    const who = session?.data?.session?.user?.email || "admin";
+
+    const updatedDetails = {
+      ...details,
+      meta: {
+        ...meta,
+        admin_note: val,
+        admin_note_updated_at: new Date().toISOString(),
+        admin_note_updated_by: who
+      }
+    };
+
+    const { error } = await supabaseClient
+      .from("Orders")
+      .update({ details: updatedDetails })
+      .eq("id", orderId);
+
+    if(error){
+      console.error("Note save failed", error);
+      alert("Note save failed — check console/policy.");
+      return;
+    }
+
+    ordersCache[orderId].details = updatedDetails;
+    alert("Note saved ✅");
+    applyClientFilters();
+  }
+
+  // ---------- ✅ NEW: SAVE PAYMENT REFERENCE ----------
+  async function savePaymentRef(orderId){
+    const order = ordersCache[orderId];
+    if(!order) return alert("Order not found.");
+
+    const input = document.getElementById(`payref-${orderId}`);
+    const val = String(input?.value || "").trim();
+
+    const details = order.details || {};
+    const meta = details.meta || {};
+
+    const session = await supabaseClient.auth.getSession();
+    const who = session?.data?.session?.user?.email || "admin";
+
+    const updatedDetails = {
+      ...details,
+      meta: {
+        ...meta,
+        payment_reference: val,
+        payment_reference_updated_at: new Date().toISOString(),
+        payment_reference_updated_by: who
+      }
+    };
+
+    const { error } = await supabaseClient
+      .from("Orders")
+      .update({ details: updatedDetails })
+      .eq("id", orderId);
+
+    if(error){
+      console.error("Payment ref save failed", error);
+      alert("Payment reference save failed — check console/policy.");
+      return;
+    }
+
+    ordersCache[orderId].details = updatedDetails;
+    alert("Payment reference saved ✅");
+    applyClientFilters();
+  }
+
   // ---------- MARK PACKED ----------
   async function markPackedById(orderId){
     const order = ordersCache[orderId];
     if(!order) return alert("Order not found.");
+
+    const warnings = validateAddress(order).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+    if(!confirmProceedWithWarnings(warnings, "Mark as PACKED?")) return;
 
     if(!confirm("Mark this order as PACKED?")) return;
 
@@ -670,9 +1152,12 @@
     const order = ordersCache[orderId];
     if (!order) return alert("Order not found.");
 
+    const addrWarnings = validateAddress(order).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+    if(!confirmProceedWithWarnings(addrWarnings, "Send SHIPPED email + mark as SHIPPED?")) return;
+
     if (!confirm("Send SHIPPED email to customer and mark as SHIPPED?")) return;
 
-    // ✅ NEW: prompt for tracking number (pre-fills if already saved)
+    // ✅ prompt for tracking number (pre-fills if already saved)
     const existing = String(order.details?.meta?.tracking_number || "").trim();
     const trackingNumber = prompt("Enter tracking number (leave blank if none):", existing);
 
@@ -688,7 +1173,19 @@
       }
 
       // 2) Send email (includes tracking)
-      await sendShippedEmail(ordersCache[orderId], trackingClean);
+      try{
+        await sendShippedEmail(ordersCache[orderId], trackingClean);
+      }catch(emailErr){
+        console.error("EmailJS failed, offering mailto fallback", emailErr);
+        const customer = ordersCache[orderId].details?.customer || {};
+        const toEmail = customer.email || ordersCache[orderId].customer_email || ordersCache[orderId].email || "";
+        if(toEmail){
+          const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+          if(ok){
+            openMailto(toEmail, `Your order ${ordersCache[orderId].reference || ordersCache[orderId].id} has shipped`, buildShippedEmailText(ordersCache[orderId]));
+          }
+        }
+      }
 
       // 3) Update status automatically
       const { error } = await supabaseClient
@@ -698,12 +1195,12 @@
 
       if (error) {
         console.error("Failed to update order to Shipped", error);
-        alert("Email sent, but status update failed — check Supabase policies.");
+        alert("Email step done, but status update failed — check Supabase policies.");
         return;
       }
 
       ordersCache[orderId].status = "Shipped";
-      alert("Shipped email sent + tracking saved + status set to SHIPPED ✅");
+      alert("Shipped flow done ✅");
       loadOrders();
     } catch (e) {
       console.error("Shipped flow failed", e);
@@ -722,6 +1219,16 @@
       alert("Reminder email sent ✅");
     }catch(e){
       console.error("Reminder email failed", e);
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      if(toEmail){
+        const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+        if(ok){
+          openMailto(toEmail, `Reminder: pay before 3PM for next day delivery (${order.reference || order.id})`,
+            `Hi ${customer.name || "there"},\n\nJust a quick reminder: if payment is made before 3PM, we can dispatch for next day delivery.\n\nOrder: ${order.reference || order.id}\nTotal: £${Number(order.total_amount || 0).toFixed(2)}\n\nThanks,\nLumina Weight`
+          );
+        }
+      }
       alert("Reminder email failed — check console");
     }
   }
@@ -737,19 +1244,74 @@
       alert("Cancelled email sent ✅");
     } catch (e) {
       console.error("Cancelled email failed", e);
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      if(toEmail){
+        const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+        if(ok){
+          openMailto(toEmail, `Your order ${order.reference || order.id} was cancelled`, buildCancelledEmailText(order));
+        }
+      }
       alert("Cancelled email failed — check console");
     }
   }
 
+  // ✅ UPDATED: mark paid now captures payment reference + audit trail
   async function markPaidAndSendById(orderId) {
     const order = ordersCache[orderId];
     if (!order) return alert("Order not found.");
 
     if (!confirm("Confirm PAYMENT RECEIVED and email customer?")) return;
 
+    // payment reference (optional)
+    const existingRef = String(order.details?.meta?.payment_reference || "").trim();
+    const paymentRef = prompt("Payment reference (optional):", existingRef);
+    if(paymentRef === null) return;
+
     try {
+      // Save payment reference + audit trail
+      const details = order.details || {};
+      const meta = details.meta || {};
+      const session = await supabaseClient.auth.getSession();
+      const who = session?.data?.session?.user?.email || "admin";
+
+      const updatedDetails = {
+        ...details,
+        meta: {
+          ...meta,
+          payment_reference: String(paymentRef || "").trim(),
+          paid_confirmed_at: new Date().toISOString(),
+          paid_confirmed_by: who
+        }
+      };
+
+      const { error: metaErr } = await supabaseClient
+        .from("Orders")
+        .update({ details: updatedDetails })
+        .eq("id", orderId);
+
+      if(metaErr){
+        console.error("Payment meta update failed", metaErr);
+        alert("Payment meta update failed — check console.");
+        return;
+      }
+
+      ordersCache[orderId].details = updatedDetails;
+
       // send email first
-      await sendPaidEmail(order);
+      try{
+        await sendPaidEmail(ordersCache[orderId]);
+      }catch(emailErr){
+        console.error("Paid email failed", emailErr);
+        const customer = ordersCache[orderId].details?.customer || {};
+        const toEmail = customer.email || ordersCache[orderId].customer_email || ordersCache[orderId].email || "";
+        if(toEmail){
+          const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+          if(ok){
+            openMailto(toEmail, `Payment received (${ordersCache[orderId].reference || ordersCache[orderId].id})`, buildPaidEmailText(ordersCache[orderId]));
+          }
+        }
+      }
 
       // then update status
       const { error } = await supabaseClient
@@ -759,16 +1321,16 @@
 
       if (error) {
         console.error("Failed to update order to Paid", error);
-        alert("Email sent, but status update failed — check Supabase policies.");
+        alert("Email step done, but status update failed — check Supabase policies.");
         return;
       }
 
       ordersCache[orderId].status = "Paid";
-      alert("Payment received email sent 💷✅");
+      alert("Payment received flow done ✅");
       loadOrders();
     } catch (e) {
-      console.error("Payment email failed", e);
-      alert("Payment email failed — check console");
+      console.error("Payment flow failed", e);
+      alert("Payment flow failed — check console");
     }
   }
 
@@ -915,30 +1477,131 @@
     loadOrders();
   }
 
-  // ---------- LOAD ORDERS ----------
-  async function loadOrders() {
-    const { data: orders, error } = await supabaseClient
-      .from("Orders")
-      .select("*")
-      .order("created_at", { ascending: false });
+  // ✅ NEW: KPI bar
+  function renderKpis(){
+    const orders = Object.values(ordersCache || {});
+    const counts = { pending:0, paid:0, packed:0, shipped:0, cancelled:0 };
 
-    if (error) {
-      statusEl.textContent = "Could not load orders.";
-      console.error(error);
-      return;
+    const now = new Date();
+    const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
+    const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
+
+    let revWeek = 0;
+    let revMonth = 0;
+
+    for(const o of orders){
+      const s = String(o.status || "Pending").toLowerCase();
+      if(s === "paid") counts.paid++;
+      else if(s === "packed") counts.packed++;
+      else if(s === "shipped") counts.shipped++;
+      else if(s === "cancelled") counts.cancelled++;
+      else counts.pending++;
+
+      const created = o.created_at ? new Date(o.created_at) : null;
+      const amt = Number(o.total_amount || 0);
+
+      if(created && created >= weekAgo) revWeek += amt;
+      if(created && created >= monthAgo) revMonth += amt;
     }
 
-    if (!orders || orders.length === 0) {
-      statusEl.textContent = "No orders yet.";
-      ordersEl.innerHTML = "";
-      return;
+    kpiBar.innerHTML = `
+      <div class="kpi-pill">Pending <span>${counts.pending}</span></div>
+      <div class="kpi-pill" style="background:#16a34a;">Paid <span>${counts.paid}</span></div>
+      <div class="kpi-pill" style="background:#64748b;">Packed <span>${counts.packed}</span></div>
+      <div class="kpi-pill" style="background:#2563eb;">Shipped <span>${counts.shipped}</span></div>
+      <div class="kpi-pill" style="background:#dc2626;">Cancelled <span>${counts.cancelled}</span></div>
+      <div class="kpi-pill" style="background:#111827;">Rev 7d <span>£${revWeek.toFixed(2)}</span></div>
+      <div class="kpi-pill" style="background:#111827;">Rev 30d <span>£${revMonth.toFixed(2)}</span></div>
+    `;
+  }
+
+  // ✅ NEW: Render from cache with client-side search/filters
+  function renderOrdersFromCache(){
+    const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+
+    const q = String(searchInput.value || "").trim().toLowerCase();
+
+    const fltOlder24 = document.getElementById("flt-older24").checked;
+    const fltNoAddr = document.getElementById("flt-noaddr").checked;
+    const fltNoEmail = document.getElementById("flt-noemail").checked;
+    const fltNoTracking = document.getElementById("flt-notracking").checked;
+
+    const now = new Date();
+    const cutoff24 = new Date(now); cutoff24.setHours(now.getHours() - 24);
+
+    let list = orders;
+
+    // status filter (client-side)
+    if(statusFilter !== "all"){
+      const sf = String(statusFilter || "").toLowerCase();
+      list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
     }
 
-    statusEl.textContent = `${orders.length} orders found`;
+    // pack queue (Paid but not Packed/Shipped/Cancelled)
+    if(packQueueOnly){
+      list = list.filter(o => {
+        const s = String(o.status || "").toLowerCase();
+        return s === "paid";
+      });
+    }
 
-    for (const o of orders) ordersCache[o.id] = o;
+    // special toggles
+    if(fltOlder24){
+      list = list.filter(o => {
+        const s = String(o.status || "").toLowerCase();
+        const created = o.created_at ? new Date(o.created_at) : null;
+        return (s === "pending") && created && created < cutoff24;
+      });
+    }
 
-    ordersEl.innerHTML = orders.map((order) => {
+    if(fltNoAddr){
+      list = list.filter(o => {
+        const c = getCustomer(o);
+        return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
+      });
+    }
+
+    if(fltNoEmail){
+      list = list.filter(o => {
+        const c = getCustomer(o);
+        const email = c.email || o.customer_email || o.email || "";
+        return !String(email || "").trim();
+      });
+    }
+
+    if(fltNoTracking){
+      list = list.filter(o => {
+        const s = String(o.status || "").toLowerCase();
+        if(s !== "shipped") return false;
+        const t = o.details?.meta?.tracking_number;
+        return !String(t || "").trim();
+      });
+    }
+
+    // search across loaded records
+    if(q){
+      list = list.filter(o => {
+        const ref = String(o.reference || o.id || "").toLowerCase();
+        const c = getCustomer(o);
+        const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
+        const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
+        const pc = String(c.postcode || "").toLowerCase();
+        const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
+        return ref.includes(q) || name.includes(q) || email.includes(q) || pc.includes(q) || tracking.includes(q);
+      });
+    }
+
+    // keep list of shown IDs for select-all
+    filteredOrderIds = list.map(o => o.id);
+
+    // update select-all state
+    const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+    document.getElementById("select-all").checked = allSelected;
+
+    // render
+    statusEl.textContent = `${list.length} order(s) shown`;
+
+    ordersEl.innerHTML = list.map((order) => {
       const created = new Date(order.created_at).toLocaleString();
       const ref = order.reference || order.id;
       const status = order.status || "Pending";
@@ -963,28 +1626,65 @@
         ? new Date(order.details.meta.restocked_at).toLocaleString()
         : "";
 
-      // ✅ NEW: show tracking number if saved
       const tracking = order.details?.meta?.tracking_number
         ? String(order.details.meta.tracking_number).trim()
         : "";
+
+      const payref = order.details?.meta?.payment_reference
+        ? String(order.details.meta.payment_reference).trim()
+        : "";
+
+      const note = order.details?.meta?.admin_note
+        ? String(order.details.meta.admin_note).trim()
+        : "";
+
+      const isSelected = selectedIds.has(order.id);
 
       return `
         <div class="order-card">
           <div class="d-flex justify-content-between align-items-start">
             <div style="flex:1; padding-right:14px;">
-              <strong>${escapeHtml(ref)}</strong><br>
-              <small>${escapeHtml(created)}</small><br>
-              <small>${escapeHtml(name)} — ${escapeHtml(email)}</small>
+
+              <!-- ✅ NEW: checkbox select -->
+              <div class="d-flex align-items-center gap-2 mb-2">
+                <input id="sel-${order.id}" class="form-check-input" type="checkbox"
+                  ${isSelected ? "checked" : ""}
+                  onchange="toggleSelectOne('${order.id}', this.checked)">
+                <div>
+                  <strong>${escapeHtml(ref)}</strong><br>
+                  <small>${escapeHtml(created)}</small><br>
+                  <small>${escapeHtml(name)} — ${escapeHtml(email)}</small>
+                </div>
+              </div>
 
               ${restockedAt ? `<div class="muted-line mt-1">Restocked: ${escapeHtml(restockedAt)}</div>` : ``}
-
               ${tracking ? `<div class="muted-line mt-1">Tracking: <strong>${escapeHtml(tracking)}</strong></div>` : ``}
 
               ${buildAddressHtml(order)}
               ${buildItemsHtml(order)}
+
+              <!-- ✅ NEW: Payment reference + Save -->
+              <div class="items-box" style="margin-top:8px;">
+                <strong>💷 Payment reference (internal)</strong>
+                <div class="d-flex gap-2 flex-wrap">
+                  <input id="payref-${order.id}" class="form-control form-control-sm small-input" placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
+                  <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
+                </div>
+                <div class="muted-line mt-1">Tip: save the bank reference so you can reconcile later.</div>
+              </div>
+
+              <!-- ✅ NEW: Admin notes -->
+              <div class="items-box" style="margin-top:8px;">
+                <strong>📝 Admin notes</strong>
+                <textarea id="note-${order.id}" class="form-control note-area" placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
+                <div class="d-flex justify-content-end mt-2">
+                  <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
+                </div>
+              </div>
+
             </div>
 
-            <div class="text-end" style="min-width: 260px;">
+            <div class="text-end" style="min-width: 280px;">
               <div class="mb-1">${badge(status)}</div>
               <div class="fw-bold">£${escapeHtml(total)}</div>
 
@@ -1021,18 +1721,26 @@
                   💷 Send Payment Received
                 </button>
 
-                <!-- ✅ NEW: pay-before-3pm reminder -->
                 <button class="btn btn-sm btn-warning"
                   ${isCancelled || isShipped ? "disabled" : ""}
                   onclick="sendPayBefore3pmById('${order.id}')">
                   ⏰ 3PM Pay Reminder
                 </button>
 
-                <!-- ✅ UPDATED: shipped button now prompts for tracking + saves + sends + sets status -->
                 <button class="btn btn-sm btn-primary"
                   ${isCancelled || isShipped ? "disabled" : ""}
                   onclick="sendShippedEmailById('${order.id}')">
                   📦 Send Shipped Email
+                </button>
+
+                <!-- ✅ NEW: mailto fallback buttons (always available if email exists) -->
+                <button class="btn btn-sm btn-outline-primary"
+                  onclick="openMailto(
+                    '${escapeHtml(order.details?.customer?.email || order.customer_email || order.email || "")}',
+                    'Your order ${escapeHtml(ref)} has shipped',
+                    buildShippedEmailText(ordersCache['${order.id}'])
+                  )">
+                  ✉️ Mailto Shipped
                 </button>
 
                 <button class="btn btn-sm btn-danger"
@@ -1051,6 +1759,111 @@
         </div>
       `;
     }).join("");
+  }
+
+  // ---------- ✅ NEW: LOAD ORDERS (PAGINATED + SERVER-SIDE STATUS/PACK QUEUE) ----------
+  async function loadOrders() {
+    statusEl.textContent = "Loading orders…";
+
+    // range
+    const from = currentPage * PAGE_SIZE;
+    const to = from + PAGE_SIZE - 1;
+
+    let q = supabaseClient
+      .from("Orders")
+      .select("*", { count: "exact" })
+      .order("created_at", { ascending: false });
+
+    // server-side status filter
+    if(statusFilter !== "all"){
+      q = q.eq("status", statusFilter);
+    }
+
+    // server-side pack queue
+    if(packQueueOnly){
+      q = q.eq("status", "Paid");
+    }
+
+    q = q.range(from, to);
+
+    const { data: orders, error, count } = await q;
+
+    if (error) {
+      statusEl.textContent = "Could not load orders.";
+      console.error(error);
+      return;
+    }
+
+    totalCount = Number(count || 0);
+    const maxPage = Math.max(0, Math.ceil(totalCount / PAGE_SIZE) - 1);
+    pageIndicator.textContent = `Page ${currentPage + 1} of ${maxPage + 1} • Total: ${totalCount}`;
+
+    // clear cache of previous page, but keep anything loaded via "Load all"
+    // (we'll keep it simple: overwrite cache with this page only unless a flag is set)
+    // If you've used "Load all", we keep everything for search/export.
+    if(!window.__ALL_LOADED){
+      for(const k of Object.keys(ordersCache)) delete ordersCache[k];
+    }
+
+    if (!orders || orders.length === 0) {
+      statusEl.textContent = "No orders found.";
+      ordersEl.innerHTML = "";
+      renderKpis();
+      return;
+    }
+
+    // write into cache
+    for (const o of orders) ordersCache[o.id] = o;
+
+    // KPI uses cache (if ALL_LOADED, it reflects everything; otherwise just current page)
+    renderKpis();
+
+    // render applying client-side search and extra filters
+    renderOrdersFromCache();
+  }
+
+  // ✅ NEW: Load all orders into cache (for full search/export)
+  async function loadAllOrdersForSearch(){
+    if(!confirm("Load ALL orders into this page for full search/export? This can be slower if you have loads.")) return;
+
+    statusEl.textContent = "Loading all orders…";
+    window.__ALL_LOADED = true;
+
+    try{
+      // clear existing cache
+      for(const k of Object.keys(ordersCache)) delete ordersCache[k];
+
+      let page = 0;
+      const chunk = 500; // Supabase/PostgREST practical chunk
+      while(true){
+        const from = page * chunk;
+        const to = from + chunk - 1;
+
+        const { data, error } = await supabaseClient
+          .from("Orders")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .range(from, to);
+
+        if(error) throw error;
+        if(!data || data.length === 0) break;
+
+        data.forEach(o => ordersCache[o.id] = o);
+
+        if(data.length < chunk) break;
+        page++;
+      }
+
+      statusEl.textContent = `${Object.keys(ordersCache).length} orders loaded`;
+      renderKpis();
+      renderOrdersFromCache();
+      alert("All orders loaded ✅");
+    }catch(e){
+      console.error("Load all failed", e);
+      alert("Load all failed — check console.");
+      window.__ALL_LOADED = false;
+      loadOrders();
+    }
   }
 
   // ------- REVIEWS MODERATION -------
@@ -1181,8 +1994,29 @@
   window.publishReview = publishReview;
   window.deleteReview = deleteReview;
 
-  // ✅ NEW: expose export function
+  // ✅ NEW: expose export + filters + bulk + paging
   window.exportOrdersCsv = exportOrdersCsv;
+  window.clearSearch = clearSearch;
+  window.setStatusFilter = setStatusFilter;
+  window.togglePackQueue = togglePackQueue;
+  window.applyClientFilters = applyClientFilters;
+
+  window.prevPage = prevPage;
+  window.nextPage = nextPage;
+  window.changePageSize = changePageSize;
+  window.loadAllOrdersForSearch = loadAllOrdersForSearch;
+
+  window.toggleSelectAll = toggleSelectAll;
+  window.toggleSelectOne = toggleSelectOne;
+  window.bulkMarkPacked = bulkMarkPacked;
+  window.bulkMarkShippedNoEmail = bulkMarkShippedNoEmail;
+  window.bulkCopyAddresses = bulkCopyAddresses;
+
+  window.saveAdminNote = saveAdminNote;
+  window.savePaymentRef = savePaymentRef;
+
+  window.openMailto = openMailto;
+  window.buildShippedEmailText = buildShippedEmailText;
 
   init();
 
