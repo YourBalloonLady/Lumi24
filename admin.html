@@ -134,6 +134,16 @@
     font-size:.9rem;
   }
 
+  /* ✅ Back to top button */
+#backToTop{
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9999;
+  display: none;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
   .small-input{
     font-size:.85rem;
   }
@@ -890,6 +900,9 @@
         <div style="margin-top:16px;">
           <button onclick="window.print()">Print</button>
         </div>
+        <button id="backToTop" class="btn btn-dark btn-sm">
+  ⬆️ Top
+</button>
       </body>
       </html>
     `);
@@ -2019,6 +2032,20 @@
   window.buildShippedEmailText = buildShippedEmailText;
 
   init();
+
+  // ✅ Back to top button
+const backToTopBtn = document.getElementById("backToTop");
+
+window.addEventListener("scroll", () => {
+  if (!backToTopBtn) return;
+  backToTopBtn.style.display = window.scrollY > 600 ? "inline-flex" : "none";
+}, { passive: true });
+
+if (backToTopBtn) {
+  backToTopBtn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
 
   // ------- INACTIVITY LOGOUT -------
   const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
