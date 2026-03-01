@@ -528,7 +528,7 @@
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
-        .replaceAll('"',"quot;")
+        .replaceAll('"',"&quot;")
         .replaceAll("'","&#039;");
     }
 
@@ -2261,6 +2261,7 @@
       renderQuickStats();
       refreshStatusCounts();
       renderOrdersFromCache();
+renderCharts(); // ✅
     }
 
     async function loadAllOrdersForSearch(){
@@ -2299,6 +2300,7 @@
         renderQuickStats();
         refreshStatusCounts();
         renderOrdersFromCache();
+renderCharts(); // ✅
         showToast("All orders loaded ✅", "success");
       }catch(e){
         console.error("Load all failed", e);
