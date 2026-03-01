@@ -792,48 +792,7 @@ function imgSrc(image){
     }
   })();
 
- const logoutBtn = document.getElementById("logout-btn");
-const logoutNavItem = document.getElementById("logout-nav-item");
 
-async function updateAuthUi() {
-  const { data } = await supabaseClient.auth.getUser();
-  const user = data?.user;
-
-  if (user) {
-    // show logout
-    if (logoutNavItem) logoutNavItem.style.display = "block";
-
-    // your existing "My Account" behaviour
-    accountLink.textContent = "My Account";
-    accountLink.removeAttribute("data-bs-toggle");
-    accountLink.removeAttribute("data-bs-target");
-    accountLink.href = "account.html";
-  } else {
-    // hide logout
-    if (logoutNavItem) logoutNavItem.style.display = "none";
-
-    // your existing "Login" behaviour
-    accountLink.textContent = "Login";
-    accountLink.href = "#";
-    accountLink.setAttribute("data-bs-toggle", "modal");
-    accountLink.setAttribute("data-bs-target", "#authModal");
-  }
-}
-
-if (logoutBtn) {
-  logoutBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    try {
-      await supabaseClient.auth.signOut();
-    } finally {
-      window.location.href = "index.html";
-    }
-  });
-}
-
-// initial + live updates
-updateAuthUi();
-supabaseClient.auth.onAuthStateChange(() => updateAuthUi());
 </script>
 </body>
 </html>
