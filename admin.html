@@ -178,6 +178,19 @@
       gap:12px;
       align-items:center;
     }
+
+    /* Added: purple outline button style for the new export buttons */
+    .btn-outline-purple{
+      --bs-btn-color:#6d28d9;
+      --bs-btn-border-color:#6d28d9;
+      --bs-btn-hover-color:#fff;
+      --bs-btn-hover-bg:#6d28d9;
+      --bs-btn-hover-border-color:#6d28d9;
+      --bs-btn-focus-shadow-rgb:109,40,217;
+      --bs-btn-active-color:#fff;
+      --bs-btn-active-bg:#5b21b6;
+      --bs-btn-active-border-color:#5b21b6;
+    }
   </style>
 </head>
 
@@ -233,6 +246,10 @@
         <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
         <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
         <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
+
+        <!-- ✅ Added: Excel-template exports that match your sheet columns -->
+        <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
       </div>
 
       <!-- Sticky controls (Improvement #1) -->
@@ -409,7 +426,6 @@
     }
 
     function showToast(message, type="success"){
-      // simple bootstrap toast, fallback to alert if anything weird
       try{
         const id = "t" + Date.now();
         const wrap = document.createElement("div");
@@ -601,6 +617,145 @@
       const customer = order.details?.customer || {};
       const ref = order.reference || order.id;
       return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina Weight`;
+    }
+
+    // ────────────────────────────────────────────────
+    // ✅ ADDED: "Tim Excel" export helpers (matches your sheet columns)
+    // Columns: Name | Address | Peptide | Mg Amount | Pen/Vial | H/S Quantity | Paid | Cost | Order Complete
+    // ────────────────────────────────────────────────
+    function classifyPeptide(itemName = "") {
+      const n = String(itemName).toLowerCase();
+      if (n.includes("tirz") || n.includes("tirzep")) return "Tirz";
+      if (n.includes("reta") || n.includes("retatr")) return "Reta";
+      if (n.includes("sema") || n.includes("semag")) return "Sema";
+      if (n.includes("cagri") || n.includes("cagril")) return "Cagril";
+      if (n.includes("tesa") || n.includes("tesam")) return "Tesa";
+      if (n.includes("nad")) return "NAD+";
+      if (n.includes("bpc") || n.includes("tb500") || n.includes("tb-500")) return "Bpc/Tp";
+      return "";
+    }
+
+    function extractMg(itemName = "") {
+      const m = String(itemName).match(/(\d+(?:\.\d+)?)\s*mg/i);
+      return m ? `${m[1]}mg` : "";
+    }
+
+    function penOrVial(item = {}) {
+      const n = String(item?.name || "").toLowerCase();
+      if (n.includes("pen")) return "Pen";
+      if (n.includes("vial")) return "Vial";
+      if (item?.pen_heads) return "Pen";
+      if (item?.syringes) return "Vial";
+      return "";
+    }
+
+    function buildOneLineAddress(order) {
+      const c = order?.details?.customer || {};
+      const parts = [c.address1, c.address2, c.city, c.postcode]
+        .map(x => String(x || "").trim())
+        .filter(Boolean);
+      return parts.join(", ");
+    }
+
+    function paidFlagFromStatus(status = "") {
+      const s = String(status).toLowerCase();
+      return (s === "paid" || s === "packed" || s === "shipped") ? "Y" : "";
+    }
+
+    function completeFlagFromStatus(status = "") {
+      const s = String(status).toLowerCase();
+      return (s === "shipped") ? "Y" : "";
+    }
+
+    function getOrdersByMode(mode = "all") {
+      let orders = Object.values(ordersCache || {});
+      if (mode === "selected") orders = orders.filter(o => selectedIds.has(o.id));
+      if (mode === "shipped") orders = orders.filter(o => String(o.status || "").toLowerCase() === "shipped");
+      return orders;
+    }
+
+    function buildTimExcelRows(mode = "all") {
+      const orders = getOrdersByMode(mode);
+      const rows = [];
+
+      for (const o of orders) {
+        const c = o?.details?.customer || {};
+        const name = String(c.name || o.customer_name || o.name || "").trim();
+        const address = buildOneLineAddress(o);
+        const paid = paidFlagFromStatus(o.status);
+        const complete = completeFlagFromStatus(o.status);
+        const total = Number(o.total_amount || 0);
+
+        const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+
+        if (!items.length) {
+          rows.push({
+            "Name": name,
+            "Address": address,
+            "Peptide": "",
+            "Mg Amount": "",
+            "Pen/Vial": "",
+            "H/S Quantity": "",
+            "Paid": paid,
+            "Cost": total,
+            "Order Complete": complete
+          });
+          continue;
+        }
+
+        for (const item of items) {
+          const pv = penOrVial(item);
+          const hsQty =
+            pv === "Pen" ? (item?.pen_heads ?? "") :
+            pv === "Vial" ? (item?.syringes ?? "") :
+            "";
+
+          rows.push({
+            "Name": name,
+            "Address": address,
+            "Peptide": classifyPeptide(item?.name),
+            "Mg Amount": extractMg(item?.name),
+            "Pen/Vial": pv,
+            "H/S Quantity": hsQty,
+            "Paid": paid,
+            "Cost": total,
+            "Order Complete": complete
+          });
+        }
+      }
+
+      return rows;
+    }
+
+    function exportTimExcel(mode = "all") {
+      if (!window.XLSX) return alert("XLSX library not loaded.");
+
+      const rows = buildTimExcelRows(mode);
+      const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+
+      const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Orders");
+
+      XLSX.writeFile(wb, `lumina_orders_tim_format_${mode}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    async function copyTimExcelTsv(mode = "all") {
+      const rows = buildTimExcelRows(mode);
+      const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+
+      const esc = (v) => String(v ?? "").replace(/\r?\n/g, " ");
+      const tsv = [
+        headers.join("\t"),
+        ...rows.map(r => headers.map(h => esc(r[h])).join("\t"))
+      ].join("\n");
+
+      try {
+        await navigator.clipboard.writeText(tsv);
+        showToast("Copied ✅ Paste straight into Excel from A1", "success");
+      } catch (e) {
+        alert("Copy failed — browser blocked clipboard. Use the XLSX export instead.");
+      }
     }
 
     // ────────────────────────────────────────────────
@@ -1242,7 +1397,6 @@
       });
     }
 
-    // Pay-before-3pm reminder (template id must exist in EmailJS)
     function sendPayBefore3pmEmail(order){
       if (!order || !window.emailjs) return;
       const customer = order.details?.customer || {};
@@ -1261,7 +1415,7 @@
     }
 
     // ────────────────────────────────────────────────
-    // BUTTON HANDLERS (with inline tracking, no prompt)  (Improvement #3)
+    // BUTTON HANDLERS
     // ────────────────────────────────────────────────
     async function sendShippedEmailById(orderId) {
       const order = ordersCache[orderId];
@@ -1276,12 +1430,8 @@
 
       setBusy(true, "Shipping…", `Order ${order.reference || order.id}`);
       try {
-        // save tracking (optional)
-        if (trackingClean) {
-          await saveTrackingToOrder(orderId, trackingClean);
-        }
+        if (trackingClean) await saveTrackingToOrder(orderId, trackingClean);
 
-        // send email
         try{
           await sendShippedEmail(ordersCache[orderId], trackingClean);
         }catch(emailErr){
@@ -1296,18 +1446,13 @@
           }
         }
 
-        // update status + shipped stamp + history
         const session = await supabaseClient.auth.getSession();
         const who = session?.data?.session?.user?.email || "admin";
 
         let updatedDetails = pushHistory(ordersCache[orderId], "status_shipped", { tracking: trackingClean });
         updatedDetails = {
           ...updatedDetails,
-          meta: {
-            ...(updatedDetails.meta || {}),
-            shipped_at: new Date().toISOString(),
-            shipped_by: who
-          }
+          meta: { ...(updatedDetails.meta || {}), shipped_at: new Date().toISOString(), shipped_by: who }
         };
 
         const { error } = await supabaseClient.from("Orders").update({ status: "Shipped", details: updatedDetails }).eq("id", orderId);
@@ -1385,7 +1530,6 @@
 
       setBusy(true, "Marking paid…", order.reference || order.id);
       try {
-        // send email first
         try{
           await sendPaidEmail(order);
         }catch(emailErr){
@@ -1405,11 +1549,7 @@
         const who = session?.data?.session?.user?.email || "admin";
         updatedDetails = {
           ...updatedDetails,
-          meta: {
-            ...(updatedDetails.meta || {}),
-            paid_confirmed_at: new Date().toISOString(),
-            paid_confirmed_by: who
-          }
+          meta: { ...(updatedDetails.meta || {}), paid_confirmed_at: new Date().toISOString(), paid_confirmed_by: who }
         };
 
         const { error } = await supabaseClient.from("Orders").update({ status: "Paid", details: updatedDetails }).eq("id", orderId);
@@ -1428,13 +1568,12 @@
       }
     }
 
-    // Cancel + restock left as your existing logic (kept stub)
     async function cancelAndRestockById(orderId){
       alert("Cancel+Restock is in your original version. If you want it included here too, paste your latest working cancel+restock function and I’ll merge it cleanly.");
     }
 
     // ────────────────────────────────────────────────
-    // BULK ACTIONS (with progress overlay) (Improvement #6)
+    // BULK ACTIONS
     // ────────────────────────────────────────────────
     async function bulkMarkPacked(){
       const ids = Array.from(selectedIds);
@@ -1448,12 +1587,6 @@
         for(const id of ids){
           const o = ordersCache[id];
           if(!o) continue;
-
-          const warnings = validateAddress(o).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
-          if(warnings.length){
-            // warn once per order (non-blocking)
-            console.warn("Warnings for", id, warnings);
-          }
 
           let updatedDetails = pushHistory(o, "status_packed");
           const { error } = await supabaseClient.from("Orders").update({ status:"Packed", details: updatedDetails }).eq("id", id);
@@ -1540,7 +1673,7 @@
     }
 
     // ────────────────────────────────────────────────
-    // RENDER (accordion details - Improvement #5)
+    // RENDER
     // ────────────────────────────────────────────────
     function renderOrdersFromCache(){
       const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
@@ -1559,18 +1692,15 @@
 
       let list = orders;
 
-      // status filter (client-side)
       if(statusFilter !== "all"){
         const sf = String(statusFilter || "").toLowerCase();
         list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
       }
 
-      // pack queue: Paid only
       if(packQueueOnly){
         list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
       }
 
-      // special toggles
       if(fltOlder24){
         list = list.filter(o => {
           const s = String(o.status || "").toLowerCase();
@@ -1603,7 +1733,6 @@
         });
       }
 
-      // free text + advanced filters
       if(qText || Object.keys(qFilters).length){
         list = list.filter(o=>{
           const ref = String(o.reference || o.id || "").toLowerCase();
@@ -1670,7 +1799,6 @@
                   </div>
                 </div>
 
-                <!-- Collapsible details (Improvement #5) -->
                 <div class="accordion mt-2" id="acc-${order.id}">
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="acc-h-${order.id}">
@@ -1681,7 +1809,6 @@
                     <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
                       <div class="accordion-body">
 
-                        <!-- Inline tracking (Improvement #3) -->
                         <div class="items-box" style="margin-top:0;">
                           <strong>📦 Tracking number</strong>
                           <div class="d-flex gap-2 flex-wrap">
@@ -1977,10 +2104,9 @@
     };
 
     // ────────────────────────────────────────────────
-    // Keyboard shortcuts (Improvement #9)
+    // Keyboard shortcuts
     // ────────────────────────────────────────────────
     document.addEventListener("keydown", (e)=>{
-      // Ctrl+Enter saves note if focused in a note textarea
       if(e.ctrlKey && e.key === "Enter"){
         const a = document.activeElement;
         if(a && a.id && a.id.startsWith("note-")){
@@ -1990,7 +2116,6 @@
         }
       }
 
-      // Ctrl+P prints slip for focused order card (best effort)
       if(e.ctrlKey && (e.key === "p" || e.key === "P")){
         const a = document.activeElement;
         const card = a?.closest?.(".order-card");
@@ -2037,6 +2162,10 @@
     window.exportOrdersCsv = exportOrdersCsv;
     window.exportOrdersJson = exportOrdersJson;
     window.exportOrdersXlsx = exportOrdersXlsx;
+
+    // ✅ Added exports
+    window.exportTimExcel = exportTimExcel;
+    window.copyTimExcelTsv = copyTimExcelTsv;
 
     window.clearSearch = clearSearch;
     window.setStatusFilter = setStatusFilter;
