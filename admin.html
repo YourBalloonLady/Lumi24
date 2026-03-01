@@ -191,6 +191,54 @@
       --bs-btn-active-bg:#5b21b6;
       --bs-btn-active-border-color:#5b21b6;
     }
+
+    /* ────────────────────────────────────────────────
+       ✅ SIDEBAR LAYOUT (Nice-to-have #1)
+       ──────────────────────────────────────────────── */
+    .admin-shell{
+      display:flex;
+      min-height:100vh;
+    }
+    .admin-sidebar{
+      width:260px;
+      background:#020617;
+      color:#e5e7eb;
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:16px;
+      display:none;
+    }
+    .admin-sidebar a{
+      color:#e5e7eb;
+      text-decoration:none;
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      margin-bottom:6px;
+    }
+    .admin-sidebar a:hover{
+      background: rgba(255,255,255,.08);
+      color:#fff;
+    }
+    .admin-main{
+      flex:1;
+      width:100%;
+    }
+    @media (min-width: 992px){
+      .admin-sidebar{ display:block; }
+    }
+    .mobile-topbar{
+      background:#020617;
+      color:#fff;
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    @media (min-width: 992px){
+      .mobile-topbar{ display:none; }
+    }
   </style>
 </head>
 
@@ -205,149 +253,190 @@
     </div>
   </div>
 
-  <!-- NAV -->
-  <nav class="navbar navbar-dark navbar-expand-lg">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="index.html#home">🌙 Lumina Admin</a>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="adminNav">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="index.html#home">Store Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-          <li class="nav-item"><a class="nav-link" href="reviews.html">Reviews</a></li>
-          <li class="nav-item"><a class="nav-link" href="account.html">My Account</a></li>
-        </ul>
-
-        <button id="logout-btn" class="btn btn-outline-light btn-sm">Logout</button>
-      </div>
+  <!-- ✅ Mobile top bar + menu -->
+  <div class="mobile-topbar">
+    <div class="fw-bold">🌙 Lumina Admin</div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">Menu</button>
+      <button id="logout-btn" class="btn btn-sm btn-outline-light">Logout</button>
     </div>
-  </nav>
+  </div>
 
-  <!-- CONTENT -->
-  <div class="container mt-4">
-    <!-- ORDERS -->
-    <div class="section-card mb-4">
-      <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
-        <h3 class="mb-0">Orders</h3>
-        <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
-      </div>
+  <!-- ✅ Offcanvas sidebar (mobile) -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Lumina Admin</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <a href="index.html#home" class="d-block mb-2">Store Home</a>
+      <a href="products.html" class="d-block mb-2">Products</a>
+      <a href="reviews.html" class="d-block mb-2">Reviews</a>
+      <a href="account.html" class="d-block mb-2">My Account</a>
+    </div>
+  </div>
 
-      <!-- Quick stats row (Improvement #2) -->
-      <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
+  <!-- ✅ Desktop sidebar + main wrapper -->
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="fw-bold mb-3">🌙 Lumina Admin</div>
+      <a href="index.html#home">Store Home</a>
+      <a href="products.html">Products</a>
+      <a href="reviews.html">Reviews</a>
+      <a href="account.html">My Account</a>
+      <hr style="border-color:rgba(255,255,255,.12);">
+      <button id="logout-btn-desktop" class="btn btn-sm btn-outline-light w-100">Logout</button>
+    </aside>
 
-      <!-- Export buttons (Improvement #10) -->
-      <div class="d-flex gap-2 flex-wrap mt-3">
-        <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
-        <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
-        <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
-        <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
-        <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
+    <main class="admin-main">
+      <!-- CONTENT -->
+      <div class="container mt-4">
+        <!-- ORDERS -->
+        <div class="section-card mb-4">
+          <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
+            <h3 class="mb-0">Orders</h3>
+            <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
+          </div>
 
-        <!-- ✅ Added: Excel-template exports that match your sheet columns -->
-        <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
-        <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
-      </div>
+          <!-- Quick stats row (Improvement #2) -->
+          <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
 
-      <!-- Sticky controls (Improvement #1) -->
-      <div class="sticky-admin-controls">
-        <div class="controls-grid">
-          <div>
-            <div class="input-group mt-3">
-              <span class="input-group-text">🔎</span>
-              <input id="order-search" class="form-control"
-                     placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
-              <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
-            </div>
+          <!-- ✅ DASHBOARD CHARTS (Nice-to-have #3) -->
+          <div class="section-card mt-3">
+            <h5 class="mb-2">Dashboard</h5>
+            <p class="text-muted small mb-2">Charts use loaded orders. For accurate charts across everything, click “Load all”.</p>
 
-            <!-- Filter buttons w/ counts (Improvement #4) -->
-            <div class="filter-row mt-2">
-              <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
-              <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
-              <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
-              <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
-              <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
-              <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
-              <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
-              
-            </div>
-
-            <!-- Client-side toggles -->
-            <div class="d-flex gap-3 flex-wrap mt-2">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
-                <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
+            <div class="row g-3">
+              <div class="col-12 col-lg-6">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Revenue (last 30 days)</div>
+                  <canvas id="chartRevenue"></canvas>
+                </div>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
-                <label class="form-check-label" for="flt-noaddr">No address</label>
+              <div class="col-12 col-lg-6">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Orders per day (last 30 days)</div>
+                  <canvas id="chartOrders"></canvas>
+                </div>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
-                <label class="form-check-label" for="flt-noemail">No email</label>
+              <div class="col-12">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Top products (loaded)</div>
+                  <canvas id="chartTopProducts"></canvas>
+                </div>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
-                <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
-              </div>
-            </div>
-
-            <div class="mt-2">
-              <small class="text-muted">
-                Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
-              </small>
             </div>
           </div>
 
-          <div>
-            <div class="bulk-bar mt-3">
-              <div class="d-flex align-items-center gap-2">
-                <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
-                <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+          <!-- Export buttons (Improvement #10) -->
+          <div class="d-flex gap-2 flex-wrap mt-3">
+            <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
+            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
+            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
+
+            <!-- ✅ Added: Excel-template exports that match your sheet columns -->
+            <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
+          </div>
+
+          <!-- Sticky controls (Improvement #1) -->
+          <div class="sticky-admin-controls">
+            <div class="controls-grid">
+              <div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text">🔎</span>
+                  <input id="order-search" class="form-control"
+                         placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
+                  <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
+                </div>
+
+                <!-- Filter buttons w/ counts (Improvement #4) -->
+                <div class="filter-row mt-2">
+                  <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
+                  <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
+                  <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
+                  <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
+                  <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
+                  <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
+                  <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
+                </div>
+
+                <!-- Client-side toggles -->
+                <div class="d-flex gap-3 flex-wrap mt-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-noaddr">No address</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-noemail">No email</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <small class="text-muted">
+                    Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
+                  </small>
+                </div>
               </div>
 
-              <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
-              <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
-              <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
-              <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
-             
-            </div>
+              <div>
+                <div class="bulk-bar mt-3">
+                  <div class="d-flex align-items-center gap-2">
+                    <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+                    <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+                  </div>
 
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
-              <div class="d-flex align-items-center gap-2">
-                <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
-                <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
-                <span class="text-muted small" id="page-indicator">Page …</span>
-              </div>
+                  <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
+                  <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
+                  <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
+                </div>
 
-              <div class="d-flex align-items-center gap-2">
-                <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
-                  <option value="25" selected>25/page</option>
-                  <option value="50">50/page</option>
-                  <option value="100">100/page</option>
-                </select>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
+                    <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
+                    <span class="text-muted small" id="page-indicator">Page …</span>
+                  </div>
 
-                <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
+                  <div class="d-flex align-items-center gap-2">
+                    <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
+                      <option value="25" selected>25/page</option>
+                      <option value="50">50/page</option>
+                      <option value="100">100/page</option>
+                    </select>
+
+                    <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
+
+          <p id="admin-status" class="text-muted mt-3">Checking access…</p>
+          <div id="admin-warning"></div>
+          <div id="orders-list" class="mt-3"></div>
+        </div>
+
+        <!-- REVIEWS -->
+        <div class="section-card">
+          <h3>Pending Reviews</h3>
+          <p class="text-muted" id="reviews-status">Loading pending reviews…</p>
+          <div id="reviews-list" class="mt-3"></div>
         </div>
       </div>
-
-      <p id="admin-status" class="text-muted mt-3">Checking access…</p>
-      <div id="admin-warning"></div>
-      <div id="orders-list" class="mt-3"></div>
-    </div>
-
-    <!-- REVIEWS -->
-    <div class="section-card">
-      <h3>Pending Reviews</h3>
-      <p class="text-muted" id="reviews-status">Loading pending reviews…</p>
-      <div id="reviews-list" class="mt-3"></div>
-    </div>
+    </main>
   </div>
 
   <button id="backToTop" class="btn btn-dark btn-sm">⬆️ Top</button>
@@ -363,11 +452,26 @@
     </div>
   </div>
 
+  <!-- ✅ Customer modal (Nice-to-have #2) -->
+  <div class="modal fade" id="customerModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="customerTitle">Customer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="customerBody">Loading…</div>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <!-- SheetJS for XLSX export (Improvement #10) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+  <!-- ✅ Chart.js (Nice-to-have #3) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
     // ────────────────────────────────────────────────
@@ -392,6 +496,7 @@
     const ordersEl      = document.getElementById("orders-list");
     const warningEl     = document.getElementById("admin-warning");
     const logoutBtn     = document.getElementById("logout-btn");
+    const logoutBtnDesktop = document.getElementById("logout-btn-desktop");
     const reviewsStatus = document.getElementById("reviews-status");
     const reviewsEl     = document.getElementById("reviews-list");
     const kpiBar        = document.getElementById("kpi-bar");
@@ -423,7 +528,7 @@
         .replaceAll("&","&amp;")
         .replaceAll("<","&lt;")
         .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
+        .replaceAll('"',"quot;")
         .replaceAll("'","&#039;");
     }
 
@@ -473,6 +578,95 @@
         window.__ADMIN_EMAIL = s?.data?.session?.user?.email || "admin";
       }catch(e){
         window.__ADMIN_EMAIL = "admin";
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // ✅ CHARTS (Nice-to-have #3)
+    // ────────────────────────────────────────────────
+    let chartRevenue, chartOrders, chartTopProducts;
+
+    function yyyyMmDd(d){
+      const x = new Date(d);
+      const y = x.getFullYear();
+      const m = String(x.getMonth()+1).padStart(2,"0");
+      const da = String(x.getDate()).padStart(2,"0");
+      return `${y}-${m}-${da}`;
+    }
+
+    function buildLastNDays(n){
+      const out = [];
+      const now = new Date();
+      for(let i=n-1;i>=0;i--){
+        const d = new Date(now);
+        d.setDate(now.getDate()-i);
+        d.setHours(0,0,0,0);
+        out.push(yyyyMmDd(d));
+      }
+      return out;
+    }
+
+    function renderCharts(){
+      if(!window.Chart) return;
+
+      const orders = Object.values(ordersCache || {});
+      const days = buildLastNDays(30);
+
+      const revByDay = Object.fromEntries(days.map(d=>[d,0]));
+      const cntByDay = Object.fromEntries(days.map(d=>[d,0]));
+
+      const prodCount = new Map();
+
+      for(const o of orders){
+        if(!o.created_at) continue;
+        const day = yyyyMmDd(o.created_at);
+        if(revByDay[day] !== undefined){
+          revByDay[day] += Number(o.total_amount || 0);
+          cntByDay[day] += 1;
+        }
+
+        const items = o.details?.items || [];
+        for(const it of items){
+          const key = String(it?.name || "Unknown").trim() || "Unknown";
+          prodCount.set(key, (prodCount.get(key) || 0) + Number(it?.qty || 1));
+        }
+      }
+
+      const revenueData = days.map(d=> Number(revByDay[d] || 0));
+      const ordersData  = days.map(d=> Number(cntByDay[d] || 0));
+
+      const top = [...prodCount.entries()].sort((a,b)=> b[1]-a[1]).slice(0,10);
+      const topLabels = top.map(x=>x[0]);
+      const topVals   = top.map(x=>x[1]);
+
+      const ctxR = document.getElementById("chartRevenue");
+      if(ctxR){
+        if(chartRevenue) chartRevenue.destroy();
+        chartRevenue = new Chart(ctxR, {
+          type:"line",
+          data:{ labels: days, datasets:[{ label:"£ Revenue", data: revenueData }] },
+          options:{ responsive:true, maintainAspectRatio:true }
+        });
+      }
+
+      const ctxO = document.getElementById("chartOrders");
+      if(ctxO){
+        if(chartOrders) chartOrders.destroy();
+        chartOrders = new Chart(ctxO, {
+          type:"bar",
+          data:{ labels: days, datasets:[{ label:"Orders", data: ordersData }] },
+          options:{ responsive:true, maintainAspectRatio:true }
+        });
+      }
+
+      const ctxT = document.getElementById("chartTopProducts");
+      if(ctxT){
+        if(chartTopProducts) chartTopProducts.destroy();
+        chartTopProducts = new Chart(ctxT, {
+          type:"bar",
+          data:{ labels: topLabels, datasets:[{ label:"Qty", data: topVals }] },
+          options:{ responsive:true, maintainAspectRatio:true, indexAxis:"y" }
+        });
       }
     }
 
@@ -622,8 +816,47 @@
     }
 
     // ────────────────────────────────────────────────
+    // ✅ Customer view (Nice-to-have #2)
+    // ────────────────────────────────────────────────
+    function openCustomerView(emailRaw){
+      const email = String(emailRaw || "").trim().toLowerCase();
+      if(!email) return alert("No email on this order.");
+
+      const orders = Object.values(ordersCache || {}).filter(o=>{
+        const c = o.details?.customer || {};
+        const e = String(c.email || o.customer_email || o.email || "").trim().toLowerCase();
+        return e === email;
+      }).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+
+      const totalSpent = orders.reduce((sum,o)=> sum + Number(o.total_amount || 0), 0);
+
+      document.getElementById("customerTitle").textContent =
+        `${email} • ${orders.length} order(s) • £${totalSpent.toFixed(2)} spent`;
+
+      document.getElementById("customerBody").innerHTML = orders.map(o=>{
+        const ref = o.reference || o.id;
+        const created = o.created_at ? new Date(o.created_at).toLocaleString() : "";
+        const status = o.status || "Pending";
+        const items = buildItemsText(o);
+        return `
+          <div class="border rounded-3 p-3 mb-2">
+            <div class="d-flex justify-content-between">
+              <div><strong>${escapeHtml(ref)}</strong> <span class="ms-2">${badge(status)}</span></div>
+              <div class="fw-bold">£${Number(o.total_amount||0).toFixed(2)}</div>
+            </div>
+            <div class="text-muted small">${escapeHtml(created)}</div>
+            <pre class="mt-2 mb-0" style="white-space:pre-wrap;">${escapeHtml(items)}</pre>
+          </div>
+        `;
+      }).join("") || `<div class="text-muted">No orders found in the currently loaded cache. Click “Load all” then try again.</div>`;
+
+      const modal = new bootstrap.Modal(document.getElementById("customerModal"));
+      modal.show();
+    }
+    window.openCustomerView = openCustomerView;
+
+    // ────────────────────────────────────────────────
     // ✅ ADDED: "Tim Excel" export helpers (matches your sheet columns)
-    // Columns: Name | Address | Peptide | Mg Amount | Pen/Vial | H/S Quantity | Paid | Cost | Order Complete
     // ────────────────────────────────────────────────
     function classifyPeptide(itemName = "") {
       const n = String(itemName).toLowerCase();
@@ -926,6 +1159,7 @@
 
     function applyClientFilters(){
       renderOrdersFromCache();
+      renderCharts();
     }
 
     searchInput.addEventListener("input", () => applyClientFilters());
