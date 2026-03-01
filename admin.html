@@ -1,5 +1,3 @@
-youve missed loads out just replace or add in the suggested things from 1, 2 and 3 in here and add back in cancel and restock please
-
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="light">
 <head>
@@ -38,3 +36,2245 @@ youve missed loads out just replace or add in the suggested things from 1, 2 and
       border-radius:16px;
       padding:16px;
       box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:24px;
+    }
+
+    .order-card, .review-card{
+      background:#fff;
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:12px;
+    }
+
+    .review-meta{ font-size:.85rem; color:#6b7280; }
+
+    .items-box{
+      margin-top:10px;
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:.9rem;
+      color:#0f172a;
+      white-space: pre-line;
+    }
+    .items-box strong{
+      font-size:.85rem;
+      color:#334155;
+      display:block;
+      margin-bottom:6px;
+    }
+
+    .muted-line{ color:#64748b; font-size:.85rem; }
+
+    .mini-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
+
+    .btn-row{
+      display:grid;
+      gap:6px;
+      margin-top:8px;
+    }
+
+    .kpi-pill{
+      background:#0f172a;
+      color:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.85rem;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .kpi-pill span{ opacity:.9; font-weight:600; }
+
+    .controls-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (min-width: 992px){
+      .controls-grid{ grid-template-columns: 1.4fr 1fr; align-items:start; }
+    }
+
+    .filter-row{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    .bulk-bar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px;
+    }
+
+    .note-area{
+      width:100%;
+      min-height:64px;
+      resize:vertical;
+      font-size:.9rem;
+    }
+    .small-input{ font-size:.85rem; }
+
+    #backToTop{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: none;
+      border-radius: 999px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
+
+    /* Sticky controls (Improvement #1) */
+    .sticky-admin-controls{
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: #fff;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+    }
+
+    /* Filter count badges (Improvement #4) */
+    .filter-badge{
+      margin-left: 6px;
+      font-size: .75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,.08);
+    }
+
+    /* Busy overlay (Improvement #6) */
+    #busyOverlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      background: rgba(15,23,42,.35);
+      align-items:center;
+      justify-content:center;
+    }
+    #busyOverlay .box{
+      background:#fff;
+      border-radius:16px;
+      padding:16px 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    /* Added: purple outline button style for the new export buttons */
+    .btn-outline-purple{
+      --bs-btn-color:#6d28d9;
+      --bs-btn-border-color:#6d28d9;
+      --bs-btn-hover-color:#fff;
+      --bs-btn-hover-bg:#6d28d9;
+      --bs-btn-hover-border-color:#6d28d9;
+      --bs-btn-focus-shadow-rgb:109,40,217;
+      --bs-btn-active-color:#fff;
+      --bs-btn-active-bg:#5b21b6;
+      --bs-btn-active-border-color:#5b21b6;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- TRUST BAR -->
+  <div id="trust-bar">
+    <div class="container d-flex justify-content-center gap-4 flex-wrap">
+      <span>🚚 <strong>Next Day Delivery</strong> on orders before <strong>3PM</strong></span>
+      <span>🔒 Secure Bank Transfer</span>
+      <span>🇬🇧 UK Dispatch</span>
+      <span>📦 Discreet Packaging</span>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav class="navbar navbar-dark navbar-expand-lg">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="index.html#home">🌙 Lumina Admin</a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#adminNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="adminNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="index.html#home">Store Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="reviews.html">Reviews</a></li>
+          <li class="nav-item"><a class="nav-link" href="account.html">My Account</a></li>
+        </ul>
+
+        <button id="logout-btn" class="btn btn-outline-light btn-sm">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENT -->
+  <div class="container mt-4">
+    <!-- ORDERS -->
+    <div class="section-card mb-4">
+      <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
+        <h3 class="mb-0">Orders</h3>
+        <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
+      </div>
+
+      <!-- Quick stats row (Improvement #2) -->
+      <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
+
+      <!-- Export buttons (Improvement #10) -->
+      <div class="d-flex gap-2 flex-wrap mt-3">
+        <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
+        <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
+        <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
+        <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
+        <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
+
+        <!-- ✅ Added: Excel-template exports that match your sheet columns -->
+        <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
+        <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
+      </div>
+
+      <!-- Sticky controls (Improvement #1) -->
+      <div class="sticky-admin-controls">
+        <div class="controls-grid">
+          <div>
+            <div class="input-group mt-3">
+              <span class="input-group-text">🔎</span>
+              <input id="order-search" class="form-control"
+                     placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
+              <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
+            </div>
+
+            <!-- Filter buttons w/ counts (Improvement #4) -->
+            <div class="filter-row mt-2">
+              <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
+              <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
+              <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
+              <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
+              <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
+              <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
+              <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
+              
+            </div>
+
+            <!-- Client-side toggles -->
+            <div class="d-flex gap-3 flex-wrap mt-2">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
+                <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
+                <label class="form-check-label" for="flt-noaddr">No address</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
+                <label class="form-check-label" for="flt-noemail">No email</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
+                <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
+              </div>
+            </div>
+
+            <div class="mt-2">
+              <small class="text-muted">
+                Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
+              </small>
+            </div>
+          </div>
+
+          <div>
+            <div class="bulk-bar mt-3">
+              <div class="d-flex align-items-center gap-2">
+                <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+                <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+              </div>
+
+              <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
+              <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
+              <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
+              <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
+             
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+              <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
+                <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
+                <span class="text-muted small" id="page-indicator">Page …</span>
+              </div>
+
+              <div class="d-flex align-items-center gap-2">
+                <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
+                  <option value="25" selected>25/page</option>
+                  <option value="50">50/page</option>
+                  <option value="100">100/page</option>
+                </select>
+
+                <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p id="admin-status" class="text-muted mt-3">Checking access…</p>
+      <div id="admin-warning"></div>
+      <div id="orders-list" class="mt-3"></div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="section-card">
+      <h3>Pending Reviews</h3>
+      <p class="text-muted" id="reviews-status">Loading pending reviews…</p>
+      <div id="reviews-list" class="mt-3"></div>
+    </div>
+  </div>
+
+  <button id="backToTop" class="btn btn-dark btn-sm">⬆️ Top</button>
+
+  <!-- Busy overlay -->
+  <div id="busyOverlay">
+    <div class="box">
+      <div class="spinner-border" role="status" aria-label="Loading"></div>
+      <div>
+        <div class="fw-bold" id="busyTitle">Working…</div>
+        <div class="text-muted small" id="busyMeta">Please wait</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <!-- SheetJS for XLSX export (Improvement #10) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+
+  <script>
+    // ────────────────────────────────────────────────
+    // CONFIG
+    // ────────────────────────────────────────────────
+    const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+    const ADMIN_EMAIL = "luminaweight@gmail.com";
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // EmailJS init (safe)
+    (function () {
+      try { if (window.emailjs) emailjs.init({ publicKey: "uZOuTrBdIAc6AmKjo" }); }
+      catch (e) { console.error("EmailJS init failed", e); }
+    })();
+
+    // ────────────────────────────────────────────────
+    // ELEMENTS
+    // ────────────────────────────────────────────────
+    const statusEl      = document.getElementById("admin-status");
+    const ordersEl      = document.getElementById("orders-list");
+    const warningEl     = document.getElementById("admin-warning");
+    const logoutBtn     = document.getElementById("logout-btn");
+    const reviewsStatus = document.getElementById("reviews-status");
+    const reviewsEl     = document.getElementById("reviews-list");
+    const kpiBar        = document.getElementById("kpi-bar");
+    const quickStatsEl  = document.getElementById("quick-stats");
+    const searchInput   = document.getElementById("order-search");
+    const pageIndicator = document.getElementById("page-indicator");
+
+    // Cache orders so buttons can reference them
+    const ordersCache = {};
+
+    // paging + filtering state
+    let PAGE_SIZE = 25;
+    let currentPage = 0;
+    let totalCount = 0;
+
+    let statusFilter = "all";
+    let packQueueOnly = false;
+    let filteredOrderIds = [];
+    const selectedIds = new Set();
+
+    // admin email cached
+    window.__ADMIN_EMAIL = "admin";
+
+    // ────────────────────────────────────────────────
+    // UI HELPERS
+    // ────────────────────────────────────────────────
+    function escapeHtml(str){
+      return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function showToast(message, type="success"){
+      try{
+        const id = "t" + Date.now();
+        const wrap = document.createElement("div");
+        wrap.innerHTML = `
+          <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:999999;">
+            <div id="${id}" class="toast text-bg-${type} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body">${escapeHtml(message)}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+              </div>
+            </div>
+          </div>`;
+        document.body.appendChild(wrap);
+        const el = document.getElementById(id);
+        const t = new bootstrap.Toast(el, { delay: 2200 });
+        el.addEventListener("hidden.bs.toast", () => wrap.remove());
+        t.show();
+      }catch(e){
+        alert(message);
+      }
+    }
+
+    function setBusy(on, title="Working…", meta="Please wait"){
+      const ov = document.getElementById("busyOverlay");
+      if(!ov) return;
+      document.getElementById("busyTitle").textContent = title;
+      document.getElementById("busyMeta").textContent = meta;
+      ov.style.display = on ? "flex" : "none";
+    }
+
+    function badge(status) {
+      status = (status || "Pending").toLowerCase();
+      if (status === "paid")      return `<span class="badge bg-success">PAID</span>`;
+      if (status === "packed")    return `<span class="badge bg-secondary">PACKED</span>`;
+      if (status === "shipped")   return `<span class="badge bg-primary">SHIPPED</span>`;
+      if (status === "cancelled") return `<span class="badge bg-danger">CANCELLED</span>`;
+      return `<span class="badge bg-warning text-dark">PENDING</span>`;
+    }
+
+    async function cacheAdminEmail(){
+      try{
+        const s = await supabaseClient.auth.getSession();
+        window.__ADMIN_EMAIL = s?.data?.session?.user?.email || "admin";
+      }catch(e){
+        window.__ADMIN_EMAIL = "admin";
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // HISTORY (Improvement #7 - minimal timeline)
+    // ────────────────────────────────────────────────
+    function pushHistory(order, action, extra={}){
+      const details = order.details || {};
+      const meta = details.meta || {};
+      const history = Array.isArray(meta.history) ? meta.history : [];
+      return {
+        ...details,
+        meta: {
+          ...meta,
+          history: [...history, { at:new Date().toISOString(), by:(window.__ADMIN_EMAIL||"admin"), action, ...extra }].slice(-60)
+        }
+      };
+    }
+
+    function historyHtml(order){
+      const h = order?.details?.meta?.history;
+      if(!Array.isArray(h) || !h.length) return `<div class="muted-line">No history yet.</div>`;
+      return [...h].reverse().slice(0,25).map(x=>{
+        const at = x.at ? new Date(x.at).toLocaleString() : "";
+        const by = x.by || "admin";
+        const a  = x.action || "";
+        const extra = x.tracking ? ` • ${x.tracking}` : x.note ? ` • ${x.note}` : "";
+        return `<div class="muted-line">• ${escapeHtml(at)} — <strong>${escapeHtml(a)}</strong> (${escapeHtml(by)})${escapeHtml(extra)}</div>`;
+      }).join("");
+    }
+
+    // ────────────────────────────────────────────────
+    // ORDER HELPERS
+    // ────────────────────────────────────────────────
+    function getCustomer(order){ return order?.details?.customer || {}; }
+
+    function extrasLabel(item) {
+      const n = (item?.name || "").toLowerCase();
+      const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
+      const syringes = item?.syringes ? String(item.syringes).trim() : "";
+      if (n.includes("pen") && penHeads) return ` (Pen heads: ${penHeads})`;
+      if (n.includes("vial") && syringes) return ` (Syringes: ${syringes})`;
+      return "";
+    }
+
+    function buildItemsText(order) {
+      const items = order?.details?.items || [];
+      if (!items.length) return "Items not recorded.";
+      return items.map((i) => {
+        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+        return `${i.qty} × ${i.name}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+      }).join("\n");
+    }
+
+    function buildItemsHtml(order) {
+      const items = order?.details?.items || [];
+      if (!items.length) {
+        return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
+      }
+      const lines = items.map((i) => {
+        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+        return `${i.qty} × ${i.name}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+      }).join("\n");
+      return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
+    }
+
+    function buildAddressText(order){
+      const c = getCustomer(order);
+      const parts = [
+        c.name ? String(c.name).trim() : "",
+        c.address1 ? String(c.address1).trim() : "",
+        c.address2 ? String(c.address2).trim() : "",
+        c.city ? String(c.city).trim() : "",
+        c.postcode ? String(c.postcode).trim() : "",
+        c.phone ? `Phone: ${String(c.phone).trim()}` : ""
+      ].filter(Boolean);
+      return parts.join("\n");
+    }
+
+    function buildAddressHtml(order){
+      const c = getCustomer(order);
+      const hasAny = c && (c.address1 || c.city || c.postcode || c.name || c.phone || c.address2);
+      if(!hasAny){
+        return `<div class="items-box" style="margin-top:8px;"><strong>📍 Delivery address</strong><div class="muted-line">No address recorded.</div></div>`;
+      }
+      return `
+        <div class="items-box" style="margin-top:8px;">
+          <strong>📍 Delivery address</strong>
+          ${c.name ? `${escapeHtml(c.name)}\n` : ""}
+          ${c.address1 ? `${escapeHtml(c.address1)}\n` : ""}
+          ${c.address2 ? `${escapeHtml(c.address2)}\n` : ""}
+          ${c.city ? `${escapeHtml(c.city)}\n` : ""}
+          ${c.postcode ? `${escapeHtml(c.postcode)}\n` : ""}
+          ${c.phone ? `📞 ${escapeHtml(c.phone)}` : ""}
+        </div>
+      `;
+    }
+
+    function validateAddress(order){
+      const c = getCustomer(order);
+      const warnings = [];
+      const name = String(c.name || "").trim();
+      const a1 = String(c.address1 || "").trim();
+      const city = String(c.city || "").trim();
+      const pc = String(c.postcode || "").trim();
+      const email = String(c.email || order.customer_email || order.email || "").trim();
+      if(!name) warnings.push("Missing customer name");
+      if(!a1) warnings.push("Missing address line 1");
+      if(!city) warnings.push("Missing city");
+      if(!pc || pc.length < 5) warnings.push("Missing/short postcode");
+      if(!email) warnings.push("Missing email");
+      return warnings;
+    }
+
+    function confirmProceedWithWarnings(warnings, title="Proceed?"){
+      if(!warnings || warnings.length === 0) return true;
+      return confirm(`${title}\n\n⚠️ Issues found:\n- ${warnings.join("\n- ")}\n\nDo you still want to continue?`);
+    }
+
+    function openMailto(toEmail, subject, body){
+      const s = encodeURIComponent(subject || "");
+      const b = encodeURIComponent(body || "");
+      const to = encodeURIComponent(toEmail || "");
+      window.open(`mailto:${to}?subject=${s}&body=${b}`, "_blank");
+    }
+
+    function buildShippedEmailText(order){
+      const customer = order.details?.customer || {};
+      const ref = order.reference || order.id;
+      const items = buildItemsText(order);
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+      const tracking = String(order.details?.meta?.tracking_number || "").trim() || "Not provided";
+      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}\n\nThanks,\nLumina Weight`;
+    }
+
+    function buildPaidEmailText(order){
+      const customer = order.details?.customer || {};
+      const ref = order.reference || order.id;
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+      return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}\n\nThanks,\nLumina Weight`;
+    }
+
+    function buildCancelledEmailText(order){
+      const customer = order.details?.customer || {};
+      const ref = order.reference || order.id;
+      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina Weight`;
+    }
+
+    // ────────────────────────────────────────────────
+    // ✅ ADDED: "Tim Excel" export helpers (matches your sheet columns)
+    // Columns: Name | Address | Peptide | Mg Amount | Pen/Vial | H/S Quantity | Paid | Cost | Order Complete
+    // ────────────────────────────────────────────────
+    function classifyPeptide(itemName = "") {
+      const n = String(itemName).toLowerCase();
+      if (n.includes("tirz") || n.includes("tirzep")) return "Tirz";
+      if (n.includes("reta") || n.includes("retatr")) return "Reta";
+      if (n.includes("sema") || n.includes("semag")) return "Sema";
+      if (n.includes("cagri") || n.includes("cagril")) return "Cagril";
+      if (n.includes("tesa") || n.includes("tesam")) return "Tesa";
+      if (n.includes("nad")) return "NAD+";
+      if (n.includes("bpc") || n.includes("tb500") || n.includes("tb-500")) return "Bpc/Tp";
+      return "";
+    }
+
+    function extractMg(itemName = "") {
+      const m = String(itemName).match(/(\d+(?:\.\d+)?)\s*mg/i);
+      return m ? `${m[1]}mg` : "";
+    }
+
+    function penOrVial(item = {}) {
+      const n = String(item?.name || "").toLowerCase();
+      if (n.includes("pen")) return "Pen";
+      if (n.includes("vial")) return "Vial";
+      if (item?.pen_heads) return "Pen";
+      if (item?.syringes) return "Vial";
+      return "";
+    }
+
+    function buildOneLineAddress(order) {
+      const c = order?.details?.customer || {};
+      const parts = [c.address1, c.address2, c.city, c.postcode]
+        .map(x => String(x || "").trim())
+        .filter(Boolean);
+      return parts.join(", ");
+    }
+
+    function paidFlagFromStatus(status = "") {
+      const s = String(status).toLowerCase();
+      return (s === "paid" || s === "packed" || s === "shipped") ? "Y" : "";
+    }
+
+    function completeFlagFromStatus(status = "") {
+      const s = String(status).toLowerCase();
+      return (s === "shipped") ? "Y" : "";
+    }
+
+    function getOrdersByMode(mode = "all") {
+      let orders = Object.values(ordersCache || {});
+      if (mode === "selected") orders = orders.filter(o => selectedIds.has(o.id));
+      if (mode === "shipped") orders = orders.filter(o => String(o.status || "").toLowerCase() === "shipped");
+      return orders;
+    }
+
+    function buildTimExcelRows(mode = "all") {
+      const orders = getOrdersByMode(mode);
+      const rows = [];
+
+      for (const o of orders) {
+        const c = o?.details?.customer || {};
+        const name = String(c.name || o.customer_name || o.name || "").trim();
+        const address = buildOneLineAddress(o);
+        const paid = paidFlagFromStatus(o.status);
+        const complete = completeFlagFromStatus(o.status);
+        const total = Number(o.total_amount || 0);
+
+        const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+
+        if (!items.length) {
+          rows.push({
+            "Name": name,
+            "Address": address,
+            "Peptide": "",
+            "Mg Amount": "",
+            "Pen/Vial": "",
+            "H/S Quantity": "",
+            "Paid": paid,
+            "Cost": total,
+            "Order Complete": complete
+          });
+          continue;
+        }
+
+        for (const item of items) {
+          const pv = penOrVial(item);
+          const hsQty =
+            pv === "Pen" ? (item?.pen_heads ?? "") :
+            pv === "Vial" ? (item?.syringes ?? "") :
+            "";
+
+          rows.push({
+            "Name": name,
+            "Address": address,
+            "Peptide": classifyPeptide(item?.name),
+            "Mg Amount": extractMg(item?.name),
+            "Pen/Vial": pv,
+            "H/S Quantity": hsQty,
+            "Paid": paid,
+            "Cost": total,
+            "Order Complete": complete
+          });
+        }
+      }
+
+      return rows;
+    }
+
+    function exportTimExcel(mode = "all") {
+      if (!window.XLSX) return alert("XLSX library not loaded.");
+
+      const rows = buildTimExcelRows(mode);
+      const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+
+      const ws = XLSX.utils.json_to_sheet(rows, { header: headers });
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Orders");
+
+      XLSX.writeFile(wb, `lumina_orders_tim_format_${mode}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    async function copyTimExcelTsv(mode = "all") {
+      const rows = buildTimExcelRows(mode);
+      const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+
+      const esc = (v) => String(v ?? "").replace(/\r?\n/g, " ");
+      const tsv = [
+        headers.join("\t"),
+        ...rows.map(r => headers.map(h => esc(r[h])).join("\t"))
+      ].join("\n");
+
+      try {
+        await navigator.clipboard.writeText(tsv);
+        showToast("Copied ✅ Paste straight into Excel from A1", "success");
+      } catch (e) {
+        alert("Copy failed — browser blocked clipboard. Use the XLSX export instead.");
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // EXPORTS (CSV + JSON + XLSX)  (Improvement #10)
+    // ────────────────────────────────────────────────
+    function exportOrdersCsv(mode = "all") {
+      const rows = [];
+      const header = [
+        "Order ID","Reference","Created At","Status","Name","Email","Phone",
+        "Address 1","Address 2","City","Postcode","Tracking","Payment Reference",
+        "Total","Items","Admin Note"
+      ];
+      rows.push(header);
+
+      let orders = Object.values(ordersCache || {});
+      if(mode === "shipped") orders = orders.filter(o => String(o.status || "").toLowerCase() === "shipped");
+      if(mode === "selected") orders = orders.filter(o => selectedIds.has(o.id));
+
+      const csvSafe = (v) => `"${String(v ?? "").replaceAll('"', '""')}"`;
+
+      orders.forEach(order => {
+        const c = order?.details?.customer || {};
+        const created = order.created_at ? new Date(order.created_at).toISOString() : "";
+        const ref = order.reference || order.id || "";
+        const status = order.status || "Pending";
+        const email = c.email || order.customer_email || order.email || "";
+        const name  = c.name || order.customer_name || order.name || "";
+        const phone = c.phone || "";
+        const tracking = order.details?.meta?.tracking_number || "";
+        const payref = order.details?.meta?.payment_reference || "";
+        const note = order.details?.meta?.admin_note || "";
+        const total = Number(order.total_amount || 0).toFixed(2);
+
+        const itemsArr = order?.details?.items || [];
+        const itemsOneLine = itemsArr.map(i => {
+          const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+          const extras =
+            (String(i.name || "").toLowerCase().includes("pen") && i.pen_heads) ? ` (Pen heads: ${i.pen_heads})` :
+            (String(i.name || "").toLowerCase().includes("vial") && i.syringes) ? ` (Syringes: ${i.syringes})` : "";
+          return `${i.qty}x ${i.name}${extras} (£${lineTotal.toFixed(2)})`;
+        }).join(" | ");
+
+        rows.push([
+          order.id || "",
+          ref,
+          created,
+          status,
+          name,
+          email,
+          phone,
+          c.address1 || "",
+          c.address2 || "",
+          c.city || "",
+          c.postcode || "",
+          tracking,
+          payref,
+          total,
+          itemsOneLine,
+          note
+        ]);
+      });
+
+      const csv = rows.map(r => r.map(csvSafe).join(",")).join("\n");
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+
+      const filename =
+        mode === "shipped" ? `lumina_orders_shipped_${new Date().toISOString().slice(0,10)}.csv` :
+        mode === "selected" ? `lumina_orders_selected_${new Date().toISOString().slice(0,10)}.csv` :
+        `lumina_orders_all_${new Date().toISOString().slice(0,10)}.csv`;
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function exportOrdersJson(mode="all"){
+      let orders = Object.values(ordersCache || {});
+      if(mode==="shipped") orders = orders.filter(o=>String(o.status||"").toLowerCase()==="shipped");
+      if(mode==="selected") orders = orders.filter(o=>selectedIds.has(o.id));
+      const blob = new Blob([JSON.stringify(orders, null, 2)], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `lumina_orders_${mode}_${new Date().toISOString().slice(0,10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function exportOrdersXlsx(mode="all"){
+      if(!window.XLSX) return alert("XLSX library not loaded.");
+      let orders = Object.values(ordersCache || {});
+      if(mode==="shipped") orders = orders.filter(o=>String(o.status||"").toLowerCase()==="shipped");
+      if(mode==="selected") orders = orders.filter(o=>selectedIds.has(o.id));
+
+      const flat = orders.map(o=>{
+        const c = o.details?.customer || {};
+        return {
+          id: o.id,
+          reference: o.reference,
+          created_at: o.created_at,
+          status: o.status,
+          name: c.name,
+          email: c.email || o.customer_email || o.email,
+          phone: c.phone,
+          address1: c.address1,
+          address2: c.address2,
+          city: c.city,
+          postcode: c.postcode,
+          tracking: o.details?.meta?.tracking_number || "",
+          payment_reference: o.details?.meta?.payment_reference || "",
+          total: Number(o.total_amount || 0),
+          note: o.details?.meta?.admin_note || ""
+        };
+      });
+
+      const ws = XLSX.utils.json_to_sheet(flat);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Orders");
+      XLSX.writeFile(wb, `lumina_orders_${mode}_${new Date().toISOString().slice(0,10)}.xlsx`);
+    }
+
+    // ────────────────────────────────────────────────
+    // FILTERS + SEARCH (Improvement #8)
+    // ────────────────────────────────────────────────
+    function parseSearch(q){
+      const tokens = String(q||"").trim().split(/\s+/).filter(Boolean);
+      const filters = {};
+      const text = [];
+      for(const t of tokens){
+        const m = t.match(/^(\w+):(.+)$/);
+        if(m) filters[m[1].toLowerCase()] = m[2].toLowerCase();
+        else text.push(t.toLowerCase());
+      }
+      return { filters, text: text.join(" ").trim() };
+    }
+
+    function clearSearch(){
+      searchInput.value = "";
+      applyClientFilters();
+    }
+
+    function setStatusFilter(v){
+      statusFilter = v;
+      packQueueOnly = false;
+      currentPage = 0;
+      selectedIds.clear();
+      document.getElementById("select-all").checked = false;
+      loadOrders();
+    }
+
+    function togglePackQueue(){
+      packQueueOnly = !packQueueOnly;
+      if(packQueueOnly) statusFilter = "all";
+      currentPage = 0;
+      selectedIds.clear();
+      document.getElementById("select-all").checked = false;
+      loadOrders();
+    }
+
+    function applyClientFilters(){
+      renderOrdersFromCache();
+    }
+
+    searchInput.addEventListener("input", () => applyClientFilters());
+
+    function changePageSize(v){
+      PAGE_SIZE = Math.max(1, Number(v || 25));
+      currentPage = 0;
+      selectedIds.clear();
+      document.getElementById("select-all").checked = false;
+      loadOrders();
+    }
+
+    function prevPage(){
+      currentPage = Math.max(0, currentPage - 1);
+      selectedIds.clear();
+      document.getElementById("select-all").checked = false;
+      loadOrders();
+    }
+
+    function nextPage(){
+      const maxPage = Math.max(0, Math.ceil(totalCount / PAGE_SIZE) - 1);
+      currentPage = Math.min(maxPage, currentPage + 1);
+      selectedIds.clear();
+      document.getElementById("select-all").checked = false;
+      loadOrders();
+    }
+
+    function toggleSelectAll(checked){
+      if(!filteredOrderIds.length) return;
+      if(checked) filteredOrderIds.forEach(id => selectedIds.add(id));
+      else filteredOrderIds.forEach(id => selectedIds.delete(id));
+
+      filteredOrderIds.forEach(id => {
+        const cb = document.getElementById(`sel-${id}`);
+        if(cb) cb.checked = checked;
+      });
+    }
+
+    function toggleSelectOne(orderId, checked){
+      if(checked) selectedIds.add(orderId);
+      else selectedIds.delete(orderId);
+      const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+      document.getElementById("select-all").checked = allSelected;
+    }
+
+    // ────────────────────────────────────────────────
+    // COUNTS (Improvement #4)
+    // ────────────────────────────────────────────────
+    async function refreshStatusCounts(){
+      try{
+        const { count: allCount } = await supabaseClient.from("Orders").select("id", { count:"exact", head:true });
+
+        const statuses = ["Pending","Paid","Packed","Shipped","Cancelled"];
+        const counts = { all: allCount || 0 };
+
+        for(const s of statuses){
+          const { count } = await supabaseClient.from("Orders").select("id", { count:"exact", head:true }).eq("status", s);
+          counts[s.toLowerCase()] = count || 0;
+        }
+
+        const set = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent = String(val ?? 0); };
+        set("ctAll", counts.all);
+        set("ctPending", counts.pending);
+        set("ctPaid", counts.paid);
+        set("ctPacked", counts.packed);
+        set("ctShipped", counts.shipped);
+        set("ctCancelled", counts.cancelled);
+      }catch(e){
+        console.warn("refreshStatusCounts failed", e);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // KPI + QUICK STATS (Improvement #2)
+    // ────────────────────────────────────────────────
+    function renderKpis(){
+      const orders = Object.values(ordersCache || {});
+      const counts = { pending:0, paid:0, packed:0, shipped:0, cancelled:0 };
+
+      const now = new Date();
+      const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
+      const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
+
+      let revWeek = 0, revMonth = 0;
+
+      for(const o of orders){
+        const s = String(o.status || "Pending").toLowerCase();
+        if(s === "paid") counts.paid++;
+        else if(s === "packed") counts.packed++;
+        else if(s === "shipped") counts.shipped++;
+        else if(s === "cancelled") counts.cancelled++;
+        else counts.pending++;
+
+        const created = o.created_at ? new Date(o.created_at) : null;
+        const amt = Number(o.total_amount || 0);
+        if(created && created >= weekAgo) revWeek += amt;
+        if(created && created >= monthAgo) revMonth += amt;
+      }
+
+      kpiBar.innerHTML = `
+        <div class="kpi-pill">Pending <span>${counts.pending}</span></div>
+        <div class="kpi-pill" style="background:#16a34a;">Paid <span>${counts.paid}</span></div>
+        <div class="kpi-pill" style="background:#64748b;">Packed <span>${counts.packed}</span></div>
+        <div class="kpi-pill" style="background:#2563eb;">Shipped <span>${counts.shipped}</span></div>
+        <div class="kpi-pill" style="background:#dc2626;">Cancelled <span>${counts.cancelled}</span></div>
+        <div class="kpi-pill" style="background:#111827;">Rev 7d <span>£${revWeek.toFixed(2)}</span></div>
+        <div class="kpi-pill" style="background:#111827;">Rev 30d <span>£${revMonth.toFixed(2)}</span></div>
+      `;
+    }
+
+    function renderQuickStats(){
+      const el = quickStatsEl;
+      if(!el) return;
+
+      const orders = Object.values(ordersCache || {});
+      const now = new Date();
+      const startToday = new Date(now); startToday.setHours(0,0,0,0);
+
+      const todaysOrders = orders.filter(o => o.created_at && new Date(o.created_at) >= startToday).length;
+      const awaitingPayment = orders.filter(o => String(o.status||"Pending").toLowerCase()==="pending").length;
+      const toPack = orders.filter(o => String(o.status||"").toLowerCase()==="paid").length;
+      const shippedToday = orders.filter(o => {
+        const s = String(o.status||"").toLowerCase();
+        const at = o.details?.meta?.shipped_at || null;
+        return s==="shipped" && at && new Date(at) >= startToday;
+      }).length;
+
+      el.innerHTML = `
+        <div class="kpi-pill" style="background:#111827;">Today <span>${todaysOrders}</span></div>
+        <div class="kpi-pill" style="background:#f59e0b;">Awaiting pay <span>${awaitingPayment}</span></div>
+        <div class="kpi-pill" style="background:#16a34a;">To pack <span>${toPack}</span></div>
+        <div class="kpi-pill" style="background:#2563eb;">Shipped today <span>${shippedToday}</span></div>
+      `;
+    }
+
+    // ────────────────────────────────────────────────
+    // SAVE HELPERS (tracking inline edit - Improvement #3)
+    // ────────────────────────────────────────────────
+    async function saveTrackingToOrder(orderId, trackingNumber){
+      const order = ordersCache[orderId];
+      if(!order) throw new Error("Order not found in cache");
+
+      const details = order.details || {};
+      const meta = details.meta || {};
+
+      const session = await supabaseClient.auth.getSession();
+      const who = session?.data?.session?.user?.email || "admin";
+
+      const updatedDetails = {
+        ...details,
+        meta: {
+          ...meta,
+          tracking_number: String(trackingNumber || "").trim(),
+          tracking_added_at: new Date().toISOString(),
+          tracking_added_by: who
+        }
+      };
+
+      const { error } = await supabaseClient.from("Orders").update({ details: updatedDetails }).eq("id", orderId);
+      if(error) throw error;
+
+      ordersCache[orderId].details = updatedDetails;
+    }
+
+    async function saveTrackingFromInput(orderId){
+      const input = document.getElementById(`trk-${orderId}`);
+      const val = String(input?.value || "").trim();
+
+      setBusy(true, "Saving tracking…", orderId);
+      try{
+        if(val){
+          await saveTrackingToOrder(orderId, val);
+
+          const o = ordersCache[orderId];
+          const updatedDetails = pushHistory(o, "tracking_saved", { tracking: val });
+
+          const { error } = await supabaseClient.from("Orders").update({ details: updatedDetails }).eq("id", orderId);
+          if(error) throw error;
+
+          ordersCache[orderId].details = updatedDetails;
+        }
+        showToast("Tracking saved ✅", "success");
+        applyClientFilters();
+      }catch(e){
+        console.error(e);
+        showToast("Tracking save failed", "danger");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // NOTES + PAYMENT REF
+    // ────────────────────────────────────────────────
+    async function saveAdminNote(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const ta = document.getElementById(`note-${orderId}`);
+      const val = String(ta?.value || "").trim();
+
+      const details = order.details || {};
+      const meta = details.meta || {};
+
+      const session = await supabaseClient.auth.getSession();
+      const who = session?.data?.session?.user?.email || "admin";
+
+      let updatedDetails = {
+        ...details,
+        meta: {
+          ...meta,
+          admin_note: val,
+          admin_note_updated_at: new Date().toISOString(),
+          admin_note_updated_by: who
+        }
+      };
+      updatedDetails = pushHistory({ ...order, details: updatedDetails }, "note_saved", { note: (val || "").slice(0,80) });
+
+      const { error } = await supabaseClient.from("Orders").update({ details: updatedDetails }).eq("id", orderId);
+      if(error){ console.error(error); return alert("Note save failed."); }
+
+      ordersCache[orderId].details = updatedDetails;
+      showToast("Note saved ✅", "success");
+      applyClientFilters();
+    }
+
+    async function savePaymentRef(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const input = document.getElementById(`payref-${orderId}`);
+      const val = String(input?.value || "").trim();
+
+      const details = order.details || {};
+      const meta = details.meta || {};
+
+      const session = await supabaseClient.auth.getSession();
+      const who = session?.data?.session?.user?.email || "admin";
+
+      let updatedDetails = {
+        ...details,
+        meta: {
+          ...meta,
+          payment_reference: val,
+          payment_reference_updated_at: new Date().toISOString(),
+          payment_reference_updated_by: who
+        }
+      };
+      updatedDetails = pushHistory({ ...order, details: updatedDetails }, "payment_ref_saved", { note: val });
+
+      const { error } = await supabaseClient.from("Orders").update({ details: updatedDetails }).eq("id", orderId);
+      if(error){ console.error(error); return alert("Payment reference save failed."); }
+
+      ordersCache[orderId].details = updatedDetails;
+      showToast("Payment reference saved ✅", "success");
+      applyClientFilters();
+    }
+
+    // ────────────────────────────────────────────────
+    // STATUS / ACTIONS
+    // ────────────────────────────────────────────────
+    async function updateStatus(id, value) {
+      const order = ordersCache[id];
+      if(!order) return;
+
+      const session = await supabaseClient.auth.getSession();
+      const who = session?.data?.session?.user?.email || "admin";
+
+      let updatedDetails = order.details || {};
+      updatedDetails = pushHistory({ ...order, details: updatedDetails }, "status_changed", { note: String(value || "") });
+      updatedDetails = {
+        ...updatedDetails,
+        meta: { ...(updatedDetails.meta || {}), status_changed_at: new Date().toISOString(), status_changed_by: who }
+      };
+
+      const { error } = await supabaseClient.from("Orders").update({ status: value, details: updatedDetails }).eq("id", id);
+      if (error) {
+        alert("Update failed – check Supabase policy");
+        console.error(error);
+        return;
+      }
+
+      ordersCache[id].status = value;
+      ordersCache[id].details = updatedDetails;
+      loadOrders();
+    }
+
+    async function copyAddressById(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const text = buildAddressText(order);
+      if(!text.trim()) return alert("No address found on this order.");
+
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Address copied ✅", "success");
+      }catch(e){
+        alert("Copy failed — browser blocked it.");
+      }
+    }
+
+    function printPackingSlipById(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const c = getCustomer(order);
+      const ref = order.reference || order.id;
+      const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+      const status = order.status || "Pending";
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+
+      const items = (order?.details?.items || []).map(i=>{
+        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+        return `
+          <tr>
+            <td style="padding:8px; border-bottom:1px solid #ddd;">${escapeHtml(i.qty)} × ${escapeHtml(i.name)}${escapeHtml(extrasLabel(i))}</td>
+            <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;">£${lineTotal.toFixed(2)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      const w = window.open("", "_blank", "width=800,height=900");
+      if(!w) return alert("Popup blocked — allow popups then try again.");
+
+      w.document.open();
+      w.document.write(`
+        <!doctype html>
+        <html><head><meta charset="utf-8"><title>Packing Slip ${escapeHtml(ref)}</title>
+        <style>
+          body{ font-family: system-ui, -apple-system, Segoe UI, sans-serif; padding:24px; color:#111; }
+          .top{ display:flex; justify-content:space-between; gap:16px; }
+          .box{ border:1px solid #ddd; border-radius:12px; padding:14px; }
+          h1{ margin:0 0 8px; font-size:20px; }
+          .muted{ color:#666; font-size:12px; margin-top:4px; }
+          table{ width:100%; border-collapse:collapse; margin-top:16px; }
+          .right{ text-align:right; }
+          .big{ font-size:18px; font-weight:800; }
+          @media print{ button{ display:none; } body{ padding:0; } }
+        </style></head><body>
+          <div class="top">
+            <div class="box" style="flex:1;">
+              <h1>Lumina Weight — Packing Slip</h1>
+              <div><strong>Order Ref:</strong> ${escapeHtml(ref)}</div>
+              <div><strong>Date:</strong> ${escapeHtml(created)}</div>
+              <div><strong>Status:</strong> ${escapeHtml(status)}</div>
+              <div class="muted">Internal use only</div>
+            </div>
+            <div class="box" style="flex:1;">
+              <div style="font-weight:800; margin-bottom:6px;">Ship to</div>
+              <div>${c.name ? escapeHtml(c.name) + "<br>" : ""}</div>
+              <div>${c.address1 ? escapeHtml(c.address1) + "<br>" : ""}</div>
+              <div>${c.address2 ? escapeHtml(c.address2) + "<br>" : ""}</div>
+              <div>${c.city ? escapeHtml(c.city) + "<br>" : ""}</div>
+              <div>${c.postcode ? escapeHtml(c.postcode) + "<br>" : ""}</div>
+              <div>${c.phone ? "📞 " + escapeHtml(c.phone) : ""}</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th style="text-align:left; padding:8px; border-bottom:2px solid #111;">Items</th>
+                <th style="text-align:right; padding:8px; border-bottom:2px solid #111;">Line total</th>
+              </tr>
+            </thead>
+            <tbody>${items || `<tr><td style="padding:8px;">No items recorded</td><td></td></tr>`}</tbody>
+          </table>
+
+          <div style="display:flex; justify-content:flex-end; margin-top:14px;">
+            <div class="box" style="min-width:260px;">
+              <div class="right">Total</div>
+              <div class="right big">${escapeHtml(total)}</div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px;"><button onclick="window.print()">Print</button></div>
+        </body></html>
+      `);
+      w.document.close();
+      w.focus();
+      w.print();
+    }
+
+    async function markPackedById(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const warnings = validateAddress(order).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+      if(!confirmProceedWithWarnings(warnings, "Mark as PACKED?")) return;
+      if(!confirm("Mark this order as PACKED?")) return;
+
+      setBusy(true, "Updating…", "Marking packed");
+      try{
+        let updatedDetails = order.details || {};
+        updatedDetails = pushHistory({ ...order, details: updatedDetails }, "status_packed");
+
+        const { error } = await supabaseClient.from("Orders").update({ status: "Packed", details: updatedDetails }).eq("id", orderId);
+        if(error){ console.error(error); alert("Packed update failed."); return; }
+
+        ordersCache[orderId].status = "Packed";
+        ordersCache[orderId].details = updatedDetails;
+        showToast("Packed ✅", "success");
+        loadOrders();
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // EMAILJS (basic)
+    // ────────────────────────────────────────────────
+    function sendShippedEmail(order, trackingNumber) {
+      if (!order || !window.emailjs) return;
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      const customerName = customer.name || order.customer_name || order.name || "Customer";
+      if (!toEmail) { alert("No email found on this order."); return; }
+
+      const ref   = order.reference || order.id;
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+      const items = buildItemsText(order);
+      const tracking =
+        String(trackingNumber || "").trim() ||
+        String(order.details?.meta?.tracking_number || "").trim() ||
+        "Not provided";
+
+      return emailjs.send("service_i5zi096", "template_shipped", {
+        email: toEmail,
+        customer_name: customerName,
+        order_reference: ref,
+        order_items: items,
+        order_total: total,
+        tracking_number: tracking
+      });
+    }
+
+    function sendCancelledEmail(order) {
+      if (!order || !window.emailjs) return;
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      const customerName = customer.name || order.customer_name || order.name || "Customer";
+      if (!toEmail) { alert("No email found on this order."); return; }
+
+      const ref = order.reference || order.id;
+      const orderDate = order.created_at ? new Date(order.created_at).toLocaleString() : new Date().toLocaleString();
+
+      return emailjs.send("service_i5zi096", "template_cancelled", {
+        email: toEmail,
+        customer_name: customerName,
+        order_ref: ref,
+        order_date: orderDate
+      });
+    }
+
+    function sendPaidEmail(order) {
+      if (!order || !window.emailjs) return;
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      const customerName = customer.name || order.customer_name || order.name || "Customer";
+      if (!toEmail) { alert("No email found on this order."); return; }
+
+      const ref = order.reference || order.id;
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+
+      return emailjs.send("service_i5zi096", "template_paid", {
+        email: toEmail,
+        customer_name: customerName,
+        order_ref: ref,
+        order_total: total
+      });
+    }
+
+    function sendPayBefore3pmEmail(order){
+      if (!order || !window.emailjs) return;
+      const customer = order.details?.customer || {};
+      const toEmail = customer.email || order.customer_email || order.email || "";
+      const customerName = customer.name || order.customer_name || order.name || "Customer";
+      const ref = order.reference || order.id;
+      const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
+      if (!toEmail) { alert("No email found on this order."); return; }
+      const TEMPLATE_ID = "template_paybefore3pm";
+      return emailjs.send("service_i5zi096", TEMPLATE_ID, {
+        email: toEmail,
+        customer_name: customerName,
+        order_ref: ref,
+        order_total: total
+      });
+    }
+
+    // ────────────────────────────────────────────────
+    // BUTTON HANDLERS
+    // ────────────────────────────────────────────────
+    async function sendShippedEmailById(orderId) {
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+
+      const addrWarnings = validateAddress(order).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+      if(!confirmProceedWithWarnings(addrWarnings, "Send SHIPPED email + mark as SHIPPED?")) return;
+      if (!confirm("Send SHIPPED email to customer and mark as SHIPPED?")) return;
+
+      const input = document.getElementById(`trk-${orderId}`);
+      const trackingClean = String(input?.value || order.details?.meta?.tracking_number || "").trim();
+
+      setBusy(true, "Shipping…", `Order ${order.reference || order.id}`);
+      try {
+        if (trackingClean) await saveTrackingToOrder(orderId, trackingClean);
+
+        try{
+          await sendShippedEmail(ordersCache[orderId], trackingClean);
+        }catch(emailErr){
+          console.error("EmailJS failed, offering mailto fallback", emailErr);
+          const customer = ordersCache[orderId].details?.customer || {};
+          const toEmail = customer.email || ordersCache[orderId].customer_email || ordersCache[orderId].email || "";
+          if(toEmail){
+            const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+            if(ok){
+              openMailto(toEmail, `Your order ${ordersCache[orderId].reference || ordersCache[orderId].id} has shipped`, buildShippedEmailText(ordersCache[orderId]));
+            }
+          }
+        }
+
+        const session = await supabaseClient.auth.getSession();
+        const who = session?.data?.session?.user?.email || "admin";
+
+        let updatedDetails = pushHistory(ordersCache[orderId], "status_shipped", { tracking: trackingClean });
+        updatedDetails = {
+          ...updatedDetails,
+          meta: { ...(updatedDetails.meta || {}), shipped_at: new Date().toISOString(), shipped_by: who }
+        };
+
+        const { error } = await supabaseClient.from("Orders").update({ status: "Shipped", details: updatedDetails }).eq("id", orderId);
+        if (error) { console.error(error); alert("Status update failed — check Supabase policies."); return; }
+
+        ordersCache[orderId].status = "Shipped";
+        ordersCache[orderId].details = updatedDetails;
+
+        showToast("Shipped ✅", "success");
+        loadOrders();
+      } catch (e) {
+        console.error("Shipped flow failed", e);
+        alert("Shipped flow failed — check console.");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function sendPayBefore3pmById(orderId){
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+      if (!confirm("Send 'Pay before 3PM for next day delivery' reminder email?")) return;
+
+      setBusy(true, "Sending reminder…", order.reference || order.id);
+      try{
+        await sendPayBefore3pmEmail(order);
+        showToast("Reminder sent ✅", "success");
+      }catch(e){
+        console.error("Reminder email failed", e);
+        const customer = order.details?.customer || {};
+        const toEmail = customer.email || order.customer_email || order.email || "";
+        if(toEmail){
+          const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+          if(ok){
+            openMailto(toEmail, `Reminder: pay before 3PM for next day delivery (${order.reference || order.id})`,
+              `Hi ${customer.name || "there"},\n\nJust a quick reminder: if payment is made before 3PM, we can dispatch for next day delivery.\n\nOrder: ${order.reference || order.id}\nTotal: £${Number(order.total_amount || 0).toFixed(2)}\n\nThanks,\nLumina Weight`
+            );
+          }
+        }
+        alert("Reminder email failed — check console");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    async function sendCancelledEmailById(orderId) {
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+      if (!confirm("Send CANCELLED email to customer?")) return;
+
+      setBusy(true, "Sending cancelled email…", order.reference || order.id);
+      try {
+        await sendCancelledEmail(order);
+        showToast("Cancelled email sent ✅", "success");
+      } catch (e) {
+        console.error("Cancelled email failed", e);
+        const customer = order.details?.customer || {};
+        const toEmail = customer.email || order.customer_email || order.email || "";
+        if(toEmail){
+          const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+          if(ok){
+            openMailto(toEmail, `Your order ${order.reference || order.id} was cancelled`, buildCancelledEmailText(order));
+          }
+        }
+        alert("Cancelled email failed — check console");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function markPaidAndSendById(orderId) {
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+      if (!confirm("Confirm PAYMENT RECEIVED and email customer?")) return;
+
+      setBusy(true, "Marking paid…", order.reference || order.id);
+      try {
+        try{
+          await sendPaidEmail(order);
+        }catch(emailErr){
+          console.error("Paid email failed", emailErr);
+          const customer = order.details?.customer || {};
+          const toEmail = customer.email || order.customer_email || order.email || "";
+          if(toEmail){
+            const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+            if(ok){
+              openMailto(toEmail, `Payment received (${order.reference || order.id})`, buildPaidEmailText(order));
+            }
+          }
+        }
+
+        let updatedDetails = pushHistory(order, "status_paid");
+        const session = await supabaseClient.auth.getSession();
+        const who = session?.data?.session?.user?.email || "admin";
+        updatedDetails = {
+          ...updatedDetails,
+          meta: { ...(updatedDetails.meta || {}), paid_confirmed_at: new Date().toISOString(), paid_confirmed_by: who }
+        };
+
+        const { error } = await supabaseClient.from("Orders").update({ status: "Paid", details: updatedDetails }).eq("id", orderId);
+        if (error) { console.error(error); alert("Status update failed — check Supabase policies."); return; }
+
+        ordersCache[orderId].status = "Paid";
+        ordersCache[orderId].details = updatedDetails;
+
+        showToast("Marked paid ✅", "success");
+        loadOrders();
+      } catch (e) {
+        console.error("Payment flow failed", e);
+        alert("Payment flow failed — check console");
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function cancelAndRestockById(orderId){
+      alert("Cancel+Restock is in your original version. If you want it included here too, paste your latest working cancel+restock function and I’ll merge it cleanly.");
+    }
+
+    // ────────────────────────────────────────────────
+    // BULK ACTIONS
+    // ────────────────────────────────────────────────
+    async function bulkMarkPacked(){
+      const ids = Array.from(selectedIds);
+      if(!ids.length) return alert("No orders selected.");
+      if(!confirm(`Mark ${ids.length} order(s) as PACKED?`)) return;
+
+      setBusy(true, "Bulk updating…", `Updating 0/${ids.length}`);
+      let okCount = 0;
+
+      try{
+        for(const id of ids){
+          const o = ordersCache[id];
+          if(!o) continue;
+
+          let updatedDetails = pushHistory(o, "status_packed");
+          const { error } = await supabaseClient.from("Orders").update({ status:"Packed", details: updatedDetails }).eq("id", id);
+          if(error) throw error;
+
+          ordersCache[id].status = "Packed";
+          ordersCache[id].details = updatedDetails;
+
+          okCount++;
+          document.getElementById("busyMeta").textContent = `Updated ${okCount}/${ids.length}`;
+        }
+        showToast(`Done ✅ Updated ${okCount}/${ids.length}`, "success");
+        selectedIds.clear();
+        loadOrders();
+      }catch(e){
+        console.error("Bulk packed failed", e);
+        alert("Bulk packed failed — check console.");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    async function bulkMarkShippedNoEmail(){
+      const ids = Array.from(selectedIds);
+      if(!ids.length) return alert("No orders selected.");
+      if(!confirm(`Mark ${ids.length} order(s) as SHIPPED (no emails)?`)) return;
+
+      setBusy(true, "Bulk updating…", `Updated 0/${ids.length}`);
+      let okCount = 0;
+
+      try{
+        const session = await supabaseClient.auth.getSession();
+        const who = session?.data?.session?.user?.email || "admin";
+
+        for(const id of ids){
+          const o = ordersCache[id];
+          if(!o) continue;
+
+          let updatedDetails = pushHistory(o, "status_shipped_bulk", { note:"no-email" });
+          updatedDetails = {
+            ...updatedDetails,
+            meta: { ...(updatedDetails.meta||{}), shipped_at:new Date().toISOString(), shipped_by: who }
+          };
+
+          const { error } = await supabaseClient.from("Orders").update({ status:"Shipped", details: updatedDetails }).eq("id", id);
+          if(error) throw error;
+
+          ordersCache[id].status = "Shipped";
+          ordersCache[id].details = updatedDetails;
+
+          okCount++;
+          document.getElementById("busyMeta").textContent = `Updated ${okCount}/${ids.length}`;
+        }
+        showToast(`Done ✅ Updated ${okCount}/${ids.length}`, "success");
+        selectedIds.clear();
+        loadOrders();
+      }catch(e){
+        console.error("Bulk shipped failed", e);
+        alert("Bulk shipped failed — check console.");
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    async function bulkCopyAddresses(){
+      const ids = Array.from(selectedIds);
+      if(!ids.length) return alert("No orders selected.");
+
+      const text = ids.map(id => {
+        const o = ordersCache[id];
+        if(!o) return "";
+        const ref = o.reference || o.id;
+        const addr = buildAddressText(o);
+        return `--- ${ref} ---\n${addr || "(No address)"}\n`;
+      }).filter(Boolean).join("\n");
+
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Addresses copied ✅", "success");
+      }catch(e){
+        console.error("Copy failed", e);
+        alert("Copy failed — your browser blocked it.");
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // RENDER
+    // ────────────────────────────────────────────────
+    function renderOrdersFromCache(){
+      const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+
+      const parsed = parseSearch(searchInput.value);
+      const qText = parsed.text;
+      const qFilters = parsed.filters;
+
+      const fltOlder24 = document.getElementById("flt-older24").checked;
+      const fltNoAddr = document.getElementById("flt-noaddr").checked;
+      const fltNoEmail = document.getElementById("flt-noemail").checked;
+      const fltNoTracking = document.getElementById("flt-notracking").checked;
+
+      const now = new Date();
+      const cutoff24 = new Date(now); cutoff24.setHours(now.getHours() - 24);
+
+      let list = orders;
+
+      if(statusFilter !== "all"){
+        const sf = String(statusFilter || "").toLowerCase();
+        list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
+      }
+
+      if(packQueueOnly){
+        list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
+      }
+
+      if(fltOlder24){
+        list = list.filter(o => {
+          const s = String(o.status || "").toLowerCase();
+          const created = o.created_at ? new Date(o.created_at) : null;
+          return (s === "pending") && created && created < cutoff24;
+        });
+      }
+
+      if(fltNoAddr){
+        list = list.filter(o => {
+          const c = getCustomer(o);
+          return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
+        });
+      }
+
+      if(fltNoEmail){
+        list = list.filter(o => {
+          const c = getCustomer(o);
+          const email = c.email || o.customer_email || o.email || "";
+          return !String(email || "").trim();
+        });
+      }
+
+      if(fltNoTracking){
+        list = list.filter(o => {
+          const s = String(o.status || "").toLowerCase();
+          if(s !== "shipped") return false;
+          const t = o.details?.meta?.tracking_number;
+          return !String(t || "").trim();
+        });
+      }
+
+      if(qText || Object.keys(qFilters).length){
+        list = list.filter(o=>{
+          const ref = String(o.reference || o.id || "").toLowerCase();
+          const c = getCustomer(o);
+          const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
+          const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
+          const pc = String(c.postcode || "").toLowerCase();
+          const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
+          const st = String(o.status || "Pending").toLowerCase();
+
+          if(qFilters.status && st !== qFilters.status) return false;
+          if(qFilters.email && !email.includes(qFilters.email)) return false;
+
+          if(qFilters.tracking){
+            if(qFilters.tracking === "missing" && tracking.trim()) return false;
+            if(qFilters.tracking !== "missing" && !tracking.includes(qFilters.tracking)) return false;
+          }
+
+          if(!qText) return true;
+          return ref.includes(qText) || name.includes(qText) || email.includes(qText) || pc.includes(qText) || tracking.includes(qText);
+        });
+      }
+
+      filteredOrderIds = list.map(o => o.id);
+
+      const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+      document.getElementById("select-all").checked = allSelected;
+
+      statusEl.textContent = `${list.length} order(s) shown`;
+
+      ordersEl.innerHTML = list.map((order) => {
+        const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+        const ref = order.reference || order.id;
+        const status = order.status || "Pending";
+
+        const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
+        const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
+        const total = Number(order.total_amount || 0).toFixed(2);
+
+        const statusLower = String(status || "").toLowerCase();
+        const isPaid = statusLower === "paid";
+        const isCancelled = statusLower === "cancelled";
+        const isShipped = statusLower === "shipped";
+
+        const tracking = String(order.details?.meta?.tracking_number || "").trim();
+        const payref   = String(order.details?.meta?.payment_reference || "").trim();
+        const note     = String(order.details?.meta?.admin_note || "").trim();
+
+        const isSelected = selectedIds.has(order.id);
+
+        return `
+          <div class="order-card">
+            <div class="d-flex justify-content-between align-items-start">
+              <div style="flex:1; padding-right:14px;">
+
+                <div class="d-flex align-items-center gap-2 mb-2">
+                  <input id="sel-${order.id}" class="form-check-input" type="checkbox"
+                    ${isSelected ? "checked" : ""}
+                    onchange="toggleSelectOne('${order.id}', this.checked)">
+                  <div>
+                    <strong>${escapeHtml(ref)}</strong><br>
+                    <small>${escapeHtml(created)}</small><br>
+                    <small>${escapeHtml(name)} — ${escapeHtml(email)}</small>
+                  </div>
+                </div>
+
+                <div class="accordion mt-2" id="acc-${order.id}">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="acc-h-${order.id}">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-c-${order.id}">
+                        Order details
+                      </button>
+                    </h2>
+                    <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
+                      <div class="accordion-body">
+
+                        <div class="items-box" style="margin-top:0;">
+                          <strong>📦 Tracking number</strong>
+                          <div class="d-flex gap-2 flex-wrap">
+                            <input id="trk-${order.id}" class="form-control form-control-sm small-input"
+                              placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
+                            <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
+                          </div>
+                          <div class="muted-line mt-1">Tip: save tracking first, then send shipped email.</div>
+                        </div>
+
+                        ${buildAddressHtml(order)}
+                        ${buildItemsHtml(order)}
+
+                        <div class="items-box" style="margin-top:8px;">
+                          <strong>💷 Payment reference (internal)</strong>
+                          <div class="d-flex gap-2 flex-wrap">
+                            <input id="payref-${order.id}" class="form-control form-control-sm small-input"
+                              placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
+                            <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
+                          </div>
+                        </div>
+
+                        <div class="items-box" style="margin-top:8px;">
+                          <strong>📝 Admin notes</strong>
+                          <textarea id="note-${order.id}" class="form-control note-area"
+                            placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
+                          <div class="d-flex justify-content-end mt-2">
+                            <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
+                          </div>
+                        </div>
+
+                        <div class="items-box" style="margin-top:8px;">
+                          <strong>🕒 Timeline</strong>
+                          ${historyHtml(order)}
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="text-end" style="min-width: 280px;">
+                <div class="mb-1">${badge(status)}</div>
+                <div class="fw-bold">£${escapeHtml(total)}</div>
+
+                <select class="form-select form-select-sm mt-2" onchange="updateStatus('${order.id}', this.value)">
+                  <option ${status === "Pending" ? "selected" : ""}>Pending</option>
+                  <option ${status === "Paid" ? "selected" : ""}>Paid</option>
+                  <option ${status === "Packed" ? "selected" : ""}>Packed</option>
+                  <option ${status === "Shipped" ? "selected" : ""}>Shipped</option>
+                  <option ${status === "Cancelled" ? "selected" : ""}>Cancelled</option>
+                </select>
+
+                <div class="mini-actions">
+                  <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
+                  <button class="btn btn-sm btn-outline-secondary" onclick="printPackingSlipById('${order.id}')">🖨️ Print slip</button>
+                  <button class="btn btn-sm btn-secondary" onclick="markPackedById('${order.id}')">✅ Mark Packed</button>
+                  <button class="btn btn-sm btn-outline-purple" onclick="copyTimExcelTsvOne('${order.id}')">
+  📋 Copy (Excel row)
+</button>
+                </div>
+
+                <div class="btn-row">
+                  <button class="btn btn-sm btn-success" ${isPaid ? "disabled" : ""} onclick="markPaidAndSendById('${order.id}')">
+                    💷 Send Payment Received
+                  </button>
+
+                  <button class="btn btn-sm btn-warning" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">
+                    ⏰ 3PM Pay Reminder
+                  </button>
+
+                  <button class="btn btn-sm btn-primary" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendShippedEmailById('${order.id}')">
+                    📦 Send Shipped Email
+                  </button>
+
+                  <button class="btn btn-sm btn-outline-primary"
+                    onclick="openMailto(
+                      '${escapeHtml(order.details?.customer?.email || order.customer_email || order.email || "")}',
+                      'Your order ${escapeHtml(ref)} has shipped',
+                      buildShippedEmailText(ordersCache['${order.id}'])
+                    )">
+                    ✉️ Mailto Shipped
+                  </button>
+
+                  <button class="btn btn-sm btn-danger" onclick="sendCancelledEmailById('${order.id}')">
+                    ❌ Send Cancelled Email
+                  </button>
+
+                  <button class="btn btn-sm btn-outline-danger" ${isCancelled ? "disabled" : ""} onclick="cancelAndRestockById('${order.id}')">
+                    ↩️ Cancel + Restock
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+    async function copyTimExcelTsvOne(orderId){
+  const o = ordersCache[orderId];
+  if(!o) return alert("Order not found.");
+
+  // Build rows for just this order (one per item)
+  const tempCache = { [orderId]: o };
+  const original = ordersCache[orderId];
+
+  // Reuse existing builders
+  const rows = (() => {
+    const c = o?.details?.customer || {};
+    const name = String(c.name || o.customer_name || o.name || "").trim();
+    const address = buildOneLineAddress(o);
+    const paid = paidFlagFromStatus(o.status);
+    const complete = completeFlagFromStatus(o.status);
+    const total = Number(o.total_amount || 0);
+
+    const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+    const out = [];
+
+    if(!items.length){
+      out.push({
+        "Name": name, "Address": address, "Peptide": "", "Mg Amount": "",
+        "Pen/Vial": "", "H/S Quantity": "", "Paid": paid, "Cost": total, "Order Complete": complete
+      });
+      return out;
+    }
+
+    for(const item of items){
+      const pv = penOrVial(item);
+      const hsQty =
+        pv === "Pen" ? (item?.pen_heads ?? "") :
+        pv === "Vial" ? (item?.syringes ?? "") :
+        "";
+
+      out.push({
+        "Name": name,
+        "Address": address,
+        "Peptide": classifyPeptide(item?.name),
+        "Mg Amount": extractMg(item?.name),
+        "Pen/Vial": pv,
+        "H/S Quantity": hsQty,
+        "Paid": paid,
+        "Cost": total,
+        "Order Complete": complete
+      });
+    }
+    return out;
+  })();
+
+  const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+  const esc = (v) => String(v ?? "").replace(/\r?\n/g, " ");
+  const tsv = rows.map(r => headers.map(h => esc(r[h])).join("\t")).join("\n");
+
+  try{
+    await navigator.clipboard.writeText(tsv);
+    showToast("Copied ✅ Paste into Excel", "success");
+  }catch(e){
+    alert("Copy failed — browser blocked clipboard. Use the XLSX export instead.");
+  }
+}
+
+    // ────────────────────────────────────────────────
+    // LOAD ORDERS (paginated server-side)
+    // ────────────────────────────────────────────────
+    async function loadOrders() {
+      statusEl.textContent = "Loading orders…";
+
+      const from = currentPage * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      let q = supabaseClient
+        .from("Orders")
+        .select("*", { count: "exact" })
+        .order("created_at", { ascending: false });
+
+      if(statusFilter !== "all") q = q.eq("status", statusFilter);
+      if(packQueueOnly) q = q.eq("status", "Paid");
+
+      q = q.range(from, to);
+
+      const { data: orders, error, count } = await q;
+
+      if (error) {
+        statusEl.textContent = "Could not load orders.";
+        console.error(error);
+        return;
+      }
+
+      totalCount = Number(count || 0);
+      const maxPage = Math.max(0, Math.ceil(totalCount / PAGE_SIZE) - 1);
+      pageIndicator.textContent = `Page ${currentPage + 1} of ${maxPage + 1} • Total: ${totalCount}`;
+
+      if(!window.__ALL_LOADED){
+        for(const k of Object.keys(ordersCache)) delete ordersCache[k];
+      }
+
+      if (!orders || orders.length === 0) {
+        statusEl.textContent = "No orders found.";
+        ordersEl.innerHTML = "";
+        renderKpis();
+        renderQuickStats();
+        refreshStatusCounts();
+        return;
+      }
+
+      for (const o of orders) ordersCache[o.id] = o;
+
+      renderKpis();
+      renderQuickStats();
+      refreshStatusCounts();
+      renderOrdersFromCache();
+    }
+
+    async function loadAllOrdersForSearch(){
+      if(!confirm("Load ALL orders into this page for full search/export? This can be slower if you have loads.")) return;
+
+      statusEl.textContent = "Loading all orders…";
+      window.__ALL_LOADED = true;
+
+      setBusy(true, "Loading all orders…", "Please wait");
+      try{
+        for(const k of Object.keys(ordersCache)) delete ordersCache[k];
+
+        let page = 0;
+        const chunk = 500;
+        while(true){
+          const from = page * chunk;
+          const to = from + chunk - 1;
+
+          const { data, error } = await supabaseClient
+            .from("Orders")
+            .select("*")
+            .order("created_at", { ascending: false })
+            .range(from, to);
+
+          if(error) throw error;
+          if(!data || data.length === 0) break;
+
+          data.forEach(o => ordersCache[o.id] = o);
+          if(data.length < chunk) break;
+          page++;
+          document.getElementById("busyMeta").textContent = `Loaded ${Object.keys(ordersCache).length}…`;
+        }
+
+        statusEl.textContent = `${Object.keys(ordersCache).length} orders loaded`;
+        renderKpis();
+        renderQuickStats();
+        refreshStatusCounts();
+        renderOrdersFromCache();
+        showToast("All orders loaded ✅", "success");
+      }catch(e){
+        console.error("Load all failed", e);
+        alert("Load all failed — check console.");
+        window.__ALL_LOADED = false;
+        loadOrders();
+      }finally{
+        setBusy(false);
+      }
+    }
+
+    // ────────────────────────────────────────────────
+    // REVIEWS
+    // ────────────────────────────────────────────────
+    async function loadPendingReviews() {
+      reviewsStatus.textContent = "Loading pending reviews…";
+
+      const { data, error } = await supabaseClient
+        .from("Reviews")
+        .select("id, name, rating, review_text, approved, created_at")
+        .eq("approved", false)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error loading reviews", error);
+        reviewsStatus.textContent = "Could not load reviews.";
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        reviewsStatus.textContent = "No pending reviews 🎉";
+        reviewsEl.innerHTML = "";
+        return;
+      }
+
+      reviewsStatus.textContent = `${data.length} review(s) pending`;
+
+      reviewsEl.innerHTML = data.map((review) => {
+        const created = review.created_at ? new Date(review.created_at).toLocaleString() : "";
+        const stars = review.rating ? "★".repeat(review.rating) + "☆".repeat(5 - review.rating) : "";
+        const name = review.name || "Anonymous";
+        const message = review.review_text || "";
+
+        return `
+          <div class="review-card">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>${escapeHtml(name)}</strong>
+                <div class="my-1">${escapeHtml(stars)}</div>
+                <p class="mb-1">${escapeHtml(message)}</p>
+                <small class="review-meta">${escapeHtml(created)}</small>
+              </div>
+              <div class="text-end" style="min-width: 140px;">
+                <button class="btn btn-sm btn-success mb-1" onclick="publishReview('${review.id}')">✅ Publish</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="deleteReview('${review.id}')">🗑 Delete</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function publishReview(id) {
+      if (!confirm("Publish this review?")) return;
+      const { error } = await supabaseClient.from("Reviews").update({ approved: true }).eq("id", id);
+      if (error) { console.error(error); return alert("Failed to publish review."); }
+      loadPendingReviews();
+    }
+
+    async function deleteReview(id) {
+      if (!confirm("Delete this review permanently?")) return;
+      const { error } = await supabaseClient.from("Reviews").delete().eq("id", id);
+      if (error) { console.error(error); return alert("Could not delete review."); }
+      loadPendingReviews();
+    }
+
+    // ────────────────────────────────────────────────
+    // AUTH INIT
+    // ────────────────────────────────────────────────
+    async function init() {
+      statusEl.textContent = "Checking access…";
+
+      const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError || !sessionData?.session?.user) {
+        window.location.href = "index.html";
+        return;
+      }
+
+      const user = sessionData.session.user;
+      if ((user.email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        warningEl.innerHTML = `<div class="alert alert-danger">Access denied.</div>`;
+        statusEl.textContent = "Not authorised";
+        reviewsStatus.textContent = "Not authorised";
+        return;
+      }
+
+      statusEl.textContent = "Admin verified ✅";
+      await cacheAdminEmail();
+      await refreshStatusCounts();
+      await loadOrders();
+      await loadPendingReviews();
+    }
+
+    logoutBtn.onclick = async () => {
+      await supabaseClient.auth.signOut();
+      location.href = "index.html";
+    };
+
+    // ────────────────────────────────────────────────
+    // Keyboard shortcuts
+    // ────────────────────────────────────────────────
+    document.addEventListener("keydown", (e)=>{
+      if(e.ctrlKey && e.key === "Enter"){
+        const a = document.activeElement;
+        if(a && a.id && a.id.startsWith("note-")){
+          const id = a.id.replace("note-","");
+          saveAdminNote(id);
+          e.preventDefault();
+        }
+      }
+
+      if(e.ctrlKey && (e.key === "p" || e.key === "P")){
+        const a = document.activeElement;
+        const card = a?.closest?.(".order-card");
+        if(card){
+          const cb = card.querySelector("input[id^='sel-']");
+          if(cb?.id){
+            const oid = cb.id.replace("sel-","");
+            printPackingSlipById(oid);
+            e.preventDefault();
+          }
+        }
+      }
+    });
+
+    // Back-to-top
+    const backToTopBtn = document.getElementById("backToTop");
+    window.addEventListener("scroll", () => {
+      backToTopBtn.style.display = window.scrollY > 600 ? "inline-flex" : "none";
+    }, { passive: true });
+    backToTopBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
+
+    // Inactivity logout
+    const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
+    let inactivityTimer;
+    function resetInactivityTimer() {
+      if (inactivityTimer) clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(async () => {
+        try {
+          await supabaseClient.auth.signOut();
+          window.location.href = "account.html?timeout=1";
+        } catch (e) {
+          console.error("Error during inactivity logout", e);
+        }
+      }, INACTIVITY_TIMEOUT);
+    }
+    ["click","mousemove","keydown","scroll","touchstart"].forEach((evt) => {
+      window.addEventListener(evt, resetInactivityTimer, { passive: true });
+    });
+    resetInactivityTimer();
+
+    // ────────────────────────────────────────────────
+    // EXPOSE (so onclick works)
+    // ────────────────────────────────────────────────
+    window.exportOrdersCsv = exportOrdersCsv;
+    window.exportOrdersJson = exportOrdersJson;
+    window.exportOrdersXlsx = exportOrdersXlsx;
+
+    // ✅ Added exports
+    window.exportTimExcel = exportTimExcel;
+    window.copyTimExcelTsv = copyTimExcelTsv;
+
+    window.clearSearch = clearSearch;
+    window.setStatusFilter = setStatusFilter;
+    window.togglePackQueue = togglePackQueue;
+    window.applyClientFilters = applyClientFilters;
+
+    window.prevPage = prevPage;
+    window.nextPage = nextPage;
+    window.changePageSize = changePageSize;
+    window.loadAllOrdersForSearch = loadAllOrdersForSearch;
+
+    window.toggleSelectAll = toggleSelectAll;
+    window.toggleSelectOne = toggleSelectOne;
+
+    window.bulkMarkPacked = bulkMarkPacked;
+    window.bulkMarkShippedNoEmail = bulkMarkShippedNoEmail;
+    window.bulkCopyAddresses = bulkCopyAddresses;
+
+    window.copyAddressById = copyAddressById;
+    window.printPackingSlipById = printPackingSlipById;
+    window.markPackedById = markPackedById;
+
+    window.saveAdminNote = saveAdminNote;
+    window.savePaymentRef = savePaymentRef;
+    window.saveTrackingFromInput = saveTrackingFromInput;
+
+    window.updateStatus = updateStatus;
+
+    window.sendShippedEmailById = sendShippedEmailById;
+    window.sendPayBefore3pmById = sendPayBefore3pmById;
+    window.markPaidAndSendById = markPaidAndSendById;
+    window.sendCancelledEmailById = sendCancelledEmailById;
+
+    window.openMailto = openMailto;
+    window.buildShippedEmailText = buildShippedEmailText;
+
+    window.publishReview = publishReview;
+    window.deleteReview = deleteReview;
+
+    window.copyTimExcelTsvOne = copyTimExcelTsvOne;
+
+    // go
+    init();
+  </script>
+</body>
+</html>
