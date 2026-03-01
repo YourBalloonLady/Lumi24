@@ -252,135 +252,52 @@ const searchInput  = document.getElementById("order-search");
 const pageIndicator = document.getElementById("page-indicator");
 
 // ────────────────────────────────────────────────
-// HELPERS (toast, escapeHtml, badge, theme, backToTop, debounce — unchanged)
+// HELPERS (MINIMUM REQUIRED so page doesn't crash)
 // ────────────────────────────────────────────────
-// ... paste your existing showToast, escapeHtml, badge, initTheme, backToTop logic here ...
+function showToast(message, type = "success") {
+  const container = document.querySelector(".toast-container");
+  if (!container) return;
 
-// ────────────────────────────────────────────────
-// KPI RENDER (this was missing → added minimal version)
-// ────────────────────────────────────────────────
-function renderKpis() {
-  if (!kpiBar) return;
-  const orders = Object.values(ordersCache);
-  const counts = { pending:0, paid:0, packed:0, shipped:0, cancelled:0 };
-  let revWeek = 0, revMonth = 0;
-  const now = new Date();
-  const weekAgo = new Date(now); weekAgo.setDate(now.getDate() - 7);
-  const monthAgo = new Date(now); monthAgo.setMonth(now.getMonth() - 1);
-
-  orders.forEach(o => {
-    const s = (o.status || "Pending").toLowerCase();
-    counts[s === "pending" ? "pending" : s] = (counts[s === "pending" ? "pending" : s] || 0) + 1;
-    const created = new Date(o.created_at);
-    const amt = Number(o.total_amount || 0);
-    if (created >= weekAgo) revWeek += amt;
-    if (created >= monthAgo) revMonth += amt;
-  });
-
-  kpiBar.innerHTML = `
-    <div class="kpi-pill">Pending <span>${counts.pending}</span></div>
-    <div class="kpi-pill" style="background:#16a34a;">Paid <span>${counts.paid}</span></div>
-    <div class="kpi-pill" style="background:#64748b;">Packed <span>${counts.packed}</span></div>
-    <div class="kpi-pill" style="background:#2563eb;">Shipped <span>${counts.shipped}</span></div>
-    <div class="kpi-pill" style="background:#dc2626;">Cancelled <span>${counts.cancelled}</span></div>
-    <div class="kpi-pill" style="background:#111827;">Rev 7d <span>£${revWeek.toFixed(0)}</span></div>
-    <div class="kpi-pill" style="background:#111827;">Rev 30d <span>£${revMonth.toFixed(0)}</span></div>
+  const id = "t" + Date.now();
+  const html = `
+    <div id="${id}" class="toast align-items-center text-bg-${type} border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+      </div>
+    </div>
   `;
+  container.insertAdjacentHTML("beforeend", html);
+  const el = document.getElementById(id);
+  const t = new bootstrap.Toast(el, { delay: 2500 });
+  el.addEventListener("hidden.bs.toast", () => el.remove());
+  t.show();
 }
 
-// ────────────────────────────────────────────────
-// LOAD ORDERS (updated with better error handling)
-// ────────────────────────────────────────────────
-async function loadOrders() {
-  if (!statusEl) return;
-  statusEl.textContent = "Loading orders…";
+function initTheme() {
+  const root = document.documentElement; // <html>
+  const btn = document.getElementById("themeToggle");
+  const saved = localStorage.getItem("lw_theme");
 
-  try {
-    const from = currentPage * PAGE_SIZE;
-    const to = from + PAGE_SIZE - 1;
+  if (saved === "dark") root.setAttribute("data-bs-theme", "dark");
+  if (saved === "light") root.setAttribute("data-bs-theme", "light");
 
-    let query = sb
-      .from("Orders")
-      .select("*", { count: "exact" })
-      .order("created_at", { ascending: false });
+  function updateBtn() {
+    const isDark = root.getAttribute("data-bs-theme") === "dark";
+    if (btn) btn.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+  }
+  updateBtn();
 
-    if (statusFilter !== "all") query = query.eq("status", statusFilter);
-    if (packQueueOnly) query = query.eq("status", "Paid");
-
-    const { data, error, count } = await query.range(from, to);
-
-    if (error) throw error;
-
-    totalCount = count || 0;
-    pageIndicator.textContent = `Page ${currentPage + 1} of ${Math.max(1, Math.ceil(totalCount / PAGE_SIZE))}`;
-
-    // Cache
-    ordersCache = {}; // clear old if not loading all
-    data?.forEach(o => ordersCache[o.id] = o);
-
-    renderOrdersFromCache();
-    renderKpis();
-    statusEl.textContent = `${Object.keys(ordersCache).length} order(s) loaded`;
-  } catch (err) {
-    console.error("loadOrders failed:", err);
-    statusEl.textContent = "Failed to load orders – see console";
-    showToast("Orders load failed. Check console or Supabase connection.", "danger");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const isDark = root.getAttribute("data-bs-theme") === "dark";
+      const next = isDark ? "light" : "dark";
+      root.setAttribute("data-bs-theme", next);
+      localStorage.setItem("lw_theme", next);
+      updateBtn();
+    });
   }
 }
-
-// ────────────────────────────────────────────────
-// INIT (improved diagnostics + KPI call)
-// ────────────────────────────────────────────────
-async function init() {
-  console.log("→ init() started");
-  statusEl.textContent = "Checking access…";
-
-  try {
-    console.log("→ sb.auth.getSession()");
-    const { data, error } = await sb.auth.getSession();
-    console.log("Session result:", { data, error });
-
-    if (error) throw new Error(`Auth error: ${error.message}`);
-
-    if (!data?.session?.user) {
-      console.log("No session → redirect");
-      window.location.href = "index.html";
-      return;
-    }
-
-    const email = (data.session.user.email || "").toLowerCase().trim();
-    console.log(`Logged in as: ${email}`);
-
-    if (email !== ADMIN_EMAIL.toLowerCase().trim()) {
-      warningEl.innerHTML = `<div class="alert alert-danger">Access denied (logged in as ${email})</div>`;
-      statusEl.textContent = "Not authorised";
-      showToast("Wrong account – contact admin", "warning");
-      return;
-    }
-
-    statusEl.textContent = "Admin verified ✅";
-    showToast("Access granted", "success");
-
-    // Load data
-    await loadOrders();
-    // await loadPendingReviews();  // ← add if you have this function
-
-  } catch (err) {
-    console.error("Auth / init failed:", err.message || err);
-    statusEl.textContent = "Error during login check – see console";
-    showToast("Login check failed. Check console / Supabase status.", "danger");
-  }
-}
-
-// ────────────────────────────────────────────────
-// START
-// ────────────────────────────────────────────────
-initTheme();
-init();
-
-// Expose if needed for HTML onclick
-window.loadOrders = loadOrders;
-// ... other exposes ...
 </script>
 </body>
 </html>
