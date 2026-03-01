@@ -1804,9 +1804,135 @@
       }
     }
 
-    async function cancelAndRestockById(orderId){
-      alert("Cancel+Restock is in your original version. If you want it included here too, paste your latest working cancel+restock function and I’ll merge it cleanly.");
+    // ────────────────────────────────────────────────
+// CANCEL + RESTOCK  (working version)
+// Restocks ONLY items that include item.product_id
+// Expects Products table with columns: id, stock (number)
+// ────────────────────────────────────────────────
+async function cancelAndRestockById(orderId){
+  const order = ordersCache[orderId];
+  if(!order) return alert("Order not found.");
+
+  const currentStatus = String(order.status || "Pending").toLowerCase();
+  if(currentStatus === "cancelled") return alert("This order is already cancelled.");
+
+  if(!confirm("Cancel this order AND restock items?")) return;
+
+  // Optional: warn if we can't restock because product_id missing
+  const items = Array.isArray(order?.details?.items) ? order.details.items : [];
+  const missingProductIds = items.filter(i => !i?.product_id).length;
+  const restockable = items.filter(i => i?.product_id).length;
+
+  if(items.length && restockable === 0){
+    const ok = confirm(
+      "Heads up: none of the items have product_id, so I CAN cancel the order but I CANNOT restock automatically.\n\nContinue?"
+    );
+    if(!ok) return;
+  } else if(missingProductIds > 0){
+    const ok = confirm(
+      `Heads up: ${missingProductIds} item(s) are missing product_id so they will NOT be restocked.\n\nContinue?`
+    );
+    if(!ok) return;
+  }
+
+  setBusy(true, "Cancelling + restocking…", order.reference || order.id);
+
+  try{
+    // who did it
+    const session = await supabaseClient.auth.getSession();
+    const who = session?.data?.session?.user?.email || "admin";
+
+    // 1) RESTOCK (best effort)
+    let restockedCount = 0;
+    let skippedCount = 0;
+
+    for(const item of items){
+      const pid = item?.product_id;
+      const qty = Number(item?.qty || 0);
+
+      if(!pid || !qty || qty <= 0){
+        skippedCount++;
+        continue;
+      }
+
+      // read current stock
+      const { data: prod, error: prodErr } = await supabaseClient
+        .from("Products")
+        .select("id, stock")
+        .eq("id", pid)
+        .single();
+
+      if(prodErr){
+        console.warn("Restock lookup failed", pid, prodErr);
+        skippedCount++;
+        continue;
+      }
+
+      const currentStock = Number(prod?.stock || 0);
+      const newStock = currentStock + qty;
+
+      const { error: upErr } = await supabaseClient
+        .from("Products")
+        .update({ stock: newStock })
+        .eq("id", pid);
+
+      if(upErr){
+        console.warn("Restock update failed", pid, upErr);
+        skippedCount++;
+        continue;
+      }
+
+      restockedCount++;
+      document.getElementById("busyMeta").textContent = `Restocked ${restockedCount}/${items.length}…`;
     }
+
+    // 2) UPDATE ORDER -> Cancelled + history
+    let updatedDetails = order.details || {};
+    updatedDetails = pushHistory(
+      { ...order, details: updatedDetails },
+      "status_cancelled_and_restocked",
+      {
+        note: `restocked:${restockedCount} skipped:${skippedCount}`,
+      }
+    );
+
+    updatedDetails = {
+      ...updatedDetails,
+      meta: {
+        ...(updatedDetails.meta || {}),
+        cancelled_at: new Date().toISOString(),
+        cancelled_by: who,
+        restocked_count: restockedCount,
+        restock_skipped_count: skippedCount
+      }
+    };
+
+    const { error: ordErr } = await supabaseClient
+      .from("Orders")
+      .update({ status: "Cancelled", details: updatedDetails })
+      .eq("id", orderId);
+
+    if(ordErr) throw ordErr;
+
+    // update cache
+    ordersCache[orderId].status = "Cancelled";
+    ordersCache[orderId].details = updatedDetails;
+
+    // 3) OPTIONAL: send cancelled email (or keep it manual)
+    // Uncomment if you want it automatic:
+    // try { await sendCancelledEmail(order); } catch(e){ console.warn("Cancelled email failed", e); }
+
+    showToast(`Cancelled ✅ Restocked: ${restockedCount} • Skipped: ${skippedCount}`, "success");
+    loadOrders();
+
+  }catch(e){
+    console.error("Cancel + restock failed", e);
+    showToast("Cancel + restock failed — check console", "danger");
+    alert("Cancel + restock failed — check console.");
+  }finally{
+    setBusy(false);
+  }
+}
 
     // ────────────────────────────────────────────────
     // BULK ACTIONS
