@@ -1912,6 +1912,67 @@
         `;
       }).join("");
     }
+    async function copyTimExcelTsvOne(orderId){
+  const o = ordersCache[orderId];
+  if(!o) return alert("Order not found.");
+
+  // Build rows for just this order (one per item)
+  const tempCache = { [orderId]: o };
+  const original = ordersCache[orderId];
+
+  // Reuse existing builders
+  const rows = (() => {
+    const c = o?.details?.customer || {};
+    const name = String(c.name || o.customer_name || o.name || "").trim();
+    const address = buildOneLineAddress(o);
+    const paid = paidFlagFromStatus(o.status);
+    const complete = completeFlagFromStatus(o.status);
+    const total = Number(o.total_amount || 0);
+
+    const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+    const out = [];
+
+    if(!items.length){
+      out.push({
+        "Name": name, "Address": address, "Peptide": "", "Mg Amount": "",
+        "Pen/Vial": "", "H/S Quantity": "", "Paid": paid, "Cost": total, "Order Complete": complete
+      });
+      return out;
+    }
+
+    for(const item of items){
+      const pv = penOrVial(item);
+      const hsQty =
+        pv === "Pen" ? (item?.pen_heads ?? "") :
+        pv === "Vial" ? (item?.syringes ?? "") :
+        "";
+
+      out.push({
+        "Name": name,
+        "Address": address,
+        "Peptide": classifyPeptide(item?.name),
+        "Mg Amount": extractMg(item?.name),
+        "Pen/Vial": pv,
+        "H/S Quantity": hsQty,
+        "Paid": paid,
+        "Cost": total,
+        "Order Complete": complete
+      });
+    }
+    return out;
+  })();
+
+  const headers = ["Name","Address","Peptide","Mg Amount","Pen/Vial","H/S Quantity","Paid","Cost","Order Complete"];
+  const esc = (v) => String(v ?? "").replace(/\r?\n/g, " ");
+  const tsv = rows.map(r => headers.map(h => esc(r[h])).join("\t")).join("\n");
+
+  try{
+    await navigator.clipboard.writeText(tsv);
+    showToast("Copied ✅ Paste into Excel", "success");
+  }catch(e){
+    alert("Copy failed — browser blocked clipboard. Use the XLSX export instead.");
+  }
+}
 
     // ────────────────────────────────────────────────
     // LOAD ORDERS (paginated server-side)
@@ -2210,6 +2271,8 @@
 
     window.publishReview = publishReview;
     window.deleteReview = deleteReview;
+
+    window.copyTimExcelTsvOne = copyTimExcelTsvOne;
 
     // go
     init();
