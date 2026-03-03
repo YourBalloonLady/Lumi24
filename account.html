@@ -2033,21 +2033,10 @@ async function ensureAffiliateCode() {
     pw2.value = '';
   });
 
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', async () => {
-    try {
-      console.log("Logout clicked");
-      const { error } = await supabaseClient.auth.signOut();
-      if (error) throw error;
-      window.location.href = 'index.html';
-    } catch (e) {
-      console.error("Logout failed:", e);
-      alert("Logout failed: " + (e?.message || "Unknown error"));
-    }
+logoutBtn.addEventListener('click', async () => {
+    await supabaseClient.auth.signOut();
+    window.location.href = 'index.html';
   });
-} else {
-  console.warn("logout-btn not found");
-}
   
 
   loadAccount();
