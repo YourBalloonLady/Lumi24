@@ -199,6 +199,22 @@
       </div>
     </div>
 
+        <!-- CREDIT + REFERRAL -->
+    <div class="order-card mb-4">
+      <h2 class="h5 mb-2">Store Credit</h2>
+      <div class="text-muted small">Available credit:</div>
+      <div class="fs-4 fw-bold" id="credit-balance">£0.00</div>
+
+      <hr>
+
+      <h3 class="h6 mb-2">Redeem referral code</h3>
+      <div class="input-group">
+        <input id="referral-code" class="form-control" placeholder="Enter code e.g. LUM-ABC123">
+        <button id="redeem-btn" class="btn btn-dark">Redeem</button>
+      </div>
+      <div id="redeem-msg" class="small mt-2"></div>
+    </div>
+
     <!-- ORDERS -->
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h2 class="h5 mb-0">Order History</h2>
@@ -236,6 +252,11 @@
   const pwMsg  = document.getElementById('pwMsg');
   const pw1    = document.getElementById('pw1');
   const pw2    = document.getElementById('pw2');
+
+  const creditEl   = document.getElementById('credit-balance');
+  const refInput   = document.getElementById('referral-code');
+  const redeemBtn  = document.getElementById('redeem-btn');
+  const redeemMsg  = document.getElementById('redeem-msg');
 
   // Toggle Admin nav + My Account/Login text based on auth
   (async () => {
@@ -299,7 +320,69 @@ async function ensureAffiliateCode() {
     if (s === 'cancelled') return '<span class="badge bg-danger-subtle text-danger badge-status">CANCELLED</span>';
     return '<span class="badge bg-warning-subtle text-warning badge-status">PENDING</span>';
   }
+  async function loadCreditBalance(email) {
+    const { data, error } = await supabaseClient
+      .from("Customers")
+      .select("credit_balance")
+      .eq("email", String(email || "").toLowerCase())
+      .maybeSingle();
 
+    if (error) throw error;
+
+    const bal = Number(data?.credit_balance || 0);
+    if (creditEl) creditEl.textContent = `£${bal.toFixed(2)}`;
+    return bal;
+  }
+
+  async function redeemReferralCode(codeRaw, creditToAward = 10) {
+    const code = String(codeRaw || "").trim().toUpperCase();
+    if (!code) throw new Error("Enter a referral code.");
+
+    const { data: sess } = await supabaseClient.auth.getSession();
+    const userEmail = sess?.session?.user?.email?.toLowerCase();
+    if (!userEmail) throw new Error("Please log in to redeem a code.");
+
+    // 1) Insert redemption (UNIQUE(customer_email) blocks second time)
+    const { error: redErr } = await supabaseClient
+      .from("ReferralRedemptions")
+      .insert([{ customer_email: userEmail, code }]);
+
+    if (redErr) {
+      if (redErr.code === "23505") throw new Error("Referral already used on this account.");
+      throw new Error(`Referral redeem failed: ${redErr.message || "Unknown error"}`);
+    }
+
+    // 2) Get current credit
+    const { data: existing, error: selErr } = await supabaseClient
+      .from("Customers")
+      .select("email, credit_balance")
+      .eq("email", userEmail)
+      .maybeSingle();
+
+    if (selErr) throw selErr;
+
+    const current = Number(existing?.credit_balance || 0);
+    const next = Math.floor((current + Number(creditToAward || 0) + Number.EPSILON) * 100) / 100;
+
+    if (!existing) {
+      const { error: insErr } = await supabaseClient
+        .from("Customers")
+        .insert([{ email: userEmail, credit_balance: next }]);
+      if (insErr) throw insErr;
+    } else {
+      const { error: upErr } = await supabaseClient
+        .from("Customers")
+        .update({ credit_balance: next })
+        .eq("email", userEmail);
+      if (upErr) throw upErr;
+    }
+
+    // Update UI
+    if (creditEl) creditEl.textContent = `£${next.toFixed(2)}`;
+
+    return { ok: true, added: Number(creditToAward), total_credit: next };
+  }
+  
   async function loadAccount() {
     const { data: { user }, error } = await supabaseClient.auth.getUser();
 
@@ -310,6 +393,13 @@ async function ensureAffiliateCode() {
 
     greetingEl.textContent = `Signed in as ${user.email}`;
     statusEl.textContent = 'Loading orders…';
+
+    greetingEl.textContent = `Signed in as ${user.email}`;
+        try {
+      await loadCreditBalance(user.email);
+    } catch (e) {
+      console.warn("Could not load credit balance", e);
+    }
 
     const { data: orders, error: ordersError } = await supabaseClient
       .from('Orders')
@@ -396,6 +486,23 @@ async function ensureAffiliateCode() {
     await supabaseClient.auth.signOut();
     window.location.href = 'index.html';
   });
+
+    if (redeemBtn) {
+    redeemBtn.addEventListener("click", async () => {
+      redeemMsg.textContent = "";
+      redeemMsg.className = "small mt-2";
+
+      try {
+        const res = await redeemReferralCode(refInput.value, 10);
+        redeemMsg.textContent = `✅ £${res.added.toFixed(2)} added. Total credit: £${res.total_credit.toFixed(2)}`;
+        redeemMsg.classList.add("text-success");
+        refInput.value = "";
+      } catch (e) {
+        redeemMsg.textContent = `❌ ${e.message}`;
+        redeemMsg.classList.add("text-danger");
+      }
+    });
+  }
 
   loadAccount();
 </script>
