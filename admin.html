@@ -899,8 +899,8 @@ async function findCustomerByReferralCode(code){
 
   let updatedDetails = order.details || {};
   updatedDetails = pushHistory({ ...order, details: updatedDetails }, "referral_credit_awarded", {
-    note: buyer £${BUYER_CREDIT.toFixed(2)} + referrer £${REFERRAL_CREDIT.toFixed(2)} • code ${code}
-  });
+  note: `buyer £${BUYER_CREDIT.toFixed(2)} + referrer £${REFERRAL_CREDIT.toFixed(2)} • code ${code}`
+});
 
   updatedDetails = {
     ...updatedDetails,
@@ -1672,7 +1672,7 @@ async function findCustomerByReferralCode(code){
       if(String(value || "").toLowerCase() === "paid"){
         try{
           await awardCreditForPaidOrder(id);
-          const amt = Number(ordersCache[id]?.details?.meta?.credit_awarded_amount || 0);
+          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
           if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
         }catch(e){
           console.error("Credit award failed", e);
@@ -2057,7 +2057,7 @@ async function findCustomerByReferralCode(code){
         // award credit (idempotent)
         try{
           await awardCreditForPaidOrder(orderId);
-          const amt = Number(ordersCache[orderId]?.details?.meta?.credit_awarded_amount || 0);
+          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
           if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
         }catch(e){
           console.error("Credit award failed", e);
