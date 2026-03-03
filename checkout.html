@@ -625,6 +625,9 @@ async function saveOrderToSupabase(details) {
         status: 'Pending',
         reference: details.ref,
         details: orderDetails
+        referral_code: localStorage.getItem('referral_code') || null,
+referral_source: localStorage.getItem('referral_source') || null,
+referral_discount: Number(discountApplied || 0),
       });
 
     if (insertError) console.error('Error saving order to Supabase:', insertError);
