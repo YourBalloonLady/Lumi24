@@ -426,6 +426,20 @@
   </script>
 
   <script>
+  // ---- Referral capture (stores ?ref=CODE) ----
+  (function captureReferral() {
+    const params = new URLSearchParams(window.location.search);
+    const ref = (params.get('ref') || '').trim();
+    const src = (params.get('src') || '').trim(); // optional
+
+    if (ref) {
+      localStorage.setItem('referral_code', ref);
+      if (src) localStorage.setItem('referral_source', src);
+    }
+  })();
+</script>
+
+  <script>
     // ---------- CART ----------
     // Cart item shape (IMPORTANT):
     // { id: <uuid>, name: <string>, price: <number>, qty: <int>, image?: <string> }
