@@ -770,19 +770,11 @@
 
     loadProductsFromDb();
   </script>
-  <script>
+ <script>
 (function captureReferral(){
-  const params = new URLSearchParams(window.location.search);
-  const ref = (params.get('ref') || '').trim();
-  const src = (params.get('src') || '').trim(); // optional
-
-  if (ref) {
-    localStorage.setItem('referral_code', ref);
-    localStorage.setItem('referral_source', src || 'link');
-
-    // Optional: keep it for 30 days with a timestamp
-    localStorage.setItem('referral_set_at', String(Date.now()));
-  }
+  const p = new URLSearchParams(location.search);
+  const ref = (p.get('ref') || '').trim().toUpperCase();
+  if (ref) localStorage.setItem('referral_code', ref);
 })();
 </script>
 </body>
