@@ -484,14 +484,14 @@
     // ────────────────────────────────────────────────
 // STORE CREDIT CONFIG
 // ────────────────────────────────────────────────
-const CUSTOMERS_TABLE = "Customers";
-const CREDIT_BALANCE_COL = "credit_balance";
-
+// ────────────────────────────────────────────────
+// STORE CREDIT CONFIG
+// ────────────────────────────────────────────────
 const CUSTOMERS_TABLE = "Customers";
 const CREDIT_BALANCE_COL = "credit_balance";
 
 // Flat £10 credit per paid order
-const CREDIT_RATE = null;     // disable percentage
+const CREDIT_RATE = null;
 const CREDIT_MIN = null;
 const CREDIT_MAX = null;
 const CREDIT_FLAT = 10.00;
@@ -728,20 +728,16 @@ function round2(n){
 }
 
 function calcCreditAmount(order){
+  // Flat £10 mode
   if (typeof CREDIT_FLAT === "number") {
     return round2(CREDIT_FLAT);
   }
 
+  // Percentage mode (if you ever enable it)
   const total = Number(order?.total_amount || 0);
   let credit = total * CREDIT_RATE;
 
-  if (CREDIT_MIN !== null) credit = Math.max(CREDIT_MIN, credit);
-  if (CREDIT_MAX !== null) credit = Math.min(CREDIT_MAX, credit);
-
-  return round2(credit);
-}
-  // allow manual override per-order if you ever want it:
-  // set order.details.meta.credit_override = 10 to force £10
+  // Optional manual override per order
   const override = order?.details?.meta?.credit_override;
   if (override !== undefined && override !== null && String(override).trim() !== "") {
     credit = Number(override);
