@@ -487,13 +487,14 @@
 const CUSTOMERS_TABLE = "Customers";
 const CREDIT_BALANCE_COL = "credit_balance";
 
-// % of order total to award as credit when marked paid
-// e.g. 0.05 = 5%
-const CREDIT_RATE = 10.00;
+const CUSTOMERS_TABLE = "Customers";
+const CREDIT_BALANCE_COL = "credit_balance";
 
-// optional safety caps (set null to disable)
-const CREDIT_MIN = 10.00;
-const CREDIT_MAX = 150.00; // e.g. 20.00
+// Flat £10 credit per paid order
+const CREDIT_RATE = null;     // disable percentage
+const CREDIT_MIN = null;
+const CREDIT_MAX = null;
+const CREDIT_FLAT = 10.00;
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -727,9 +728,18 @@ function round2(n){
 }
 
 function calcCreditAmount(order){
+  if (typeof CREDIT_FLAT === "number") {
+    return round2(CREDIT_FLAT);
+  }
+
   const total = Number(order?.total_amount || 0);
   let credit = total * CREDIT_RATE;
 
+  if (CREDIT_MIN !== null) credit = Math.max(CREDIT_MIN, credit);
+  if (CREDIT_MAX !== null) credit = Math.min(CREDIT_MAX, credit);
+
+  return round2(credit);
+}
   // allow manual override per-order if you ever want it:
   // set order.details.meta.credit_override = 10 to force £10
   const override = order?.details?.meta?.credit_override;
@@ -1707,25 +1717,12 @@ loadOrders();
         const { error } = await supabaseClient.from("Orders").update({ status: "Packed", details: updatedDetails }).eq("id", orderId);
         if(error){ console.error(error); alert("Packed update failed."); return; }
 
-        ordersCache[orderId].status = "Paid";
+        ordersCache[orderId].status = "Packed";
 ordersCache[orderId].details = updatedDetails;
 
-// ✅ Award store credit (safe + idempotent)
-try{
-  await awardCreditForPaidOrder(orderId);
-  const amt = Number(ordersCache[orderId]?.details?.meta?.credit_awarded_amount || 0);
-  if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-}catch(e){
-  console.error("Credit award failed", e);
-  showToast("Paid ✅ but credit failed (check console)", "warning");
-}
 
-showToast("Marked paid ✅", "success");
-loadOrders();
-      }finally{
-        setBusy(false);
       }
-    }
+    
 
     // ────────────────────────────────────────────────
     // EMAILJS (basic)
@@ -1958,6 +1955,21 @@ loadOrders();
         console.error("Payment flow failed", e);
         alert("Payment flow failed — check console");
       } finally {
+        setBusy(false);
+
+        // ✅ Award store credit (safe + idempotent)
+try{
+  await awardCreditForPaidOrder(orderId);
+  const amt = Number(ordersCache[orderId]?.details?.meta?.credit_awarded_amount || 0);
+  if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
+}catch(e){
+  console.error("Credit award failed", e);
+  showToast("Paid ✅ but credit failed (check console)", "warning");
+}
+
+showToast("Marked paid ✅", "success");
+loadOrders();
+      }finally{
         setBusy(false);
       }
     }
@@ -2193,8 +2205,7 @@ loadOrders();
     function renderOrdersFromCache(){
       const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
 
-      const creditAmt = Number(order.details?.meta?.credit_awarded_amount || 0);
-      const creditAt  = String(order.details?.meta?.credit_awarded_at || "").trim();
+      
       const parsed = parseSearch(searchInput.value);
       const qText = parsed.text;
       const qFilters = parsed.filters;
@@ -2288,6 +2299,7 @@ loadOrders();
         const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
         const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
         const total = Number(order.total_amount || 0).toFixed(2);
+        const creditAmt = Number(order.details?.meta?.credit_awarded_amount || 0);
 
         const statusLower = String(status || "").toLowerCase();
         const isPaid = statusLower === "paid";
@@ -2375,7 +2387,8 @@ loadOrders();
 
               <div class="text-end" style="min-width: 280px;">
                 <div class="mb-1">${badge(status)}</div>
-                <div class="fw-bold">£${escapeHtml(total)}</div>
+<div class="fw-bold">£${escapeHtml(total)}</div>
+${creditAmt > 0 ? `<div class="text-muted small mt-1">🎁 Credit: £${creditAmt.toFixed(2)}</div>` : ``}
 
             
 
