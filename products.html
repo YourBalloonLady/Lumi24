@@ -488,15 +488,15 @@
       ov.classList.toggle('show', open);
     }
 
-    function goToCheckout() {
+   function goToCheckout() {
   if (cart.length === 0) return alert('Your cart is empty!');
   const cartData = encodeURIComponent(JSON.stringify(cart));
 
   const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
-  const src = encodeURIComponent(localStorage.getItem('referral_source') || '');
+  const refPart = ref ? `&ref=${ref}` : '';
 
-  const refParams = ref ? `&ref=${ref}${src ? `&src=${src}` : ''}` : '';
-  window.location.href = `checkout.html?cart=${cartData}${refParams}`;
+  window.location.href = `checkout.html?cart=${cartData}${refPart}`;
+
 }
 
     // ---------- PRODUCTS FROM SUPABASE ----------
