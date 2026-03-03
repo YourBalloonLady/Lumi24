@@ -153,9 +153,9 @@
         </li>
 
         <li class="nav-item">
-          <button id="logout-btn" class="btn btn-outline-secondary btn-sm rounded-pill">
-            Logout
-          </button>
+          <button id="logout-btn" type="button" class="btn btn-outline-secondary btn-sm rounded-pill">
+  Logout
+</button>
         </li>
       </ul>
     </div>
@@ -517,11 +517,35 @@
     pw2.value = '';
   });
 
-  // Logout
+  // Logout (hardened)
+if (logoutBtn) {
   logoutBtn.addEventListener('click', async () => {
-    await supabaseClient.auth.signOut();
-    window.location.href = 'index.html';
+    console.log("Logout clicked");
+
+    logoutBtn.disabled = true;
+    const oldText = logoutBtn.textContent;
+    logoutBtn.textContent = "Logging out…";
+
+    try {
+      const { error } = await supabaseClient.auth.signOut();
+      if (error) throw error;
+
+      // double-check session is cleared
+      const { data } = await supabaseClient.auth.getSession();
+      console.log("Session after signOut:", data?.session);
+
+      // hard redirect (prevents caching weirdness)
+      window.location.replace('index.html');
+    } catch (e) {
+      console.error("Logout failed:", e);
+      alert("Logout failed: " + (e?.message || "Unknown error"));
+      logoutBtn.disabled = false;
+      logoutBtn.textContent = oldText;
+    }
   });
+} else {
+  console.warn("logout-btn not found in DOM");
+}
 
   // Redeem referral
   if (redeemBtn) {
