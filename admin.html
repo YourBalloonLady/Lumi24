@@ -767,13 +767,16 @@ async function findCustomerByReferralCode(code){
   if(!code) return null;
 
   const { data, error } = await supabaseClient
-    .from(CUSTOMERS_TABLE)
-    .select(`email, name, ${CREDIT_BALANCE_COL}, ${REFERRAL_CODE_COL}`)
-    .eq(REFERRAL_CODE_COL, code)
+    .from("ReferralCodes")
+    .select("owner_email, owner_name, code")
+    .eq("code", code)
+    .eq("active", true)
     .maybeSingle();
 
   if(error) throw error;
-  return data || null;
+  if(!data?.owner_email) return null;
+
+  return { email: data.owner_email, name: data.owner_name || "" };
 }
 
 /* =====================================================
