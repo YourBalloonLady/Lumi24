@@ -194,16 +194,17 @@
   let total = 0;
   let discountApplied = 0;
 
-  // Capture referral code from URL once
-  (function captureReferral() {
-    const params = new URLSearchParams(window.location.search);
-    const ref = (params.get('ref') || '').trim();
-    const src = (params.get('src') || '').trim();
-    if (ref) {
-      localStorage.setItem('referral_code', ref);
-      localStorage.setItem('referral_source', src || 'link');
-    }
-  })();
+  (function captureReferralOnCheckout(){
+  const params = new URLSearchParams(window.location.search);
+  const ref = (params.get('ref') || '').trim();
+  const src = (params.get('src') || '').trim();
+
+  if (ref) {
+    localStorage.setItem('referral_code', ref);
+    localStorage.setItem('referral_source', src || 'checkout_link');
+    localStorage.setItem('referral_set_at', String(Date.now()));
+  }
+})();
 
   // ---------- ACCESSORY RULES ----------
   function isSemaglutide(name){
@@ -537,10 +538,8 @@
           status: 'Pending',
           reference: details.ref,
           details: orderDetails,
-
           referral_code: localStorage.getItem('referral_code') || null,
           referral_source: localStorage.getItem('referral_source') || null,
-          referral_discount: Number(discountApplied || 0)
         });
 
       if (insertError) console.error('Error saving order to Supabase:', insertError);
