@@ -51,7 +51,6 @@
   }
 
   .form-control { border-radius: 12px; }
-
   #final-total { color: #16a34a; }
 
   .modal-content { border-radius: 20px; }
@@ -196,7 +195,6 @@
   const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
-  // ✅ important: make session persistence explicit
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
@@ -218,8 +216,15 @@
     if (ref) localStorage.setItem('referral_code', ref);
   })();
 
-  // ---------- AUTH / CREDIT GUARD ----------
+  // ---------- AUTH HELPERS ----------
   async function getAuthedEmail() {
+    // getSession is local + fast; getUser can fail if network/RLS weirdness
+    try {
+      const { data } = await supabaseClient.auth.getSession();
+      const e = data?.session?.user?.email ? String(data.session.user.email).toLowerCase() : null;
+      if (e) return e;
+    } catch (e) {}
+
     try {
       const { data, error } = await supabaseClient.auth.getUser();
       if (error) return null;
@@ -230,16 +235,57 @@
     }
   }
 
-  // ✅ Only allow credit when logged in AND email matches logged-in email
+  async function setCreditHint(forceText = null, forceClass = null) {
+    const statusEl = document.getElementById('credit-status');
+    if (!statusEl) return;
+
+    if (forceText !== null) {
+      statusEl.textContent = forceText;
+      statusEl.className = forceClass || 'small text-muted mt-1';
+      return;
+    }
+
+    const emailEl = document.getElementById('email');
+    const typed = String(emailEl?.value || '').trim().toLowerCase();
+    const authed = await getAuthedEmail();
+
+    if (!typed && authed) {
+      statusEl.textContent = 'Using your logged-in email for store credit.';
+      statusEl.className = 'small text-muted mt-1';
+      return;
+    }
+
+    if (!typed && !authed) {
+      statusEl.textContent = 'Tip: log in to apply store credit automatically.';
+      statusEl.className = 'small text-warning mt-1';
+      return;
+    }
+
+    if (typed && !authed) {
+      statusEl.textContent = 'Log in to apply store credit (credit is tied to an account).';
+      statusEl.className = 'small text-warning mt-1';
+      return;
+    }
+
+    if (typed && authed && typed !== authed) {
+      statusEl.textContent = `You’re logged in as ${authed}. Credit only applies if email matches.`;
+      statusEl.className = 'small text-warning mt-1';
+      return;
+    }
+
+    statusEl.textContent = '';
+    statusEl.className = 'small text-muted mt-1';
+  }
+
   async function canUseCreditForEmail(typedEmail) {
     const typed = String(typedEmail || '').trim().toLowerCase();
-    if (!typed) return { ok:false, reason:'' };
+    if (!typed) return { ok:false, reason:'Enter your email to check credit.' };
 
     const authed = await getAuthedEmail();
     if (!authed) return { ok:false, reason:'Log in to apply store credit.' };
 
     if (authed !== typed) {
-      return { ok:false, reason:`Store credit is tied to your logged-in email (${authed}).` };
+      return { ok:false, reason:`Credit is tied to your logged-in email (${authed}).` };
     }
 
     return { ok:true, reason:'' };
@@ -296,7 +342,7 @@
     if (cart[index].sema_form === 'vial') cart[index].pen_heads = "";
     saveCartToStorage();
     renderOrderSummary();
-    scheduleCreditPreviewFetch(); // ✅ re-check credit after changes
+    scheduleCreditPreviewFetch();
   }
 
   function setAccessory(index, field, value) {
@@ -306,7 +352,7 @@
     if (field === 'syringes')  cart[index].syringes  = v;
     saveCartToStorage();
     renderOrderSummary();
-    scheduleCreditPreviewFetch(); // ✅ re-check credit after changes
+    scheduleCreditPreviewFetch();
   }
 
   function validateAccessories() {
@@ -339,33 +385,37 @@
   // ---------- CREDIT ----------
   async function getCreditBalance(email) {
     const e = (email || '').trim().toLowerCase();
-    if (!e) return 0;
+    if (!e) return { balance: 0, errorText: '' };
 
     const toNum = (v) => {
       const n = Number(v);
       return Number.isFinite(n) ? n : 0;
     };
 
-    // customers (lower-case) credit_balance
-    const r1 = await supabaseClient
-      .from('customers')
-      .select('credit_balance')
-      .eq('email', e)
-      .maybeSingle();
+    // Try customers first
+    try {
+      const r1 = await supabaseClient
+        .from('customers')
+        .select('credit_balance')
+        .eq('email', e)
+        .maybeSingle();
 
-    if (r1.error) {
-      // ✅ surface the real reason in console (RLS etc)
-      console.warn('[credit] blocked:', r1.error.message);
-      return 0;
+      if (r1.error) {
+        // This is the BIG one: RLS/table/column mismatch – show it
+        return { balance: 0, errorText: `Credit lookup blocked: ${r1.error.message || r1.error.code || 'unknown error'}` };
+      }
+
+      return { balance: r1.data ? toNum(r1.data.credit_balance) : 0, errorText: '' };
+    } catch (err) {
+      return { balance: 0, errorText: 'Credit lookup failed (network/script error).' };
     }
-
-    return r1.data ? toNum(r1.data.credit_balance) : 0;
   }
 
   async function applyCreditToTotal(email, rawTotal) {
-    const balance = await getCreditBalance(email);
+    const res = await getCreditBalance(email);
+    const balance = res.balance;
     const use = Math.max(0, Math.min(balance, rawTotal));
-    return { balance, use, final: rawTotal - use };
+    return { balance, use, final: rawTotal - use, errorText: res.errorText || '' };
   }
 
   // ---------- PRICE SYNC ----------
@@ -722,32 +772,29 @@
   async function scheduleCreditPreviewFetch() {
     clearTimeout(creditFetchTimer);
     creditFetchTimer = setTimeout(async () => {
-      const email = (document.getElementById('email').value || '').trim().toLowerCase();
-      const statusEl = document.getElementById('credit-status');
+      const emailEl = document.getElementById('email');
+      const email = (emailEl?.value || '').trim().toLowerCase();
 
-      // reset
       lastCreditEmail = email;
       lastCreditBalance = 0;
       lastCreditUsed = 0;
 
+      // Always show some hint instead of blank
       if (!email) {
-        statusEl.textContent = '';
-        statusEl.className = 'small text-muted mt-1';
+        await setCreditHint();
         renderOrderSummary();
         return;
       }
 
-      // ✅ gate credit usage to logged-in matching email
+      // Gate credit usage to logged-in matching email
       const gate = await canUseCreditForEmail(email);
       if (!gate.ok) {
-        statusEl.textContent = gate.reason || '';
-        statusEl.className = gate.reason ? 'small text-warning mt-1' : 'small text-muted mt-1';
-        renderOrderSummary(); // show normal totals
+        await setCreditHint(gate.reason, 'small text-warning mt-1');
+        renderOrderSummary();
         return;
       }
 
-      statusEl.textContent = 'Checking for credit...';
-      statusEl.className = 'small text-muted mt-1';
+      await setCreditHint('Checking for credit…', 'small text-muted mt-1');
 
       try {
         const bundle = calculateBundle(cart);
@@ -755,25 +802,29 @@
 
         const credit = await applyCreditToTotal(email, totalBeforeCredit);
 
+        if (credit.errorText) {
+          // If RLS is blocking, show it right under the email so you KNOW what’s wrong
+          await setCreditHint(credit.errorText, 'small text-danger mt-1');
+          renderOrderSummary(); // no credit
+          return;
+        }
+
         lastCreditBalance = credit.balance;
         lastCreditUsed = credit.use;
 
         if (credit.balance > 0) {
-          statusEl.textContent = `Credit found: ${money(credit.balance)} (auto-applied)`;
-          statusEl.className = 'small text-success mt-1';
+          await setCreditHint(`Credit found: ${money(credit.balance)} (auto-applied)`, 'small text-success mt-1');
         } else {
-          statusEl.textContent = 'No credit available.';
-          statusEl.className = 'small text-muted mt-1';
+          await setCreditHint('No credit available.', 'small text-muted mt-1');
         }
 
         renderOrderSummary(credit.final, credit.use);
       } catch (e) {
         console.error('[credit] preview error', e);
-        statusEl.textContent = '';
-        statusEl.className = 'small text-muted mt-1';
+        await setCreditHint('Credit lookup failed (see console).', 'small text-danger mt-1');
         renderOrderSummary();
       }
-    }, 350);
+    }, 250);
   }
 
   const checkoutStatus = document.getElementById('checkout-status');
@@ -818,19 +869,24 @@
       const totalBeforeCredit = bundle.finalTotal;
 
       const creditEmail = email.trim().toLowerCase();
-
-      // ✅ gate credit on submit too
       const gate = await canUseCreditForEmail(creditEmail);
 
       let creditUsed = 0;
       if (gate.ok) {
         const credit = await applyCreditToTotal(creditEmail, totalBeforeCredit);
-        lastCreditBalance = credit.balance;
-        creditUsed = credit.use;
-        lastCreditUsed = creditUsed;
-        total = credit.final;
+
+        if (credit.errorText) {
+          // If RLS is blocking, do NOT pretend credit is 0—tell you why
+          await setCreditHint(credit.errorText, 'small text-danger mt-1');
+          lastCreditUsed = 0;
+          total = totalBeforeCredit;
+        } else {
+          lastCreditBalance = credit.balance;
+          creditUsed = credit.use;
+          lastCreditUsed = creditUsed;
+          total = credit.final;
+        }
       } else {
-        lastCreditBalance = 0;
         lastCreditUsed = 0;
         total = totalBeforeCredit;
       }
@@ -915,11 +971,18 @@
     await syncCartPricesFromSupabase();
     renderOrderSummary();
 
+    // Auto-fill email with logged-in email if empty (this stops your “blank email = no message” issue)
     const emailEl = document.getElementById('email');
+    const authed = await getAuthedEmail();
+    if (emailEl && authed && !String(emailEl.value || '').trim()) {
+      emailEl.value = authed;
+    }
+
     emailEl.addEventListener('input', scheduleCreditPreviewFetch);
     emailEl.addEventListener('blur', scheduleCreditPreviewFetch);
 
-    // ✅ run once on load (if browser autofilled email)
+    // Always show a hint on load
+    await setCreditHint();
     scheduleCreditPreviewFetch();
   })();
 </script>
