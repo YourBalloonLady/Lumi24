@@ -730,7 +730,11 @@
 ===================================================== */
 
 function getOrderReferralCode(order){
-  return String(order?.details?.meta?.referral_code || "").trim();
+  return String(
+    order?.details?.meta?.referral_code ||
+    order?.referral_code ||
+    ""
+  ).trim().toUpperCase();
 }
 
 function isPaidLikeStatus(status=""){
@@ -1675,7 +1679,7 @@ async function findCustomerByReferralCode(code){
       if(String(value || "").toLowerCase() === "paid"){
         try{
           await awardCreditForPaidOrder(id);
-          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
+          const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
           if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
         }catch(e){
           console.error("Credit award failed", e);
@@ -2060,7 +2064,7 @@ async function findCustomerByReferralCode(code){
         // award credit (idempotent)
         try{
           await awardCreditForPaidOrder(orderId);
-          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
+          const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
           if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
         }catch(e){
           console.error("Credit award failed", e);
