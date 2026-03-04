@@ -194,31 +194,172 @@
   emailjs.init('uZOuTrBdIAc6AmKjo');
 
   const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-  // ✅ RESTORED EXACTLY from your original message
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
-  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  // ✅ important: make session persistence explicit
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
 
   let cart = [];
   let total = 0;
+  let discountApplied = 0;
+  let lastBundleFinal = 0;
+
   let lastCreditEmail = '';
   let lastCreditBalance = 0;
   let lastCreditUsed = 0;
 
   function money(n){ return `£${Number(n || 0).toFixed(2)}`; }
 
-  // ---------- CREDIT (NOW SHOWS REAL ERRORS) ----------
+  (function captureReferralOnCheckout(){
+    const p = new URLSearchParams(location.search);
+    const ref = (p.get('ref') || '').trim().toUpperCase();
+    if (ref) localStorage.setItem('referral_code', ref);
+  })();
+
+  // ---------- AUTH / CREDIT GUARD ----------
+  async function getAuthedEmail() {
+    try {
+      const { data, error } = await supabaseClient.auth.getUser();
+      if (error) return null;
+      const e = data?.user?.email ? String(data.user.email).toLowerCase() : null;
+      return e || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // ✅ Only allow credit when logged in AND email matches logged-in email
+  async function canUseCreditForEmail(typedEmail) {
+    const typed = String(typedEmail || '').trim().toLowerCase();
+    if (!typed) return { ok:false, reason:'' };
+
+    const authed = await getAuthedEmail();
+    if (!authed) return { ok:false, reason:'Log in to apply store credit.' };
+
+    if (authed !== typed) {
+      return { ok:false, reason:`Store credit is tied to your logged-in email (${authed}).` };
+    }
+
+    return { ok:true, reason:'' };
+  }
+
+  // ---------- ACCESSORY RULES ----------
+  function isSemaglutide(name){
+    const n = (name || '').toLowerCase();
+    return n.includes('semaglutide') || n.includes('sema');
+  }
+
+  function isPenItem(itemOrName) {
+    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+    const name = item ? (item.name || '') : (itemOrName || '');
+    const n = String(name).toLowerCase();
+
+    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+    if (semaForm === 'pen') return true;
+
+    const form = item ? String(item.form || item.type || item.format || item.variant || '').toLowerCase() : '';
+    if (form.includes('pen')) return true;
+
+    return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
+  }
+
+  function isVialItem(itemOrName) {
+    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+    const name = item ? (item.name || '') : (itemOrName || '');
+    const n = String(name).toLowerCase();
+
+    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+    if (semaForm === 'vial') return true;
+
+    const form = item ? String(item.form || item.type || item.format || item.variant || '').toLowerCase() : '';
+    if (form.includes('vial')) return true;
+
+    return n.includes('vial');
+  }
+
+  function extraLabel(item) {
+    if (isPenItem(item) && item.pen_heads) return ` (Pen heads: ${item.pen_heads === 'none' ? 'None required' : item.pen_heads})`;
+    if (isVialItem(item) && item.syringes) return ` (Syringes: ${item.syringes === 'none' ? 'None required' : item.syringes})`;
+    return '';
+  }
+
+  function saveCartToStorage() {
+    try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (e) {}
+  }
+
+  function setSemaForm(index, value){
+    if (!cart[index]) return;
+    cart[index].sema_form = String(value || '').trim();
+    if (cart[index].sema_form === 'pen') cart[index].syringes = "";
+    if (cart[index].sema_form === 'vial') cart[index].pen_heads = "";
+    saveCartToStorage();
+    renderOrderSummary();
+    scheduleCreditPreviewFetch(); // ✅ re-check credit after changes
+  }
+
+  function setAccessory(index, field, value) {
+    if (!cart[index]) return;
+    const v = (value || '').trim();
+    if (field === 'pen_heads') cart[index].pen_heads = v;
+    if (field === 'syringes')  cart[index].syringes  = v;
+    saveCartToStorage();
+    renderOrderSummary();
+    scheduleCreditPreviewFetch(); // ✅ re-check credit after changes
+  }
+
+  function validateAccessories() {
+    const missing = [];
+
+    cart.forEach((item) => {
+      const n = (item?.name || '').toLowerCase();
+
+      const sema = isSemaglutide(n);
+      const clearlyPen  = isPenItem(item);
+      const clearlyVial = isVialItem(item);
+      const needsSemaChoice = sema && !clearlyPen && !clearlyVial;
+
+      if (needsSemaChoice && !String(item.sema_form || '').trim()) {
+        missing.push(`Select Semaglutide type for: ${item.name}`);
+        return;
+      }
+
+      if (isPenItem(item) && !String(item.pen_heads || '').trim()) {
+        missing.push(`Select Pen heads for: ${item.name}`);
+      }
+      if (isVialItem(item) && !String(item.syringes || '').trim()) {
+        missing.push(`Select Syringes for: ${item.name}`);
+      }
+    });
+
+    return missing;
+  }
+
+  // ---------- CREDIT ----------
   async function getCreditBalance(email) {
     const e = (email || '').trim().toLowerCase();
     if (!e) return 0;
 
-    const { data, error } = await supabaseClient
+    const toNum = (v) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : 0;
+    };
+
+    // customers (lower-case) credit_balance
+    const r1 = await supabaseClient
       .from('customers')
       .select('credit_balance')
       .eq('email', e)
       .maybeSingle();
 
-    if (error) throw error; // ✅ stop hiding the reason
-    return Number(data?.credit_balance || 0);
+    if (r1.error) {
+      // ✅ surface the real reason in console (RLS etc)
+      console.warn('[credit] blocked:', r1.error.message);
+      return 0;
+    }
+
+    return r1.data ? toNum(r1.data.credit_balance) : 0;
   }
 
   async function applyCreditToTotal(email, rawTotal) {
@@ -227,32 +368,84 @@
     return { balance, use, final: rawTotal - use };
   }
 
-  // ---------- BUNDLE ----------
+  // ---------- PRICE SYNC ----------
+  async function syncCartPricesFromSupabase() {
+    try {
+      const ids = cart.map(i => i.id).filter(Boolean);
+      if (!ids.length) return;
+
+      const { data, error } = await supabaseClient
+        .from('Products')
+        .select('id, name, price')
+        .in('id', ids);
+
+      if (error) {
+        console.error('Price sync failed:', error);
+        return;
+      }
+
+      const map = new Map((data || []).map(p => [p.id, p]));
+      cart = cart.map(item => {
+        const p = map.get(item.id);
+        if (!p) return item;
+        return { ...item, name: p.name || item.name, price: Number(p.price || 0) };
+      });
+
+      saveCartToStorage();
+    } catch (e) {
+      console.error('Unexpected price sync error:', e);
+    }
+  }
+
+  // ---------- BUNDLE CALCULATOR ----------
   function calculateBundle(cart) {
+    let vialQty = 0, penQty = 0;
+    let vialTotal = 0, penTotal = 0;
+
     let totalQty = 0;
     let baseTotal = 0;
 
     cart.forEach(item => {
       const qty  = Number(item.qty || 0);
       const line = Number(item.price || 0) * qty;
+      const name = (item.name || '').toLowerCase();
+
       totalQty += qty;
       baseTotal += line;
+
+      if (name.includes('vial') || isVialItem(item)) {
+        vialQty += qty; vialTotal += line;
+      } else if (name.includes('pen') || isPenItem(item)) {
+        penQty += qty; penTotal += line;
+      }
     });
 
-    let discount = 0;
-    let msg = '';
+    let categoryDiscount = 0;
+    const categoryMessages = [];
 
-    if (totalQty >= 3) { discount = baseTotal * 0.10; msg = '10% bundle discount applied (any 3+ items).'; }
-    else if (totalQty === 2) { discount = baseTotal * 0.05; msg = '5% bundle discount applied (any 2 items).'; }
+    if (vialQty >= 3) { categoryDiscount += vialTotal * 0.10; categoryMessages.push('10% multi-vial bundle discount applied.'); }
+    else if (vialQty === 2) { categoryDiscount += vialTotal * 0.05; categoryMessages.push('5% vial bundle discount applied (2 vials).'); }
+
+    if (penQty >= 3) { categoryDiscount += penTotal * 0.10; categoryMessages.push('10% pen bundle discount applied (3+ pens).'); }
+    else if (penQty === 2) { categoryDiscount += penTotal * 0.05; categoryMessages.push('5% pen bundle discount applied (2 pens).'); }
+
+    let cartDiscount = 0;
+    let cartMessage = '';
+
+    if (totalQty >= 3) { cartDiscount = baseTotal * 0.10; cartMessage = '10% bundle discount applied (any 3+ items).'; }
+    else if (totalQty === 2) { cartDiscount = baseTotal * 0.05; cartMessage = '5% bundle discount applied (any 2 items).'; }
+
+    let discount = 0;
+    const messages = [];
+
+    if (cartDiscount >= categoryDiscount && cartDiscount > 0) { discount = cartDiscount; messages.push(cartMessage); }
+    else if (categoryDiscount > 0) { discount = categoryDiscount; messages.push(...categoryMessages); }
 
     const finalTotal = Math.max(0, baseTotal - discount);
-    return { baseTotal, discount, finalTotal, messages: msg ? [msg] : [] };
+    return { baseTotal, discount, finalTotal, messages };
   }
 
-  function saveCartToStorage() {
-    try { localStorage.setItem('cart', JSON.stringify(cart)); } catch (e) {}
-  }
-
+  // ---------- CART LOAD ----------
   function getCartFromUrlOrStorage() {
     const params = new URLSearchParams(window.location.search);
     const urlCart = params.get('cart');
@@ -261,30 +454,100 @@
         const parsed = JSON.parse(decodeURIComponent(urlCart));
         localStorage.setItem('cart', JSON.stringify(parsed));
         return parsed;
-      } catch (e) {}
+      } catch (e) {
+        console.error('Error parsing cart from URL', e);
+      }
     }
     try {
       const saved = localStorage.getItem('cart');
       if (saved) return JSON.parse(saved);
-    } catch (e) {}
+    } catch (e) {
+      console.error('Error reading cart from localStorage', e);
+    }
     return [];
+  }
+
+  function accessoryDropdownHTML(item, index) {
+    const n = String(item?.name || '').toLowerCase();
+    const sema = isSemaglutide(n);
+
+    const penDetected = isPenItem(item);
+    const vialDetected = isVialItem(item);
+
+    if (sema && !penDetected && !vialDetected) {
+      const currentForm = item.sema_form ? String(item.sema_form) : '';
+      return `
+        <div class="addon-row d-flex align-items-center justify-content-between">
+          <label class="m-0">Semaglutide type <span class="text-danger">*</span></label>
+          <select class="form-select form-select-sm" style="max-width: 220px;" required
+            onchange="setSemaForm(${index}, this.value)">
+            <option value="" ${currentForm === '' ? 'selected' : ''} disabled>Select…</option>
+            <option value="pen" ${currentForm === 'pen' ? 'selected' : ''}>Pen (needs pen heads)</option>
+            <option value="vial" ${currentForm === 'vial' ? 'selected' : ''}>Vial (needs syringes)</option>
+          </select>
+        </div>
+        ${currentForm ? accessoryDropdownHTML({ ...item, sema_form: currentForm }, index) : ''}
+      `;
+    }
+
+    if (isPenItem(item)) {
+      const current = item.pen_heads ? String(item.pen_heads) : '';
+      return `
+        <div class="addon-row d-flex align-items-center justify-content-between">
+          <label class="m-0">Pen heads <span class="text-danger">*</span></label>
+          <select class="form-select form-select-sm" style="max-width: 180px;" required
+            onchange="setAccessory(${index}, 'pen_heads', this.value)">
+            <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
+            <option value="none" ${current === 'none' ? 'selected' : ''}>None required</option>
+            <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
+            <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
+          </select>
+        </div>
+      `;
+    }
+
+    if (isVialItem(item)) {
+      const current = item.syringes ? String(item.syringes) : '';
+      return `
+        <div class="addon-row d-flex align-items-center justify-content-between">
+          <label class="m-0">Syringes <span class="text-danger">*</span></label>
+          <select class="form-select form-select-sm" style="max-width: 180px;" required
+            onchange="setAccessory(${index}, 'syringes', this.value)">
+            <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
+            <option value="none" ${current === 'none' ? 'selected' : ''}>None required</option>
+            <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
+            <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
+          </select>
+        </div>
+      `;
+    }
+
+    return '';
   }
 
   function renderOrderSummary(payableOverride = null, creditUsedOverride = null) {
     const bundle = calculateBundle(cart);
+    lastBundleFinal = bundle.finalTotal;
+    discountApplied = bundle.discount;
 
-    document.getElementById('order-summary').innerHTML = cart.map(i => `
+    const summaryEl       = document.getElementById('order-summary');
+    const totalEl         = document.getElementById('final-total');
+    const bundleRow       = document.getElementById('bundle-row');
+    const bundleAmountEl  = document.getElementById('bundle-amount');
+    const bundleMessageEl = document.getElementById('bundle-message');
+
+    const creditRow = document.getElementById('credit-row');
+    const creditAmount = document.getElementById('credit-amount');
+
+    summaryEl.innerHTML = cart.map((i, idx) => `
       <div class="py-2 border-bottom">
         <div class="d-flex justify-content-between">
-          <span>${i.qty} × ${i.name}</span>
+          <span>${i.qty} × ${i.name}${extraLabel(i)}</span>
           <span>£${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}</span>
         </div>
+        ${accessoryDropdownHTML(i, idx)}
       </div>
     `).join('');
-
-    const bundleRow = document.getElementById('bundle-row');
-    const bundleAmountEl = document.getElementById('bundle-amount');
-    const bundleMessageEl = document.getElementById('bundle-message');
 
     if (bundle.discount > 0) {
       bundleRow.style.display = 'flex';
@@ -295,9 +558,6 @@
       bundleAmountEl.textContent = '-£0.00';
       bundleMessageEl.textContent = '';
     }
-
-    const creditRow = document.getElementById('credit-row');
-    const creditAmount = document.getElementById('credit-amount');
 
     const creditToShow = (typeof creditUsedOverride === 'number' && isFinite(creditUsedOverride))
       ? creditUsedOverride
@@ -316,41 +576,173 @@
       : bundle.finalTotal;
 
     total = shownTotal;
-    document.getElementById('final-total').textContent = `£${shownTotal.toFixed(2)}`;
+    totalEl.textContent = `£${shownTotal.toFixed(2)}`;
   }
 
+  function buildItemsText() {
+    if (!cart.length) return 'No items (cart empty).';
+    return cart.map(i =>
+      `${i.qty} × ${i.name}${extraLabel(i)} — £${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}`
+    ).join('\n');
+  }
+
+  function buildAddressText(details) {
+    return [details.address1, details.address2, details.city, details.postcode].filter(Boolean).join('\n');
+  }
+
+  function clearStoredCart() {
+    try { localStorage.removeItem('cart'); } catch (e) {}
+  }
+
+  async function saveOrderToSupabase(details, creditEmail, creditUsed) {
+    try {
+      const { data, error } = await supabaseClient.auth.getUser();
+      const userId = (error || !data || !data.user) ? null : data.user.id;
+
+      const orderDetails = {
+        customer: {
+          name: details.name,
+          email: details.email,
+          phone: details.phone,
+          address1: details.address1,
+          address2: details.address2,
+          city: details.city,
+          postcode: details.postcode
+        },
+        items: cart.map(i => ({
+          id: i.id || null,
+          name: i.name,
+          qty: i.qty,
+          price_each: Number(i.price || 0),
+          line_total: Number(i.price || 0) * Number(i.qty || 0),
+          pen_heads: i.pen_heads || "",
+          syringes: i.syringes || "",
+          sema_form: i.sema_form || ""
+        })),
+        reference: details.ref
+      };
+
+      orderDetails.meta = orderDetails.meta || {};
+      orderDetails.meta.referral_code = (localStorage.getItem('referral_code') || null);
+
+      const { error: insertError } = await supabaseClient
+        .from('Orders')
+        .insert({
+          user_id: userId,
+          total_amount: Number(total || 0),
+          status: 'Pending',
+          reference: details.ref,
+          details: orderDetails,
+          referral_code: (localStorage.getItem('referral_code') || null),
+          credit_used: Number(creditUsed || 0),
+          credit_email: (creditEmail || null)
+        });
+
+      if (insertError) console.error('Error saving order to Supabase:', insertError);
+    } catch (err) {
+      console.error('Unexpected error saving order to Supabase:', err);
+    }
+  }
+
+  async function logReferralEventIfAny(orderRef, buyerEmail, orderTotalBeforeCredit) {
+    const code = (localStorage.getItem('referral_code') || '').trim().toUpperCase();
+    if (!code) return;
+
+    await supabaseClient
+      .from('ReferralEvents')
+      .insert({
+        referral_code: code,
+        referred_email: String(buyerEmail || '').toLowerCase(),
+        order_reference: orderRef,
+        order_total: Number(orderTotalBeforeCredit || 0),
+        credit_amount: 10,
+        status: 'pending'
+      });
+  }
+
+  async function deductStock(cartItems) {
+    try {
+      const ids = cartItems.map(i => i.id).filter(Boolean);
+      if (!ids.length) return;
+
+      const { data: products, error: fetchError } = await supabaseClient
+        .from('Products')
+        .select('id, stock')
+        .in('id', ids);
+
+      if (fetchError) {
+        console.error('Error fetching products:', fetchError);
+        return;
+      }
+
+      for (const cartItem of cartItems) {
+        const product = (products || []).find(p => p.id === cartItem.id);
+        if (!product) continue;
+
+        const newStock = Math.max(0, (product.stock || 0) - Number(cartItem.qty || 0));
+
+        const { error: updateError } = await supabaseClient
+          .from('Products')
+          .update({ stock: newStock })
+          .eq('id', product.id);
+
+        if (updateError) console.error(`Error updating stock for ${cartItem.name}:`, updateError);
+      }
+    } catch (err) {
+      console.error('Unexpected error deducting stock:', err);
+    }
+  }
+
+  function sendAdminEmail(details) {
+    return emailjs.send('service_i5zi096', 'template_juevvvd', {
+      to_email: 'luminaweight@gmail.com',
+      customer_name: details.name,
+      customer_phone: details.phone,
+      customer_address: buildAddressText(details),
+      order_reference: details.ref,
+      order_items: buildItemsText(),
+      order_total: `£${Number(total || 0).toFixed(2)}`
+    });
+  }
+
+  function sendCustomerEmail(details) {
+    return emailjs.send('service_i5zi096', 'template_x5lnd1u', {
+      to_email: details.email,
+      customer_email: details.email,
+      customer_name: details.name,
+      customer_address: buildAddressText(details),
+      order_reference: details.ref,
+      order_items: buildItemsText(),
+      order_total: `£${Number(total || 0).toFixed(2)}`
+    });
+  }
+
+  // ---------- CREDIT PREVIEW ----------
   let creditFetchTimer = null;
-  function scheduleCreditPreviewFetch() {
+  async function scheduleCreditPreviewFetch() {
     clearTimeout(creditFetchTimer);
     creditFetchTimer = setTimeout(async () => {
+      const email = (document.getElementById('email').value || '').trim().toLowerCase();
       const statusEl = document.getElementById('credit-status');
-      const typedEmail = (document.getElementById('email').value || '').trim().toLowerCase();
 
-      if (!typedEmail) {
+      // reset
+      lastCreditEmail = email;
+      lastCreditBalance = 0;
+      lastCreditUsed = 0;
+
+      if (!email) {
         statusEl.textContent = '';
         statusEl.className = 'small text-muted mt-1';
-        lastCreditUsed = 0;
         renderOrderSummary();
         return;
       }
 
-      // show whether session exists (THIS is usually the real problem)
-      const { data: sess } = await supabaseClient.auth.getSession();
-      const sessionEmail = sess?.session?.user?.email?.toLowerCase() || null;
-
-      if (!sessionEmail) {
-        statusEl.textContent = 'No session on checkout (user not logged in on this page). Credit will be £0.00.';
-        statusEl.className = 'small text-warning mt-1';
-        lastCreditUsed = 0;
-        renderOrderSummary();
-        return;
-      }
-
-      if (sessionEmail !== typedEmail) {
-        statusEl.textContent = `Signed in as ${sessionEmail}. Credit won’t apply to ${typedEmail}.`;
-        statusEl.className = 'small text-warning mt-1';
-        lastCreditUsed = 0;
-        renderOrderSummary();
+      // ✅ gate credit usage to logged-in matching email
+      const gate = await canUseCreditForEmail(email);
+      if (!gate.ok) {
+        statusEl.textContent = gate.reason || '';
+        statusEl.className = gate.reason ? 'small text-warning mt-1' : 'small text-muted mt-1';
+        renderOrderSummary(); // show normal totals
         return;
       }
 
@@ -359,9 +751,10 @@
 
       try {
         const bundle = calculateBundle(cart);
-        const credit = await applyCreditToTotal(sessionEmail, bundle.finalTotal);
+        const totalBeforeCredit = bundle.finalTotal;
 
-        lastCreditEmail = sessionEmail;
+        const credit = await applyCreditToTotal(email, totalBeforeCredit);
+
         lastCreditBalance = credit.balance;
         lastCreditUsed = credit.use;
 
@@ -369,23 +762,138 @@
           statusEl.textContent = `Credit found: ${money(credit.balance)} (auto-applied)`;
           statusEl.className = 'small text-success mt-1';
         } else {
-          statusEl.textContent = 'No credit found for this account.';
+          statusEl.textContent = 'No credit available.';
           statusEl.className = 'small text-muted mt-1';
         }
 
         renderOrderSummary(credit.final, credit.use);
-      } catch (err) {
-        // ✅ THIS will now show you the real blocker (usually RLS)
-        statusEl.textContent = `Credit lookup blocked: ${err.message || String(err)}`;
-        statusEl.className = 'small text-danger mt-1';
-        lastCreditUsed = 0;
+      } catch (e) {
+        console.error('[credit] preview error', e);
+        statusEl.textContent = '';
+        statusEl.className = 'small text-muted mt-1';
         renderOrderSummary();
-        console.error('Credit lookup error:', err);
       }
-    }, 300);
+    }, 350);
   }
 
-  function backToShop() { window.location.href = 'index.html'; }
+  const checkoutStatus = document.getElementById('checkout-status');
+
+  document.getElementById('addressForm').onsubmit = async function(e) {
+    e.preventDefault();
+
+    const btn = this.querySelector('button[type="submit"]');
+
+    const name = document.getElementById('fullName').value.trim() || 'Customer';
+    const phone = document.getElementById('phone').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const address1 = document.getElementById('address1').value.trim();
+    const address2 = document.getElementById('address2').value.trim();
+    const city = document.getElementById('city').value.trim();
+    const postcode = document.getElementById('postcode').value.trim();
+    const ref = 'LW' + Date.now().toString().slice(-6);
+
+    if (!email || !cart.length) {
+      checkoutStatus.textContent = 'Please ensure your cart and email are valid.';
+      checkoutStatus.className = 'small text-danger mt-2';
+      return;
+    }
+
+    const missing = validateAccessories();
+    if (missing.length) {
+      checkoutStatus.textContent = missing[0];
+      checkoutStatus.className = 'small text-danger mt-2';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+    checkoutStatus.textContent = '';
+    checkoutStatus.className = 'small text-muted mt-2';
+
+    try {
+      await syncCartPricesFromSupabase();
+
+      const bundle = calculateBundle(cart);
+      discountApplied = bundle.discount;
+      const totalBeforeCredit = bundle.finalTotal;
+
+      const creditEmail = email.trim().toLowerCase();
+
+      // ✅ gate credit on submit too
+      const gate = await canUseCreditForEmail(creditEmail);
+
+      let creditUsed = 0;
+      if (gate.ok) {
+        const credit = await applyCreditToTotal(creditEmail, totalBeforeCredit);
+        lastCreditBalance = credit.balance;
+        creditUsed = credit.use;
+        lastCreditUsed = creditUsed;
+        total = credit.final;
+      } else {
+        lastCreditBalance = 0;
+        lastCreditUsed = 0;
+        total = totalBeforeCredit;
+      }
+
+      renderOrderSummary(total, lastCreditUsed);
+
+      const details = { name, phone, email, address1, address2, city, postcode, ref };
+
+      await logReferralEventIfAny(ref, email, totalBeforeCredit);
+      await saveOrderToSupabase(details, gate.ok ? creditEmail : null, creditUsed);
+      await deductStock(cart);
+
+      await Promise.allSettled([ sendAdminEmail(details), sendCustomerEmail(details) ]);
+
+      document.getElementById('customerName').textContent = name;
+      document.getElementById('payment-summary').innerHTML = cart.map(i => `
+        <div class="d-flex justify-content-between">
+          <span>${i.qty} × ${i.name}${extraLabel(i)}</span>
+          <span>£${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
+      document.getElementById('order-ref').textContent = ref;
+
+      const paymentDiscountEl = document.getElementById('payment-discount');
+      if (bundle.discount > 0) {
+        paymentDiscountEl.style.display = 'block';
+        paymentDiscountEl.textContent = `Bundle discount applied: -£${bundle.discount.toFixed(2)}`;
+      } else {
+        paymentDiscountEl.style.display = 'none';
+        paymentDiscountEl.textContent = '';
+      }
+
+      const paymentCreditEl = document.getElementById('payment-credit');
+      if (creditUsed > 0) {
+        paymentCreditEl.style.display = 'block';
+        paymentCreditEl.textContent = `Credit applied: -£${Number(creditUsed).toFixed(2)}`;
+      } else {
+        paymentCreditEl.style.display = 'none';
+        paymentCreditEl.textContent = '';
+      }
+
+      new bootstrap.Modal(document.getElementById('paymentModal')).show();
+
+      clearStoredCart();
+
+      checkoutStatus.textContent = "We've emailed your payment instructions.";
+      checkoutStatus.className = 'small text-success mt-2';
+
+    } catch (err) {
+      console.error('Checkout flow error', err);
+      checkoutStatus.textContent = 'There was a problem handling your order. Please try again.';
+      checkoutStatus.className = 'small text-danger mt-2';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Confirm order → Payment details';
+    }
+  };
+
+  function backToShop() {
+    window.location.href = 'index.html';
+  }
 
   (async function initCheckout() {
     cart = getCartFromUrlOrStorage();
@@ -396,15 +904,23 @@
       return;
     }
 
+    cart = cart.map(i => ({
+      ...i,
+      pen_heads: i.pen_heads || "",
+      syringes: i.syringes || "",
+      sema_form: i.sema_form || ""
+    }));
     saveCartToStorage();
+
+    await syncCartPricesFromSupabase();
     renderOrderSummary();
 
     const emailEl = document.getElementById('email');
     emailEl.addEventListener('input', scheduleCreditPreviewFetch);
     emailEl.addEventListener('blur', scheduleCreditPreviewFetch);
 
-    // fire once if browser autofills email
-    setTimeout(scheduleCreditPreviewFetch, 150);
+    // ✅ run once on load (if browser autofilled email)
+    scheduleCreditPreviewFetch();
   })();
 </script>
 
