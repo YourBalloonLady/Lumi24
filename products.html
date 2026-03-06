@@ -147,6 +147,9 @@
     .pill-premium { background: #6366f1; }
     .pill-best-value { background: #f97316; }
     .pill-wolverine { background: #111827; }
+    .pill-restock {
+  background: #0ea5e9;
+}
 
     .stock { font-size: 0.9rem; margin-top: 4px; }
     .btn-add { border-radius: 999px; font-weight: 600; padding-inline: 24px; margin-top: 10px; }
@@ -538,6 +541,11 @@
 
       listEl.innerHTML = products.map((p, i) => {
         const badge = computeBadge(p);
+        let restockBadge = null;
+
+if (p.name.includes('60mg Tirz')) {
+  restockBadge = { text: 'Back Monday', class: 'pill-restock' };
+}
         const nameLower = (p.name || '').toLowerCase();
         const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
 
@@ -580,6 +588,7 @@
           <div class="col-md-3">
             <div class="position-relative h-100 product-card ${stockNum===0?'out-of-stock':''}" onclick="${stockNum>0?'openModal('+i+')':''}">
               ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
+${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16px; right:auto;">${restockBadge.text}</span>` : ''}
               <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
               <div class="product-body d-flex flex-column">
                 <div class="text-start">
