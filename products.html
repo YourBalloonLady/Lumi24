@@ -324,30 +324,38 @@
   <section class="hero text-center">
     <div class="container">
       <div class="hero-eyebrow">
-        <i class="fa-solid fa-vial-circle-check"></i>
-        Full Research Materials Range
-      </div>
-      <h1 class="hero-title">All Lumina Products</h1>
-      <p class="hero-subtitle">
-        Browse every available product format and quantity.
-        All items are supplied strictly for <strong>laboratory research use only</strong> and are <strong>not for human consumption</strong>.
-      </p>
+<i class="fa-solid fa-vial-circle-check"></i>
+UK Research Materials Catalogue
+</div>
+
+<h1 class="hero-title">All Lumina Products</h1>
+
+<p class="hero-subtitle">
+Browse the full Lumina range of laboratory research materials supplied from the UK.
+Orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
+<br><br>
+All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
+</p>
     </div>
   </section>
 
   <section id="products">
     <div class="container">
       <div class="text-center mb-4">
-        <div class="section-eyebrow">All Product Options</div>
-        <h2 class="section-title">Choose Your Format</h2>
-        <p class="section-subtitle">
-          Select the format that fits your laboratory requirements.
-          All products are supplied for <strong>research use only</strong>.
-        </p>
-        <p class="text-muted small mt-2">
-          <strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
-          <strong>No medical guidance is provided and nothing on this site is intended for human use.</strong>
-        </p>
+        <div class="section-eyebrow">Research Materials</div>
+
+<h2 class="section-title">Choose Your Format</h2>
+
+<p class="section-subtitle">
+Lumina supplies research materials in multiple formats depending on laboratory requirements.
+Each product listing displays the available format, stock level and price.
+</p>
+
+<p class="text-muted small mt-2">
+<strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
+<strong>Lumina does not provide dosing, administration or medical guidance.</strong><br>
+<strong>All products are supplied strictly for laboratory research use only.</strong>
+</p>
       </div>
 
       <div id="all-products-status" class="text-center text-muted mb-3">
@@ -364,9 +372,9 @@
         <div class="section-eyebrow">Support</div>
         <h2 class="section-title">Shipping, Policies & Documentation</h2>
         <p class="section-subtitle">
-          Helpful information about dispatch, delivery, and site policies.
-          All information is general and for administrative purposes only.
-        </p>
+Helpful information regarding dispatch, delivery and Lumina site policies.
+All information provided on this website is administrative in nature and does not constitute medical guidance.
+</p>
       </div>
 
       <div class="row g-4">
@@ -374,7 +382,10 @@
           <div class="info-card h-100 text-center">
             <div class="info-icon mb-3"><i class="fa-solid fa-file-lines"></i></div>
             <h5 class="fw-semibold mb-2">Product Notes</h5>
-            <p class="small mb-3">General product notes and handling reminders for laboratory environments. No medical guidance.</p>
+            <p class="small mb-3">
+General product notes and handling reminders for laboratory environments.
+Lumina does not provide dosing, administration or medical advice.
+</p>
             <a href="disclaimer.html" class="btn-info-link">Read now</a>
           </div>
         </div>
@@ -409,7 +420,7 @@
 
   <footer class="text-center">
     <div class="container">
-      <p class="mb-0">© 2025 Lumina • Research Purposes Only • Not For Human Consumption</p>
+      © 2026 Lumina • UK Research Materials Supplier • Research Purposes Only • Not For Human Consumption
     </div>
   </footer>
 
@@ -567,16 +578,20 @@ if (
           ? 'RESEARCH PEPTIDE BLEND'
           : p.name.includes('Retatrutide')
             ? (p.name.includes('Pen') ? 'RETATRUTIDE (RESEARCH)' : 'RETATRUTIDE (RESEARCH)')
-            : (p.name.includes('Pen') ? 'TIRZEPATIDE (RESEARCH)' : 'TIRZEPATIDE (RESEARCH)');
+            : p.name.includes('Semaglutide')
+  ? 'SEMAGLUTIDE (RESEARCH)'
+  : 'TIRZEPATIDE (RESEARCH)';
 
         // Neutral descriptions only (no outcomes / dosing / protocol claims)
         const baseDesc = isBlend
-          ? 'A research peptide blend supplied for controlled laboratory study.'
-          : p.name.includes('Tirzepatide')
-            ? 'A research material supplied for controlled laboratory study.'
-            : p.name.includes('Retatrutide')
-              ? 'A research material supplied for controlled laboratory study.'
-              : 'Research product.';
+  ? 'A research peptide blend supplied for controlled laboratory environments.'
+  : p.name.includes('Tirzepatide')
+    ? 'Tirzepatide research material supplied for laboratory study.'
+    : p.name.includes('Retatrutide')
+      ? 'Retatrutide research material supplied for laboratory study.'
+      : p.name.includes('Semaglutide')
+        ? 'Semaglutide research material supplied for laboratory study.'
+        : 'Research material supplied for laboratory environments.';
 
         const extraInfo = isBlend
           ? ' Accessories (if applicable) are supplied for laboratory handling and measurement.'
@@ -724,25 +739,29 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research peptide blend</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
+<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else if (p.name.includes('Tirzepatide')) {
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
+<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else if (p.name.includes('Retatrutide')) {
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
+<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else {
         descEl.innerHTML = `
           <p>Research product for controlled laboratory studies.</p>
           <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>For research use only. Not for human consumption.</em></p>
+<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       }
 
