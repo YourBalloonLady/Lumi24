@@ -971,7 +971,7 @@ async function findCustomerByReferralCode(code){
         c.address2 ? String(c.address2).trim() : "",
         c.city ? String(c.city).trim() : "",
         c.postcode ? String(c.postcode).trim() : "",
-        c.phone ? `Phone: ${String(c.phone).trim()}` : ""
+        
       ].filter(Boolean);
       return parts.join("\n");
     }
