@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Peptide Research Library | Lumina</title>
+  <meta name="description" content="Explore the Lumina Peptide Research Library for educational, research-based information on peptides including Retatrutide, Tirzepatide, MOTS-C, BPC-157, TB-500, Cagrilintide and more." />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="Peptide Research Library | Lumina" />
+  <meta property="og:description" content="Educational guides covering metabolism, recovery, longevity, and hormone-related peptides for research discussion purposes only." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://your-domain.co.uk/peptides" />
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.65;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+    }
+
+    .navbar-brand {
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .brand-dot {
+      color: var(--lumina-green);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 88px 0 56px;
+      background:
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.12), transparent 28%),
+        radial-gradient(circle at top left, rgba(22, 163, 74, 0.08), transparent 24%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-green-soft);
+      color: var(--lumina-green-dark);
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.25rem, 4vw, 4.3rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+      margin-bottom: 16px;
+      max-width: 900px;
+    }
+
+    .hero p.lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 820px;
+      margin-bottom: 28px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 26px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 20px rgba(34, 197, 94, 0.18);
+    }
+
+    .btn-lumina:hover {
+      background: var(--lumina-green-dark);
+      color: #fff;
+    }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 14px;
+      font-weight: 700;
+    }
+
+    .mini-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .mini-stat {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .mini-stat strong {
+      display: block;
+      font-size: 1.15rem;
+      margin-bottom: 4px;
+    }
+
+    .mini-stat span {
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-title {
+      font-size: clamp(1.65rem, 2.6vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--lumina-muted);
+      max-width: 760px;
+      margin-bottom: 26px;
+    }
+
+    .info-card,
+    .peptide-card,
+    .faq-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .info-card {
+      padding: 28px;
+      height: 100%;
+    }
+
+    .info-card .icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--lumina-green-soft);
+      color: var(--lumina-green-dark);
+      font-size: 1.35rem;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .info-card h3 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .info-card p {
+      margin: 0;
+      color: var(--lumina-muted);
+    }
+
+    .category-block {
+      margin-bottom: 28px;
+    }
+
+    .category-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .category-head h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .category-head p {
+      color: var(--lumina-muted);
+      margin: 0;
+      max-width: 780px;
+    }
+
+    .peptide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+      gap: 18px;
+    }
+
+    .peptide-card {
+      padding: 22px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      height: 100%;
+    }
+
+    .peptide-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+      border-color: #cbd5e1;
+    }
+
+    .peptide-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .peptide-card h4 {
+      font-size: 1.14rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .peptide-card p {
+      font-size: 0.96rem;
+      color: var(--lumina-muted);
+      margin-bottom: 14px;
+    }
+
+    .peptide-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+
+    .peptide-meta span {
+      font-size: 0.78rem;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-weight: 600;
+    }
+
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      color: var(--lumina-green-dark);
+    }
+
+    .comparison-wrap {
+      overflow-x: auto;
+    }
+
+    .comparison-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: #fff;
+      border: 1px solid var(--lumina-border);
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+    }
+
+    .comparison-table th {
+      background: #f8fafc;
+      font-weight: 800;
+      font-size: 0.94rem;
+    }
+
+    .comparison-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 700;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 28px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h3 {
+      font-size: 1.22rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    .search-box {
+      position: sticky;
+      top: 86px;
+      z-index: 10;
+      background: rgba(248, 250, 252, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      box-shadow: var(--lumina-shadow);
+      padding: 14px;
+      margin-bottom: 24px;
+    }
+
+    .search-box input,
+    .search-box select {
+      border-radius: 12px;
+      border: 1px solid #dbe3ec;
+      min-height: 48px;
+    }
+
+    .search-box .form-text {
+      color: var(--lumina-muted);
+    }
+
+    .hidden-card {
+      display: none !important;
+    }
+
+    @media (max-width: 991.98px) {
+      .search-box {
+        position: static;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Peptide Research Library",
+    "description": "Educational guides to commonly discussed peptides in metabolism, recovery, longevity, and hormone signalling research.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina"
+    }
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="#">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#why-this-page">Why this page</a></li>
+          <li class="nav-item"><a class="nav-link" href="#library">Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="#comparison">Compare</a></li>
+          <li class="nav-item"><a class="nav-link" href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">Research information only</div>
+      <h1>Peptide Research Library built to help people understand the science before they follow the hype.</h1>
+      <p class="lead">
+        Welcome to the Lumina Peptide Research Library — a growing educational hub covering some of the most discussed peptides in modern metabolism, recovery, longevity, and hormone signalling research. The goal is simple: clear explanations, balanced summaries, and honest context.
+      </p>
+      <div class="hero-actions">
+        <a href="#library" class="btn btn-lumina">Explore peptide guides</a>
+        <a href="#comparison" class="btn btn-soft">View quick comparison</a>
+      </div>
+      <div class="mini-stats">
+        <div class="mini-stat">
+          <strong>12+ compounds</strong>
+          <span>Structured into clear categories for easier reading</span>
+        </div>
+        <div class="mini-stat">
+          <strong>Balanced summaries</strong>
+          <span>Mechanisms, research focus, limitations, and common questions</span>
+        </div>
+        <div class="mini-stat">
+          <strong>SEO-friendly layout</strong>
+          <span>Built for strong organic traffic and clean internal linking</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="section" id="why-this-page">
+    <div class="container">
+      <h2 class="section-title">Why this page exists</h2>
+      <p class="section-subtitle">
+        Most peptide pages online either oversell the benefits or bury people in jargon. This library is designed to give visitors a more useful middle ground: plain-English explanations, realistic research summaries, and sensible safety context.
+      </p>
+      <div class="row g-4">
+        <div class="col-md-6 col-lg-3">
+          <div class="info-card">
+            <div class="icon">01</div>
+            <h3>Clearer understanding</h3>
+            <p>Break complex peptide topics down into language normal people can actually follow.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="info-card">
+            <div class="icon">02</div>
+            <h3>Better research habits</h3>
+            <p>Help readers separate mechanistic theory, animal data, human evidence, and online anecdote.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="info-card">
+            <div class="icon">03</div>
+            <h3>Long-term trust</h3>
+            <p>Educational content positions Lumina as a serious brand rather than just another sales page.</p>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+          <div class="info-card">
+            <div class="icon">04</div>
+            <h3>Scalable SEO</h3>
+            <p>Each peptide can become its own guide page, comparison post, FAQ target, and internal link source.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" id="library">
+    <div class="container">
+      <h2 class="section-title">Explore the peptide library</h2>
+      <p class="section-subtitle">
+        Start with the categories below. Each card can link to a dedicated guide page with full breakdowns, FAQs, and research summaries.
+      </p>
+
+      <div class="search-box">
+        <div class="row g-3 align-items-end">
+          <div class="col-lg-7">
+            <label for="peptideSearch" class="form-label fw-semibold">Search peptides</label>
+            <input type="text" id="peptideSearch" class="form-control" placeholder="Try: retatrutide, recovery, mitochondria, appetite...">
+            <div class="form-text">Search by peptide name, category, mechanism, or research theme.</div>
+          </div>
+          <div class="col-lg-5">
+            <label for="categoryFilter" class="form-label fw-semibold">Filter by category</label>
+            <select id="categoryFilter" class="form-select">
+              <option value="all">All categories</option>
+              <option value="metabolic">Metabolic research</option>
+              <option value="recovery">Recovery & tissue repair</option>
+              <option value="longevity">Longevity & cellular signalling</option>
+              <option value="hormone">Hormone signalling</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="category-block" data-category-group="metabolic">
+        <div class="category-head">
+          <div>
+            <h3>Metabolic research peptides</h3>
+            <p>Compounds commonly discussed in obesity, appetite regulation, insulin sensitivity, energy expenditure, and metabolic flexibility research.</p>
+          </div>
+        </div>
+        <div class="peptide-grid">
+          <a class="peptide-card searchable-card" href="/peptides/retatrutide" data-category="metabolic" data-search="retatrutide triple agonist glp-1 gip glucagon appetite metabolism obesity fat loss energy expenditure">
+            <span class="peptide-tag">Metabolic</span>
+            <h4>Retatrutide</h4>
+            <p>A triple agonist studied for appetite reduction, energy expenditure, and major weight-loss effects in obesity research.</p>
+            <div class="peptide-meta">
+              <span>GLP-1 / GIP / Glucagon</span>
+              <span>Obesity research</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/tirzepatide" data-category="metabolic" data-search="tirzepatide glp-1 gip appetite insulin glucose weight loss metabolic syndrome">
+            <span class="peptide-tag">Metabolic</span>
+            <h4>Tirzepatide</h4>
+            <p>A dual agonist widely discussed in weight-loss and glucose control research, especially for appetite and insulin signalling.</p>
+            <div class="peptide-meta">
+              <span>GLP-1 / GIP</span>
+              <span>Metabolic health</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/cagrilintide" data-category="metabolic" data-search="cagrilintide amylin appetite satiety gastric emptying obesity combination semaglutide">
+            <span class="peptide-tag">Metabolic</span>
+            <h4>Cagrilintide</h4>
+            <p>An amylin analogue being studied for satiety, appetite control, and combination use in next-generation obesity therapies.</p>
+            <div class="peptide-meta">
+              <span>Amylin analogue</span>
+              <span>Satiety research</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/tesamorelin" data-category="metabolic" data-search="tesamorelin growth hormone releasing hormone ghrh visceral fat metabolism body composition">
+            <span class="peptide-tag">Metabolic</span>
+            <h4>Tesamorelin</h4>
+            <p>A GHRH analogue often discussed in relation to visceral fat, body composition, and growth-hormone-related pathways.</p>
+            <div class="peptide-meta">
+              <span>GHRH analogue</span>
+              <span>Body composition</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="category-block" data-category-group="recovery">
+        <div class="category-head">
+          <div>
+            <h3>Recovery & tissue research</h3>
+            <p>Peptides often discussed in injury, tendon, muscle, gut, skin, and general repair-related conversations. This is an area full of anecdote, so balanced context matters.</p>
+          </div>
+        </div>
+        <div class="peptide-grid">
+          <a class="peptide-card searchable-card" href="/peptides/bpc-157" data-category="recovery" data-search="bpc-157 body protection compound tendon gut healing recovery repair injury">
+            <span class="peptide-tag">Recovery</span>
+            <h4>BPC-157</h4>
+            <p>One of the most talked-about research peptides in injury and repair discussions, often linked to tendon, gut, and soft tissue studies.</p>
+            <div class="peptide-meta">
+              <span>Tissue research</span>
+              <span>Repair discussions</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/tb-500" data-category="recovery" data-search="tb-500 thymosin beta 4 recovery tissue repair inflammation mobility">
+            <span class="peptide-tag">Recovery</span>
+            <h4>TB-500</h4>
+            <p>A synthetic peptide linked to thymosin beta-4 research, commonly discussed for repair, mobility, and post-injury recovery support.</p>
+            <div class="peptide-meta">
+              <span>Thymosin-related</span>
+              <span>Recovery research</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/ghk-cu" data-category="recovery" data-search="ghk-cu copper peptide skin hair repair wound healing collagen cosmetic research">
+            <span class="peptide-tag">Recovery</span>
+            <h4>GHK-Cu</h4>
+            <p>A copper peptide studied in skin, hair, wound repair, and cosmetic research due to its role in tissue signalling.</p>
+            <div class="peptide-meta">
+              <span>Copper peptide</span>
+              <span>Skin & repair</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="category-block" data-category-group="longevity">
+        <div class="category-head">
+          <div>
+            <h3>Longevity & cellular signalling</h3>
+            <p>These compounds are frequently discussed in mitochondrial, aging, cellular energy, and healthy-aging research circles.</p>
+          </div>
+        </div>
+        <div class="peptide-grid">
+          <a class="peptide-card searchable-card" href="/peptides/mots-c" data-category="longevity" data-search="mots-c mitochondrial peptide ampk metabolism endurance longevity insulin sensitivity energy">
+            <span class="peptide-tag">Longevity</span>
+            <h4>MOTS-C</h4>
+            <p>A mitochondrial-derived peptide being studied for metabolic regulation, insulin sensitivity, cellular energy use, and exercise-related signalling.</p>
+            <div class="peptide-meta">
+              <span>Mitochondrial signalling</span>
+              <span>AMPK-related</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/epitalon" data-category="longevity" data-search="epitalon epithalon telomeres longevity aging sleep melatonin cellular research">
+            <span class="peptide-tag">Longevity</span>
+            <h4>Epitalon</h4>
+            <p>A peptide often discussed in healthy-aging circles, particularly around cellular signalling, sleep, and longevity-related theories.</p>
+            <div class="peptide-meta">
+              <span>Healthy aging</span>
+              <span>Longevity interest</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/nad-plus" data-category="longevity" data-search="nad+ nad plus energy mitochondria cellular metabolism aging redox research">
+            <span class="peptide-tag">Longevity</span>
+            <h4>NAD+</h4>
+            <p>Technically not a peptide, but commonly included in mitochondrial and cellular-energy discussions because of its role in redox and metabolism.</p>
+            <div class="peptide-meta">
+              <span>Cellular energy</span>
+              <span>Mitochondrial support</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="category-block" data-category-group="hormone">
+        <div class="category-head">
+          <div>
+            <h3>Hormone signalling peptides</h3>
+            <p>Peptides discussed in relation to growth hormone release, endocrine signalling, recovery, and body-composition-related pathways.</p>
+          </div>
+        </div>
+        <div class="peptide-grid">
+          <a class="peptide-card searchable-card" href="/peptides/ipamorelin" data-category="hormone" data-search="ipamorelin growth hormone secretagogue ghrelin receptor recovery sleep body composition">
+            <span class="peptide-tag">Hormone</span>
+            <h4>Ipamorelin</h4>
+            <p>A growth hormone secretagogue often discussed for recovery, sleep, and growth-hormone-related signalling without broad receptor activity.</p>
+            <div class="peptide-meta">
+              <span>GH secretagogue</span>
+              <span>Recovery interest</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/cjc-1295" data-category="hormone" data-search="cjc-1295 ghrh growth hormone release dac hormone signalling body composition">
+            <span class="peptide-tag">Hormone</span>
+            <h4>CJC-1295</h4>
+            <p>A growth-hormone-releasing hormone analogue usually discussed in body composition and hormone signalling circles.</p>
+            <div class="peptide-meta">
+              <span>GHRH analogue</span>
+              <span>Endocrine signalling</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+
+          <a class="peptide-card searchable-card" href="/peptides/sermorelin" data-category="hormone" data-search="sermorelin growth hormone releasing hormone peptide sleep recovery gh axis">
+            <span class="peptide-tag">Hormone</span>
+            <h4>Sermorelin</h4>
+            <p>A peptide connected to growth hormone release research and often compared with newer secretagogues and GHRH analogues.</p>
+            <div class="peptide-meta">
+              <span>GH axis</span>
+              <span>Hormone research</span>
+            </div>
+            <span class="read-more">Read guide →</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="comparison">
+    <div class="container">
+      <h2 class="section-title">Quick peptide comparison</h2>
+      <p class="section-subtitle">
+        This table gives visitors a fast overview before they click into individual guides. It is ideal for internal linking and can later be expanded into a dedicated comparison page.
+      </p>
+      <div class="comparison-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Compound</th>
+              <th>Main research focus</th>
+              <th>Mechanism area</th>
+              <th>Typical category</th>
+              <th>Guide link</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Retatrutide</strong></td>
+              <td>Weight loss, appetite, metabolic rate</td>
+              <td>GLP-1 / GIP / glucagon agonism</td>
+              <td>Metabolic</td>
+              <td><a class="read-more" href="/peptides/retatrutide">Open guide →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Tirzepatide</strong></td>
+              <td>Weight loss, glucose control</td>
+              <td>GLP-1 / GIP agonism</td>
+              <td>Metabolic</td>
+              <td><a class="read-more" href="/peptides/tirzepatide">Open guide →</a></td>
+            </tr>
+            <tr>
+              <td><strong>Cagrilintide</strong></td>
+              <td>Satiety, obesity combinations</td>
+              <td>Amylin pathway</td>
+              <td>Metabolic</td>
+              <td><a class="read-more" href="/peptides/cagrilintide">Open guide →</a></td>
+            </tr>
+            <tr>
+              <td><strong>MOTS-C</strong></td>
+              <td>Metabolism, insulin sensitivity, mitochondria</td>
+              <td>Cellular energy signalling</td>
+              <td>Longevity</td>
+              <td><a class="read-more" href="/peptides/mots-c">Open guide →</a></td>
+            </tr>
+            <tr>
+              <td><strong>BPC-157</strong></td>
+              <td>Repair, tendon, gut discussions</td>
+              <td>Tissue signalling</td>
+              <td>Recovery</td>
+              <td><a class="read-more" href="/peptides/bpc-157">Open guide →</a></td>
+            </tr>
+            <tr>
+              <td><strong>TB-500</strong></td>
+              <td>Mobility, recovery, repair</td>
+              <td>Thymosin-related pathways</td>
+              <td>Recovery</td>
+              <td><a class="read-more" href="/peptides/tb-500">Open guide →</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="faq">
+    <div class="container">
+      <h2 class="section-title">Frequently asked questions</h2>
+      <p class="section-subtitle">
+        This section helps with both usability and SEO. You can add or swap questions over time based on what people actually search for.
+      </p>
+      <div class="accordion" id="faqAccordion">
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqOneHeading">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+              What is a peptide?
+            </button>
+          </h2>
+          <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Peptides are short chains of amino acids that can act as signalling molecules in the body. Researchers study them because they may influence functions such as metabolism, tissue repair, hormone release, inflammation, cellular energy use, and more.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqTwoHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+              Why do some peptides get so much attention online?
+            </button>
+          </h2>
+          <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              Usually because they sit at the intersection of weight loss, recovery, performance, or healthy-aging trends. The problem is that online hype often moves faster than the science, which is why clear context matters.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqThreeHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+              Are these peptide pages medical advice?
+            </button>
+          </h2>
+          <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              No. This library is written for educational and research discussion purposes only. It is designed to help readers understand the science and terminology more clearly, not to diagnose, treat, or recommend any medical course of action.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqFourHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+              What should a good peptide guide include?
+            </button>
+          </h2>
+          <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              A strong guide should explain what the compound is, how it works, what the current research focuses on, where the evidence is strongest, where it is weakest, what limitations exist, and which claims are mainly anecdotal.
+            </div>
+          </div>
+        </div>
+
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="faqFiveHeading">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFive" aria-expanded="false" aria-controls="faqFive">
+              Which peptide guides should be built first?
+            </button>
+          </h2>
+          <div id="faqFive" class="accordion-collapse collapse" aria-labelledby="faqFiveHeading" data-bs-parent="#faqAccordion">
+            <div class="accordion-body">
+              The best first pages are usually the ones with the most search demand and strongest user curiosity: Retatrutide, Tirzepatide, Cagrilintide, MOTS-C, BPC-157, TB-500, and Tesamorelin.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-0" id="disclaimer">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h3>Research disclaimer</h3>
+        <p>
+          The information provided in the Lumina Peptide Research Library is intended for educational and research discussion purposes only.
+        </p>
+        <p>
+          Nothing on this page should be interpreted as medical advice, diagnosis, treatment guidance, or a recommendation for human use. Readers should review primary scientific literature and speak to a qualified healthcare professional regarding any medical concerns.
+        </p>
+        <p>
+          Peptides and related compounds discussed in research circles may have limited human data, mixed evidence quality, and varying regulatory status.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Built for clarity, trust, and scalable SEO.</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    const searchInput = document.getElementById('peptideSearch');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const cards = document.querySelectorAll('.searchable-card');
+    const categoryBlocks = document.querySelectorAll('[data-category-group]');
+
+    function filterPeptides() {
+      const term = searchInput.value.trim().toLowerCase();
+      const category = categoryFilter.value;
+
+      cards.forEach(card => {
+        const searchText = (card.dataset.search || '').toLowerCase();
+        const cardCategory = card.dataset.category;
+
+        const matchesTerm = !term || searchText.includes(term);
+        const matchesCategory = category === 'all' || cardCategory === category;
+
+        card.classList.toggle('hidden-card', !(matchesTerm && matchesCategory));
+      });
+
+      categoryBlocks.forEach(block => {
+        const visibleCards = block.querySelectorAll('.searchable-card:not(.hidden-card)');
+        block.style.display = visibleCards.length ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterPeptides);
+    categoryFilter.addEventListener('change', filterPeptides);
+  </script>
+</body>
+</html>
