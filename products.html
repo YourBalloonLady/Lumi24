@@ -148,10 +148,18 @@
     .pill-best-value { background: #f97316; }
     .pill-wolverine { background: #111827; }
     .pill-restock {
-  foreground: #ffffff;
-  color: #0ea5e9;
-  border: 2px solid #0ea5e9;
+  position: absolute;
+  top: 16px;
+  left: -40px;
+  background: #ef4444;
+  color: white;
   font-weight: 800;
+  font-size: 0.75rem;
+  padding: 6px 60px;
+  transform: rotate(-35deg);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
 }
 
     .stock { font-size: 0.9rem; margin-top: 4px; }
@@ -546,7 +554,10 @@
         const badge = computeBadge(p);
         let restockBadge = null;
 
-if (p.name.includes('Tirzepatide 60mg Pen')) {
+if (
+  p.name.includes('Tirzepatide 60mg Pen') ||
+  p.name.includes('Tirzepatide 60mg Vial')
+) {
   restockBadge = { text: 'Back Monday', class: 'pill-restock' };
 }
         const nameLower = (p.name || '').toLowerCase();
