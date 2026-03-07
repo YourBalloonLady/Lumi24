@@ -56,24 +56,51 @@
       z-index: 1100;
       text-align: center;
     }
-    #trust-bar span { white-space: nowrap; }
+
+    #trust-bar span {
+      white-space: nowrap;
+    }
 
     .navbar {
       background: #ffffff !important;
       box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
     }
-    .navbar.fixed-top { top: 32px; }
 
-    .navbar-brand img { height: 36px; margin-right: 10px; }
-    .navbar-brand span { font-weight: 700; font-size: 1.15rem; }
-    .nav-link { font-weight: 500; color: var(--lw-muted) !important; }
-    .nav-link.active, .nav-link:hover { color: var(--lw-dark) !important; }
-    .cart-icon { cursor: pointer; font-size: 1.5rem; color: var(--lw-dark); }
+    .navbar.fixed-top {
+      top: 32px;
+    }
+
+    .navbar-brand img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .navbar-brand span {
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: var(--lw-muted) !important;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      color: var(--lw-dark) !important;
+    }
+
+    .cart-icon {
+      cursor: pointer;
+      font-size: 1.5rem;
+      color: var(--lw-dark);
+    }
 
     .hero {
       background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
       padding: 120px 0 80px;
     }
+
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
@@ -85,7 +112,10 @@
       font-size: 0.85rem;
       font-weight: 600;
     }
-    .hero-eyebrow i { font-size: 0.9rem; }
+
+    .hero-eyebrow i {
+      font-size: 0.9rem;
+    }
 
     .hero-title {
       font-size: clamp(2.2rem, 4vw, 2.6rem);
@@ -93,14 +123,18 @@
       line-height: 1.1;
       margin-top: 18px;
     }
+
     .hero-subtitle {
       color: var(--lw-muted);
-      font-size: 1.0rem;
+      font-size: 1rem;
       max-width: 650px;
       margin: 16px auto 0;
     }
 
-    #products { padding: 60px 0 80px; }
+    #products {
+      padding: 60px 0 80px;
+    }
+
     .section-eyebrow {
       text-transform: uppercase;
       letter-spacing: .08em;
@@ -108,8 +142,17 @@
       color: #0f766e;
       font-weight: 700;
     }
-    .section-title { font-size: 2rem; font-weight: 800; }
-    .section-subtitle { color: var(--lw-muted); max-width: 560px; margin: 10px auto 0; }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .section-subtitle {
+      color: var(--lw-muted);
+      max-width: 560px;
+      margin: 10px auto 0;
+    }
 
     .product-card {
       border: 0;
@@ -121,17 +164,70 @@
       transition: transform .2s ease, box-shadow .2s ease;
       cursor: pointer;
     }
+
     .product-card:hover {
       transform: translateY(-6px);
       box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
     }
-    .product-card.out-of-stock { opacity: 0.55; cursor: not-allowed; }
-    .product-card img { height: 200px; object-fit: contain; }
 
-    .product-body { padding: 1.5rem 1.6rem 1.6rem; }
-    .product-name { font-weight: 700; font-size: 1.05rem; margin-bottom: .15rem; }
-    .product-price { font-size: 1.3rem; font-weight: 800; color: #0f172a; }
-    .product-price span { font-size: .85rem; color: var(--lw-muted); font-weight: 500; }
+    .product-card.out-of-stock {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .product-card img {
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .product-body {
+      padding: 1.5rem 1.6rem 1.6rem;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: .15rem;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .product-price .unit-suffix {
+      font-size: .85rem;
+      color: var(--lw-muted);
+      font-weight: 500;
+    }
+
+    .sale-old {
+      text-decoration: line-through;
+      color: #9ca3af;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .sale-new {
+      color: #16a34a;
+      font-weight: 800;
+      font-size: 1.3rem;
+    }
+
+    .sale-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: #dc2626;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
 
     .pill-label {
       position: absolute;
@@ -142,28 +238,53 @@
       font-size: 0.75rem;
       font-weight: 700;
       color: #ffffff;
+      z-index: 2;
     }
-    .pill-popular { background: #22c55e; }
-    .pill-premium { background: #6366f1; }
-    .pill-best-value { background: #f97316; }
-    .pill-wolverine { background: #111827; }
-    .pill-restock {
-  position: absolute;
-  top: 16px;
-  left: -40px;
-  background: #ef4444;
-  color: white;
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 6px 60px;
-  transform: rotate(-35deg);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-}
 
-    .stock { font-size: 0.9rem; margin-top: 4px; }
-    .btn-add { border-radius: 999px; font-weight: 600; padding-inline: 24px; margin-top: 10px; }
+    .pill-popular {
+      background: #22c55e;
+    }
+
+    .pill-premium {
+      background: #6366f1;
+    }
+
+    .pill-best-value {
+      background: #f97316;
+    }
+
+    .pill-wolverine {
+      background: #111827;
+    }
+
+    .pill-restock {
+      position: absolute;
+      top: 16px;
+      left: -40px;
+      background: #ef4444;
+      color: white;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 6px 60px;
+      transform: rotate(-35deg);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      z-index: 2;
+    }
+
+    .stock {
+      font-size: 0.9rem;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+
+    .btn-add {
+      border-radius: 999px;
+      font-weight: 600;
+      padding-inline: 24px;
+      margin-top: 12px;
+    }
 
     .info-card {
       border-radius: 20px;
@@ -171,6 +292,7 @@
       padding: 20px 18px;
       box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
     }
+
     .info-icon {
       width: 42px;
       height: 42px;
@@ -182,6 +304,7 @@
       color: #15803d;
       font-size: 1.1rem;
     }
+
     .btn-info-link {
       font-size: 0.85rem;
       font-weight: 600;
@@ -193,7 +316,11 @@
       padding: 0;
       text-decoration: none;
     }
-    .btn-info-link:hover { text-decoration: underline; color: #115e59; }
+
+    .btn-info-link:hover {
+      text-decoration: underline;
+      color: #115e59;
+    }
 
     .cart-sidebar {
       height: 100vh;
@@ -207,7 +334,10 @@
       z-index: 9999;
       overflow-y: auto;
     }
-    .cart-sidebar.open { right: 0; }
+
+    .cart-sidebar.open {
+      right: 0;
+    }
 
     .overlay {
       display: none;
@@ -216,10 +346,20 @@
       background: rgba(15, 23, 42, 0.45);
       z-index: 9998;
     }
-    .overlay.show { display: block; }
 
-    .qty-btn { width: 38px; height: 38px; }
-    .qty-input { width: 60px; text-align: center; }
+    .overlay.show {
+      display: block;
+    }
+
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+    }
+
+    .qty-input {
+      width: 60px;
+      text-align: center;
+    }
 
     footer {
       background: #020617;
@@ -229,15 +369,33 @@
     }
 
     @media (min-width: 769px) {
-      .navbar.fixed-top { position: fixed; left: 0; right: 0; }
-      body { padding-top: 80px; }
+      .navbar.fixed-top {
+        position: fixed;
+        left: 0;
+        right: 0;
+      }
+
+      body {
+        padding-top: 80px;
+      }
     }
+
     @media (max-width: 768px) {
-      #trust-bar { position: static; }
-      .navbar.fixed-top { position: static; top: auto; }
-      body { padding-top: 0; }
+      #trust-bar {
+        position: static;
+      }
+
+      .navbar.fixed-top {
+        position: static;
+        top: auto;
+      }
+
+      body {
+        padding-top: 0;
+      }
     }
-    #backToTop{
+
+    #backToTop {
       position: fixed;
       right: 18px;
       bottom: 18px;
@@ -268,17 +426,17 @@
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-
-<li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-          <!-- Logout (hidden by default) -->
-<li class="nav-item" id="logout-nav-item" style="display:none;">
-  <a class="nav-link" href="#" id="logout-btn">Logout</a>
-</li>
+
+          <li class="nav-item" id="logout-nav-item" style="display:none;">
+            <a class="nav-link" href="#" id="logout-btn">Logout</a>
+          </li>
 
           <li class="nav-item" id="admin-nav-item" style="display:none;">
             <a class="nav-link" href="admin.html">Admin</a>
@@ -306,9 +464,11 @@
       <h5 class="mb-0 fw-semibold">Your Cart (<span id="cart-items-count">0</span>)</h5>
       <button class="btn-close" onclick="toggleCart()"></button>
     </div>
+
     <div id="cart-items" class="p-4" style="min-height: 60vh;">
       <p class="text-center text-muted m-0">Your cart is empty</p>
     </div>
+
     <div class="p-4 border-top bg-light">
       <div class="d-flex justify-content-between fs-5 mb-3">
         <span class="fw-semibold">Total:</span>
@@ -324,18 +484,18 @@
   <section class="hero text-center">
     <div class="container">
       <div class="hero-eyebrow">
-<i class="fa-solid fa-vial-circle-check"></i>
-UK Research Materials Catalogue
-</div>
+        <i class="fa-solid fa-vial-circle-check"></i>
+        UK Research Materials Catalogue
+      </div>
 
-<h1 class="hero-title">All Lumina Products</h1>
+      <h1 class="hero-title">All Lumina Products</h1>
 
-<p class="hero-subtitle">
-Browse the full Lumina range of laboratory research materials supplied from the UK.
-Orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
-<br><br>
-All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
-</p>
+      <p class="hero-subtitle">
+        Browse the full Lumina range of laboratory research materials supplied from the UK.
+        Orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
+        <br><br>
+        All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
+      </p>
     </div>
   </section>
 
@@ -344,18 +504,18 @@ All products listed on this site are supplied strictly for <strong>laboratory re
       <div class="text-center mb-4">
         <div class="section-eyebrow">Research Materials</div>
 
-<h2 class="section-title">Choose Your Format</h2>
+        <h2 class="section-title">Choose Your Format</h2>
 
-<p class="section-subtitle">
-Lumina supplies research materials in multiple formats depending on laboratory requirements.
-Each product listing displays the available format, stock level and price.
-</p>
+        <p class="section-subtitle">
+          Lumina supplies research materials in multiple formats depending on laboratory requirements.
+          Each product listing displays the available format, stock level and price.
+        </p>
 
-<p class="text-muted small mt-2">
-<strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
-<strong>Lumina does not provide dosing, administration or medical guidance.</strong><br>
-<strong>All products are supplied strictly for laboratory research use only.</strong>
-</p>
+        <p class="text-muted small mt-2">
+          <strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
+          <strong>Lumina does not provide dosing, administration or medical guidance.</strong><br>
+          <strong>All products are supplied strictly for laboratory research use only.</strong>
+        </p>
       </div>
 
       <div id="all-products-status" class="text-center text-muted mb-3">
@@ -372,9 +532,9 @@ Each product listing displays the available format, stock level and price.
         <div class="section-eyebrow">Support</div>
         <h2 class="section-title">Shipping, Policies & Documentation</h2>
         <p class="section-subtitle">
-Helpful information regarding dispatch, delivery and Lumina site policies.
-All information provided on this website is administrative in nature and does not constitute medical guidance.
-</p>
+          Helpful information regarding dispatch, delivery and Lumina site policies.
+          All information provided on this website is administrative in nature and does not constitute medical guidance.
+        </p>
       </div>
 
       <div class="row g-4">
@@ -383,9 +543,9 @@ All information provided on this website is administrative in nature and does no
             <div class="info-icon mb-3"><i class="fa-solid fa-file-lines"></i></div>
             <h5 class="fw-semibold mb-2">Product Notes</h5>
             <p class="small mb-3">
-General product notes and handling reminders for laboratory environments.
-Lumina does not provide dosing, administration or medical advice.
-</p>
+              General product notes and handling reminders for laboratory environments.
+              Lumina does not provide dosing, administration or medical advice.
+            </p>
             <a href="disclaimer.html" class="btn-info-link">Read now</a>
           </div>
         </div>
@@ -425,8 +585,8 @@ Lumina does not provide dosing, administration or medical advice.
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
   <script>
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
@@ -434,7 +594,9 @@ Lumina does not provide dosing, administration or medical advice.
 
     const ADMIN_EMAIL = "luminaweight@gmail.com";
     const adminNavItem = document.getElementById('admin-nav-item');
-    const accountLink  = document.getElementById('account-link');
+    const accountLink = document.getElementById('account-link');
+    const logoutNavItem = document.getElementById('logout-nav-item');
+    const logoutBtn = document.getElementById('logout-btn');
 
     (async () => {
       try {
@@ -449,27 +611,47 @@ Lumina does not provide dosing, administration or medical advice.
           accountLink.textContent = user ? 'My Account' : 'Login';
           accountLink.href = 'account.html';
         }
+
+        if (logoutNavItem) {
+          logoutNavItem.style.display = user ? 'block' : 'none';
+        }
       } catch (e) {
         console.error('Error checking auth', e);
       }
     })();
+
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        try {
+          await supabaseClient.auth.signOut();
+          window.location.href = 'index.html';
+        } catch (err) {
+          console.error('Logout failed', err);
+        }
+      });
+    }
   </script>
 
   <script>
     // ---------- CART ----------
-    // Cart item shape (IMPORTANT):
-    // { id: <uuid>, name: <string>, price: <number>, qty: <int>, image?: <string> }
     let cart = [];
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
-      try { cart = JSON.parse(savedCart); } catch (e) { cart = []; }
+      try {
+        cart = JSON.parse(savedCart);
+      } catch (e) {
+        cart = [];
+      }
     }
 
-    function saveCart() { localStorage.setItem('cart', JSON.stringify(cart)); }
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
 
     function updateCart() {
-      const totalItems = cart.reduce((s,i)=>s+(i.qty||0),0);
-      const total = cart.reduce((s,i)=>s+(Number(i.price||0) * (i.qty||0)),0);
+      const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
+      const total = cart.reduce((s, i) => s + (Number(i.price || 0) * (i.qty || 0)), 0);
 
       document.getElementById('cart-count').textContent = totalItems;
       document.getElementById('cart-items-count').textContent = totalItems;
@@ -477,28 +659,33 @@ Lumina does not provide dosing, administration or medical advice.
 
       document.getElementById('cart-items').innerHTML = cart.length === 0
         ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
-        : cart.map((item,i) => `
+        : cart.map((item, i) => `
           <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
             <div class="flex-grow-1">
               <strong>${item.name}</strong><br>
-              <small>£${Number(item.price||0).toFixed(2)} × ${item.qty}</small>
+              <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
             </div>
             <div class="d-flex align-items-center gap-2">
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
               <span class="fw-bold">${item.qty}</span>
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
               <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
             </div>
-          </div>`).join('');
+          </div>
+        `).join('');
     }
+
     updateCart();
 
-    // allow qty to hit 0 and remove
     function updateQty(i, delta) {
       if (!cart[i]) return;
       const next = (cart[i].qty || 0) + delta;
-      if (next <= 0) cart.splice(i, 1);
-      else cart[i].qty = next;
+
+      if (next <= 0) {
+        cart.splice(i, 1);
+      } else {
+        cart[i].qty = next;
+      }
 
       updateCart();
       saveCart();
@@ -518,16 +705,13 @@ Lumina does not provide dosing, administration or medical advice.
       ov.classList.toggle('show', open);
     }
 
-   function goToCheckout() {
-  if (cart.length === 0) return alert('Your cart is empty!');
-  const cartData = encodeURIComponent(JSON.stringify(cart));
-
-  const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
-  const refPart = ref ? `&ref=${ref}` : '';
-
-  window.location.href = `checkout.html?cart=${cartData}${refPart}`;
-
-}
+    function goToCheckout() {
+      if (cart.length === 0) return alert('Your cart is empty!');
+      const cartData = encodeURIComponent(JSON.stringify(cart));
+      const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
+      const refPart = ref ? `&ref=${ref}` : '';
+      window.location.href = `checkout.html?cart=${cartData}${refPart}`;
+    }
 
     // ---------- PRODUCTS FROM SUPABASE ----------
     let products = [];
@@ -535,18 +719,51 @@ Lumina does not provide dosing, administration or medical advice.
 
     function computeBadge(p) {
       const name = (p.name || '').toLowerCase();
+
       if (name.includes('bpc-157') || name.includes('tb500')) {
         return { text: 'Wolverine Stack', class: 'pill-wolverine' };
       }
-      if (p.name?.includes('20mg')) return { text: 'Most Popular', class: 'pill-popular' };
-      if (p.price >= 130) return { text: 'Premium', class: 'pill-premium' };
+
+      if (name.includes('nad+')) {
+        return { text: 'Sale', class: 'pill-best-value' };
+      }
+
+      if (p.name?.includes('20mg')) {
+        return { text: 'Most Popular', class: 'pill-popular' };
+      }
+
+      if (p.price >= 130) {
+        return { text: 'Premium', class: 'pill-premium' };
+      }
+
       return null;
     }
 
-    function imgSrc(image){
-      if(!image) return '';
-      // Always force image to site root
+    function imgSrc(image) {
+      if (!image) return '';
       return 'https://luminaweight.co.uk/' + encodeURIComponent(image);
+    }
+
+    function getDisplayPriceHtml(p, unitSuffix) {
+      if ((p.name || '').includes('NAD+')) {
+        return `
+          <div>
+            <div class="sale-tag">Sale</div>
+            <div class="product-price">
+              <span class="sale-old">£160</span>
+              <span class="sale-new">£120</span>
+              <span class="unit-suffix">${unitSuffix}</span>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="product-price">
+          £${Number(p.price || 0).toFixed(2)}
+          <span class="unit-suffix">${unitSuffix}</span>
+        </div>
+      `;
     }
 
     function renderProducts() {
@@ -563,49 +780,51 @@ Lumina does not provide dosing, administration or medical advice.
 
       listEl.innerHTML = products.map((p, i) => {
         const badge = computeBadge(p);
-        let restockBadge = null;
-const SHOW_RESTOCK_BADGE = false;
 
-if (
-  SHOW_RESTOCK_BADGE &&
-  (
-    p.name.includes('Tirzepatide 60mg Pen') ||
-    p.name.includes('Tirzepatide 60mg Vial')
-  )
-) {
-  restockBadge = { text: 'Back Monday', class: 'pill-restock' };
-}
+        let restockBadge = null;
+        const SHOW_RESTOCK_BADGE = false;
+
+        if (
+          SHOW_RESTOCK_BADGE &&
+          (
+            p.name.includes('Tirzepatide 60mg Pen') ||
+            p.name.includes('Tirzepatide 60mg Vial')
+          )
+        ) {
+          restockBadge = { text: 'Back Monday', class: 'pill-restock' };
+        }
+
         const nameLower = (p.name || '').toLowerCase();
         const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
 
         const typeLabel = isBlend
           ? 'RESEARCH PEPTIDE BLEND'
           : p.name.includes('Retatrutide')
-            ? (p.name.includes('Pen') ? 'RETATRUTIDE (RESEARCH)' : 'RETATRUTIDE (RESEARCH)')
+            ? 'RETATRUTIDE (RESEARCH)'
             : p.name.includes('Semaglutide')
-  ? 'SEMAGLUTIDE (RESEARCH)'
-  : 'TIRZEPATIDE (RESEARCH)';
+              ? 'SEMAGLUTIDE (RESEARCH)'
+              : p.name.includes('NAD+')
+                ? 'NAD+ (RESEARCH)'
+                : 'TIRZEPATIDE (RESEARCH)';
 
-        // Neutral descriptions only (no outcomes / dosing / protocol claims)
         const baseDesc = isBlend
-  ? 'A research peptide blend supplied for controlled laboratory environments.'
-  : p.name.includes('Tirzepatide')
-    ? 'Tirzepatide research material supplied for laboratory study.'
-    : p.name.includes('Retatrutide')
-      ? 'Retatrutide research material supplied for laboratory study.'
-      : p.name.includes('Semaglutide')
-        ? 'Semaglutide research material supplied for laboratory study.'
-        : 'Research material supplied for laboratory environments.';
+          ? 'A research peptide blend supplied for controlled laboratory environments.'
+          : p.name.includes('Tirzepatide')
+            ? 'Tirzepatide research material supplied for laboratory study.'
+            : p.name.includes('Retatrutide')
+              ? 'Retatrutide research material supplied for laboratory study.'
+              : p.name.includes('Semaglutide')
+                ? 'Semaglutide research material supplied for laboratory study.'
+                : p.name.includes('NAD+')
+                  ? 'NAD+ research material supplied for laboratory environments.'
+                  : 'Research material supplied for laboratory environments.';
 
         const extraInfo = isBlend
           ? ' Accessories (if applicable) are supplied for laboratory handling and measurement.'
-          : p.name.includes('Pen')
-            ? ' Each unit includes accessories where applicable for laboratory handling and measurement.'
-            : ' Each unit includes accessories where applicable for laboratory handling and measurement.';
+          : ' Each unit includes accessories where applicable for laboratory handling and measurement.';
 
-        const unitSuffix = p.name.includes('Pen') ? '/unit' : '/unit';
+        const unitSuffix = '/unit';
 
-        // ✅ STOCK NUMBER + LABEL + COLOR (ADDED)
         const stockNum = Number(p.stock ?? 0);
         const stockLabel =
           stockNum === 0 ? '<strong>Out of stock</strong>' :
@@ -619,11 +838,13 @@ if (
 
         return `
           <div class="col-md-3">
-            <div class="position-relative h-100 product-card ${stockNum===0?'out-of-stock':''}" onclick="${stockNum>0?'openModal('+i+')':''}">
+            <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${i})` : ''}">
               ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
-${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16px; right:auto;">${restockBadge.text}</span>` : ''}
+              ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
+
               <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
-              <div class="product-body d-flex flex-column">
+
+              <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
                   <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">${typeLabel}</div>
                   <div class="product-name">${p.name}</div>
@@ -632,30 +853,18 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
                   </div>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-2">
-                 <div class="product-price">
-  ${
-    p.name.includes('NAD+')
-      ? `
-        <span style="text-decoration:line-through; color:#9ca3af; font-weight:600;">
-          £160
-        </span>
-        <span style="margin-left:8px; color:#16a34a; font-weight:800;">
-          £120
-        </span>
-      `
-      : `£${Number(p.price || 0).toFixed(2)}`
-  }
-  <span>${unitSuffix}</span>
-</div>
-                <!-- ✅ show stock number -->
-                <p class="stock ${stockClass} mb-1">${stockLabel}</p>
+                <div class="mt-3">
+                  ${getDisplayPriceHtml(p, unitSuffix)}
+                  <p class="stock ${stockClass} mt-2">${stockLabel}</p>
 
-                <button class="btn btn-success btn-add mt-auto"
-                        ${stockNum===0?'disabled':''}
-                        onclick="event.stopPropagation(); openModal(${i})">
-                  ${stockNum>0?'Add to cart':'Sold out'}
-                </button>
+                  <button
+                    class="btn btn-success btn-add mt-auto"
+                    ${stockNum === 0 ? 'disabled' : ''}
+                    onclick="event.stopPropagation(); openModal(${i})"
+                  >
+                    ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -697,9 +906,10 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
       currentProduct = p;
 
       const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
-      const stockNum = Number(p.stock ?? 0); // ✅ added
+      const stockNum = Number(p.stock ?? 0);
 
       let modal = document.getElementById('productModal');
+
       if (!modal) {
         const wrapper = document.createElement('div');
         wrapper.innerHTML = `
@@ -733,14 +943,16 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
 
       document.getElementById('modalImg').src = imgSrc(p.image);
       document.getElementById('modalTitle').textContent = p.name;
-      document.getElementById('modalName').textContent  = p.name;
-      document.getElementById('modalPrice').textContent = `£${Number(p.price || 0).toFixed(2)}`;
+      document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalPrice').innerHTML =
+        (p.name || '').includes('NAD+')
+          ? `<span class="sale-old">£160</span> <span class="sale-new">£120</span>`
+          : `£${Number(p.price || 0).toFixed(2)}`;
 
-      // ✅ show stock number in modal
       document.getElementById('modalStock').innerHTML =
-        (stockNum === 0)
+        stockNum === 0
           ? '<span class="text-danger fw-bold">Out of stock</span>'
-          : (stockNum <= 5)
+          : stockNum <= 5
             ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
@@ -752,38 +964,43 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research peptide blend</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else if (p.name.includes('Tirzepatide')) {
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else if (p.name.includes('Retatrutide')) {
         descEl.innerHTML = `
           <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
           <p><strong>${accessoriesLine}</strong></p>
-<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+        `;
+      } else if (p.name.includes('Semaglutide')) {
+        descEl.innerHTML = `
+          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
+          <p><strong>${accessoriesLine}</strong></p>
+          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       } else {
         descEl.innerHTML = `
           <p>Research product for controlled laboratory studies.</p>
           <p><strong>${accessoriesLine}</strong></p>
-<p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-<p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
         `;
       }
 
-      // ✅ clamp qty input to stock
       const qtyInput = document.getElementById('modalQty');
       qtyInput.value = 1;
       qtyInput.max = stockNum;
 
-      // ✅ prevent adding more than stock (including what's already in cart)
       document.getElementById('modalAddBtn').onclick = () => {
         let qty = parseInt(document.getElementById('modalQty').value) || 1;
         qty = Math.max(1, Math.min(qty, stockNum));
@@ -802,7 +1019,6 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
       new bootstrap.Modal(modal).show();
     }
 
-    // ✅ clamp +/- buttons to stock too
     function changeQty(delta) {
       const input = document.getElementById('modalQty');
       const max = parseInt(input.max) || 999999;
@@ -811,17 +1027,20 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
       input.value = val;
     }
 
-    // store product.id in cart (so checkout can deduct stock by ID)
     function addToCart(product, qty) {
       const existing = cart.find(item => item.id === product.id);
-      if (existing) existing.qty += qty;
-      else cart.push({
-        id: product.id,
-        name: product.name,
-        price: Number(product.price || 0),
-        qty: qty,
-        image: product.image || ''
-      });
+
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: Number(product.price || 0),
+          qty: qty,
+          image: product.image || ''
+        });
+      }
 
       updateCart();
       saveCart();
@@ -830,12 +1049,13 @@ ${restockBadge ? `<span class="pill-label ${restockBadge.class}" style="left:16p
 
     loadProductsFromDb();
   </script>
- <script>
-(function captureReferral(){
-  const p = new URLSearchParams(location.search);
-  const ref = (p.get('ref') || '').trim().toUpperCase();
-  if (ref) localStorage.setItem('referral_code', ref);
-})();
-</script>
+
+  <script>
+    (function captureReferral() {
+      const p = new URLSearchParams(location.search);
+      const ref = (p.get('ref') || '').trim().toUpperCase();
+      if (ref) localStorage.setItem('referral_code', ref);
+    })();
+  </script>
 </body>
 </html>
