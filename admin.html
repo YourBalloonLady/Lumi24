@@ -238,7 +238,51 @@
     }
     @media (min-width: 992px){
       .mobile-topbar{ display:none; }
+
+      .mobile-order-card{
+  border-radius:18px;
+}
+
+.mobile-primary-actions{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.mobile-primary-actions .btn{
+  width:100%;
+  font-weight:700;
+  border-radius:12px;
+  padding:10px 12px;
+}
+
+.mobile-secondary-actions{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:8px;
+}
+
+.mobile-secondary-actions .btn{
+  width:100%;
+  border-radius:12px;
+}
+
+@media (min-width: 992px){
+  .mobile-primary-actions{
+    grid-template-columns:repeat(3, 1fr);
+  }
+
+  .mobile-secondary-actions{
+    grid-template-columns:repeat(2, 1fr);
+  }
+}
+
+.min-w-0{
+  min-width:0;
+}
     }
+
+    
   </style>
 </head>
 
@@ -2307,247 +2351,250 @@ async function findCustomerByReferralCode(code){
       }
     }
 
-    // ────────────────────────────────────────────────
-    // RENDER
-    // ────────────────────────────────────────────────
     function renderOrdersFromCache(){
-      const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
+  const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
 
-      const parsed = parseSearch(searchInput.value);
-      const qText = parsed.text;
-      const qFilters = parsed.filters;
+  const parsed = parseSearch(searchInput.value);
+  const qText = parsed.text;
+  const qFilters = parsed.filters;
 
-      const fltOlder24 = document.getElementById("flt-older24").checked;
-      const fltNoAddr = document.getElementById("flt-noaddr").checked;
-      const fltNoEmail = document.getElementById("flt-noemail").checked;
-      const fltNoTracking = document.getElementById("flt-notracking").checked;
+  const fltOlder24 = document.getElementById("flt-older24").checked;
+  const fltNoAddr = document.getElementById("flt-noaddr").checked;
+  const fltNoEmail = document.getElementById("flt-noemail").checked;
+  const fltNoTracking = document.getElementById("flt-notracking").checked;
 
-      const now = new Date();
-      const cutoff24 = new Date(now); cutoff24.setHours(now.getHours() - 24);
+  const now = new Date();
+  const cutoff24 = new Date(now);
+  cutoff24.setHours(now.getHours() - 24);
 
-      let list = orders;
+  let list = orders;
 
-      if(statusFilter !== "all"){
-        const sf = String(statusFilter || "").toLowerCase();
-        list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
+  if(statusFilter !== "all"){
+    const sf = String(statusFilter || "").toLowerCase();
+    list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
+  }
+
+  if(packQueueOnly){
+    list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
+  }
+
+  if(fltOlder24){
+    list = list.filter(o => {
+      const s = String(o.status || "").toLowerCase();
+      const created = o.created_at ? new Date(o.created_at) : null;
+      return (s === "pending") && created && created < cutoff24;
+    });
+  }
+
+  if(fltNoAddr){
+    list = list.filter(o => {
+      const c = getCustomer(o);
+      return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
+    });
+  }
+
+  if(fltNoEmail){
+    list = list.filter(o => {
+      const c = getCustomer(o);
+      const email = c.email || o.customer_email || o.email || "";
+      return !String(email || "").trim();
+    });
+  }
+
+  if(fltNoTracking){
+    list = list.filter(o => {
+      const s = String(o.status || "").toLowerCase();
+      if(s !== "shipped") return false;
+      const t = o.details?.meta?.tracking_number;
+      return !String(t || "").trim();
+    });
+  }
+
+  if(qText || Object.keys(qFilters).length){
+    list = list.filter(o=>{
+      const ref = String(o.reference || o.id || "").toLowerCase();
+      const c = getCustomer(o);
+      const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
+      const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
+      const pc = String(c.postcode || "").toLowerCase();
+      const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
+      const st = String(o.status || "Pending").toLowerCase();
+
+      if(qFilters.status && st !== qFilters.status) return false;
+      if(qFilters.email && !email.includes(qFilters.email)) return false;
+
+      if(qFilters.tracking){
+        if(qFilters.tracking === "missing" && tracking.trim()) return false;
+        if(qFilters.tracking !== "missing" && !tracking.includes(qFilters.tracking)) return false;
       }
 
-      if(packQueueOnly){
-        list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
-      }
+      if(!qText) return true;
+      return ref.includes(qText) || name.includes(qText) || email.includes(qText) || pc.includes(qText) || tracking.includes(qText);
+    });
+  }
 
-      if(fltOlder24){
-        list = list.filter(o => {
-          const s = String(o.status || "").toLowerCase();
-          const created = o.created_at ? new Date(o.created_at) : null;
-          return (s === "pending") && created && created < cutoff24;
-        });
-      }
+  filteredOrderIds = list.map(o => o.id);
 
-      if(fltNoAddr){
-        list = list.filter(o => {
-          const c = getCustomer(o);
-          return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
-        });
-      }
+  const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+  document.getElementById("select-all").checked = allSelected;
 
-      if(fltNoEmail){
-        list = list.filter(o => {
-          const c = getCustomer(o);
-          const email = c.email || o.customer_email || o.email || "";
-          return !String(email || "").trim();
-        });
-      }
+  statusEl.textContent = `${list.length} order(s) shown`;
 
-      if(fltNoTracking){
-        list = list.filter(o => {
-          const s = String(o.status || "").toLowerCase();
-          if(s !== "shipped") return false;
-          const t = o.details?.meta?.tracking_number;
-          return !String(t || "").trim();
-        });
-      }
+  ordersEl.innerHTML = list.map((order) => {
+    const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+    const ref = order.reference || order.id;
+    const status = order.status || "Pending";
 
-      if(qText || Object.keys(qFilters).length){
-        list = list.filter(o=>{
-          const ref = String(o.reference || o.id || "").toLowerCase();
-          const c = getCustomer(o);
-          const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
-          const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
-          const pc = String(c.postcode || "").toLowerCase();
-          const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
-          const st = String(o.status || "Pending").toLowerCase();
+    const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
+    const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
+    const total = Number(order.total_amount || 0).toFixed(2);
+    const creditAmt = Number(order.details?.meta?.credit_awarded_amount || 0);
 
-          if(qFilters.status && st !== qFilters.status) return false;
-          if(qFilters.email && !email.includes(qFilters.email)) return false;
+    const statusLower = String(status || "").toLowerCase();
+    const isPaid = statusLower === "paid";
+    const isPacked = statusLower === "packed";
+    const isCancelled = statusLower === "cancelled";
+    const isShipped = statusLower === "shipped";
 
-          if(qFilters.tracking){
-            if(qFilters.tracking === "missing" && tracking.trim()) return false;
-            if(qFilters.tracking !== "missing" && !tracking.includes(qFilters.tracking)) return false;
-          }
+    const tracking = String(order.details?.meta?.tracking_number || "").trim();
+    const payref   = String(order.details?.meta?.payment_reference || "").trim();
+    const note     = String(order.details?.meta?.admin_note || "").trim();
 
-          if(!qText) return true;
-          return ref.includes(qText) || name.includes(qText) || email.includes(qText) || pc.includes(qText) || tracking.includes(qText);
-        });
-      }
+    const isSelected = selectedIds.has(order.id);
 
-      filteredOrderIds = list.map(o => o.id);
+    const addrWarnings = validateAddress(order);
+    const hasNoAddress = addrWarnings.some(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+    const hasNoEmail = !String(email || "").trim() || email === "No email";
+    const missingTracking = isShipped && !tracking;
 
-      const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
-      document.getElementById("select-all").checked = allSelected;
+    const itemCount = Array.isArray(order?.details?.items) ? order.details.items.reduce((sum, i) => sum + Number(i.qty || 0), 0) : 0;
 
-      statusEl.textContent = `${list.length} order(s) shown`;
-
-      ordersEl.innerHTML = list.map((order) => {
-        const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
-        const ref = order.reference || order.id;
-        const status = order.status || "Pending";
-
-        const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
-        const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
-        const total = Number(order.total_amount || 0).toFixed(2);
-        const creditAmt = Number(order.details?.meta?.credit_awarded_amount || 0);
-
-        const statusLower = String(status || "").toLowerCase();
-        const isPaid = statusLower === "paid";
-        const isCancelled = statusLower === "cancelled";
-        const isShipped = statusLower === "shipped";
-
-        const tracking = String(order.details?.meta?.tracking_number || "").trim();
-        const payref   = String(order.details?.meta?.payment_reference || "").trim();
-        const note     = String(order.details?.meta?.admin_note || "").trim();
-
-        const isSelected = selectedIds.has(order.id);
-
-        return `
-          <div class="order-card">
-            <div class="d-flex justify-content-between align-items-start">
-              <div style="flex:1; padding-right:14px;">
-
-                <div class="d-flex align-items-center gap-2 mb-2">
-                  <input id="sel-${order.id}" class="form-check-input" type="checkbox"
-                    ${isSelected ? "checked" : ""}
-                    onchange="toggleSelectOne('${order.id}', this.checked)">
-                  <div>
-                    <strong>${escapeHtml(ref)}</strong><br>
-                    <small>${escapeHtml(created)}</small><br>
-                    <small>
-                      <a href="#" onclick="openCustomerView('${escapeHtml(email)}'); return false;">
-                        ${escapeHtml(name)} — ${escapeHtml(email)}
-                      </a>
-                    </small>
-                  </div>
-                </div>
-
-                <div class="accordion mt-2" id="acc-${order.id}">
-                  <div class="accordion-item">
-                    <h2 class="accordion-header" id="acc-h-${order.id}">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc-c-${order.id}">
-                        Order details
-                      </button>
-                    </h2>
-                    <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
-                      <div class="accordion-body">
-
-                        <div class="items-box" style="margin-top:0;">
-                          <strong>📦 Tracking number</strong>
-                          <div class="d-flex gap-2 flex-wrap">
-                            <input id="trk-${order.id}" class="form-control form-control-sm small-input"
-                              placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
-                            <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
-                          </div>
-                          <div class="muted-line mt-1">Tip: save tracking first, then send shipped email.</div>
-                        </div>
-
-                        ${buildAddressHtml(order)}
-                        ${buildItemsHtml(order)}
-
-                        <div class="items-box" style="margin-top:8px;">
-                          <strong>💷 Payment reference (internal)</strong>
-                          <div class="d-flex gap-2 flex-wrap">
-                            <input id="payref-${order.id}" class="form-control form-control-sm small-input"
-                              placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
-                            <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
-                          </div>
-                        </div>
-
-                        <div class="items-box" style="margin-top:8px;">
-                          <strong>📝 Admin notes</strong>
-                          <textarea id="note-${order.id}" class="form-control note-area"
-                            placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
-                          <div class="d-flex justify-content-end mt-2">
-                            <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
-                          </div>
-                        </div>
-
-                        <div class="items-box" style="margin-top:8px;">
-                          <strong>🕒 Timeline</strong>
-                          ${historyHtml(order)}
-                        </div>
-
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
+    return `
+      <div class="order-card mobile-order-card">
+        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+          <div class="d-flex align-items-start gap-2 flex-grow-1">
+            <input id="sel-${order.id}" class="form-check-input mt-1" type="checkbox"
+              ${isSelected ? "checked" : ""}
+              onchange="toggleSelectOne('${order.id}', this.checked)">
+            <div class="flex-grow-1 min-w-0">
+              <div class="d-flex flex-wrap align-items-center gap-2">
+                <strong>${escapeHtml(ref)}</strong>
+                ${badge(status)}
               </div>
+              <div class="small text-muted mt-1">${escapeHtml(created)}</div>
+              <div class="mt-1">
+                <a href="#" class="text-decoration-none" onclick="openCustomerView('${escapeHtml(email)}'); return false;">
+                  ${escapeHtml(name)}
+                </a>
+              </div>
+              <div class="small text-muted">${escapeHtml(email)}</div>
+            </div>
+          </div>
 
-              <div class="text-end" style="min-width: 280px;">
-                <div class="mb-1">${badge(status)}</div>
-                <div class="fw-bold">£${escapeHtml(total)}</div>
-                ${creditAmt > 0 ? `<div class="text-muted small mt-1">🎁 Credit: £${creditAmt.toFixed(2)}</div>` : ``}
+          <div class="text-end">
+            <div class="fw-bold">£${escapeHtml(total)}</div>
+            <div class="small text-muted">${itemCount} item(s)</div>
+            ${creditAmt > 0 ? `<div class="text-muted small mt-1">🎁 £${creditAmt.toFixed(2)} credit</div>` : ``}
+          </div>
+        </div>
 
-                <select class="form-select form-select-sm mt-2" onchange="updateStatus('${order.id}', this.value)">
-                  <option ${status === "Pending" ? "selected" : ""}>Pending</option>
-                  <option ${status === "Paid" ? "selected" : ""}>Paid</option>
-                  <option ${status === "Packed" ? "selected" : ""}>Packed</option>
-                  <option ${status === "Shipped" ? "selected" : ""}>Shipped</option>
-                  <option ${status === "Cancelled" ? "selected" : ""}>Cancelled</option>
-                </select>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          ${hasNoAddress ? `<span class="badge text-bg-warning">No address</span>` : ``}
+          ${hasNoEmail ? `<span class="badge text-bg-danger">No email</span>` : ``}
+          ${missingTracking ? `<span class="badge text-bg-secondary">No tracking</span>` : ``}
+          ${String(statusLower) === "pending" && new Date(order.created_at) < cutoff24 ? `<span class="badge text-bg-dark">Pending > 24h</span>` : ``}
+        </div>
 
-                <div class="mini-actions">
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
-                  <button class="btn btn-sm btn-outline-secondary" onclick="printPackingSlipById('${order.id}')">🖨️ Print slip</button>
-                  <button class="btn btn-sm btn-secondary" onclick="markPackedById('${order.id}')">✅ Mark Packed</button>
-                  <button class="btn btn-sm btn-outline-purple" onclick="copyTimExcelTsvOne('${order.id}')">📋 Copy (Excel row)</button>
+        <div class="mobile-primary-actions">
+          <button class="btn btn-success"
+            ${isPaid || isPacked || isShipped || isCancelled ? "disabled" : ""}
+            onclick="markPaidAndSendById('${order.id}')">
+            💷 Mark Paid
+          </button>
+
+          <button class="btn btn-secondary"
+            ${isPacked || isShipped || isCancelled ? "disabled" : ""}
+            onclick="markPackedById('${order.id}')">
+            ✅ Mark Packed
+          </button>
+
+          <button class="btn btn-primary"
+            ${isShipped || isCancelled ? "disabled" : ""}
+            onclick="sendShippedEmailById('${order.id}')">
+            📦 Mark Shipped
+          </button>
+        </div>
+
+        <div class="accordion mt-3" id="acc-${order.id}">
+          <div class="accordion-item border-0">
+            <h2 class="accordion-header" id="acc-h-${order.id}">
+              <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#acc-c-${order.id}">
+                More details
+              </button>
+            </h2>
+            <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
+              <div class="accordion-body px-0 pt-3 pb-0">
+
+                <div class="items-box" style="margin-top:0;">
+                  <strong>📦 Tracking number</strong>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <input id="trk-${order.id}" class="form-control form-control-sm small-input"
+                      placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
+                    <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
+                  </div>
                 </div>
 
-                <div class="btn-row">
-                  <button class="btn btn-sm btn-success" ${isPaid ? "disabled" : ""} onclick="markPaidAndSendById('${order.id}')">
-                    💷 Send Payment Received
-                  </button>
+                ${buildAddressHtml(order)}
+                ${buildItemsHtml(order)}
 
-                  <button class="btn btn-sm btn-warning" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">
-                    ⏰ 3PM Pay Reminder
-                  </button>
+                <div class="items-box" style="margin-top:8px;">
+                  <strong>💷 Payment reference (internal)</strong>
+                  <div class="d-flex gap-2 flex-wrap">
+                    <input id="payref-${order.id}" class="form-control form-control-sm small-input"
+                      placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
+                    <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
+                  </div>
+                </div>
 
-                  <button class="btn btn-sm btn-primary" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendShippedEmailById('${order.id}')">
-                    📦 Send Shipped Email
-                  </button>
+                <div class="items-box" style="margin-top:8px;">
+                  <strong>📝 Admin notes</strong>
+                  <textarea id="note-${order.id}" class="form-control note-area"
+                    placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
+                  <div class="d-flex justify-content-end mt-2">
+                    <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
+                  </div>
+                </div>
 
-                  <button class="btn btn-sm btn-outline-primary"
+                <div class="items-box" style="margin-top:8px;">
+                  <strong>🕒 Timeline</strong>
+                  ${historyHtml(order)}
+                </div>
+
+                <div class="mobile-secondary-actions mt-3">
+                  <button class="btn btn-outline-dark btn-sm" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
+                  <button class="btn btn-outline-secondary btn-sm" onclick="printPackingSlipById('${order.id}')">🖨️ Print slip</button>
+                  <button class="btn btn-outline-purple btn-sm" onclick="copyTimExcelTsvOne('${order.id}')">📋 Copy Excel row</button>
+                  <button class="btn btn-warning btn-sm" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">⏰ 3PM reminder</button>
+                  <button class="btn btn-outline-primary btn-sm"
                     onclick="openMailto(
                       '${escapeHtml(order.details?.customer?.email || order.customer_email || order.email || "")}',
                       'Your order ${escapeHtml(ref)} has shipped',
                       buildShippedEmailText(ordersCache['${order.id}'])
                     )">
-                    ✉️ Mailto Shipped
+                    ✉️ Mailto shipped
                   </button>
-
-                  <button class="btn btn-sm btn-danger" onclick="sendCancelledEmailById('${order.id}')">
-                    ❌ Send Cancelled Email
-                  </button>
-
-                  <button class="btn btn-sm btn-outline-danger" ${isCancelled ? "disabled" : ""} onclick="cancelAndRestockById('${order.id}')">
-                    ↩️ Cancel + Restock
-                  </button>
+                  <button class="btn btn-danger btn-sm" onclick="sendCancelledEmailById('${order.id}')">❌ Cancel email</button>
+                  <button class="btn btn-outline-danger btn-sm" ${isCancelled ? "disabled" : ""} onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
                 </div>
+
               </div>
             </div>
           </div>
-        `;
-      }).join("");
-    }
+        </div>
+      </div>
+    `;
+  }).join("");
+}
 
     async function copyTimExcelTsvOne(orderId){
       const o = ordersCache[orderId];
