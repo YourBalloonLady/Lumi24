@@ -945,45 +945,13 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
       const descEl = document.getElementById('modalDescription');
-      const nameLower = (p.name || '').toLowerCase();
-      const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
 
-      if (isBlend) {
-        descEl.innerHTML = `
+descEl.innerHTML = `
   <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
   <p><strong>${accessoriesLine}</strong></p>
   <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
   <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
 `;
-      } else if (p.name.includes('Tirzepatide')) {
-        descEl.innerHTML = `
-          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
-          <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-        `;
-      } else if (p.name.includes('Retatrutide')) {
-        descEl.innerHTML = `
-          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
-          <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-        `;
-      } else if (p.name.includes('Semaglutide')) {
-        descEl.innerHTML = `
-          <p>This item is supplied as a <strong>research material</strong> for controlled laboratory study.</p>
-          <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-        `;
-      } else {
-        descEl.innerHTML = `
-          <p>Research product for controlled laboratory studies.</p>
-          <p><strong>${accessoriesLine}</strong></p>
-          <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-          <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-        `;
-      }
 
       const qtyInput = document.getElementById('modalQty');
       qtyInput.value = 1;
