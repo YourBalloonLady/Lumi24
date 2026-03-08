@@ -423,7 +423,7 @@
         <span>Lumina</span>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <button class="navbar-toggler" ="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -766,6 +766,25 @@
       `;
     }
 
+    function getTypeLabel(p) {
+  switch (String(p.type || '').toLowerCase().trim()) {
+    case 'blend':
+      return 'RESEARCH PEPTIDE BLEND';
+    case 'retatrutide':
+      return 'RETATRUTIDE (RESEARCH)';
+    case 'semaglutide':
+      return 'SEMAGLUTIDE (RESEARCH)';
+    case 'tirzepatide':
+      return 'TIRZEPATIDE (RESEARCH)';
+    case 'nad':
+      return 'NAD+ (RESEARCH)';
+    case 'mots-c':
+      return 'MOTS-c (RESEARCH)';
+    default:
+      return 'RESEARCH PEPTIDE';
+  }
+}
+
     function renderProducts() {
       const listEl = document.getElementById('all-products-list');
       const statusEl = document.getElementById('all-products-status');
@@ -794,22 +813,8 @@
           restockBadge = { text: 'Back Monday', class: 'pill-restock' };
         }
 
-        const nameLower = (p.name || '').toLowerCase();
-        const isBlend = nameLower.includes('bpc-157') || nameLower.includes('tb500');
-
-        const typeLabel = isBlend
-  ? 'RESEARCH PEPTIDE BLEND'
-  : p.name.includes('Retatrutide')
-    ? 'RETATRUTIDE (RESEARCH)'
-    : p.name.includes('Semaglutide')
-      ? 'SEMAGLUTIDE (RESEARCH)'
-      : p.name.includes('Tirzepatide')
-        ? 'TIRZEPATIDE (RESEARCH)'
-        : p.name.includes('NAD+')
-          ? 'NAD+ (RESEARCH)'
-          : p.name.toLowerCase().includes('mots')
-            ? 'MOTS-c (RESEARCH)'
-            : 'RESEARCH PEPTIDE';
+        const typeLabel = getTypeLabel(p);
+const isBlend = p.type === 'blend';
 
         const baseDesc = p.description || 'Research material supplied for laboratory environments.';
 const extraInfo = ' Accessories (if applicable) are supplied for laboratory handling and measurement.';
@@ -863,14 +868,30 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
       }).join('');
     }
 
+    function getTypeSortOrder(type) {
+  switch (String(type || '').toLowerCase().trim()) {
+    case 'blend': return 1;
+    case 'nad': return 2;
+    case 'mots-c': return 3;
+    case 'semaglutide': return 4;
+    case 'tirzepatide': return 5;
+    case 'retatrutide': return 6;
+    default: return 99;
+  }
+}
+
+function getMgValue(name) {
+  const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
+  return match ? Number(match[1]) : 0;
+}
+
     async function loadProductsFromDb() {
       const statusEl = document.getElementById('all-products-status');
       statusEl.textContent = 'Loading products…';
 
       const { data, error } = await supabaseClient
-        .from('Products')
-.select('id, name, price, image, stock, description')
-.order('name', { ascending: true });
+  .from('Products')
+  .select('id, name, price, image, stock, description, type');
 
       if (error) {
         console.error('Error loading products', error);
@@ -878,14 +899,25 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
         return;
       }
 
-      products = (data || []).map(row => ({
-  id: row.id,
-  name: row.name,
-  price: Number(row.price || 0),
-  image: row.image || '20mg Tirz Vial.png',
-  stock: row.stock ?? 0,
-  description: row.description || ''
-}));
+      products = (data || [])
+  .map(row => ({
+    id: row.id,
+    name: row.name,
+    price: Number(row.price || 0),
+    image: row.image || '20mg Tirz Vial.png',
+    stock: row.stock ?? 0,
+    description: row.description || '',
+    type: String(row.type || '').toLowerCase().trim()
+  }))
+  .sort((a, b) => {
+    const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
+    if (typeDiff !== 0) return typeDiff;
+
+    const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+    if (mgDiff !== 0) return mgDiff;
+
+    return a.name.localeCompare(b.name);
+  });
 
       renderProducts();
     }
