@@ -733,7 +733,7 @@
           details: orderDetails,
           referral_code: (localStorage.getItem('referral_code') || null),
           credit_used: Number(creditUsed || 0),
-          credit_email: (creditEmail || null)
+          credit_email: (creditEmail ? String(creditEmail).trim().toLowerCase() : null)
         });
 
       if (insertError) console.error('Error saving order to Supabase:', insertError);
