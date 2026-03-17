@@ -2665,7 +2665,7 @@ function renderPackingCards(orderIds){
 
         <div class="packing-actions">
           <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
-          <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
+          <button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
           <button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
           <button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
         </div>
@@ -2851,17 +2851,23 @@ function renderPackingCards(orderIds){
             💷 Mark Paid
           </button>
 
-          <button class="btn btn-secondary"
-            ${isPacked || isShipped || isCancelled ? "disabled" : ""}
-            onclick="markPackedById('${order.id}')">
-            ✅ Mark Packed
-          </button>
+          <button class="btn btn-danger"
+  ${isCancelled ? "disabled" : ""}
+  onclick="quickCancelAndRestock('${order.id}')">
+  ❌ Cancel + Restock
+</button>
 
           <button class="btn btn-primary"
             ${isShipped || isCancelled ? "disabled" : ""}
             onclick="sendShippedEmailById('${order.id}')">
             📦 Mark Shipped
           </button>
+
+          <button class="btn btn-warning"
+  ${!needs3pmReminder(order) ? "disabled" : ""}
+  onclick="quick3pmReminder('${order.id}')">
+  ⏰ 3PM Reminder
+</button>
         </div>
 
         <div class="accordion mt-3" id="acc-${order.id}">
