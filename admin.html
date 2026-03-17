@@ -2851,11 +2851,11 @@ function renderPackingCards(orderIds){
             💷 Mark Paid
           </button>
 
-          <button class="btn btn-danger"
-  ${isCancelled ? "disabled" : ""}
-  onclick="quickCancelAndRestock('${order.id}')">
-  ❌ Cancel + Restock
-</button>
+          <button class="btn btn-secondary"
+            ${isPacked || isShipped || isCancelled ? "disabled" : ""}
+            onclick="markPackedById('${order.id}')">
+            ✅ Mark Packed
+          </button>
 
           <button class="btn btn-primary"
             ${isShipped || isCancelled ? "disabled" : ""}
