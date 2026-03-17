@@ -427,7 +427,36 @@
   </div>
 
   <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
+          <div class="workflow-summary admin-only">
+  <div class="workflow-chip" id="wf-selected-chip">0 selected</div>
+  <div class="workflow-chip" id="wf-pending-chip">Pending: …</div>
+  <div class="workflow-chip" id="wf-paid-chip">Paid: …</div>
+  <div class="workflow-chip" id="wf-reminder-chip">3PM reminders due: …</div>
+</div>
 
+<div class="workflow-bar admin-only">
+  <button class="workflow-btn workflow-paid" onclick="bulkMarkPaid()">
+    💰 Mark Paid
+    <small id="bulk-paid-meta">Apply to selected orders</small>
+  </button>
+
+  <button class="workflow-btn workflow-ship" onclick="bulkMarkShippedWorkflow()">
+    📦 Mark Shipped
+    <small id="bulk-ship-meta">Apply to selected orders</small>
+  </button>
+
+  <button class="workflow-btn workflow-cancel" onclick="bulkCancelAndRestockWorkflow()">
+    ❌ Cancel + Restock
+    <small id="bulk-cancel-meta">Apply to selected orders</small>
+  </button>
+
+  <button class="workflow-btn workflow-remind" onclick="bulkSend3pmReminder()">
+    ⏰ 3PM Reminder
+    <small id="bulk-reminder-meta">Send to selected orders</small>
+  </button>
+</div>
+
+  
   <div class="view-toggle-bar">
     <button id="view-normal-btn" class="btn btn-sm btn-dark" onclick="setAdminView('normal')">Full Admin</button>
     <button id="view-pack-btn" class="btn btn-sm btn-outline-dark" onclick="setAdminView('pack')">Packing Mode</button>
@@ -459,16 +488,6 @@
     </div>
   </div>
 
-  <div class="d-flex gap-2 flex-wrap mt-3 admin-only">
-    <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
-    <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
-    <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
-    <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
-    <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
-    <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
-    <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
-  </div>
-
   <div class="sticky-admin-controls">
     <div class="controls-grid">
       <div>
@@ -480,14 +499,16 @@
         </div>
 
         <div class="filter-row mt-2">
-          <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
-          <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
-          <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
-          <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
-          <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
-          <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
-          <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
-        </div>
+  <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
+  <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
+  <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
+  <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
+  <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
+  <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
+  <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
+  <button id="btnReminderDue" class="btn btn-sm btn-outline-warning" onclick="toggleReminderDue()">⏰ Needs 3PM Reminder</button>
+</div>
+
 
         <div class="d-flex gap-3 flex-wrap mt-2">
           <div class="form-check">
@@ -759,13 +780,85 @@
     let currentPage = 0;
     let totalCount = 0;
 
-    let statusFilter = "all";
+    let statusFilter = "Pending";
     let packQueueOnly = false;
+    let reminderDueOnly = false;
     let filteredOrderIds = [];
     const selectedIds = new Set();
 
     // admin email cached
     window.__ADMIN_EMAIL = "admin";
+    function isPendingLike(order){
+  return String(order?.status || "").toLowerCase() === "pending";
+}
+
+function isPaidLike(order){
+  const s = String(order?.status || "").toLowerCase();
+  return s === "paid" || s === "packed";
+}
+
+function isShippedLike(order){
+  return String(order?.status || "").toLowerCase() === "shipped";
+}
+
+function orderAgeHours(order){
+  if(!order?.created_at) return 0;
+  return (Date.now() - new Date(order.created_at).getTime()) / 36e5;
+}
+
+function has3pmReminderBeenSent(order){
+  return !!order?.details?.meta?.reminder_3pm_sent_at;
+}
+
+function needs3pmReminder(order){
+  if(!isPendingLike(order)) return false;
+  if(has3pmReminderBeenSent(order)) return false;
+  return orderAgeHours(order) >= 6;
+}
+
+function getSelectedOrders(){
+  return filteredOrderIds
+    .map(id => ordersCache[id])
+    .filter(o => o && selectedIds.has(o.id));
+}
+
+function updateWorkflowSummary(){
+  const selected = getSelectedOrders();
+  const allOrders = Object.values(ordersCache || {});
+
+  const pendingCount = allOrders.filter(isPendingLike).length;
+  const paidCount = allOrders.filter(isPaidLike).length;
+  const reminderCount = allOrders.filter(needs3pmReminder).length;
+
+  const setText = (id, txt) => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = txt;
+  };
+
+  setText("wf-selected-chip", `${selected.length} selected`);
+  setText("wf-pending-chip", `Pending: ${pendingCount}`);
+  setText("wf-paid-chip", `Paid: ${paidCount}`);
+  setText("wf-reminder-chip", `3PM reminders due: ${reminderCount}`);
+
+  setText("bulk-paid-meta", selected.length ? `${selected.length} selected` : "Apply to selected orders");
+  setText("bulk-ship-meta", selected.length ? `${selected.length} selected` : "Apply to selected orders");
+  setText("bulk-cancel-meta", selected.length ? `${selected.length} selected` : "Apply to selected orders");
+  setText("bulk-reminder-meta", selected.length ? `${selected.length} selected` : "Send to selected orders");
+}
+
+function toggleReminderDue(){
+  reminderDueOnly = !reminderDueOnly;
+
+  const btn = document.getElementById("btnReminderDue");
+  if(btn){
+    btn.className = reminderDueOnly
+      ? "btn btn-sm btn-warning"
+      : "btn btn-sm btn-outline-warning";
+  }
+
+  applyClientFilters();
+}
+
 
     // ────────────────────────────────────────────────
     // UI HELPERS
@@ -1694,6 +1787,8 @@ window.copyOrderForText = copyOrderForText;
       if(!filteredOrderIds.length) return;
       if(checked) filteredOrderIds.forEach(id => selectedIds.add(id));
       else filteredOrderIds.forEach(id => selectedIds.delete(id));
+      updateWorkflowSummary();
+
 
       filteredOrderIds.forEach(id => {
         const cb = document.getElementById(`sel-${id}`);
@@ -1706,6 +1801,8 @@ window.copyOrderForText = copyOrderForText;
       else selectedIds.delete(orderId);
       const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
       document.getElementById("select-all").checked = allSelected;
+      updateWorkflowSummary();
+
     }
 
     // ────────────────────────────────────────────────
@@ -1734,6 +1831,268 @@ window.copyOrderForText = copyOrderForText;
         console.warn("refreshStatusCounts failed", e);
       }
     }
+
+    async function bulkMarkPaid(){
+  const orders = getSelectedOrders();
+  if(!orders.length){
+    return alert("Select at least one order.");
+  }
+
+  if(!confirm(`Mark ${orders.length} selected order(s) as PAID?`)) return;
+
+  setBusy(true, "Marking paid…", `Updating ${orders.length} order(s)`);
+  let ok = 0, fail = 0;
+
+  for(const order of orders){
+    try{
+      let updatedDetails = pushHistory(order, "marked_paid");
+
+      const { error } = await supabaseClient
+        .from("Orders")
+        .update({
+          status: "Paid",
+          details: updatedDetails
+        })
+        .eq("id", order.id);
+
+      if(error) throw error;
+
+      ordersCache[order.id].status = "Paid";
+      ordersCache[order.id].details = updatedDetails;
+
+      try{
+        await awardCreditForPaidOrder(order.id);
+      }catch(e){
+        console.warn("Credit/referral award failed:", e);
+      }
+
+      ok++;
+    }catch(e){
+      console.error(e);
+      fail++;
+    }
+  }
+
+  setBusy(false);
+  showToast(`✅ Marked paid: ${ok}${fail ? ` • Failed: ${fail}` : ""}`, fail ? "warning" : "success");
+  applyClientFilters();
+}
+
+async function bulkMarkShippedWorkflow(){
+  const orders = getSelectedOrders();
+  if(!orders.length){
+    return alert("Select at least one order.");
+  }
+
+  if(!confirm(`Mark ${orders.length} selected order(s) as SHIPPED?`)) return;
+
+  setBusy(true, "Marking shipped…", `Updating ${orders.length} order(s)`);
+  let ok = 0, fail = 0;
+
+  for(const order of orders){
+    try{
+      const warnings = validateAddress(order);
+      if(warnings.length && !confirmProceedWithWarnings(warnings, `Ship ${order.reference || order.id}?`)){
+        continue;
+      }
+
+      let updatedDetails = pushHistory(order, "marked_shipped");
+
+      const { error } = await supabaseClient
+        .from("Orders")
+        .update({
+          status: "Shipped",
+          details: updatedDetails
+        })
+        .eq("id", order.id);
+
+      if(error) throw error;
+
+      ordersCache[order.id].status = "Shipped";
+      ordersCache[order.id].details = updatedDetails;
+      ok++;
+    }catch(e){
+      console.error(e);
+      fail++;
+    }
+  }
+
+  setBusy(false);
+  showToast(`📦 Marked shipped: ${ok}${fail ? ` • Failed: ${fail}` : ""}`, fail ? "warning" : "success");
+  applyClientFilters();
+}
+
+async function restockOrderItems(order){
+  const items = Array.isArray(order?.details?.items) ? order.details.items : [];
+  if(!items.length) return;
+
+  for(const item of items){
+    const qty = Number(item?.qty || 0);
+    const name = String(item?.name || "").trim();
+    if(!name || qty <= 0) continue;
+
+    const { data: product, error: selErr } = await supabaseClient
+      .from("products")
+      .select("id, stock")
+      .ilike("name", name)
+      .maybeSingle();
+
+    if(selErr){
+      console.warn("Restock lookup failed for", name, selErr);
+      continue;
+    }
+
+    if(!product?.id) continue;
+
+    const nextStock = Number(product.stock || 0) + qty;
+
+    const { error: upErr } = await supabaseClient
+      .from("products")
+      .update({ stock: nextStock })
+      .eq("id", product.id);
+
+    if(upErr){
+      console.warn("Restock update failed for", name, upErr);
+    }
+  }
+}
+
+async function bulkCancelAndRestockWorkflow(){
+  const orders = getSelectedOrders();
+  if(!orders.length){
+    return alert("Select at least one order.");
+  }
+
+  if(!confirm(`Cancel and restock ${orders.length} selected order(s)?`)) return;
+
+  setBusy(true, "Cancelling + restocking…", `Updating ${orders.length} order(s)`);
+  let ok = 0, fail = 0;
+
+  for(const order of orders){
+    try{
+      await restockOrderItems(order);
+
+      let updatedDetails = pushHistory(order, "cancelled_restocked");
+
+      const { error } = await supabaseClient
+        .from("Orders")
+        .update({
+          status: "Cancelled",
+          details: updatedDetails
+        })
+        .eq("id", order.id);
+
+      if(error) throw error;
+
+      ordersCache[order.id].status = "Cancelled";
+      ordersCache[order.id].details = updatedDetails;
+      ok++;
+    }catch(e){
+      console.error(e);
+      fail++;
+    }
+  }
+
+  setBusy(false);
+  showToast(`❌ Cancelled + restocked: ${ok}${fail ? ` • Failed: ${fail}` : ""}`, fail ? "warning" : "success");
+  applyClientFilters();
+}
+
+async function bulkSend3pmReminder(){
+  const orders = getSelectedOrders();
+  if(!orders.length){
+    return alert("Select at least one order.");
+  }
+
+  const eligible = orders.filter(needs3pmReminder);
+  if(!eligible.length){
+    return alert("None of the selected orders currently need a 3PM reminder.");
+  }
+
+  if(!confirm(`Send 3PM reminder for ${eligible.length} order(s)?`)) return;
+
+  setBusy(true, "Sending reminders…", `Processing ${eligible.length} order(s)`);
+  let ok = 0, fail = 0;
+
+  for(const order of eligible){
+    try{
+      const email = getOrderEmail(order);
+      if(!email){
+        fail++;
+        continue;
+      }
+
+      const ref = order.reference || order.id;
+      const customer = order?.details?.customer || {};
+      const body = `Hi ${customer.name || "there"},
+
+Just a quick reminder that order ${ref} is still awaiting payment.
+
+If you've already sent payment, please ignore this message.
+
+Thanks,
+Lumina Weight`;
+
+      openMailto(email, `Payment reminder for order ${ref}`, body);
+
+      let updatedDetails = {
+        ...(order.details || {}),
+        meta: {
+          ...((order.details || {}).meta || {}),
+          reminder_3pm_sent_at: new Date().toISOString()
+        }
+      };
+
+      updatedDetails = pushHistory({ ...order, details: updatedDetails }, "3pm_reminder_sent");
+
+      const { error } = await supabaseClient
+        .from("Orders")
+        .update({ details: updatedDetails })
+        .eq("id", order.id);
+
+      if(error) throw error;
+
+      ordersCache[order.id].details = updatedDetails;
+      ok++;
+    }catch(e){
+      console.error(e);
+      fail++;
+    }
+  }
+
+  setBusy(false);
+  showToast(`⏰ 3PM reminders processed: ${ok}${fail ? ` • Failed: ${fail}` : ""}`, fail ? "warning" : "success");
+  applyClientFilters();
+}
+
+    async function quickMarkPaid(orderId){
+  selectedIds.clear();
+  selectedIds.add(orderId);
+  updateWorkflowSummary();
+  await bulkMarkPaid();
+}
+
+async function quickMarkShipped(orderId){
+  selectedIds.clear();
+  selectedIds.add(orderId);
+  updateWorkflowSummary();
+  await bulkMarkShippedWorkflow();
+}
+
+async function quickCancelAndRestock(orderId){
+  selectedIds.clear();
+  selectedIds.add(orderId);
+  updateWorkflowSummary();
+  await bulkCancelAndRestockWorkflow();
+}
+
+async function quick3pmReminder(orderId){
+  selectedIds.clear();
+  selectedIds.add(orderId);
+  updateWorkflowSummary();
+  await bulkSend3pmReminder();
+}
+
 
     // ────────────────────────────────────────────────
     // KPI + QUICK STATS
@@ -2648,6 +3007,8 @@ function renderPackingCards(orderIds){
           </div>
           <div class="text-end">
             ${badge(order.status)}
+            ${needs3pmReminder(order) ? `<div class="priority-banner">⏰ 3PM reminder due</div>` : ``}
+
             <div class="fw-bold mt-1">£${total}</div>
           </div>
         </div>
@@ -2675,6 +3036,13 @@ function renderPackingCards(orderIds){
           ${buildAddressHtml(order)}
           <div class="mini-actions">
             <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy Address</button>
+            <div class="inline-order-actions admin-only">
+  <button class="btn btn-success btn-sm" onclick="quickMarkPaid('${order.id}')">💰 Mark Paid</button>
+  <button class="btn btn-primary btn-sm" onclick="quickMarkShipped('${order.id}')">📦 Mark Shipped</button>
+  <button class="btn btn-danger btn-sm" onclick="quickCancelAndRestock('${order.id}')">❌ Cancel + Restock</button>
+  <button class="btn btn-warning btn-sm" onclick="quick3pmReminder('${order.id}')">⏰ 3PM Reminder</button>
+</div>
+
             <button class="btn btn-sm btn-outline-dark" onclick="openCustomerView('${escapeHtml(getOrderEmail(order))}')">👤 Customer</button>
             <button class="btn btn-sm btn-outline-success" onclick="markPaidAndSendById('${order.id}')">💷 Mark Paid</button>
             <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
@@ -2711,6 +3079,9 @@ function renderPackingCards(orderIds){
   if(packQueueOnly){
     list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
   }
+
+      if(reminderDueOnly && !needs3pmReminder(order)) return false;
+}
 
   if(fltOlder24){
     list = list.filter(o => {
@@ -3041,6 +3412,8 @@ function renderPackingCards(orderIds){
       refreshStatusCounts();
       renderOrdersFromCache();
       renderCharts();
+      updateWorkflowSummary();
+
     }
 
     async function loadAllOrdersForSearch(){
