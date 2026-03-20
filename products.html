@@ -659,6 +659,7 @@
     const logoutNavItem = document.getElementById('logout-nav-item');
     const logoutBtn = document.getElementById('logout-btn');
 
+
     (async () => {
       try {
         const { data, error } = await supabaseClient.auth.getUser();
