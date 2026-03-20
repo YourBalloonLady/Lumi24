@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <meta property="og:image" content="https://luminaweight.co.uk/Favicon.png">
-<meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:card" content="summary_large_image">
 
   <!-- FAVICON / TAB ICON -->
   <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
   <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
 
-  <!-- SEO (neutral / research supply language) -->
+  <!-- SEO -->
   <title>Research Materials Catalogue UK | Lumina</title>
   <meta name="description" content="Browse all Lumina research materials in the UK. Product formats and quantities available with discreet UK dispatch — for laboratory research use only. Not for human consumption.">
   <meta name="robots" content="index, follow">
@@ -38,35 +38,6 @@
       --lw-muted: #64748b;
       --lw-bg: #f3f4f6;
     }
-
-    .product-media {
-  position: relative;
-}
-
-
-    .cart-item-row {
-  gap: 12px;
-}
-
-.cart-item-row .flex-grow-1 {
-  min-width: 0;
-}
-
-.cart-item-row strong {
-  display: block;
-  line-height: 1.25;
-  word-break: break-word;
-}
-
-@media (max-width: 576px) {
-  .cart-item-row {
-    align-items: flex-start;
-  }
-
-  .cart-item-row .d-flex.align-items-center.gap-2 {
-    flex-shrink: 0;
-  }
-
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -150,181 +121,185 @@
     }
 
     .hero-title {
-  font-size: clamp(2.2rem, 4vw, 2.6rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-top: 18px;
-}
+      font-size: clamp(2.2rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-top: 18px;
+    }
 
-.hero-subtitle {
-  color: var(--lw-muted);
-  font-size: 1rem;
-  max-width: 650px;
-  margin: 16px auto 0;
-}
+    .hero-subtitle {
+      color: var(--lw-muted);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 16px auto 0;
+    }
 
-#products {
-  padding: 60px 0 80px;
-}
+    #products {
+      padding: 60px 0 80px;
+    }
 
-.section-eyebrow {
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-size: 0.78rem;
-  color: #0f766e;
-  font-weight: 700;
-}
+    .section-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 0.78rem;
+      color: #0f766e;
+      font-weight: 700;
+    }
 
-.section-title {
-  font-size: 2rem;
-  font-weight: 800;
-}
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+    }
 
-.section-subtitle {
-  color: var(--lw-muted);
-  max-width: 560px;
-  margin: 10px auto 0;
-}
+    .section-subtitle {
+      color: var(--lw-muted);
+      max-width: 560px;
+      margin: 10px auto 0;
+    }
 
-.product-card {
-  border: 0;
-  border-radius: 24px;
-  background: #ffffff;
-  padding-top: 4px;
-  overflow: hidden;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-  transition: transform .2s ease, box-shadow .2s ease;
-  cursor: pointer;
-}
+    .product-card {
+      border: 0;
+      border-radius: 24px;
+      background: #ffffff;
+      padding-top: 4px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      transition: transform .2s ease, box-shadow .2s ease;
+      cursor: pointer;
+    }
 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
-}
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
+    }
 
-.product-card.out-of-stock {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
+    .product-card.out-of-stock {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
 
-.product-card img {
-  height: 200px;
-  object-fit: contain;
-}
+    .product-card img {
+      height: 200px;
+      object-fit: contain;
+    }
 
-.product-body {
-  padding: 1.5rem 1.6rem 1.6rem;
-}
+    .product-body {
+      padding: 1.5rem 1.6rem 1.6rem;
+    }
 
-.product-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  margin-bottom: .15rem;
-}
+    .product-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: .15rem;
+    }
 
-.product-price {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #0f172a;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
 
-.product-price .unit-suffix {
-  font-size: .85rem;
-  color: var(--lw-muted);
-  font-weight: 500;
-}
+    .product-price .unit-suffix {
+      font-size: .85rem;
+      color: var(--lw-muted);
+      font-weight: 500;
+    }
 
-.sale-old {
-  text-decoration: line-through;
-  color: #9ca3af;
-  font-weight: 700;
-  font-size: 1rem;
-}
+    .sale-old {
+      color: #9ca3af;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: line-through !important;
+      text-decoration-thickness: 2px;
+      text-decoration-color: #9ca3af;
+      opacity: 0.95;
+    }
 
-.sale-new {
-  color: #16a34a;
-  font-weight: 800;
-  font-size: 1.3rem;
-}
+    .sale-new {
+      color: #16a34a;
+      font-weight: 800;
+      font-size: 1.3rem;
+    }
 
-.sale-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: .04em;
-  color: #dc2626;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
+    .sale-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: #dc2626;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
 
-.pill-label {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ffffff;
-  z-index: 2;
-}
+    .pill-label {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ffffff;
+      z-index: 2;
+    }
 
-.pill-popular {
-  background: #22c55e;
-}
+    .pill-popular {
+      background: #22c55e;
+    }
 
-.pill-premium {
-  background: #6366f1;
-}
+    .pill-premium {
+      background: #6366f1;
+    }
 
-.pill-best-value {
-  background: #f97316;
-}
+    .pill-best-value {
+      background: #f97316;
+    }
 
-.pill-wolverine {
-  background: #111827;
-}
+    .pill-wolverine {
+      background: #111827;
+    }
 
-.pill-restock {
-  position: absolute;
-  top: 16px;
-  left: -40px;
-  background: #ef4444;
-  color: white;
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 6px 60px;
-  transform: rotate(-35deg);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  z-index: 2;
-}
+    .pill-restock {
+      position: absolute;
+      top: 16px;
+      left: -40px;
+      background: #ef4444;
+      color: white;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 6px 60px;
+      transform: rotate(-35deg);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      z-index: 2;
+    }
 
-.pill-coming-soon {
-  position: absolute;
-  top: 16px;
-  left: -46px;
-  background: #dc2626;
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 0.72rem;
-  padding: 6px 64px;
-  transform: rotate(-35deg);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  z-index: 3;
-}
-      .stock {
-  font-size: 0.9rem;
-  margin-top: 4px;
-  margin-bottom: 0;
-}
+    .pill-coming-soon {
+      position: absolute;
+      top: 16px;
+      left: -46px;
+      background: #dc2626;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 6px 64px;
+      transform: rotate(-35deg);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      z-index: 3;
+    }
+
+    .stock {
+      font-size: 0.9rem;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
 
     .btn-add {
       border-radius: 999px;
@@ -370,17 +345,17 @@
     }
 
     .cart-sidebar {
-  height: 100vh;
-  width: min(420px, 100vw);
-  position: fixed;
-  top: 0;
-  right: calc(-1 * min(420px, 100vw));
-  background: #ffffff;
-  box-shadow: -10px 0 35px rgba(15, 23, 42, 0.18);
-  transition: 0.35s;
-  z-index: 9999;
-  overflow-y: auto;
-}
+      height: 100vh;
+      width: min(420px, 100vw);
+      position: fixed;
+      top: 0;
+      right: calc(-1 * min(420px, 100vw));
+      background: #ffffff;
+      box-shadow: -10px 0 35px rgba(15, 23, 42, 0.18);
+      transition: 0.35s;
+      z-index: 9999;
+      overflow-y: auto;
+    }
 
     .cart-sidebar.open {
       right: 0;
@@ -408,11 +383,47 @@
       text-align: center;
     }
 
+    .cart-item-row {
+      gap: 12px;
+    }
+
+    .cart-item-row .flex-grow-1 {
+      min-width: 0;
+    }
+
+    .cart-item-row strong {
+      display: block;
+      line-height: 1.25;
+      word-break: break-word;
+    }
+
     footer {
       background: #020617;
       color: #9ca3af;
       padding: 22px 0;
       font-size: 0.9rem;
+    }
+
+    #backToTop {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: none;
+      border-radius: 999px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
+
+    .cart-items-body {
+      min-height: 40vh;
+    }
+
+    .modal-media-video {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #f8fafc;
     }
 
     @media (min-width: 769px) {
@@ -442,25 +453,19 @@
       }
     }
 
-    #backToTop {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 9999;
-  display: none;
-  border-radius: 999px;
-  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-}
+    @media (max-width: 576px) {
+      .cart-item-row {
+        align-items: flex-start;
+      }
 
-.cart-items-body {
-  min-height: 40vh;
-}
+      .cart-item-row .d-flex.align-items-center.gap-2 {
+        flex-shrink: 0;
+      }
 
-@media (max-width: 576px) {
-  .cart-items-body {
-    min-height: 30vh;
-  }
-}
+      .cart-items-body {
+        min-height: 30vh;
+      }
+    }
   </style>
 </head>
 
@@ -487,7 +492,6 @@
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
           <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          
           <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
           <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
           <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
@@ -561,7 +565,6 @@
     <div class="container">
       <div class="text-center mb-4">
         <div class="section-eyebrow">Research Materials</div>
-
         <h2 class="section-title">Choose Your Format</h2>
 
         <p class="section-subtitle">
@@ -647,7 +650,7 @@
 
   <script>
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+    const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_KEY";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const ADMIN_EMAIL = "luminaweight@gmail.com";
@@ -692,7 +695,6 @@
   </script>
 
   <script>
-    // ---------- CART ----------
     let cart = [];
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -771,55 +773,48 @@
       window.location.href = `checkout.html?cart=${cartData}${refPart}`;
     }
 
-    // ---------- PRODUCTS FROM SUPABASE ----------
     let products = [];
     let currentProduct = null;
 
     function computeBadge(p) {
-  const name = (p.name || '').toLowerCase();
+      const name = (p.name || '').toLowerCase();
 
-  // Wolverine stack
-  if (name.includes('bpc-157') || name.includes('tb500')) {
-    return { text: 'Wolverine Stack', class: 'pill-wolverine' };
-  }
+      if (name.includes('bpc-157') || name.includes('tb500')) {
+        return { text: 'Wolverine Stack', class: 'pill-wolverine' };
+      }
 
-  // NAD+ sale
-  if (name.includes('nad+')) {
-    return { text: 'Sale', class: 'pill-best-value' };
-  }
+      if (name.includes('nad+')) {
+        return { text: 'Sale', class: 'pill-best-value' };
+      }
 
-  // Coming Soon products
-  if (
-  name.includes('cagrilintide') ||
-  name.includes('mt2') ||
-  name.includes('ghk-cu')
-) {
-  return null;
-}
+      if (
+        name.includes('cagrilintide') ||
+        name.includes('mt2') ||
+        name.includes('ghk-cu')
+      ) {
+        return null;
+      }
 
-  // Popular products
-  if (p.name?.includes('20mg')) {
-    return { text: 'Most Popular', class: 'pill-popular' };
-  }
+      if (p.name?.includes('20mg')) {
+        return { text: 'Most Popular', class: 'pill-popular' };
+      }
 
-  // Premium products
-  if (p.price >= 130) {
-    return { text: 'Premium', class: 'pill-premium' };
-  }
+      if (p.price >= 130) {
+        return { text: 'Premium', class: 'pill-premium' };
+      }
 
-  return null;
-
-  
-}
+      return null;
+    }
 
     function isComingSoonProduct(p) {
-  const name = String(p?.name || '').toLowerCase();
-  return (
-    name.includes('cagrilintide') ||
-    name.includes('mt2') ||
-    name.includes('ghk-cu')
-  );
-}
+      const name = String(p?.name || '').toLowerCase();
+      return (
+        name.includes('cagrilintide') ||
+        name.includes('mt2') ||
+        name.includes('ghk-cu')
+      );
+    }
+
     function imgSrc(image) {
       if (!image) return '';
       return 'https://luminaweight.co.uk/' + encodeURIComponent(image);
@@ -841,30 +836,30 @@
 
       return `
         <div class="product-price">
-          £${Number(p.price || 0).toFixed(2)}
+          <span>£${Number(p.price || 0).toFixed(2)}</span>
           <span class="unit-suffix">${unitSuffix}</span>
         </div>
       `;
     }
 
     function getTypeLabel(p) {
-  switch (String(p.type || '').toLowerCase().trim()) {
-    case 'blend':
-      return 'RESEARCH PEPTIDE BLEND';
-    case 'retatrutide':
-      return 'RETATRUTIDE (RESEARCH)';
-    case 'semaglutide':
-      return 'SEMAGLUTIDE (RESEARCH)';
-    case 'tirzepatide':
-      return 'TIRZEPATIDE (RESEARCH)';
-    case 'nad':
-      return 'NAD+ (RESEARCH)';
-    case 'mots-c':
-      return 'MOTS-c (RESEARCH)';
-    default:
-      return 'RESEARCH PEPTIDE';
-  }
-}
+      switch (String(p.type || '').toLowerCase().trim()) {
+        case 'blend':
+          return 'RESEARCH PEPTIDE BLEND';
+        case 'retatrutide':
+          return 'RETATRUTIDE (RESEARCH)';
+        case 'semaglutide':
+          return 'SEMAGLUTIDE (RESEARCH)';
+        case 'tirzepatide':
+          return 'TIRZEPATIDE (RESEARCH)';
+        case 'nad':
+          return 'NAD+ (RESEARCH)';
+        case 'mots-c':
+          return 'MOTS-c (RESEARCH)';
+        default:
+          return 'RESEARCH PEPTIDE';
+      }
+    }
 
     function renderProducts() {
       const listEl = document.getElementById('all-products-list');
@@ -880,10 +875,10 @@
 
       listEl.innerHTML = products.map((p, i) => {
         const badge = computeBadge(p);
-const isComingSoon = isComingSoonProduct(p);
+        const isComingSoon = isComingSoonProduct(p);
 
-let restockBadge = null;
-const SHOW_RESTOCK_BADGE = false;
+        let restockBadge = null;
+        const SHOW_RESTOCK_BADGE = false;
 
         if (
           SHOW_RESTOCK_BADGE &&
@@ -896,11 +891,8 @@ const SHOW_RESTOCK_BADGE = false;
         }
 
         const typeLabel = getTypeLabel(p);
-const isBlend = p.type === 'blend';
-
         const baseDesc = p.description || 'Research material supplied for laboratory environments.';
-const extraInfo = ' Accessories (if applicable) are supplied for laboratory handling and measurement.';
-
+        const extraInfo = ' Accessories (if applicable) are supplied for laboratory handling and measurement.';
         const unitSuffix = '/unit';
 
         const stockNum = Number(p.stock ?? 0);
@@ -918,10 +910,12 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
           <div class="col-6 col-md-3">
             <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${i})` : ''}">
               ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
-${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
-${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
+              ${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
+              ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
 
-              <div class="product-media">   <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}"> </div>
+              <div>
+                <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
+              </div>
 
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
@@ -952,29 +946,29 @@ ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span
     }
 
     function getTypeSortOrder(type) {
-  switch (String(type || '').toLowerCase().trim()) {
-    case 'blend': return 1;
-    case 'nad': return 2;
-    case 'mots-c': return 3;
-    case 'semaglutide': return 4;
-    case 'tirzepatide': return 5;
-    case 'retatrutide': return 6;
-    default: return 99;
-  }
-}
+      switch (String(type || '').toLowerCase().trim()) {
+        case 'blend': return 1;
+        case 'nad': return 2;
+        case 'mots-c': return 3;
+        case 'semaglutide': return 4;
+        case 'tirzepatide': return 5;
+        case 'retatrutide': return 6;
+        default: return 99;
+      }
+    }
 
-function getMgValue(name) {
-  const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
-  return match ? Number(match[1]) : 0;
-}
+    function getMgValue(name) {
+      const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
+      return match ? Number(match[1]) : 0;
+    }
 
     async function loadProductsFromDb() {
       const statusEl = document.getElementById('all-products-status');
       statusEl.textContent = 'Loading products…';
 
       const { data, error } = await supabaseClient
-  .from('Products')
-  .select('id, name, price, image, stock, description, type');
+        .from('Products')
+        .select('id, name, price, image, stock, description, type');
 
       if (error) {
         console.error('Error loading products', error);
@@ -983,177 +977,163 @@ function getMgValue(name) {
       }
 
       products = (data || [])
-  .map(row => ({
-    id: row.id,
-    name: row.name,
-    price: Number(row.price || 0),
-    image: row.image || '20mg Tirz Vial.png',
-    stock: row.stock ?? 0,
-    description: row.description || '',
-    type: String(row.type || '').toLowerCase().trim()
-  }))
-  .sort((a, b) => {
-    const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
-    if (typeDiff !== 0) return typeDiff;
+        .map(row => ({
+          id: row.id,
+          name: row.name,
+          price: Number(row.price || 0),
+          image: row.image || '20mg Tirz Vial.png',
+          stock: row.stock ?? 0,
+          description: row.description || '',
+          type: String(row.type || '').toLowerCase().trim()
+        }))
+        .sort((a, b) => {
+          const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
+          if (typeDiff !== 0) return typeDiff;
 
-    const mgDiff = getMgValue(a.name) - getMgValue(b.name);
-    if (mgDiff !== 0) return mgDiff;
+          const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+          if (mgDiff !== 0) return mgDiff;
 
-    return a.name.localeCompare(b.name);
-  });
+          return a.name.localeCompare(b.name);
+        });
 
       renderProducts();
     }
 
-    // ---------- MODAL ----------
     function openModal(i) {
-  const p = products[i];
-  if (!p || Number(p.stock ?? 0) === 0) return;
+      const p = products[i];
+      if (!p || Number(p.stock ?? 0) === 0) return;
 
-  currentProduct = p;
+      currentProduct = p;
 
-  const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
-  const stockNum = Number(p.stock ?? 0);
+      const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
+      const stockNum = Number(p.stock ?? 0);
 
-  let modal = document.getElementById('productModal');
+      let modal = document.getElementById('productModal');
 
-  if (!modal) {
-    const wrapper = document.createElement('div');
-    wrapper.innerHTML = `
-      <div class="modal fade" id="productModal" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modalTitle"></h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body text-center">
-              <img id="modalImg" src="" class="img-fluid mb-4" style="max-height: 320px;">
-              <h3 id="modalName"></h3>
-              <div class="product-price justify-content-center mb-2" id="modalPrice"></div>
-              <p class="stock text-success mb-2" id="modalStock"></p>
-              <div id="modalDescription" class="text-start small text-muted mb-3"></div>
-              <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-                <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
-                <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
-                <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
+      if (!modal) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <div class="modal fade" id="productModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalTitle"></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <div id="modalMedia" class="mb-4"></div>
+                  <h3 id="modalName"></h3>
+                  <div class="product-price justify-content-center mb-2" id="modalPrice"></div>
+                  <p class="stock text-success mb-2" id="modalStock"></p>
+                  <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+                  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
+                    <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
+                  </div>
+                  <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
+                </div>
               </div>
-              <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
             </div>
           </div>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(wrapper.firstElementChild);
-    modal = document.getElementById('productModal');
-  }
+        `;
+        document.body.appendChild(wrapper.firstElementChild);
+        modal = document.getElementById('productModal');
+      }
 
-  const modalImg = document.getElementById('modalImg');
+      const modalMedia = document.getElementById('modalMedia');
 
-  if ((p.name || '').toLowerCase().includes('nad+')) {
-    modalImg.outerHTML = `
-      <video
-        id="modalImg"
-        class="img-fluid mb-4"
-        style="max-height: 320px; width: 100%;"
-        controls
-        autoplay
-        playsinline
-      >
-        <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    `;
-  } else {
-    modalImg.outerHTML = `
-      <img
-        id="modalImg"
-        src="${imgSrc(p.image)}"
-        class="img-fluid mb-4"
-        style="max-height: 320px;"
-        alt="${p.name}"
-      >
-    `;
-  }
+      if ((p.name || '').toLowerCase().includes('nad+')) {
+        modalMedia.innerHTML = `
+          <video
+            id="modalVideo"
+            class="modal-media-video"
+            controls
+            autoplay
+            playsinline
+          >
+            <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        `;
+      } else {
+        modalMedia.innerHTML = `
+          <img
+            src="${imgSrc(p.image)}"
+            class="img-fluid"
+            style="max-height: 320px;"
+            alt="${p.name}"
+          >
+        `;
+      }
 
-  document.getElementById('modalTitle').textContent = p.name;
-  document.getElementById('modalName').textContent = p.name;
-  document.getElementById('modalPrice').innerHTML =
-    (p.name || '').includes('NAD+')
-      ? `
-        <span class="sale-old">£160</span>
-        <span class="sale-new">£120</span>
-      `
-      : `
-        <span>£${Number(p.price || 0).toFixed(2)}</span>
+      document.getElementById('modalTitle').textContent = p.name;
+      document.getElementById('modalName').textContent = p.name;
+
+      document.getElementById('modalPrice').innerHTML =
+        (p.name || '').includes('NAD+')
+          ? `
+            <span class="sale-old">£160</span>
+            <span class="sale-new">£120</span>
+          `
+          : `
+            <span>£${Number(p.price || 0).toFixed(2)}</span>
+          `;
+
+      document.getElementById('modalStock').innerHTML =
+        stockNum === 0
+          ? '<span class="text-danger fw-bold">Out of stock</span>'
+          : stockNum <= 5
+            ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+            : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+
+      document.getElementById('modalDescription').innerHTML = `
+        <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
+        <p><strong>${accessoriesLine}</strong></p>
+        <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+        <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
       `;
 
-  document.getElementById('modalStock').innerHTML =
-    stockNum === 0
-      ? '<span class="text-danger fw-bold">Out of stock</span>'
-      : stockNum <= 5
-        ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
-        : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+      const qtyInput = document.getElementById('modalQty');
+      qtyInput.value = 1;
+      qtyInput.max = stockNum;
 
-  const descEl = document.getElementById('modalDescription');
+      document.getElementById('modalAddBtn').onclick = () => {
+        let qty = parseInt(document.getElementById('modalQty').value) || 1;
+        qty = Math.max(1, Math.min(qty, stockNum));
 
-  descEl.innerHTML = `
-    <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
-    <p><strong>${accessoriesLine}</strong></p>
-    <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-    <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-  `;
+        const existing = cart.find(item => item.id === p.id);
+        const already = existing ? (existing.qty || 0) : 0;
 
-  const qtyInput = document.getElementById('modalQty');
-  qtyInput.value = 1;
-  qtyInput.max = stockNum;
+        if (already + qty > stockNum) {
+          return alert(`Only ${stockNum} available. You already have ${already} in your cart.`);
+        }
 
-  document.getElementById('modalAddBtn').onclick = () => {
-    let qty = parseInt(document.getElementById('modalQty').value) || 1;
-    qty = Math.max(1, Math.min(qty, stockNum));
+        addToCart(p, qty);
+        bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+      };
 
-    const existing = cart.find(item => item.id === p.id);
-    const already = existing ? (existing.qty || 0) : 0;
+      const mediaEl = document.getElementById('modalVideo');
+      if (mediaEl) {
+        mediaEl.volume = 1;
+        mediaEl.muted = false;
+        mediaEl.play().catch(() => {
+          console.log('Autoplay with audio was blocked by the browser.');
+        });
+      }
 
-    if (already + qty > stockNum) {
-      return alert(`Only ${stockNum} available. You already have ${already} in your cart.`);
+      new bootstrap.Modal(modal).show();
     }
 
-    addToCart(p, qty);
-    bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-  };
-
-  const mediaEl = document.getElementById('modalImg');
-
-  if (mediaEl && mediaEl.tagName === 'VIDEO') {
-    mediaEl.volume = 1;
-    mediaEl.muted = false;
-
-    mediaEl.play().catch(() => {
-      console.log('Autoplay with audio was blocked by the browser.');
+    document.addEventListener('hidden.bs.modal', function (e) {
+      if (e.target && e.target.id === 'productModal') {
+        const mediaEl = document.getElementById('modalVideo');
+        if (mediaEl) {
+          mediaEl.pause();
+          mediaEl.currentTime = 0;
+        }
+      }
     });
-  }
-
-  new bootstrap.Modal(modal).show();
-}
-
-document.addEventListener('hidden.bs.modal', function (e) {
-  if (e.target && e.target.id === 'productModal') {
-    const mediaEl = document.getElementById('modalImg');
-    if (mediaEl && mediaEl.tagName === 'VIDEO') {
-      mediaEl.pause();
-      mediaEl.currentTime = 0;
-    }
-  }
-});
-
-function changeQty(delta) {
-  const input = document.getElementById('modalQty');
-  const max = parseInt(input.max) || 999999;
-  let val = parseInt(input.value) || 1;
-  val = Math.max(1, Math.min(max, val + delta));
-  input.value = val;
-}
 
     function changeQty(delta) {
       const input = document.getElementById('modalQty');
@@ -1181,7 +1161,6 @@ function changeQty(delta) {
       updateCart();
       saveCart();
       toggleCart(true);
-      showToast(`${product.name} added to cart`);
     }
 
     loadProductsFromDb();
