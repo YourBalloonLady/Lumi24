@@ -39,6 +39,30 @@
       --lw-bg: #f3f4f6;
     }
 
+    .cart-item-row {
+  gap: 12px;
+}
+
+.cart-item-row .flex-grow-1 {
+  min-width: 0;
+}
+
+.cart-item-row strong {
+  display: block;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+@media (max-width: 576px) {
+  .cart-item-row {
+    align-items: flex-start;
+  }
+
+  .cart-item-row .d-flex.align-items-center.gap-2 {
+    flex-shrink: 0;
+  }
+
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--lw-bg);
@@ -341,17 +365,17 @@
     }
 
     .cart-sidebar {
-      height: 100vh;
-      width: 420px;
-      position: fixed;
-      top: 0;
-      right: -420px;
-      background: #ffffff;
-      box-shadow: -10px 0 35px rgba(15, 23, 42, 0.18);
-      transition: 0.35s;
-      z-index: 9999;
-      overflow-y: auto;
-    }
+  height: 100vh;
+  width: min(420px, 100vw);
+  position: fixed;
+  top: 0;
+  right: calc(-1 * min(420px, 100vw));
+  background: #ffffff;
+  box-shadow: -10px 0 35px rgba(15, 23, 42, 0.18);
+  transition: 0.35s;
+  z-index: 9999;
+  overflow-y: auto;
+}
 
     .cart-sidebar.open {
       right: 0;
@@ -414,14 +438,24 @@
     }
 
     #backToTop {
-      position: fixed;
-      right: 18px;
-      bottom: 18px;
-      z-index: 9999;
-      display: none;
-      border-radius: 999px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-    }
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 9999;
+  display: none;
+  border-radius: 999px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+.cart-items-body {
+  min-height: 40vh;
+}
+
+@media (max-width: 576px) {
+  .cart-items-body {
+    min-height: 30vh;
+  }
+}
   </style>
 </head>
 
@@ -484,7 +518,7 @@
       <button class="btn-close" onclick="toggleCart()"></button>
     </div>
 
-    <div id="cart-items" class="p-4" style="min-height: 60vh;">
+    <div id="cart-items" class="p-4 cart-items-body">
       <p class="text-center text-muted m-0">Your cart is empty</p>
     </div>
 
@@ -679,7 +713,7 @@
       document.getElementById('cart-items').innerHTML = cart.length === 0
         ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
         : cart.map((item, i) => `
-          <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+          <div class="cart-item-row d-flex align-items-start mb-3 pb-3 border-bottom">
             <div class="flex-grow-1">
               <strong>${item.name}</strong><br>
               <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
