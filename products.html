@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <meta property="og:image" content="https://luminaweight.co.uk/Favicon.png">
+<meta name="twitter:card" content="summary_large_image">
+
   <!-- FAVICON / TAB ICON -->
   <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
   <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
@@ -464,7 +467,7 @@
 
           <li class="nav-item ms-lg-3">
             <div class="position-relative">
-              <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
+              <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()" aria-label="Open cart" role="button" tabindex="0"></i>
               <span id="cart-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
             </div>
           </li>
@@ -500,7 +503,7 @@
   <section class="hero text-center">
     <div class="container">
       <div class="hero-eyebrow">
-        <i class="fa-solid fa-vial-circle-check"></i>
+        <i class="fa-solid fa-vial-circle-check" aria-hidden="true"></i>
         UK Research Materials Catalogue
       </div>
 
@@ -879,7 +882,7 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
 ${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
 ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
 
-              <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
+              <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}" loading="lazy">
 
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
