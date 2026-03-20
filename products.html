@@ -39,6 +39,25 @@
       --lw-bg: #f3f4f6;
     }
 
+    .product-media {
+  position: relative;
+}
+
+.product-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+}
+
+.product-card:hover .product-video {
+  display: block;
+}
+
+.product-card:hover .product-img {
+  display: none;
+}
+
     .cart-item-row {
   gap: 12px;
 }
@@ -916,7 +935,7 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
 ${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
 ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
 
-              <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}" loading="lazy">
+              <div class="product-media">   ${(p.name || '').toLowerCase().includes('nad+') ? `     <img src="${imgSrc(p.image)}" class="w-100 p-4 product-img" alt="${p.name}">     <video class="w-100 p-4 product-video" muted loop playsinline>       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">     </video>   ` : `     <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">   `} </div>
 
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
