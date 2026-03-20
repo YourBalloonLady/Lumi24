@@ -1078,6 +1078,7 @@ descEl.innerHTML = `
       updateCart();
       saveCart();
       toggleCart(true);
+      showToast(`${product.name} added to cart`);
     }
 
     loadProductsFromDb();
