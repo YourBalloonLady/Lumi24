@@ -935,7 +935,7 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
 ${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
 ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
 
-              <div class="product-media">   ${(p.name || '').toLowerCase().includes('nad+') ? `     <img src="${imgSrc(p.image)}" class="w-100 p-4 product-img" alt="${p.name}">     <video class="w-100 p-4 product-video" muted loop playsinline>       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">     </video>   ` : `     <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">   `} </div>
+              <div class="product-media">   ${(p.name || '').toLowerCase().includes('nad+') ? `     <img src="${imgSrc(p.image)}" class="w-100 p-3" alt="${p.name}">      <video        class="w-100 px-3 pb-3"        autoplay        muted        loop        playsinline        style="height:140px; object-fit:contain;"     >       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">     </video>   ` : `     <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">   `} </div>
 
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
