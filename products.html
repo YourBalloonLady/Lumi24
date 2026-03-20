@@ -1048,7 +1048,7 @@ function getMgValue(name) {
         modal = document.getElementById('productModal');
       }
 
-      document.getElementById('modalImg').src = imgSrc(p.image);
+      const modalImg = document.getElementById('modalImg');  if ((p.name || '').toLowerCase().includes('nad+')) {   modalImg.outerHTML = `     <video        id="modalImg"       class="img-fluid mb-4"       style="max-height: 320px; width: 100%;"       controls       autoplay       playsinline     >       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">       Your browser does not support the video tag.     </video>   `; } else {   modalImg.outerHTML = `     <img        id="modalImg"       src="${imgSrc(p.image)}"       class="img-fluid mb-4"       style="max-height: 320px;"       alt="${p.name}"     >   `; }
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalName').textContent = p.name;
       document.getElementById('modalPrice').innerHTML =
@@ -1090,6 +1090,29 @@ descEl.innerHTML = `
         addToCart(p, qty);
         bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
       };
+
+
+      const mediaEl = document.getElementById('modalImg');
+
+if (mediaEl && mediaEl.tagName === 'VIDEO') {
+  mediaEl.volume = 1;
+  mediaEl.muted = false;
+
+  mediaEl.play().catch(() => {
+    // Browser may block autoplay with sound until user presses play
+    console.log('Autoplay with audio was blocked by the browser.');
+  });
+}
+
+      document.addEventListener('hidden.bs.modal', function (e) {
+  if (e.target && e.target.id === 'productModal') {
+    const mediaEl = document.getElementById('modalImg');
+    if (mediaEl && mediaEl.tagName === 'VIDEO') {
+      mediaEl.pause();
+      mediaEl.currentTime = 0;
+    }
+  }
+});
 
       new bootstrap.Modal(modal).show();
     }
