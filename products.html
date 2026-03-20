@@ -921,7 +921,7 @@ const extraInfo = ' Accessories (if applicable) are supplied for laboratory hand
 ${isComingSoon ? `<span class="pill-coming-soon">Coming Soon</span>` : ''}
 ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
 
-              <div class="product-media">   ${(p.name || '').toLowerCase().includes('nad+') ? `     <img src="${imgSrc(p.image)}" class="w-100 p-4 product-img" alt="${p.name}">     <video class="w-100 p-4 product-video" muted loop playsinline>       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">     </video>   ` : `     <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">   `} </div>
+              <div class="product-media">   <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}"> </div>
 
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
@@ -1007,104 +1007,137 @@ function getMgValue(name) {
 
     // ---------- MODAL ----------
     function openModal(i) {
-      const p = products[i];
-      if (!p || Number(p.stock ?? 0) === 0) return;
+  const p = products[i];
+  if (!p || Number(p.stock ?? 0) === 0) return;
 
-      currentProduct = p;
+  currentProduct = p;
 
-      const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
-      const stockNum = Number(p.stock ?? 0);
+  const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
+  const stockNum = Number(p.stock ?? 0);
 
-      let modal = document.getElementById('productModal');
+  let modal = document.getElementById('productModal');
 
-      if (!modal) {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = `
-          <div class="modal fade" id="productModal" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="modalTitle"></h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body text-center">
-                  <img id="modalImg" src="" class="img-fluid mb-4" style="max-height: 320px;">
-                  <h3 id="modalName"></h3>
-                  <p class="product-price fs-1" id="modalPrice"></p>
-                  <p class="stock text-success mb-2" id="modalStock"></p>
-                  <div id="modalDescription" class="text-start small text-muted mb-3"></div>
-                  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
-                    <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
-                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
-                  </div>
-                  <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
-                </div>
+  if (!modal) {
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = `
+      <div class="modal fade" id="productModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modalTitle"></h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center">
+              <img id="modalImg" src="" class="img-fluid mb-4" style="max-height: 320px;">
+              <h3 id="modalName"></h3>
+              <div class="product-price justify-content-center mb-2" id="modalPrice"></div>
+              <p class="stock text-success mb-2" id="modalStock"></p>
+              <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+              <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+                <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
+                <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+                <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
               </div>
+              <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
             </div>
           </div>
-        `;
-        document.body.appendChild(wrapper.firstElementChild);
-        modal = document.getElementById('productModal');
-      }
+        </div>
+      </div>
+    `;
+    document.body.appendChild(wrapper.firstElementChild);
+    modal = document.getElementById('productModal');
+  }
 
-      const modalImg = document.getElementById('modalImg');  if ((p.name || '').toLowerCase().includes('nad+')) {   modalImg.outerHTML = `     <video        id="modalImg"       class="img-fluid mb-4"       style="max-height: 320px; width: 100%;"       controls       autoplay       playsinline     >       <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">       Your browser does not support the video tag.     </video>   `; } else {   modalImg.outerHTML = `     <img        id="modalImg"       src="${imgSrc(p.image)}"       class="img-fluid mb-4"       style="max-height: 320px;"       alt="${p.name}"     >   `; }
-      document.getElementById('modalTitle').textContent = p.name;
-      document.getElementById('modalName').textContent = p.name;
-      document.getElementById('modalPrice').innerHTML =
-        (p.name || '').includes('NAD+')
-          ? `<span class="sale-old">£160</span> <span class="sale-new">£120</span>`
-          : `£${Number(p.price || 0).toFixed(2)}`;
+  const modalImg = document.getElementById('modalImg');
 
-      document.getElementById('modalStock').innerHTML =
-        stockNum === 0
-          ? '<span class="text-danger fw-bold">Out of stock</span>'
-          : stockNum <= 5
-            ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
-            : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+  if ((p.name || '').toLowerCase().includes('nad+')) {
+    modalImg.outerHTML = `
+      <video
+        id="modalImg"
+        class="img-fluid mb-4"
+        style="max-height: 320px; width: 100%;"
+        controls
+        autoplay
+        playsinline
+      >
+        <source src="https://luminaweight.co.uk/NAD+.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    `;
+  } else {
+    modalImg.outerHTML = `
+      <img
+        id="modalImg"
+        src="${imgSrc(p.image)}"
+        class="img-fluid mb-4"
+        style="max-height: 320px;"
+        alt="${p.name}"
+      >
+    `;
+  }
 
-      const descEl = document.getElementById('modalDescription');
+  document.getElementById('modalTitle').textContent = p.name;
+  document.getElementById('modalName').textContent = p.name;
+  document.getElementById('modalPrice').innerHTML =
+    (p.name || '').includes('NAD+')
+      ? `
+        <span class="sale-old">£160</span>
+        <span class="sale-new">£120</span>
+      `
+      : `
+        <span>£${Number(p.price || 0).toFixed(2)}</span>
+      `;
 
-descEl.innerHTML = `
-  <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
-  <p><strong>${accessoriesLine}</strong></p>
-  <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-  <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-`;
+  document.getElementById('modalStock').innerHTML =
+    stockNum === 0
+      ? '<span class="text-danger fw-bold">Out of stock</span>'
+      : stockNum <= 5
+        ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+        : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
-      const qtyInput = document.getElementById('modalQty');
-      qtyInput.value = 1;
-      qtyInput.max = stockNum;
+  const descEl = document.getElementById('modalDescription');
 
-      document.getElementById('modalAddBtn').onclick = () => {
-        let qty = parseInt(document.getElementById('modalQty').value) || 1;
-        qty = Math.max(1, Math.min(qty, stockNum));
+  descEl.innerHTML = `
+    <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
+    <p><strong>${accessoriesLine}</strong></p>
+    <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+    <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+  `;
 
-        const existing = cart.find(item => item.id === p.id);
-        const already = existing ? (existing.qty || 0) : 0;
+  const qtyInput = document.getElementById('modalQty');
+  qtyInput.value = 1;
+  qtyInput.max = stockNum;
 
-        if (already + qty > stockNum) {
-          return alert(`Only ${stockNum} available. You already have ${already} in your cart.`);
-        }
+  document.getElementById('modalAddBtn').onclick = () => {
+    let qty = parseInt(document.getElementById('modalQty').value) || 1;
+    qty = Math.max(1, Math.min(qty, stockNum));
 
-        addToCart(p, qty);
-        bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-      };
+    const existing = cart.find(item => item.id === p.id);
+    const already = existing ? (existing.qty || 0) : 0;
 
+    if (already + qty > stockNum) {
+      return alert(`Only ${stockNum} available. You already have ${already} in your cart.`);
+    }
 
-      const mediaEl = document.getElementById('modalImg');
+    addToCart(p, qty);
+    bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+  };
 
-if (mediaEl && mediaEl.tagName === 'VIDEO') {
-  mediaEl.volume = 1;
-  mediaEl.muted = false;
+  const mediaEl = document.getElementById('modalImg');
 
-  mediaEl.play().catch(() => {
-    // Browser may block autoplay with sound until user presses play
-    console.log('Autoplay with audio was blocked by the browser.');
-  });
+  if (mediaEl && mediaEl.tagName === 'VIDEO') {
+    mediaEl.volume = 1;
+    mediaEl.muted = false;
+
+    mediaEl.play().catch(() => {
+      console.log('Autoplay with audio was blocked by the browser.');
+    });
+  }
+
+  new bootstrap.Modal(modal).show();
 }
 
-      document.addEventListener('hidden.bs.modal', function (e) {
+document.addEventListener('hidden.bs.modal', function (e) {
   if (e.target && e.target.id === 'productModal') {
     const mediaEl = document.getElementById('modalImg');
     if (mediaEl && mediaEl.tagName === 'VIDEO') {
@@ -1114,8 +1147,13 @@ if (mediaEl && mediaEl.tagName === 'VIDEO') {
   }
 });
 
-      new bootstrap.Modal(modal).show();
-    }
+function changeQty(delta) {
+  const input = document.getElementById('modalQty');
+  const max = parseInt(input.max) || 999999;
+  let val = parseInt(input.value) || 1;
+  val = Math.max(1, Math.min(max, val + delta));
+  input.value = val;
+}
 
     function changeQty(delta) {
       const input = document.getElementById('modalQty');
