@@ -752,8 +752,14 @@
     }
  
     function getVariantPrice(product, variant) {
-      return Number(product?.price || 0);
-    }
+  const basePrice = Number(product?.price || 0);
+
+  if (variant === 'cartridge-only') {
+    return Math.max(0, basePrice - 10);
+  }
+
+  return basePrice;
+}
  
  
     function computeBadge(p) {
