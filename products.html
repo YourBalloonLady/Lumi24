@@ -677,19 +677,16 @@
         ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
         : cart.map((item, i) => `
           <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-            <div class="flex-grow-1">
-              <strong>${item.name}</strong><br>
-              ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
-              <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
-              <span class="fw-bold">${item.qty}</span>
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
-              <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
-            </div>
-          </div>
-        `).join('');
+    <div class="flex-grow-1">
+      <strong>${item.name}</strong><br>
+      <small class="text-muted d-block">
+        ${getVariantLabel(item.variant)} 
+        ${item.color ? ` — Color: ${item.color}` : ''} 
+      </small>
+      <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
+    </div>
+    </div>
+`).join('');
     }
  
     updateCart();
@@ -731,6 +728,53 @@
     }
  
     // ---------- PRODUCTS FROM SUPABASE ----------
+    
+    // Inside your openModal(i) function, find the variantWrap logic [cite: 1893-1907]
+const variantWrap = document.getElementById('modalVariantWrap');
+currentVariant = 'full-kit';
+let currentColor = null; // Track selected color
+
+let selectionHtml = '';
+
+// 1. Existing Cartridge Option for Pens [cite: 1895]
+if (hasCartridgeOption(p)) {
+  selectionHtml += `
+    <div class="product-variant-selection text-start mb-3">
+      <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
+      <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
+        <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
+        <option value="cartridge-only">Cartridge Only</option>
+      </select>
+    </div>`;
+}
+
+// 2. New Color Option for Refill Pens
+if (p.name.toLowerCase().includes('refill pen')) {
+  selectionHtml += `
+    <div class="product-color-selection text-start mb-3">
+      <label for="modalColorSelect" class="form-label fw-semibold mb-2">Choose Colour:</label>
+      <select id="modalColorSelect" class="form-select">
+        <option value="Blue">Blue</option>
+        <option value="Pink">Pink</option>
+        <option value="Silver">Silver</option>
+        <option value="Black">Black</option>
+      </select>
+    </div>`;
+}
+
+variantWrap.innerHTML = selectionHtml;
+
+// Update the Add to Cart click handler inside openModal [cite: 1911-1921]
+document.getElementById('modalAddBtn').onclick = () => {
+  let qty = parseInt(document.getElementById('modalQty').value) || 1;
+  const colorSelect = document.getElementById('modalColorSelect');
+  const selectedColor = colorSelect ? colorSelect.value : null;
+
+  addToCart(p, qty, currentVariant, selectedColor); // Pass color to addToCart
+  bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+};
+    
+    
     let products = [];
     let currentProduct = null;
     let currentVariant = 'full-kit';
@@ -1134,27 +1178,35 @@ if (modalVideo) {
       input.value = val;
     }
  
-    function addToCart(product, qty, variant = 'full-kit') {
-      const price = getVariantPrice(product, variant);
-      const existing = cart.find(item => item.id === product.id && (item.variant || 'full-kit') === variant);
- 
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        cart.push({
-          id: product.id,
-          name: product.name,
-          price: price,
-          qty: qty,
-          image: product.image || '',
-          variant: variant
-        });
-      }
- 
-      updateCart();
-      saveCart();
-      toggleCart(true);
-    }
+    // Update your addToCart function [cite: 1953]
+function addToCart(product, qty, variant = 'full-kit', color = null) {
+  const price = getVariantPrice(product, variant);
+  
+  // Find if exact same item (id + variant + color) is already in cart [cite: 1955]
+  const existing = cart.find(item => 
+    item.id === product.id && 
+    (item.variant || 'full-kit') === variant &&
+    item.color === color
+  );
+
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: price,
+      qty: qty,
+      image: product.image || '',
+      variant: variant,
+      color: color // Store the selected color [cite: 1959-1966]
+    });
+  }
+
+  updateCart();
+  saveCart();
+  toggleCart(true);
+}
  
     loadProductsFromDb();
   </script>
