@@ -961,7 +961,7 @@ function getMgValue(name) {
  
       const { data, error } = await supabaseClient
   .from('Products')
-  .select('id, name, price, image, stock, description, type');
+  .select('id, name, price, image, stock, description, type, colors'); // Added 'colors';
  
       if (error) {
         console.error('Error loading products', error);
@@ -972,13 +972,14 @@ function getMgValue(name) {
       products = (data || [])
   .map(row => ({
     id: row.id,
-    name: row.name,
-    price: Number(row.price || 0),
-    image: row.image || '20mg Tirz Vial.png',
-    stock: row.stock ?? 0,
-    description: row.description || '',
-    type: String(row.type || '').toLowerCase().trim()
-  }))
+  name: row.name,
+  price: Number(row.price || 0),
+  image: row.image || '20mg Tirz Vial.png',
+  stock: row.stock ?? 0,
+  description: row.description || '',
+  type: String(row.type || '').toLowerCase().trim(),
+  colors: row.colors || [] // Added colors array
+}))
   .sort((a, b) => {
     const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
     if (typeDiff !== 0) return typeDiff;
