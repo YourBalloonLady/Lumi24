@@ -361,20 +361,24 @@
   }
 
   function isPenItem(itemOrName) {
-    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
-    const name = item ? (item.name || '') : (itemOrName || '');
-    const n = String(name).toLowerCase();
+  const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+  const name = item ? (item.name || '') : (itemOrName || '');
+  const n = String(name).toLowerCase();
 
-    if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
+  const isRefillPen = n.includes('refill');
 
-    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
-    if (semaForm === 'pen') return true;
+  if (isRefillPen) return false;
 
-    const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
-    if (form.includes('pen')) return true;
+  if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
 
-    return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
-  }
+  const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+  if (semaForm === 'pen') return true;
+
+  const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
+  if (form.includes('pen')) return true;
+
+  return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
+}
 
   function isVialItem(itemOrName) {
     const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
