@@ -589,36 +589,34 @@
     }
 
     if (isPenItem(item)) {
-      const current = item.pen_heads ? String(item.pen_heads) : '';
-      return `
-        <div class="addon-row d-flex align-items-center justify-content-between">
-          <label class="m-0">Pen heads <span class="text-danger">*</span></label>
-          <select class="form-select form-select-sm" style="max-width: 180px;" required
-            onchange="setAccessory(${index}, 'pen_heads', this.value)">
-            <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
-            <option value="none" ${current === 'none' ? 'selected' : ''}>None required</option>
-            <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
-            <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
-          </select>
-        </div>
-      `;
-    }
+  const current = item.pen_heads ? String(item.pen_heads) : '';
+  return `
+    <div class="addon-row d-flex align-items-center justify-content-between">
+      <label class="m-0">Pen heads <span class="text-danger">*</span></label>
+      <select class="form-select form-select-sm" style="max-width: 180px;" required
+        onchange="setAccessory(${index}, 'pen_heads', this.value)">
+        <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
+        <option value="none" ${current === 'none' ? 'selected' : ''}>None</option>
+        <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
+      </select>
+    </div>
+  `;
+}
 
     if (isVialItem(item)) {
-      const current = item.syringes ? String(item.syringes) : '';
-      return `
-        <div class="addon-row d-flex align-items-center justify-content-between">
-          <label class="m-0">Syringes <span class="text-danger">*</span></label>
-          <select class="form-select form-select-sm" style="max-width: 180px;" required
-            onchange="setAccessory(${index}, 'syringes', this.value)">
-            <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
-            <option value="none" ${current === 'none' ? 'selected' : ''}>None required</option>
-            <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
-            <option value="10" ${current === '10' ? 'selected' : ''}>10</option>
-          </select>
-        </div>
-      `;
-    }
+  const current = item.syringes ? String(item.syringes) : '';
+  return `
+    <div class="addon-row d-flex align-items-center justify-content-between">
+      <label class="m-0">Syringes <span class="text-danger">*</span></label>
+      <select class="form-select form-select-sm" style="max-width: 180px;" required
+        onchange="setAccessory(${index}, 'syringes', this.value)">
+        <option value="" ${current === '' ? 'selected' : ''} disabled>Select…</option>
+        <option value="none" ${current === 'none' ? 'selected' : ''}>None</option>
+        <option value="5" ${current === '5' ? 'selected' : ''}>5</option>
+      </select>
+    </div>
+  `;
+}
 
     return '';
   }
