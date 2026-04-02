@@ -737,7 +737,8 @@ let currentVariant = 'full-kit';
 
 function hasCartridgeOption(p) {
   const name = String(p?.name || '').toLowerCase();
-  return name.includes('pen');
+  return name.includes('pen') && !name.includes('refill pen');
+
 }
 
 function getVariantLabel(variant) {
