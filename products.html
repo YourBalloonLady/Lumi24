@@ -732,20 +732,27 @@
  
     // ---------- PRODUCTS FROM SUPABASE ----------
     let products = [];
-    let currentProduct = null;
-    let currentVariant = 'full-kit';
- 
-    function hasCartridgeOption(p) {
-      const name = String(p?.name || '').toLowerCase();
-      return (
-        name.includes('pen') &&
-        (
-          name.includes('semaglutide') ||
-          name.includes('tirzepatide') ||
-          name.includes('retatrutide')
-        )
-      );
-    }
+let currentProduct = null;
+let currentVariant = 'full-kit';
+
+function hasCartridgeOption(p) {
+  const name = String(p?.name || '').toLowerCase();
+  return name.includes('pen');
+}
+
+function getVariantLabel(variant) {
+  return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
+}
+
+function getVariantPrice(product, variant) {
+  const basePrice = Number(product?.price || 0);
+
+  if (variant === 'cartridge-only') {
+    return Math.max(0, basePrice - 10);
+  }
+
+  return basePrice;
+}
  
     function getVariantLabel(variant) {
       return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
