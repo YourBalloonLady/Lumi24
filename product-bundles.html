@@ -216,10 +216,6 @@
       background: #6366f1;
     }
 
-    .pill-reference {
-      background: #0f766e;
-    }
-
     .product-body {
       padding: 1.5rem 1.6rem 1.6rem;
     }
@@ -506,8 +502,7 @@
 
   <script>
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
-
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiJzoicWtleG5xaGZqZnhicWl1cWV2bmgiLCJyb2xlIjoiYW5vbiIsImlhdCI6MTc2NDY2OTMzMCwiZXhwIjoyMDgwMjQ1MzMwfQ.invalid";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let allBundles = [];
@@ -521,7 +516,6 @@
     function parseBundleContents(raw) {
       if (!raw) return [];
       if (Array.isArray(raw)) return raw;
-
       try {
         const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
         return Array.isArray(parsed) ? parsed : [];
@@ -533,7 +527,6 @@
     function parseBundleOptions(raw) {
       if (!raw) return {};
       if (typeof raw === 'object' && !Array.isArray(raw)) return raw;
-
       try {
         const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
         return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
@@ -570,7 +563,6 @@
       listEl.innerHTML = filteredBundles.map((bundle, i) => {
         const contents = parseBundleContents(bundle.bundle_contents);
         const tag = getBundleTag(bundle);
-        const saving = Math.max(0, Number(bundle.compare_at_price || 0) - Number(bundle.price || 0));
         const stockNum = Number(bundle.stock ?? 0);
 
         const stockLabel =
@@ -603,7 +595,9 @@
                 <div class="bundle-includes-preview">
                   <strong>Included</strong>
                   <ul>
-                    ${contents.slice(0, 3).map(item => `<li>${item.qty || 1} × ${item.name || ''}</li>`).join('')}
+                    ${contents.length
+                      ? contents.slice(0, 3).map(item => `<li>${item.qty || 1} × ${item.name || ''}</li>`).join('')
+                      : '<li>Bundle contents not listed.</li>'}
                   </ul>
                 </div>
 
@@ -635,9 +629,9 @@
       filteredBundles = allBundles.filter(bundle => {
         const contents = parseBundleContents(bundle.bundle_contents);
         const haystack = [
-          bundle.name,
-          bundle.description,
-          ...(contents.map(c => c.name || ''))
+          bundle.name || '',
+          bundle.description || '',
+          ...contents.map(c => c.name || '')
         ].join(' ').toLowerCase();
 
         return haystack.includes(q);
@@ -652,35 +646,25 @@
 
       const { data, error } = await supabaseClient
         .from('Products')
-        .select('id, name, price, compare_at_price, image, stock, description, type, bundle_contents, bundle_options')
-        .eq('type', 'bundle')
+        .select('*')
         .order('name', { ascending: true });
 
       if (error) {
-        console.error('Error loading bundles', error);
-        statusEl.textContent = 'Could not load bundles.';
+        console.error('Error loading bundles:', error);
+        statusEl.textContent = `Could not load bundles: ${error.message}`;
         return;
       }
 
-      allBundles = (data || []).map(row => ({
-        id: row.id,
-        name: row.name,
-        price: Number(row.price || 0),
-        compare_at_price: Number(row.compare_at_price || 0),
-        image: row.image || '',
-        stock: row.stock ?? 0,
-        description: row.description || '',
-        type: row.type || 'bundle',
-        bundle_contents: row.bundle_contents || [],
-        bundle_options: row.bundle_options || {}
-      }));
-
+      allBundles = (data || []).filter(row => String(row.type || '').toLowerCase() === 'bundle');
       filteredBundles = [...allBundles];
-      renderBundles();
 
       if (!allBundles.length) {
         statusEl.textContent = 'No bundles available yet.';
+        renderBundles();
+        return;
       }
+
+      renderBundles();
     }
 
     function ensureBundleModal() {
@@ -720,23 +704,15 @@
                       <ul id="bundleModalContents"></ul>
                     </div>
 
-                    // ... inside ensureBundleModal() wrapper.innerHTML ...
+                    <div class="bundle-options-card mb-3" id="bundleModalOptionsWrap" style="display:none;">
+                      <h6>Bundle options</h6>
+                      <div id="bundleModalOptions"></div>
+                    </div>
 
-<div class="bundle-options-card mb-3" id="bundleModalOptionsWrap" style="display:none;">
-    <h6>Customise your bundle</h6>
-    <div id="bundleModalOptions"></div>
-</div>
-
-<div class="d-flex gap-2 flex-wrap mt-4">
-    <div class="qty-group d-flex border rounded-pill overflow-hidden bg-white" style="height: 48px;">
-        <button class="btn btn-light px-3 border-0" onclick="changeBundleQty(-1)">−</button>
-        <input type="number" id="bundleQty" value="1" class="form-control border-0 text-center fw-bold" style="width: 50px; background:transparent;" readonly>
-        <button class="btn btn-light px-3 border-0" onclick="changeBundleQty(1)">+</button>
-    </div>
-    <button id="bundleAddToCartBtn" class="btn btn-success rounded-pill px-4 flex-grow-1 fw-bold" style="height: 48px;">
-        <i class="fa-solid fa-cart-plus me-2"></i> Add to Cart
-    </button>
-</div>
+                    <div class="d-flex gap-2 flex-wrap">
+                      <a href="contact.html" id="bundleEnquireBtn" class="btn btn-outline-secondary rounded-pill px-4">Enquire</a>
+                      <a href="products.html" class="btn btn-success rounded-pill px-4">View Main Catalogue</a>
+                    </div>
 
                     <p class="small text-muted mt-3 mb-0">
                       Supplied strictly for laboratory research purposes only. Not for human consumption or medical use.
@@ -753,104 +729,58 @@
       return document.getElementById('bundleModal');
     }
 
-    let currentActiveBundle = null; // Track bundle for add-to-cart
+    function openBundleModal(index) {
+      const bundle = filteredBundles[index];
+      if (!bundle) return;
 
-function openBundleModal(index) {
-  const bundle = filteredBundles[index];
-  if (!bundle) return;
-  currentActiveBundle = bundle; // Set global reference
+      const modalEl = ensureBundleModal();
+      const contents = parseBundleContents(bundle.bundle_contents);
+      const options = parseBundleOptions(bundle.bundle_options);
+      const stockNum = Number(bundle.stock ?? 0);
 
-  const modalEl = ensureBundleModal();
-  const contents = parseBundleContents(bundle.bundle_contents);
-  const options = parseBundleOptions(bundle.bundle_options);
-  const stockNum = Number(bundle.stock ?? 0);
+      document.getElementById('bundleModalTitle').textContent = bundle.name || 'Bundle Details';
+      document.getElementById('bundleModalImage').src = imgSrc(bundle.image);
+      document.getElementById('bundleModalImage').alt = bundle.name || 'Bundle image';
+      document.getElementById('bundleModalName').textContent = bundle.name || '';
+      document.getElementById('bundleModalDescription').textContent =
+        bundle.description || 'Grouped research bundle supplied for laboratory environments.';
 
-  // Reset Quantity
-  document.getElementById('bundleQty').value = 1;
+      document.getElementById('bundleModalMeta').innerHTML = `
+        <span class="bundle-meta-pill">Bundle</span>
+        <span class="bundle-meta-pill">${contents.length} item${contents.length === 1 ? '' : 's'}</span>
+      `;
 
-  // Basic Info
-  document.getElementById('bundleModalTitle').textContent = bundle.name;
-  document.getElementById('bundleModalImage').src = imgSrc(bundle.image);
-  document.getElementById('bundleModalName').textContent = bundle.name;
-  document.getElementById('bundleModalDescription').textContent = bundle.description;
+      document.getElementById('bundleModalPrice').innerHTML = `
+        £${Number(bundle.price || 0).toFixed(2)}
+        ${bundle.compare_at_price ? `<span class="sale-old">£${Number(bundle.compare_at_price).toFixed(2)}</span>` : ''}
+      `;
 
-  // Stock & Price
-  document.getElementById('bundleModalPrice').innerHTML = `£${Number(bundle.price || 0).toFixed(2)}`;
-  document.getElementById('bundleModalStock').innerHTML = stockNum === 0 ? 'Out of Stock' : 'In Stock';
+      document.getElementById('bundleModalStock').innerHTML =
+        stockNum === 0
+          ? '<span class="text-danger fw-bold">Out of stock</span>'
+          : stockNum <= 5
+            ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+            : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
-  // Contents
-  document.getElementById('bundleModalContents').innerHTML = contents.map(item => 
-    `<li>${item.qty || 1} × ${item.name || ''}</li>`
-  ).join('');
+      document.getElementById('bundleModalContents').innerHTML = contents.length
+        ? contents.map(item => `<li>${item.qty || 1} × ${item.name || ''}</li>`).join('')
+        : '<li>Bundle contents not listed.</li>';
 
-  // Handle Pen Color Dropdown
-  const optionsWrap = document.getElementById('bundleModalOptionsWrap');
-  const optionsEl = document.getElementById('bundleModalOptions');
-  
-  if (options.penColours && options.penColours.length > 0) {
-    optionsWrap.style.display = 'block';
-    optionsEl.innerHTML = `
-      <label class="form-label small fw-bold text-muted">SELECT PEN COLOUR</label>
-      <select class="form-select border-0 shadow-sm" id="bundlePenColorSelect" style="background-color: #fff;">
-        ${options.penColours.map(c => `<option value="${c}">${c}</option>`).join('')}
-      </select>
-    `;
-  } else {
-    optionsWrap.style.display = 'none';
-  }
+      const optionsWrap = document.getElementById('bundleModalOptionsWrap');
+      const optionsEl = document.getElementById('bundleModalOptions');
 
-  // Add to Cart Button Click Handler
-  const btn = document.getElementById('bundleAddToCartBtn');
-  btn.onclick = () => {
-    const qty = parseInt(document.getElementById('bundleQty').value);
-    const colorSelect = document.getElementById('bundlePenColorSelect');
-    const color = colorSelect ? colorSelect.value : null;
-    
-    addToCart(bundle, qty, color);
-    bootstrap.Modal.getInstance(modalEl).hide();
-  };
+      let optionsHtml = '';
 
-  new bootstrap.Modal(modalEl).show();
-}
-
-// Helper: Handle Quantity Toggles
-function changeBundleQty(delta) {
-    const input = document.getElementById('bundleQty');
-    let val = parseInt(input.value) + delta;
-    if (val < 1) val = 1;
-    input.value = val;
-}
-
-// Helper: Add to Cart Function
-function addToCart(bundle, qty, color) {
-    // This connects to your existing cart logic
-    const cartItem = {
-        id: bundle.id,
-        name: bundle.name + (color ? ` (${color})` : ''),
-        price: bundle.price,
-        qty: qty,
-        image: bundle.image,
-        type: 'bundle'
-    };
-
-    // If you already have a global 'cart' array and 'updateCart()' function:
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    
-    // Check if exact same item/color exists
-    const existing = cart.find(item => item.id === cartItem.id && item.name === cartItem.name);
-    if (existing) {
-        existing.qty += qty;
-    } else {
-        cart.push(cartItem);
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Notify user (Optional: trigger your existing toast/sidebar)
-    alert(`${qty} x ${bundle.name} added to cart!`);
-    
-    if (typeof updateCartUI === "function") updateCartUI(); 
-}
+      if (Array.isArray(options.penColours) && options.penColours.length) {
+        optionsHtml += `
+          <div class="mb-2">
+            <label class="form-label fw-semibold">Available Pen Colours</label>
+            <select class="form-select" disabled>
+              ${options.penColours.map(colour => `<option>${colour}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
 
       if (optionsHtml) {
         optionsEl.innerHTML = optionsHtml;
@@ -860,7 +790,7 @@ function addToCart(bundle, qty, color) {
         optionsWrap.style.display = 'none';
       }
 
-      document.getElementById('bundleEnquireBtn').href = `contact.html?bundle=${encodeURIComponent(bundle.id)}`;
+      document.getElementById('bundleEnquireBtn').href = `contact.html?bundle=${encodeURIComponent(bundle.id || '')}`;
 
       new bootstrap.Modal(modalEl).show();
     }
