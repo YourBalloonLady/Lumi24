@@ -365,9 +365,7 @@
   const name = item ? (item.name || '') : (itemOrName || '');
   const n = String(name).toLowerCase();
 
-  const isRefillPen = n.includes('refill');
-
-  if (isRefillPen) return false;
+  if (n.includes('refill')) return false;
 
   if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
 
@@ -525,56 +523,84 @@
 
   // ---------- BUNDLE CALCULATOR ----------
   function calculateBundle(cart) {
-    let vialQty = 0, penQty = 0;
-    let vialTotal = 0, penTotal = 0;
+  let vialQty = 0, penQty = 0;
+  let vialTotal = 0, penTotal = 0;
 
-    let totalQty = 0;
-    let baseTotal = 0;
+  let totalQty = 0;
+  let baseTotal = 0;
 
-    cart.forEach(item => {
-      const qty  = Number(item.qty || 0);
-      const line = Number(item.price || 0) * qty;
-      const name = (item.name || '').toLowerCase();
+  function isRefillPen(item) {
+    const name = String(item?.name || '').toLowerCase();
+    return name.includes('refill');
+  }
 
-      totalQty += qty;
+  cart.forEach(item => {
+    const qty  = Number(item.qty || 0);
+    const line = Number(item.price || 0) * qty;
+    const name = (item.name || '').toLowerCase();
+
+    // Refill pens are excluded from all bundle discount logic
+    if (isRefillPen(item)) {
       baseTotal += line;
-
-      if (name.includes('vial') || isVialItem(item)) {
-        vialQty += qty; vialTotal += line;
-      } else if (name.includes('pen') || isPenItem(item)) {
-        penQty += qty; penTotal += line;
-      }
-    });
-
-    let categoryDiscount = 0;
-    const categoryMessages = [];
-
-    if (vialQty >= 3) { categoryDiscount += vialTotal * 0.10; categoryMessages.push('10% multi-vial bundle discount applied.'); }
-    else if (vialQty === 2) { categoryDiscount += vialTotal * 0.05; categoryMessages.push('5% vial bundle discount applied (2 vials).'); }
-
-    if (penQty >= 3) { categoryDiscount += penTotal * 0.10; categoryMessages.push('10% pen bundle discount applied (3+ pens).'); }
-    else if (penQty === 2) { categoryDiscount += penTotal * 0.05; categoryMessages.push('5% pen bundle discount applied (2 pens).'); }
-
-    let cartDiscount = 0;
-    let cartMessage = '';
-
-    if (totalQty >= 3) { cartDiscount = baseTotal * 0.10; cartMessage = '10% bundle discount applied (any 3+ items).'; }
-    else if (totalQty === 2) { cartDiscount = baseTotal * 0.05; cartMessage = '5% bundle discount applied (any 2 items).'; }
-
-    let discount = 0;
-    const messages = [];
-
-    if (cartDiscount >= categoryDiscount && cartDiscount > 0) {
-      discount = cartDiscount;
-      messages.push(cartMessage);
-    } else if (categoryDiscount > 0) {
-      discount = categoryDiscount;
-      messages.push(...categoryMessages);
+      return;
     }
 
-    const finalTotal = Math.max(0, baseTotal - discount);
-    return { baseTotal, discount, finalTotal, messages };
+    totalQty += qty;
+    baseTotal += line;
+
+    if (name.includes('vial') || isVialItem(item)) {
+      vialQty += qty;
+      vialTotal += line;
+    } else if (name.includes('pen') || isPenItem(item)) {
+      penQty += qty;
+      penTotal += line;
+    }
+  });
+
+  let categoryDiscount = 0;
+  const categoryMessages = [];
+
+  if (vialQty >= 3) {
+    categoryDiscount += vialTotal * 0.10;
+    categoryMessages.push('10% multi-vial bundle discount applied.');
+  } else if (vialQty === 2) {
+    categoryDiscount += vialTotal * 0.05;
+    categoryMessages.push('5% vial bundle discount applied (2 vials).');
   }
+
+  if (penQty >= 3) {
+    categoryDiscount += penTotal * 0.10;
+    categoryMessages.push('10% pen bundle discount applied (3+ pens).');
+  } else if (penQty === 2) {
+    categoryDiscount += penTotal * 0.05;
+    categoryMessages.push('5% pen bundle discount applied (2 pens).');
+  }
+
+  let cartDiscount = 0;
+  let cartMessage = '';
+
+  if (totalQty >= 3) {
+    cartDiscount = (vialTotal + penTotal) * 0.10;
+    cartMessage = '10% bundle discount applied (any 3+ eligible items).';
+  } else if (totalQty === 2) {
+    cartDiscount = (vialTotal + penTotal) * 0.05;
+    cartMessage = '5% bundle discount applied (any 2 eligible items).';
+  }
+
+  let discount = 0;
+  const messages = [];
+
+  if (cartDiscount >= categoryDiscount && cartDiscount > 0) {
+    discount = cartDiscount;
+    messages.push(cartMessage);
+  } else if (categoryDiscount > 0) {
+    discount = categoryDiscount;
+    messages.push(...categoryMessages);
+  }
+
+  const finalTotal = Math.max(0, baseTotal - discount);
+  return { baseTotal, discount, finalTotal, messages };
+}
 
   // ---------- CART LOAD ----------
   function getCartFromUrlOrStorage() {
