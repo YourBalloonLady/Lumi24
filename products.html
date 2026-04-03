@@ -685,6 +685,7 @@
           <div class="flex-grow-1">
             <strong>${item.name}</strong><br>
             ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
+${item.penColour ? `<small class="text-muted d-block">Pen Colour: ${item.penColour}</small>` : ''}
             <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
           </div>
           <div class="d-flex align-items-center gap-2">
@@ -931,7 +932,7 @@
 
     const { data, error } = await supabaseClient
   .from('Products')
-  .select('id, name, price, compare_at_price, image, stock, description, type');
+  .select('id, name, price, compare_at_price, image, stock, description, type, bundle_options');
 
     if (error) {
       console.error('Error loading products', error);
@@ -948,7 +949,8 @@
     image: row.image || '20mg Tirz Vial.png',
     stock: row.stock ?? 0,
     description: row.description || '',
-    type: String(row.type || '').toLowerCase().trim()
+    type: String(row.type || '').toLowerCase().trim(),
+    bundle_options: row.bundle_options || {}
   }))
   .sort((a, b) => {
     const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
@@ -962,7 +964,17 @@
 
     renderProducts();
   }
+function parseBundleOptions(raw) {
+  if (!raw) return {};
+  if (typeof raw === 'object' && !Array.isArray(raw)) return raw;
 
+  try {
+    const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+    return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+  } catch {
+    return {};
+  }
+}
   // ---------- MODAL ----------
   function openModal(i) {
     const p = products[i];
@@ -1044,21 +1056,35 @@ document.getElementById('modalPrice').innerHTML =
     `;
 
     const variantWrap = document.getElementById('modalVariantWrap');
-    currentVariant = 'full-kit';
+currentVariant = 'full-kit';
 
-    if (hasCartridgeOption(p)) {
-      variantWrap.innerHTML = `
-        <div class="product-variant-selection text-start">
-          <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
-          <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
-            <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
-            <option value="cartridge-only">Cartridge Only</option>
-          </select>
-        </div>
-      `;
-    } else {
-      variantWrap.innerHTML = '';
-    }
+const bundleOptions = parseBundleOptions(p.bundle_options);
+let optionsHtml = '';
+
+if (hasCartridgeOption(p)) {
+  optionsHtml += `
+    <div class="product-variant-selection text-start mb-3">
+      <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
+      <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
+        <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
+        <option value="cartridge-only">Cartridge Only</option>
+      </select>
+    </div>
+  `;
+}
+
+if (Array.isArray(bundleOptions.penColours) && bundleOptions.penColours.length) {
+  optionsHtml += `
+    <div class="product-variant-selection text-start">
+      <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
+      <select id="modalPenColourSelect" class="form-select">
+        ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+      </select>
+    </div>
+  `;
+}
+
+variantWrap.innerHTML = optionsHtml;
 
     const qtyInput = document.getElementById('modalQty');
     qtyInput.value = 1;
@@ -1075,7 +1101,10 @@ document.getElementById('modalPrice').innerHTML =
         return alert(`Only ${stockNum} available. You already have ${already} in your cart for this format.`);
       }
 
-      addToCart(p, qty, currentVariant);
+      const penColourSelect = document.getElementById('modalPenColourSelect');
+const selectedPenColour = penColourSelect ? penColourSelect.value : null;
+
+addToCart(p, qty, currentVariant, selectedPenColour);
       bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
     };
 
@@ -1105,27 +1134,33 @@ document.getElementById('modalPrice').innerHTML =
     input.value = val;
   }
 
-  function addToCart(product, qty, variant = 'full-kit') {
-    const price = getVariantPrice(product, variant);
-    const existing = cart.find(item => item.id === product.id && (item.variant || 'full-kit') === variant);
+  function addToCart(product, qty, variant = 'full-kit', penColour = null) {
+  const price = getVariantPrice(product, variant);
 
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: price,
-        qty: qty,
-        image: product.image || '',
-        variant: variant
-      });
-    }
+  const existing = cart.find(item =>
+    item.id === product.id &&
+    (item.variant || 'full-kit') === variant &&
+    (item.penColour || null) === (penColour || null)
+  );
 
-    updateCart();
-    saveCart();
-    toggleCart(true);
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: price,
+      qty: qty,
+      image: product.image || '',
+      variant: variant,
+      penColour: penColour
+    });
   }
+
+  updateCart();
+  saveCart();
+  toggleCart(true);
+}
 
   loadProductsFromDb();
 </script>
