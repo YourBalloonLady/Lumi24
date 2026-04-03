@@ -666,45 +666,35 @@
     localStorage.setItem('cart', JSON.stringify(cart));
   }
 
-  // Updated to handle both Kit labels and Dynamic labels
   function getVariantLabel(variant) {
-    if (variant === 'cartridge-only') return 'Cartridge Only';
-    if (variant === 'full-kit') return 'Full Kit (Pen + Cartridge)';
-    return variant; // Returns the specific colour/option name
+    return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
   }
 
   function updateCart() {
     const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
     const total = cart.reduce((s, i) => s + (Number(i.price || 0) * (i.qty || 0)), 0);
 
-    const countEl = document.getElementById('cart-count');
-    const itemsCountEl = document.getElementById('cart-items-count');
-    const totalEl = document.getElementById('cart-total');
+    document.getElementById('cart-count').textContent = totalItems;
+    document.getElementById('cart-items-count').textContent = totalItems;
+    document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
 
-    if (countEl) countEl.textContent = totalItems;
-    if (itemsCountEl) itemsCountEl.textContent = totalItems;
-    if (totalEl) totalEl.textContent = `£${total.toFixed(2)}`;
-
-    const itemsContainer = document.getElementById('cart-items');
-    if (itemsContainer) {
-      itemsContainer.innerHTML = cart.length === 0
-        ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
-        : cart.map((item, i) => `
-          <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-            <div class="flex-grow-1">
-              <strong>${item.name}</strong><br>
-              ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
-              <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
-              <span class="fw-bold">${item.qty}</span>
-              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
-              <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
-            </div>
+    document.getElementById('cart-items').innerHTML = cart.length === 0
+      ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
+      : cart.map((item, i) => `
+        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+          <div class="flex-grow-1">
+            <strong>${item.name}</strong><br>
+            ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
+            <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
           </div>
-        `).join('');
-    }
+          <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
+            <span class="fw-bold">${item.qty}</span>
+            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
+            <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
+          </div>
+        </div>
+      `).join('');
   }
 
   updateCart();
@@ -712,11 +702,13 @@
   function updateQty(i, delta) {
     if (!cart[i]) return;
     const next = (cart[i].qty || 0) + delta;
+
     if (next <= 0) {
       cart.splice(i, 1);
     } else {
       cart[i].qty = next;
     }
+
     updateCart();
     saveCart();
   }
@@ -730,7 +722,6 @@
   function toggleCart(force) {
     const sb = document.getElementById('cart-sidebar');
     const ov = document.querySelector('.overlay');
-    if (!sb || !ov) return;
     const open = force !== undefined ? force : !sb.classList.contains('open');
     sb.classList.toggle('open', open);
     ov.classList.toggle('show', open);
@@ -749,13 +740,6 @@
   let currentProduct = null;
   let currentVariant = 'full-kit';
 
-  // HELPER: Parse JSON data safely (Used for Contents and Options)
-  function parseJSONField(data) {
-    if (!data) return null;
-    if (typeof data === 'object') return data;
-    try { return JSON.parse(data); } catch (e) { return null; }
-  }
-
   function hasCartridgeOption(p) {
     const name = String(p?.name || '').toLowerCase();
     return name.includes('pen') && !name.includes('refill pen');
@@ -763,18 +747,39 @@
 
   function getVariantPrice(product, variant) {
     const basePrice = Number(product?.price || 0);
+
     if (variant === 'cartridge-only') {
       return Math.max(0, basePrice - 10);
     }
+
     return basePrice;
   }
 
   function computeBadge(p) {
     const name = (p.name || '').toLowerCase();
-    if (name.includes('bpc-157') || name.includes('tb500')) return { text: 'Wolverine Stack', class: 'pill-wolverine' };
-    if (p.name?.includes('20mg')) return { text: 'Most Popular', class: 'pill-popular' };
-    if (p.price >= 130) return { text: 'Premium', class: 'pill-premium' };
+
+    if (name.includes('bpc-157') || name.includes('tb500')) {
+      return { text: 'Wolverine Stack', class: 'pill-wolverine' };
+    }
+
+    if (p.name?.includes('20mg')) {
+      return { text: 'Most Popular', class: 'pill-popular' };
+    }
+
+    if (p.price >= 130) {
+      return { text: 'Premium', class: 'pill-premium' };
+    }
+
     return null;
+  }
+
+  function isComingSoonProduct(p) {
+    const name = String(p?.name || '').toLowerCase();
+    return (
+      name.includes('cagrilintide') ||
+      name.includes('mt2') ||
+      name.includes('ghk-cu')
+    );
   }
 
   function imgSrc(image) {
@@ -782,11 +787,31 @@
     return './' + encodeURIComponent(image);
   }
 
+  function getDisplayPriceHtml(p, unitSuffix) {
+    return `
+      <div class="product-price">
+        £${Number(p.price || 0).toFixed(2)}
+        <span class="unit-suffix">${unitSuffix}</span>
+      </div>
+    `;
+  }
+
   function getTypeLabel(p) {
     switch (String(p.type || '').toLowerCase().trim()) {
-      case 'blend': return 'RESEARCH PEPTIDE BLEND';
-      case 'nad': return 'NAD+ (RESEARCH)';
-      default: return 'RESEARCH PEPTIDE';
+      case 'blend':
+        return 'RESEARCH PEPTIDE BLEND';
+      case 'retatrutide':
+        return 'RETATRUTIDE (RESEARCH)';
+      case 'semaglutide':
+        return 'SEMAGLUTIDE (RESEARCH)';
+      case 'tirzepatide':
+        return 'TIRZEPATIDE (RESEARCH)';
+      case 'nad':
+        return 'NAD+ (RESEARCH)';
+      case 'mots-c':
+        return 'MOTS-c (RESEARCH)';
+      default:
+        return 'RESEARCH PEPTIDE';
     }
   }
 
@@ -801,41 +826,66 @@
     }
 
     statusEl.textContent = '';
+
     listEl.innerHTML = products.map((p, i) => {
       const badge = computeBadge(p);
-      const typeLabel = getTypeLabel(p);
-      const stockNum = Number(p.stock ?? 0);
-      
-      // NEW: Included Items Logic
-      const contents = parseJSONField(p.bundle_contents) || [];
-      const contentsPreview = contents.length > 0 
-        ? `<div class="mt-2 mb-2 text-muted" style="font-size: 0.75rem; line-height: 1.2;">
-            <strong class="text-dark">Includes:</strong> ${contents.slice(0, 3).map(c => c.name).join(', ')}${contents.length > 3 ? '...' : ''}
-           </div>`
-        : '';
 
-      const stockClass = stockNum === 0 ? 'text-danger' : stockNum <= 5 ? 'text-warning' : 'text-success';
-      const stockLabel = stockNum === 0 ? 'Out of stock' : stockNum <= 5 ? `Low stock • ${stockNum} left` : `In stock`;
+      let restockBadge = null;
+      const SHOW_RESTOCK_BADGE = false;
+
+      if (
+        SHOW_RESTOCK_BADGE &&
+        (
+          p.name.includes('Tirzepatide 60mg Pen') ||
+          p.name.includes('Tirzepatide 60mg Vial')
+        )
+      ) {
+        restockBadge = { text: 'Back Monday', class: 'pill-restock' };
+      }
+
+      const typeLabel = getTypeLabel(p);
+      const baseDesc = p.description || 'Research material supplied for laboratory environments.';
+      const extraInfo = ' Accessories (if applicable) are supplied for laboratory handling and measurement.';
+      const unitSuffix = '/unit';
+
+      const stockNum = Number(p.stock ?? 0);
+      const stockLabel =
+        stockNum === 0 ? '<strong>Out of stock</strong>' :
+        stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` :
+        `<strong>In stock</strong> • ${stockNum} available`;
+
+      const stockClass =
+        stockNum === 0 ? 'text-danger' :
+        stockNum <= 5 ? 'text-warning' :
+        'text-success';
 
       return `
-        <div class="col-md-3 mb-4">
+        <div class="col-md-3">
           <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${i})` : ''}">
             ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
+            ${restockBadge ? `<span class="${restockBadge.class}">${restockBadge.text}</span>` : ''}
+
             <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
+
             <div class="product-body d-flex flex-column h-100">
               <div class="text-start">
-                <div class="text-uppercase text-xs text-muted" style="font-size: .70rem;">${typeLabel}</div>
-                <div class="product-name" style="font-size: 1rem; font-weight: 700;">${p.name}</div>
-                ${contentsPreview}
-                <div class="text-muted" style="font-size:0.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
-                  ${p.description || 'Laboratory research material.'}
+                <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">${typeLabel}</div>
+                <div class="product-name">${p.name}</div>
+                <div class="text-muted" style="font-size:0.85rem;">
+                  ${baseDesc + extraInfo}
                 </div>
               </div>
-              <div class="mt-auto pt-3">
-                <div class="product-price">£${Number(p.price || 0).toFixed(2)}</div>
-                <p class="stock ${stockClass} small mt-1 mb-2">${stockLabel}</p>
-                <button class="btn btn-success btn-add w-100" ${stockNum === 0 ? 'disabled' : ''}>
-                  ${stockNum > 0 ? 'View Options' : 'Sold out'}
+
+              <div class="mt-3">
+                ${getDisplayPriceHtml(p, unitSuffix)}
+                <p class="stock ${stockClass} mt-2">${stockLabel}</p>
+
+                <button
+                  class="btn btn-success btn-add mt-auto"
+                  ${stockNum === 0 ? 'disabled' : ''}
+                  onclick="event.stopPropagation(); openModal(${i})"
+                >
+                  ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
                 </button>
               </div>
             </div>
@@ -845,17 +895,57 @@
     }).join('');
   }
 
+  function getTypeSortOrder(type) {
+    switch (String(type || '').toLowerCase().trim()) {
+      case 'blend': return 1;
+      case 'nad': return 2;
+      case 'mots-c': return 3;
+      case 'semaglutide': return 4;
+      case 'tirzepatide': return 5;
+      case 'retatrutide': return 6;
+      default: return 99;
+    }
+  }
+
+  function getMgValue(name) {
+    const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
+    return match ? Number(match[1]) : 0;
+  }
+
   async function loadProductsFromDb() {
+    const statusEl = document.getElementById('all-products-status');
+    statusEl.textContent = 'Loading products…';
+
     const { data, error } = await supabaseClient
-      .from('Products')
-      .select('id, name, price, image, stock, description, type, bundle_contents, bundle_options');
+  .from('Products')
+  .select('id, name, price, compare_at_price, image, stock, description, type');
 
     if (error) {
       console.error('Error loading products', error);
+      statusEl.textContent = 'Could not load products.';
       return;
     }
 
-    products = (data || []).sort((a, b) => a.name.localeCompare(b.name));
+    products = (data || [])
+      .map(row => ({
+        id: row.id,
+        name: row.name,
+        price: Number(row.price || 0),
+        image: row.image || '20mg Tirz Vial.png',
+        stock: row.stock ?? 0,
+        description: row.description || '',
+        type: String(row.type || '').toLowerCase().trim()
+      }))
+      .sort((a, b) => {
+        const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
+        if (typeDiff !== 0) return typeDiff;
+
+        const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+        if (mgDiff !== 0) return mgDiff;
+
+        return a.name.localeCompare(b.name);
+      });
+
     renderProducts();
   }
 
@@ -863,38 +953,84 @@
   function openModal(i) {
     const p = products[i];
     if (!p || Number(p.stock ?? 0) === 0) return;
+
     currentProduct = p;
 
-    // Reset default variant
-    currentVariant = 'full-kit';
+    const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
+    const stockNum = Number(p.stock ?? 0);
 
     let modal = document.getElementById('productModal');
-    if (!modal) { /* ... (Same Modal creation code as your original) ... */ }
 
-    document.getElementById('modalImg').src = imgSrc(p.image);
-    document.getElementById('modalTitle').textContent = p.name;
-    document.getElementById('modalName').textContent = p.name;
-    document.getElementById('modalPrice').innerHTML = `£${Number(p.price).toFixed(2)}`;
-
-    const variantWrap = document.getElementById('modalVariantWrap');
-    const options = parseJSONField(p.bundle_options) || {};
-    
-    // NEW: DYNAMIC OPTIONS CHECK
-    if (options.penColours && options.penColours.length > 0) {
-      variantWrap.innerHTML = `
-        <div class="product-variant-selection text-start">
-          <label class="form-label fw-semibold mb-2">Select Pen Colour:</label>
-          <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
-            ${options.penColours.map(c => `<option value="${c}">${c}</option>`).join('')}
-          </select>
+    if (!modal) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="modal fade" id="productModal" tabindex="-1">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body text-center">
+                <div id="modalMedia" class="mb-4"></div>
+                <h3 id="modalName"></h3>
+                <p class="product-price fs-1" id="modalPrice"></p>
+                <p class="stock text-success mb-2" id="modalStock"></p>
+                <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+                <div id="modalVariantWrap" class="mb-3"></div>
+                <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
+                  <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
+                </div>
+                <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
+              </div>
+            </div>
+          </div>
         </div>
       `;
-      currentVariant = options.penColours[0];
-    } 
-    else if (hasCartridgeOption(p)) {
+      document.body.appendChild(wrapper.firstElementChild);
+      modal = document.getElementById('productModal');
+    }
+
+    const modalMedia = document.getElementById('modalMedia');
+    modalMedia.innerHTML = `
+      <img
+        id="modalImg"
+        src="${imgSrc(p.image)}"
+        class="img-fluid"
+        style="max-height: 320px;"
+        alt="${p.name}"
+      >
+    `;
+
+    document.getElementById('modalTitle').textContent = p.name;
+    document.getElementById('modalName').textContent = p.name;
+    document.getElementById('modalPrice').innerHTML =
+      `£${Number(getVariantPrice(p, currentVariant)).toFixed(2)}`;
+
+    document.getElementById('modalStock').innerHTML =
+      stockNum === 0
+        ? '<span class="text-danger fw-bold">Out of stock</span>'
+        : stockNum <= 5
+          ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+          : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+
+    const descEl = document.getElementById('modalDescription');
+    descEl.innerHTML = `
+      <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
+      <p><strong>${accessoriesLine}</strong></p>
+      <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+      <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+    `;
+
+    const variantWrap = document.getElementById('modalVariantWrap');
+    currentVariant = 'full-kit';
+
+    if (hasCartridgeOption(p)) {
       variantWrap.innerHTML = `
         <div class="product-variant-selection text-start">
-          <label class="form-label fw-semibold mb-2">Choose Format:</label>
+          <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
           <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
             <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
             <option value="cartridge-only">Cartridge Only</option>
@@ -905,31 +1041,48 @@
       variantWrap.innerHTML = '';
     }
 
+    const qtyInput = document.getElementById('modalQty');
+    qtyInput.value = 1;
+    qtyInput.max = stockNum;
+
     document.getElementById('modalAddBtn').onclick = () => {
       let qty = parseInt(document.getElementById('modalQty').value) || 1;
+      qty = Math.max(1, Math.min(qty, stockNum));
+
+      const existing = cart.find(item => item.id === p.id && (item.variant || 'full-kit') === currentVariant);
+      const already = existing ? (existing.qty || 0) : 0;
+
+      if (already + qty > stockNum) {
+        return alert(`Only ${stockNum} available. You already have ${already} in your cart for this format.`);
+      }
+
       addToCart(p, qty, currentVariant);
       bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
     };
 
-    new bootstrap.Modal(document.getElementById('productModal')).show();
+    new bootstrap.Modal(modal).show();
   }
 
   function updateModalVariant() {
     const select = document.getElementById('modalFormatSelect');
-    if (!currentProduct || !select) return;
-    currentVariant = select.value;
-    document.getElementById('modalPrice').innerHTML = `£${getVariantPrice(currentProduct, currentVariant).toFixed(2)}`;
+    if (!currentProduct) return;
+
+    currentVariant = select ? select.value : 'full-kit';
+    document.getElementById('modalPrice').innerHTML =
+      `£${getVariantPrice(currentProduct, currentVariant).toFixed(2)}`;
   }
 
   function changeQty(delta) {
     const input = document.getElementById('modalQty');
-    let val = Math.max(1, (parseInt(input.value) || 1) + delta);
+    const max = parseInt(input.max) || 999999;
+    let val = parseInt(input.value) || 1;
+    val = Math.max(1, Math.min(max, val + delta));
     input.value = val;
   }
 
   function addToCart(product, qty, variant = 'full-kit') {
     const price = getVariantPrice(product, variant);
-    const existing = cart.find(item => item.id === product.id && item.variant === variant);
+    const existing = cart.find(item => item.id === product.id && (item.variant || 'full-kit') === variant);
 
     if (existing) {
       existing.qty += qty;
@@ -943,6 +1096,7 @@
         variant: variant
       });
     }
+
     updateCart();
     saveCart();
     toggleCart(true);
