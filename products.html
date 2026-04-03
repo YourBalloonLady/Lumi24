@@ -811,19 +811,7 @@ function getVariantPrice(product, variant) {
   return './' + encodeURIComponent(image);
 }
  
-    function getDisplayPriceHtml(p, unitSuffix) {
-      if ((p.name || '').includes('NAD+')) {
-        return `
-          <div>
-            <div class="sale-tag">Clearance Sale</div>
-            <div class="product-price">
-              <span class="sale-old">£160</span>
-              <span class="sale-new">£80</span>
-              <span class="unit-suffix">${unitSuffix}</span>
-            </div>
-          </div>
-        `;
-      }
+    
  
       return `
         <div class="product-price">
