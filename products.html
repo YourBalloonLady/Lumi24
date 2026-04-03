@@ -446,7 +446,7 @@
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
         <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-        <li class="nav-item"><a class="nav-link active" href="product-bundles.html">Bundles</a></li>
+        <li class="nav-item"><a class="nav-link" href="product-bundles.html">Bundles</a></li>
         <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
         <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
@@ -811,19 +811,7 @@ function getVariantPrice(product, variant) {
   return './' + encodeURIComponent(image);
 }
  
-    function getDisplayPriceHtml(p, unitSuffix) {
-      if ((p.name || '').includes('NAD+')) {
-        return `
-          <div>
-            <div class="sale-tag">Clearance Sale</div>
-            <div class="product-price">
-              <span class="sale-old">£160</span>
-              <span class="sale-new">£80</span>
-              <span class="unit-suffix">${unitSuffix}</span>
-            </div>
-          </div>
-        `;
-      }
+    getDisplayPriceHtml
  
       return `
         <div class="product-price">
@@ -1035,13 +1023,20 @@ function getMgValue(name) {
         modal = document.getElementById('productModal');
       }
  
-      const modalMedia = document.getElementById('modalMedia');  if ((p.name || '').toLowerCase().includes('nad+')) {   modalMedia.innerHTML = `     <video       id="modalVideo"       class="img-fluid"       style="max-height: 320px; width: 100%;"       controls       autoplay       playsinline     >       <source src="https://lumi24.org/NAD+.mp4" type="video/mp4">       Your browser does not support the video tag.     </video>   `; } else {   modalMedia.innerHTML = `     <img       id="modalImg"       src="${imgSrc(p.image)}"       class="img-fluid"       style="max-height: 320px;"       alt="${p.name}"     >   `; }
+      const modalMedia = document.getElementById('modalMedia');
+modalMedia.innerHTML = `
+  <img
+    id="modalImg"
+    src="${imgSrc(p.image)}"
+    class="img-fluid"
+    style="max-height: 320px;"
+    alt="${p.name}"
+  >
+`;
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalName').textContent = p.name;
       document.getElementById('modalPrice').innerHTML =
-        (p.name || '').includes('NAD+')
-          ? `<span class="sale-old">£160</span> <span class="sale-new">£120</span>`
-          : `£${Number(p.price || 0).toFixed(2)}`;
+  `£${Number(getVariantPrice(p, currentVariant)).toFixed(2)}`;
  
       document.getElementById('modalStock').innerHTML =
         stockNum === 0
@@ -1104,25 +1099,15 @@ if (modalVideo) {
     }
  
     function updateModalVariant() {
-      const select = document.getElementById('modalFormatSelect');
-      if (!currentProduct) return;
+  const select = document.getElementById('modalFormatSelect');
+  if (!currentProduct) return;
+
+  currentVariant = select ? select.value : 'full-kit';
+  document.getElementById('modalPrice').innerHTML =
+    `£${getVariantPrice(currentProduct, currentVariant).toFixed(2)}`;
+}
  
-      currentVariant = select ? select.value : 'full-kit';
-      document.getElementById('modalPrice').innerHTML =
-        (currentProduct.name || '').includes('NAD+')
-          ? `<span class="sale-old">£160</span> <span class="sale-new">£120</span>`
-          : `£${getVariantPrice(currentProduct, currentVariant).toFixed(2)}`;
-    }
- 
-    document.addEventListener('hidden.bs.modal', function (e) {
-  if (e.target && e.target.id === 'productModal') {
-    const modalVideo = document.getElementById('modalVideo');
-    if (modalVideo) {
-      modalVideo.pause();
-      modalVideo.currentTime = 0;
-    }
-  }
-});
+    
  
     function changeQty(delta) {
       const input = document.getElementById('modalQty');
