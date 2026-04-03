@@ -917,8 +917,8 @@
     statusEl.textContent = 'Loading products…';
 
     const { data, error } = await supabaseClient
-      .from('Products')
-      .select('id, name, price, image, stock, description, type');
+  .from('Products')
+  .select('id, name, price, compare_at_price, image, stock, description, type');
 
     if (error) {
       console.error('Error loading products', error);
