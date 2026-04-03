@@ -3,244 +3,124 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <title>Bundle Catalogue | Lumina</title>
-  <meta name="description" content="Browse Lumina bundle catalogue. For laboratory research use only." />
+  <title>Protocol Bundles | Lumina</title>
   
-  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4" />
+  <link rel="icon" type="image/png" href="/Favicon.png?v=4" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
   <style>
     :root {
       --lw-mint: #22c55e;
       --lw-mint-dark: #15803d;
-      --lw-mint-soft: #f0fdf4;
-      --lw-bg: #fdfdfd;
+      --lw-bg: #f8fafc;
       --lw-card: #ffffff;
       --lw-text: #0f172a;
       --lw-muted: #64748b;
-      --lw-border: #f1f5f9;
-      --lw-shadow: 0 20px 40px rgba(0,0,0,0.04);
-      --lw-radius: 24px;
+      --lw-border: #e2e8f0;
+      --lw-shadow: 0 10px 30px rgba(15,23,42,.06);
+      --lw-radius: 20px;
     }
 
     body {
-      margin: 0;
       background: var(--lw-bg);
       color: var(--lw-text);
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      -webkit-font-smoothing: antialiased;
+      font-family: system-ui, -apple-system, sans-serif;
     }
 
-    /* Header Styling */
+    /* Navbar matches your products.html */
     .site-header {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
+      background: #fff;
       border-bottom: 1px solid var(--lw-border);
       position: sticky;
       top: 0;
       z-index: 100;
     }
-
     .site-header .inner {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 16px 24px;
+      padding: 16px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-    }
-
-    .brand {
-      display: flex;
       align-items: center;
-      gap: 12px;
-      font-weight: 800;
-      font-size: 1.25rem;
-      color: var(--lw-text);
-      text-decoration: none;
     }
+    .brand { font-weight: 800; display: flex; align-items: center; gap: 10px; color: inherit; text-decoration: none; }
+    .brand img { width: 34px; border-radius: 8px; }
 
-    .brand img { width: 36px; border-radius: 8px; }
-
-    .header-links a {
-      color: var(--lw-text);
-      padding: 8px 16px;
-      border-radius: 99px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-
-    .header-links a:hover { background: var(--lw-mint-soft); color: var(--lw-mint-dark); }
-
-    /* Hero Section */
+    /* Hero */
     .hero {
-      padding: 80px 24px 60px;
+      padding: 60px 16px;
       text-align: center;
-      background: radial-gradient(circle at 50% 0%, var(--lw-mint-soft) 0%, transparent 70%);
+      background: linear-gradient(180deg, #fff 0%, var(--lw-bg) 100%);
     }
+    .hero h1 { font-weight: 900; font-size: 3rem; letter-spacing: -0.03em; }
 
-    .hero h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 900;
-      letter-spacing: -0.04em;
-      margin-bottom: 16px;
-    }
-
-    .hero p {
-      max-width: 600px;
-      margin: 0 auto;
-      color: var(--lw-muted);
-      font-size: 1.15rem;
-      line-height: 1.6;
-    }
-
-    /* Controls */
-    .page-section { max-width: 1200px; margin: 0 auto; padding: 0 24px 100px; }
+    /* Bundle Grid */
+    .page-section { max-width: 1200px; margin: 0 auto; padding: 20px 16px 100px; }
     
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 40px;
-      background: #fff;
-      padding: 12px;
-      border-radius: 20px;
-      border: 1px solid var(--lw-border);
-      box-shadow: var(--lw-shadow);
+    .bundle-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 24px;
     }
-
-    .search-wrap { width: 350px; position: relative; }
-    .search-wrap input {
-      width: 100%;
-      padding: 12px 20px;
-      border: 1px solid var(--lw-border);
-      border-radius: 14px;
-      outline: none;
-      background: #f8fafc;
-      transition: 0.2s;
-    }
-    .search-wrap input:focus { border-color: var(--lw-mint); background: #fff; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1); }
-
-    /* Grid & Cards */
-    .bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 30px; }
 
     .bundle-card {
       background: var(--lw-card);
       border: 1px solid var(--lw-border);
       border-radius: var(--lw-radius);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      position: relative;
+      transition: transform 0.2s;
     }
+    .bundle-card:hover { transform: translateY(-5px); box-shadow: var(--lw-shadow); }
 
-    .bundle-card:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 30px 60px rgba(15,23,42,0.08);
-      border-color: #cbd5e1;
-    }
-
-    .bundle-image-wrap { padding: 12px; }
-    .bundle-image {
-      width: 100%;
-      aspect-ratio: 16/10;
-      object-fit: cover;
-      border-radius: 16px;
-    }
-
-    .bundle-tag {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(4px);
-      padding: 6px 14px;
-      border-radius: 99px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--lw-mint-dark);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .bundle-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
-    .bundle-title { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
+    .bundle-img { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
     
+    .bundle-body { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+    
+    .bundle-tag {
+      display: inline-block;
+      background: var(--lw-mint-soft);
+      color: var(--lw-mint-dark);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 99px;
+      margin-bottom: 12px;
+    }
+
     .bundle-includes {
-      background: #f8fafc;
-      padding: 16px;
-      border-radius: 16px;
-      margin-bottom: 20px;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 15px;
+      margin: 15px 0;
+      font-size: 0.9rem;
     }
     .bundle-includes ul { list-style: none; padding: 0; margin: 0; }
-    .bundle-includes li { 
-      font-size: 0.9rem; 
-      margin-bottom: 6px; 
-      display: flex; 
-      align-items: center; 
-      gap: 8px;
-    }
-    .bundle-includes li::before { content: "•"; color: var(--lw-mint); font-weight: bold; }
+    .bundle-includes li::before { content: "✓ "; color: var(--lw-mint); font-weight: bold; }
 
-    .bundle-pricing {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-      margin-top: auto;
-    }
+    .price-row { display: flex; align-items: baseline; gap: 10px; margin-top: auto; }
+    .price { font-size: 1.8rem; font-weight: 900; color: var(--lw-mint-dark); }
+    .old-price { text-decoration: line-through; color: var(--lw-muted); font-size: 1rem; }
 
-    .price { font-size: 2rem; font-weight: 900; color: var(--lw-text); }
-    .old-price { color: var(--lw-muted); text-decoration: line-through; font-weight: 600; }
-    
-    .save-badge {
-      background: var(--lw-mint);
-      color: #fff;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      margin-left: auto;
-    }
+    .btn-group-lw { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+    .btn-lw { padding: 12px; border-radius: 12px; font-weight: 700; text-align: center; text-decoration: none; }
+    .btn-view { background: #f1f5f9; color: var(--lw-text); }
+    .btn-enquire { background: var(--lw-text); color: #fff; }
 
-    .bundle-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
-    
-    .btn-lw {
-      padding: 12px;
-      border-radius: 12px;
-      font-weight: 700;
-      text-align: center;
-      text-decoration: none;
-      transition: 0.2s;
-    }
-
-    .btn-secondary { background: #f1f5f9; color: var(--lw-text); }
-    .btn-primary-lw { background: var(--lw-text); color: #fff; }
-    .btn-primary-lw:hover { opacity: 0.9; color: #fff; }
-
-    /* Floating Research Note */
+    /* Footer Sticky Note */
     .research-notice {
       position: fixed;
-      bottom: 24px;
+      bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(15, 23, 42, 0.9);
       color: #fff;
-      padding: 12px 24px;
+      padding: 10px 25px;
       border-radius: 99px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      white-space: nowrap;
+      font-size: 0.8rem;
       z-index: 1000;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-    }
-
-    @media (max-width: 768px) {
-      .controls { flex-direction: column; gap: 16px; }
-      .search-wrap { width: 100%; }
-      .research-notice { width: 90%; text-align: center; white-space: normal; }
+      white-space: nowrap;
     }
   </style>
 </head>
@@ -249,161 +129,116 @@
   <header class="site-header">
     <div class="inner">
       <a href="/" class="brand">
-        <img src="/Favicon.png?v=4" alt="Lumina logo">
+        <img src="/Favicon.png?v=4" alt="Lumina">
         <span>Lumina</span>
       </a>
-      <nav class="header-links">
-        <a href="/">Home</a>
-        <a href="/products.html">Products</a>
-        <a href="/product-bundles.html">Bundles</a>
+      <nav class="d-none d-md-flex gap-3">
+        <a href="/" class="text-dark text-decoration-none fw-semibold">Home</a>
+        <a href="/products.html" class="text-dark text-decoration-none fw-semibold">Products</a>
       </nav>
     </div>
   </header>
 
   <section class="hero">
-    <h1>Research Protocols</h1>
-    <p>Grouped assets curated for laboratory research synergy and efficiency.</p>
+    <h1>Protocol Bundles</h1>
+    <p class="text-muted">Optimized research combinations with reference pricing.</p>
   </section>
 
   <main class="page-section">
-    <div class="controls">
-      <div class="fw-bold"><span id="bundleCount">4</span> Collections Available</div>
-      <div class="search-wrap">
-        <input type="text" id="bundleSearch" placeholder="Search by compound name..." />
-      </div>
+    <div class="mb-4">
+      <input type="text" id="bundleSearch" class="form-control form-control-lg" placeholder="Search bundles..." style="border-radius: 15px;">
     </div>
 
     <div class="bundle-grid" id="bundleGrid">
-
-      <article class="bundle-card bundle-item" data-search="metabolic retatrutide mots-c">
-        <div class="bundle-image-wrap">
-          <span class="bundle-tag">Best Value</span>
-          <img src="/images/ultimate-metabolic-stack.png" alt="Metabolic Stack" class="bundle-image">
-        </div>
-        <div class="bundle-body">
-          <h2 class="bundle-title">Metabolic Synergy</h2>
-          <div class="bundle-includes">
-            <ul>
-              <li>Retatrutide 60mg Cartridge</li>
-              <li>MOTS-C 40mg Cartridge</li>
-              <li>Refill Pen Device (Any Color)</li>
-            </ul>
-          </div>
-          <div class="bundle-pricing">
-            <span class="price">£220</span>
-            <span class="old-price">£255</span>
-            <span class="save-badge">Save £35</span>
-          </div>
-          <div class="bundle-actions">
-            <a href="/products.html" class="btn-lw btn-secondary">Catalogue</a>
-            <a href="/contact.html" class="btn-lw btn-primary-lw">Enquire</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="bundle-card bundle-item" data-search="starter tirzepatide pen">
-        <div class="bundle-image-wrap">
-          <span class="bundle-tag">Popular</span>
-          <img src="/images/bundle-placeholder-1.png" alt="Starter Bundle" class="bundle-image">
-        </div>
-        <div class="bundle-body">
-          <h2 class="bundle-title">Beginner Protocol</h2>
-          <div class="bundle-includes">
-            <ul>
-              <li>Tirzepatide 20mg Cartridge</li>
-              <li>Refill Pen Device</li>
-            </ul>
-          </div>
-          <div class="bundle-pricing">
-            <span class="price">£120</span>
-            <span class="old-price">£130</span>
-            <span class="save-badge">Save £10</span>
-          </div>
-          <div class="bundle-actions">
-            <a href="/products.html" class="btn-lw btn-secondary">Catalogue</a>
-            <a href="/contact.html" class="btn-lw btn-primary-lw">Enquire</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="bundle-card bundle-item" data-search="energy nad mots-c">
-        <div class="bundle-image-wrap">
-          <img src="/images/bundle-placeholder-2.png" alt="Energy" class="bundle-image">
-        </div>
-        <div class="bundle-body">
-          <h2 class="bundle-title">Energy Matrix</h2>
-          <div class="bundle-includes">
-            <ul>
-              <li>NAD+ 1000 Vial</li>
-              <li>MOTS-C 40mg Vial</li>
-            </ul>
-          </div>
-          <div class="bundle-pricing">
-            <span class="price">£120</span>
-            <span class="old-price">£135</span>
-            <span class="save-badge">Save £15</span>
-          </div>
-          <div class="bundle-actions">
-            <a href="/products.html" class="btn-lw btn-secondary">Catalogue</a>
-            <a href="/contact.html" class="btn-lw btn-primary-lw">Enquire</a>
-          </div>
-        </div>
-      </article>
-
-      <article class="bundle-card bundle-item" data-search="repair bpc tb500 ghk-cu">
-        <div class="bundle-image-wrap">
-          <img src="/images/bundle-placeholder-3.png" alt="Repair" class="bundle-image">
-        </div>
-        <div class="bundle-body">
-          <h2 class="bundle-title">Total Repair Protocol</h2>
-          <div class="bundle-includes">
-            <ul>
-              <li>BPC-157 & TB500 Blend 10mg</li>
-              <li>GHK-CU 100mg Vial</li>
-            </ul>
-          </div>
-          <div class="bundle-pricing">
-            <span class="price">£70</span>
-            <span class="old-price">£80</span>
-            <span class="save-badge">Save £10</span>
-          </div>
-          <div class="bundle-actions">
-            <a href="/products.html" class="btn-lw btn-secondary">Catalogue</a>
-            <a href="/contact.html" class="btn-lw btn-primary-lw">Enquire</a>
-          </div>
-        </div>
-      </article>
-
-    </div>
-
-    <div id="emptyState" style="display:none; text-align:center; padding: 50px;">
-      <p class="text-muted">No protocols found matching your search.</p>
-    </div>
+      </div>
   </main>
 
   <div class="research-notice">
-    ⚠️ Laboratory Research Use Only • Not for Human Consumption
+    Laboratory Research Use Only • Not for Human Consumption
   </div>
 
   <script>
-    const searchInput = document.getElementById('bundleSearch');
-    const bundleItems = Array.from(document.querySelectorAll('.bundle-item'));
-    const bundleCount = document.getElementById('bundleCount');
-    const emptyState = document.getElementById('emptyState');
+    // 1. DATA OBJECT (Mirroring your product database logic)
+    const bundles = [
+      {
+        id: "b1",
+        name: "Ultimate Metabolic Stack",
+        tag: "Advanced Synergy",
+        desc: "Triple-pathway receptor targeting with mitochondrial support.",
+        image: "/images/ultimate-metabolic-stack.png",
+        contents: ["Retatrutide 60mg", "MOTS-C 40mg", "Refill Pen Device"],
+        price: 220,
+        oldPrice: 255
+      },
+      {
+        id: "b2",
+        name: "Total Repair Protocol",
+        tag: "Recovery",
+        desc: "Tissue repair and skin rejuvenation foundation.",
+        image: "/images/bundle-placeholder-3.png",
+        contents: ["BPC-157 & TB500 10mg", "GHK-CU 100mg"],
+        price: 70,
+        oldPrice: 80
+      },
+      {
+        id: "b3",
+        name: "Beginner Protocol",
+        tag: "Starter",
+        desc: "High-purity research materials with professional hardware.",
+        image: "/images/bundle-placeholder-1.png",
+        contents: ["Tirzepatide 20mg", "Refill Pen Device"],
+        price: 120,
+        oldPrice: 130
+      }
+    ];
 
-    searchInput.addEventListener('input', () => {
-      const term = searchInput.value.toLowerCase();
-      let visible = 0;
+    // 2. RENDER FUNCTION
+    function loadBundles(filter = "") {
+      const container = document.getElementById('bundleGrid');
+      container.innerHTML = "";
 
-      bundleItems.forEach(item => {
-        const isMatch = item.dataset.search.includes(term);
-        item.style.display = isMatch ? 'flex' : 'none';
-        if (isMatch) visible++;
+      const filtered = bundles.filter(b => 
+        b.name.toLowerCase().includes(filter.toLowerCase()) || 
+        b.contents.some(c => c.toLowerCase().includes(filter.toLowerCase()))
+      );
+
+      filtered.forEach(bundle => {
+        const card = `
+          <article class="bundle-card">
+            <img src="${bundle.image}" alt="${bundle.name}" class="bundle-img">
+            <div class="bundle-body">
+              <span class="bundle-tag">${bundle.tag}</span>
+              <h2 class="h4 fw-bold mb-2">${bundle.name}</h2>
+              <p class="text-muted small">${bundle.desc}</p>
+              
+              <div class="bundle-includes">
+                <ul class="mb-0">
+                  ${bundle.contents.map(item => `<li>${item}</li>`).join('')}
+                </ul>
+              </div>
+
+              <div class="price-row">
+                <span class="price">£${bundle.price}</span>
+                <span class="old-price">£${bundle.oldPrice}</span>
+              </div>
+
+              <div class="btn-group-lw">
+                <a href="/products.html" class="btn-lw btn-view">Products</a>
+                <a href="/contact.html" class="btn-lw btn-enquire">Enquire</a>
+              </div>
+            </div>
+          </article>
+        `;
+        container.innerHTML += card;
       });
+    }
 
-      bundleCount.textContent = visible;
-      emptyState.style.display = visible === 0 ? 'block' : 'none';
+    // 3. INITIALIZE & SEARCH
+    document.getElementById('bundleSearch').addEventListener('input', (e) => {
+      loadBundles(e.target.value);
     });
+
+    loadBundles();
   </script>
 </body>
 </html>
