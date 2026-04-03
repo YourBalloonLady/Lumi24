@@ -788,13 +788,26 @@
   }
 
   function getDisplayPriceHtml(p, unitSuffix) {
+  const price = Number(p.price || 0);
+  const compareAt = Number(p.compare_at_price || 0);
+
+  if (compareAt > price) {
     return `
       <div class="product-price">
-        £${Number(p.price || 0).toFixed(2)}
+        <span class="sale-old">£${compareAt.toFixed(2)}</span>
+        <span class="sale-new">£${price.toFixed(2)}</span>
         <span class="unit-suffix">${unitSuffix}</span>
       </div>
     `;
   }
+
+  return `
+    <div class="product-price">
+      £${price.toFixed(2)}
+      <span class="unit-suffix">${unitSuffix}</span>
+    </div>
+  `;
+}
 
   function getTypeLabel(p) {
     switch (String(p.type || '').toLowerCase().trim()) {
@@ -927,24 +940,25 @@
     }
 
     products = (data || [])
-      .map(row => ({
-        id: row.id,
-        name: row.name,
-        price: Number(row.price || 0),
-        image: row.image || '20mg Tirz Vial.png',
-        stock: row.stock ?? 0,
-        description: row.description || '',
-        type: String(row.type || '').toLowerCase().trim()
-      }))
-      .sort((a, b) => {
-        const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
-        if (typeDiff !== 0) return typeDiff;
+  .map(row => ({
+    id: row.id,
+    name: row.name,
+    price: Number(row.price || 0),
+    compare_at_price: Number(row.compare_at_price || 0),
+    image: row.image || '20mg Tirz Vial.png',
+    stock: row.stock ?? 0,
+    description: row.description || '',
+    type: String(row.type || '').toLowerCase().trim()
+  }))
+  .sort((a, b) => {
+    const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
+    if (typeDiff !== 0) return typeDiff;
 
-        const mgDiff = getMgValue(a.name) - getMgValue(b.name);
-        if (mgDiff !== 0) return mgDiff;
+    const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+    if (mgDiff !== 0) return mgDiff;
 
-        return a.name.localeCompare(b.name);
-      });
+    return a.name.localeCompare(b.name);
+  });
 
     renderProducts();
   }
@@ -1006,8 +1020,13 @@
 
     document.getElementById('modalTitle').textContent = p.name;
     document.getElementById('modalName').textContent = p.name;
-    document.getElementById('modalPrice').innerHTML =
-      `£${Number(getVariantPrice(p, currentVariant)).toFixed(2)}`;
+    const modalPrice = Number(getVariantPrice(p, currentVariant));
+const modalCompareAt = Number(p.compare_at_price || 0);
+
+document.getElementById('modalPrice').innerHTML =
+  modalCompareAt > modalPrice
+    ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
+    : `£${modalPrice.toFixed(2)}`;
 
     document.getElementById('modalStock').innerHTML =
       stockNum === 0
@@ -1064,13 +1083,19 @@
   }
 
   function updateModalVariant() {
-    const select = document.getElementById('modalFormatSelect');
-    if (!currentProduct) return;
+  const select = document.getElementById('modalFormatSelect');
+  if (!currentProduct) return;
 
-    currentVariant = select ? select.value : 'full-kit';
-    document.getElementById('modalPrice').innerHTML =
-      `£${getVariantPrice(currentProduct, currentVariant).toFixed(2)}`;
-  }
+  currentVariant = select ? select.value : 'full-kit';
+
+  const price = Number(getVariantPrice(currentProduct, currentVariant));
+  const compareAt = Number(currentProduct.compare_at_price || 0);
+
+  document.getElementById('modalPrice').innerHTML =
+    compareAt > price
+      ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
+      : `£${price.toFixed(2)}`;
+}
 
   function changeQty(delta) {
     const input = document.getElementById('modalQty');
