@@ -262,8 +262,10 @@
   }
 
   function getVariantDisplay(item) {
-    return item?.variant ? `<br><small class="text-muted">${getVariantLabel(item.variant)}</small>` : '';
-  }
+  return item?.variant
+    ? `<br><small class="text-muted">${getVariantLabel(item.variant)}</small>`
+    : '';
+}
 
   (function captureReferralOnCheckout(){
     const p = new URLSearchParams(location.search);
@@ -365,34 +367,36 @@
   const name = item ? (item.name || '') : (itemOrName || '');
   const n = String(name).toLowerCase();
 
-  const isRefillPen = n.includes('refill');
-
-  if (isRefillPen) return false;
+  if (n.includes('refill')) return false;
 
   if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
 
   const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
   if (semaForm === 'pen') return true;
+  if (semaForm === 'vial') return false;
 
   const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
   if (form.includes('pen')) return true;
+  if (form.includes('vial')) return false;
 
   return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
 }
 
   function isVialItem(itemOrName) {
-    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
-    const name = item ? (item.name || '') : (itemOrName || '');
-    const n = String(name).toLowerCase();
+  const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+  const name = item ? (item.name || '') : (itemOrName || '');
+  const n = String(name).toLowerCase();
 
-    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
-    if (semaForm === 'vial') return true;
+  const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+  if (semaForm === 'vial') return true;
+  if (semaForm === 'pen') return false;
 
-    const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
-    if (form.includes('vial')) return true;
+  const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
+  if (form.includes('vial')) return true;
+  if (form.includes('pen')) return false;
 
-    return n.includes('vial');
-  }
+  return n.includes('vial');
+}
 
   function extraLabel(item) {
     if (isPenItem(item) && item.pen_heads) return ` (Pen heads: ${item.pen_heads === 'none' ? 'None required' : item.pen_heads})`;
@@ -487,41 +491,41 @@
 
   // ---------- PRICE SYNC ----------
   async function syncCartPricesFromSupabase() {
-    try {
-      const ids = cart.map(i => i.id).filter(Boolean);
-      if (!ids.length) return;
+  try {
+    const ids = cart.map(i => i.id).filter(Boolean);
+    if (!ids.length) return;
 
-      const { data, error } = await supabaseClient
-        .from('Products')
-        .select('id, name, price')
-        .in('id', ids);
+    const { data, error } = await supabaseClient
+      .from('Products')
+      .select('id, name, price')
+      .in('id', ids);
 
-      if (error) {
-        console.error('Price sync failed:', error);
-        return;
-      }
-
-      const map = new Map((data || []).map(p => [p.id, p]));
-
-      cart = cart.map(item => {
-        const p = map.get(item.id);
-        if (!p) return item;
-
-        const variant = item.variant || 'full-kit';
-
-        return {
-          ...item,
-          name: p.name || item.name,
-          variant: variant,
-          price: getVariantPrice(p, variant)
-        };
-      });
-
-      saveCartToStorage();
-    } catch (e) {
-      console.error('Unexpected price sync error:', e);
+    if (error) {
+      console.error('Price sync failed:', error);
+      return;
     }
+
+    const map = new Map((data || []).map(p => [p.id, p]));
+
+    cart = cart.map(item => {
+      const p = map.get(item.id);
+      if (!p) return item;
+
+      const variant = item.variant || null;
+
+      return {
+        ...item,
+        name: p.name || item.name,
+        variant: variant,
+        price: variant ? getVariantPrice(p, variant) : Number(p.price || 0)
+      };
+    });
+
+    saveCartToStorage();
+  } catch (e) {
+    console.error('Unexpected price sync error:', e);
   }
+}
 
   // ---------- BUNDLE CALCULATOR ----------
   function calculateBundle(cart) {
@@ -1094,12 +1098,12 @@
     }
 
     cart = cart.map(i => ({
-      ...i,
-      variant: i.variant || 'full-kit',
-      pen_heads: i.pen_heads || "",
-      syringes: i.syringes || "",
-      sema_form: i.sema_form || ""
-    }));
+  ...i,
+  variant: i.variant || "",
+  pen_heads: i.pen_heads || "",
+  syringes: i.syringes || "",
+  sema_form: i.sema_form || ""
+}));
     saveCartToStorage();
 
     await syncCartPricesFromSupabase();
