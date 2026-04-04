@@ -1032,7 +1032,10 @@ function parseBundleOptions(raw) {
 
     document.getElementById('modalTitle').textContent = p.name;
     document.getElementById('modalName').textContent = p.name;
-    const modalPrice = Number(getVariantPrice(p, currentVariant));
+    const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
+const modalPrice = initialVariant
+  ? Number(getVariantPrice(p, initialVariant))
+  : Number(p.price || 0);
 const modalCompareAt = Number(p.compare_at_price || 0);
 
 document.getElementById('modalPrice').innerHTML =
@@ -1139,7 +1142,9 @@ addToCart(p, qty, currentVariant, selectedPenColour);
 
   function addToCart(product, qty, variant = '', penColour = null) {
   const finalVariant = variant || '';
-  const price = finalVariant ? getVariantPrice(product, finalVariant) : Number(product?.price || 0);
+  const price = finalVariant
+    ? getVariantPrice(product, finalVariant)
+    : Number(product?.price || 0);
 
   const existing = cart.find(item =>
     item.id === product.id &&
