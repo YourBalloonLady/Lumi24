@@ -149,13 +149,7 @@
             <h4 class="fw-semibold mb-3">Order summary</h4>
             <div id="order-summary"></div>
 
-            <div id="bundle-message" class="small text-warning mt-2"></div>
-
-            <div class="d-flex justify-content-between small text-success mt-1"
-                 id="bundle-row" style="display:none;">
-              <span>Bundle discount</span>
-              <span id="bundle-amount">-£0.00</span>
-            </div>
+            
 
             <div class="d-flex justify-content-between small text-success mt-1"
                  id="credit-row" style="display:none;">
@@ -197,7 +191,7 @@
         <h4 class="text-success mb-1">
           Total: <span id="payment-total"></span>
         </h4>
-        <p id="payment-discount" class="text-success small mb-1" style="display:none;"></p>
+        
         <p id="payment-credit" class="text-success small mb-3" style="display:none;"></p>
 
         <p class="mb-1">
@@ -527,58 +521,22 @@
   }
 }
 
-  // ---------- BUNDLE CALCULATOR ----------
   function calculateBundle(cart) {
-    let vialQty = 0, penQty = 0;
-    let vialTotal = 0, penTotal = 0;
+  let baseTotal = 0;
 
-    let totalQty = 0;
-    let baseTotal = 0;
+  cart.forEach(item => {
+    const qty = Number(item.qty || 0);
+    const line = Number(item.price || 0) * qty;
+    baseTotal += line;
+  });
 
-    cart.forEach(item => {
-      const qty  = Number(item.qty || 0);
-      const line = Number(item.price || 0) * qty;
-      const name = (item.name || '').toLowerCase();
-
-      totalQty += qty;
-      baseTotal += line;
-
-      if (name.includes('vial') || isVialItem(item)) {
-        vialQty += qty; vialTotal += line;
-      } else if (name.includes('pen') || isPenItem(item)) {
-        penQty += qty; penTotal += line;
-      }
-    });
-
-    let categoryDiscount = 0;
-    const categoryMessages = [];
-
-    if (vialQty >= 3) { categoryDiscount += vialTotal * 0.10; categoryMessages.push('10% multi-vial bundle discount applied.'); }
-    else if (vialQty === 2) { categoryDiscount += vialTotal * 0.05; categoryMessages.push('5% vial bundle discount applied (2 vials).'); }
-
-    if (penQty >= 3) { categoryDiscount += penTotal * 0.10; categoryMessages.push('10% pen bundle discount applied (3+ pens).'); }
-    else if (penQty === 2) { categoryDiscount += penTotal * 0.05; categoryMessages.push('5% pen bundle discount applied (2 pens).'); }
-
-    let cartDiscount = 0;
-    let cartMessage = '';
-
-    if (totalQty >= 3) { cartDiscount = baseTotal * 0.10; cartMessage = '10% bundle discount applied (any 3+ items).'; }
-    else if (totalQty === 2) { cartDiscount = baseTotal * 0.05; cartMessage = '5% bundle discount applied (any 2 items).'; }
-
-    let discount = 0;
-    const messages = [];
-
-    if (cartDiscount >= categoryDiscount && cartDiscount > 0) {
-      discount = cartDiscount;
-      messages.push(cartMessage);
-    } else if (categoryDiscount > 0) {
-      discount = categoryDiscount;
-      messages.push(...categoryMessages);
-    }
-
-    const finalTotal = Math.max(0, baseTotal - discount);
-    return { baseTotal, discount, finalTotal, messages };
-  }
+  return {
+    baseTotal,
+    discount: 0,
+    finalTotal: baseTotal,
+    messages: []
+  };
+}
 
   // ---------- CART LOAD ----------
   function getCartFromUrlOrStorage() {
@@ -665,9 +623,7 @@
 
     const summaryEl       = document.getElementById('order-summary');
     const totalEl         = document.getElementById('final-total');
-    const bundleRow       = document.getElementById('bundle-row');
-    const bundleAmountEl  = document.getElementById('bundle-amount');
-    const bundleMessageEl = document.getElementById('bundle-message');
+    
 
     const creditRow = document.getElementById('credit-row');
     const creditAmount = document.getElementById('credit-amount');
@@ -686,16 +642,7 @@
       </div>
     `).join('');
 
-    if (bundle.discount > 0) {
-      bundleRow.style.display = 'flex';
-      bundleAmountEl.textContent = `-£${bundle.discount.toFixed(2)}`;
-      bundleMessageEl.textContent = bundle.messages.join(' ');
-    } else {
-      bundleRow.style.display = 'none';
-      bundleAmountEl.textContent = '-£0.00';
-      bundleMessageEl.textContent = '';
-    }
-
+    
     const creditToShow = (typeof creditUsedOverride === 'number' && isFinite(creditUsedOverride))
       ? creditUsedOverride
       : lastCreditUsed;
@@ -1049,14 +996,7 @@
       document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
       document.getElementById('order-ref').textContent = ref;
 
-      const paymentDiscountEl = document.getElementById('payment-discount');
-      if (bundle.discount > 0) {
-        paymentDiscountEl.style.display = 'block';
-        paymentDiscountEl.textContent = `Bundle discount applied: -£${bundle.discount.toFixed(2)}`;
-      } else {
-        paymentDiscountEl.style.display = 'none';
-        paymentDiscountEl.textContent = '';
-      }
+      
 
       const paymentCreditEl = document.getElementById('payment-credit');
       if (creditUsed > 0) {
