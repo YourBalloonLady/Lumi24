@@ -954,6 +954,69 @@
       const c = order?.details?.customer || {};
       return String(c.email || order.customer_email || order.email || "").trim().toLowerCase();
     }
+
+    function getItemFormatValue(item = {}) {
+  return String(
+    item?.format ||
+    item?.variant ||
+    item?.selected_format ||
+    item?.option ||
+    item?.type ||
+    ""
+  ).trim().toLowerCase();
+}
+
+function isCartridgeOnly(item = {}) {
+  const format = getItemFormatValue(item);
+  const name = String(item?.name || "").toLowerCase();
+
+  return (
+    format.includes("cartridge") ||
+    format === "cartridge-only" ||
+    format === "cartridge only" ||
+    name.includes("cartridge only")
+  );
+}
+
+function isFullKitPen(item = {}) {
+  const format = getItemFormatValue(item);
+  const name = String(item?.name || "").toLowerCase();
+
+  if (isCartridgeOnly(item)) return false;
+
+  return (
+    format.includes("full kit") ||
+    format.includes("pen") ||
+    name.includes("pen")
+  );
+}
+
+function isVialItem(item = {}) {
+  const format = getItemFormatValue(item);
+  const name = String(item?.name || "").toLowerCase();
+
+  return format.includes("vial") || name.includes("vial");
+}
+
+function getDisplayItemName(item = {}) {
+  const rawName = String(item?.name || "Unnamed item").trim();
+  const format = getItemFormatValue(item);
+
+  if (isCartridgeOnly(item) && !rawName.toLowerCase().includes("cartridge")) {
+    return `${rawName} (Cartridge Only)`;
+  }
+
+  if (
+    isFullKitPen(item) &&
+    format &&
+    format.includes("full") &&
+    !rawName.toLowerCase().includes("full kit")
+  ) {
+    return `${rawName} (Full Kit)`;
+  }
+
+  return rawName;
+}
 /* =====================================================
    REFERRAL HELPERS  (ADD THEM RIGHT HERE)
 ===================================================== */
@@ -1163,34 +1226,42 @@ async function findCustomerByReferralCode(code){
   ordersCache[orderId].details = updatedDetails;
 }
     function extrasLabel(item) {
-      const n = (item?.name || "").toLowerCase();
-      const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
-      const syringes = item?.syringes ? String(item.syringes).trim() : "";
-      if (n.includes("pen") && penHeads) return ` (Pen heads: ${penHeads})`;
-      if (n.includes("vial") && syringes) return ` (Syringes: ${syringes})`;
-      return "";
-    }
+  const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
+  const syringes = item?.syringes ? String(item.syringes).trim() : "";
+
+  if (isCartridgeOnly(item)) return "";
+
+  if (isFullKitPen(item) && penHeads) return ` (Pen heads: ${penHeads})`;
+  if (isVialItem(item) && syringes) return ` (Syringes: ${syringes})`;
+
+  return "";
+}
 
     function buildItemsText(order) {
-      const items = order?.details?.items || [];
-      if (!items.length) return "Items not recorded.";
-      return items.map((i) => {
-        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
-        return `${i.qty} × ${i.name}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
-      }).join("\n");
-    }
+  const items = order?.details?.items || [];
+  if (!items.length) return "Items not recorded.";
+
+  return items.map((i) => {
+    const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+    const displayName = getDisplayItemName(i);
+    return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+  }).join("\n");
+}
 
     function buildItemsHtml(order) {
-      const items = order?.details?.items || [];
-      if (!items.length) {
-        return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
-      }
-      const lines = items.map((i) => {
-        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
-        return `${i.qty} × ${i.name}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
-      }).join("\n");
-      return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
-    }
+  const items = order?.details?.items || [];
+  if (!items.length) {
+    return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
+  }
+
+  const lines = items.map((i) => {
+    const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+    const displayName = getDisplayItemName(i);
+    return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+  }).join("\n");
+
+  return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
+}
 
     function buildAddressText(order){
       const c = getCustomer(order);
@@ -1276,16 +1347,12 @@ async function findCustomerByReferralCode(code){
 
   const items = Array.isArray(order?.details?.items) ? order.details.items : [];
   const itemsText = items.length
-    ? items.map(i => {
-        const extras =
-          (String(i?.name || "").toLowerCase().includes("pen") && i?.pen_heads)
-            ? ` (Pen heads: ${i.pen_heads})`
-            : (String(i?.name || "").toLowerCase().includes("vial") && i?.syringes)
-              ? ` (Syringes: ${i.syringes})`
-              : "";
-        return `${Number(i?.qty || 0)} × ${String(i?.name || "").trim()}${extras}`;
-      }).join("\n")
-    : "No items recorded.";
+  ? items.map(i => {
+      const displayName = getDisplayItemName(i);
+      const extras = extrasLabel(i);
+      return `${Number(i?.qty || 0)} × ${displayName}${extras}`;
+    }).join("\n")
+  : "No items recorded.";
 
   const text = [
     ref ? `Order: ${ref}` : "",
@@ -1379,13 +1446,11 @@ window.copyOrderForText = copyOrderForText;
     }
 
     function penOrVial(item = {}) {
-      const n = String(item?.name || "").toLowerCase();
-      if (n.includes("pen")) return "Pen";
-      if (n.includes("vial")) return "Vial";
-      if (item?.pen_heads) return "Pen";
-      if (item?.syringes) return "Vial";
-      return "";
-    }
+  if (isCartridgeOnly(item)) return "Cartridge";
+  if (isFullKitPen(item)) return "Pen";
+  if (isVialItem(item)) return "Vial";
+  return "";
+}
 
     function buildOneLineAddress(order) {
       const c = order?.details?.customer || {};
