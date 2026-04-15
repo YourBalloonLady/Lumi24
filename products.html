@@ -1202,75 +1202,61 @@
   loadProductsFromDb();
 </script>
  
-  <script>
-    (function captureReferral() {
-      const p = new URLSearchParams(location.search);
-      const ref = (p.get('ref') || '').trim().toUpperCase();
-      if (ref) localStorage.setItem('referral_code', ref);
-    })();
-  </script>
-  <script>
-  // TOGGLE FUNCTION
-  window.toggleLumiChat = function () {
+  <script type="module">
+  import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+  // REPLACE WITH YOUR ACTUAL KEY
+  const API_KEY = ("AIzaSyAetl0tlsgpASM9AhyBL-xbgnldIJsXLeE"); 
+  const genAI = new GoogleGenerativeAI(API_KEY);
+
+  // GROUNDING DATA: This is what I extracted from your screenshots
+  const productContext = `
+    Lumi24 Inventory: 
+    - Metabolic: Semaglutide (£100), Tirzepatide (£110-150), Retatrutide (£120-180), Cagrilintide (£85-100).
+    - Recovery: BPC-157 & TB500 Blend (£35), GHK-Cu (£45-60), NAD+ (£145).
+    - Cognitive: Selank (£25-40), Semax (£25-40).
+    - Other: MOTS-c (£55), MT-2 (£25-40).
+    - Shipping: UK Dispatch, 24-48h Delivery. 
+    - Payment: Secure Bank Transfer.
+  `;
+
+  const model = genAI.getGenerativeModel({ 
+    model: "gemini-1.5-flash",
+    systemInstruction: "You are the Lumi24 Research Assistant. " + productContext + " Use only this data. STRICT: All products are for LABORATORY RESEARCH ONLY. NEVER provide dosage or human consumption info. If asked 'how to take' or 'how much', reply: 'I cannot provide dosage or usage instructions. Our products are supplied strictly for laboratory research purposes.'"
+  });
+
+  // TOGGLE FUNCTION: Opens and closes the window
+  window.toggleLumiChat = function() {
     const chat = document.getElementById('lumi-chat-container');
     chat.style.display = (chat.style.display === 'flex') ? 'none' : 'flex';
   };
 
-  function appendMessage(text, className) {
-    const msgBox = document.getElementById('lumi-messages');
-    const div = document.createElement('div');
-    div.className = className;
-    div.textContent = text;
-    msgBox.appendChild(div);
-    msgBox.scrollTop = msgBox.scrollHeight;
-  }
-
-  let lumiSending = false;
-
-  window.sendMessage = async function () {
-    if (lumiSending) return;
-
+  // SEND FUNCTION
+  window.sendMessage = async function() {
     const input = document.getElementById('lumi-user-text');
+    const msgBox = document.getElementById('lumi-messages');
     const userText = input.value.trim();
-
+    
     if (!userText) return;
 
-    appendMessage(userText, 'msg-user');
-    input.value = '';
-    lumiSending = true;
+    // Display User Message
+    msgBox.innerHTML += `<div class="msg-user">${userText}</div>`;
+    input.value = "";
+    msgBox.scrollTop = msgBox.scrollHeight;
 
     try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: userText })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data?.error || 'Chat request failed.');
-      }
-
-      appendMessage(data.reply || 'Sorry, I could not generate a reply.', 'msg-bot');
-    } catch (err) {
-      console.error('Chat error:', err);
-      appendMessage(
-        'Sorry, the assistant is temporarily unavailable. Please try again shortly.',
-        'msg-bot'
-      );
-    } finally {
-      lumiSending = false;
+      const result = await model.generateContent(userText);
+      const response = await result.response;
+      msgBox.innerHTML += `<div class="msg-bot">${response.text()}</div>`;
+    } catch (e) {
+      msgBox.innerHTML += `<div class="msg-bot">Error: Please ensure your API key is valid and you are on a live domain.</div>`;
     }
+    msgBox.scrollTop = msgBox.scrollHeight;
   };
 
-  document.getElementById('lumi-user-text').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
-    }
+  // Allow 'Enter' key to send
+  document.getElementById('lumi-user-text').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
   });
 </script>
 </body>
