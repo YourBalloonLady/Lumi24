@@ -985,6 +985,7 @@ function isFullKitPen(item = {}) {
   if (isCartridgeOnly(item)) return false;
 
   return (
+    format.includes("full-kit") ||
     format.includes("full kit") ||
     format.includes("pen") ||
     name.includes("pen")
