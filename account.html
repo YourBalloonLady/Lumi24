@@ -297,7 +297,6 @@ if (user.id && userEmail) {
   const { error: linkOrdersError } = await supabaseClient
     .from("Orders")
     .update({ user_id: user.id })
-    .eq("credit_email", userEmail)
     .is("user_id", null);
 
   if (linkOrdersError) {
@@ -410,24 +409,7 @@ if (user.id && userEmail) {
 
   
 
-      // Save referral code so checkout attaches it to the order
-      localStorage.setItem("referral_code", code);
-
-      redeemMsg.textContent = `✅ £${res.added.toFixed(2)} added. Total credit: £${res.total_credit.toFixed(2)}`;
-      redeemMsg.classList.add("text-success");
-
-      refInput.value = "";
-
-      // Refresh displayed credit + code
-      const { data: sess } = await supabaseClient.auth.getSession();
-      const email = sess?.session?.user?.email;
-      if (email) await loadCreditAndCode(email);
-
-    } catch (e) {
-      redeemMsg.textContent = `❌ ${e.message}`;
-      redeemMsg.classList.add("text-danger");
-    }
-  });
+     
 
 
   
