@@ -67,8 +67,6 @@
     color: var(--lw-muted);
     margin-right: 8px;
   }
-
-  
 </style>
 </head>
 
@@ -98,7 +96,6 @@
               </div>
               <div class="col-12">
                 <input type="email" class="form-control" id="email" placeholder="Email address" required>
-                
               </div>
               <div class="col-12">
                 <input type="text" class="form-control" id="address1" placeholder="Address line 1" required>
@@ -114,16 +111,10 @@
               </div>
             </div>
 
-            
-
             <hr class="my-4">
 
             <h4 class="fw-semibold mb-3">Order summary</h4>
             <div id="order-summary"></div>
-
-            
-
-            
 
             <div class="d-flex justify-content-between fs-4 fw-bold mt-3">
               <span>Total:</span>
@@ -159,8 +150,6 @@
         <h4 class="text-success mb-1">
           Total: <span id="payment-total"></span>
         </h4>
-        
-       
 
         <p class="mb-1">
           Your payment reference:
@@ -191,7 +180,6 @@
   const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
   const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
-
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
@@ -200,8 +188,6 @@
   let total = 0;
   let discountApplied = 0;
   let lastBundleFinal = 0;
-
-  
 
   function money(n){ return `£${Number(n || 0).toFixed(2)}`; }
 
@@ -219,59 +205,51 @@
   }
 
   function getVariantDisplay(item) {
-  return item?.variant
-    ? `<br><small class="text-muted">${getVariantLabel(item.variant)}</small>`
-    : '';
-}
+    return item?.variant
+      ? `<br><small class="text-muted">${getVariantLabel(item.variant)}</small>`
+      : '';
+  }
 
-  
-
-  // ---------- AUTH HELPERS ----------
-  
-
-  
-
-  // ---------- ACCESSORY RULES ----------
   function isSemaglutide(name){
     const n = (name || '').toLowerCase();
     return n.includes('semaglutide') || n.includes('sema');
   }
 
   function isPenItem(itemOrName) {
-  const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
-  const name = item ? (item.name || '') : (itemOrName || '');
-  const n = String(name).toLowerCase();
+    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+    const name = item ? (item.name || '') : (itemOrName || '');
+    const n = String(name).toLowerCase();
 
-  if (n.includes('refill')) return false;
+    if (n.includes('refill')) return false;
 
-  if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
+    if (item?.variant === 'cartridge-only' || item?.variant === 'full-kit') return true;
 
-  const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
-  if (semaForm === 'pen') return true;
-  if (semaForm === 'vial') return false;
+    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+    if (semaForm === 'pen') return true;
+    if (semaForm === 'vial') return false;
 
-  const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
-  if (form.includes('pen')) return true;
-  if (form.includes('vial')) return false;
+    const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
+    if (form.includes('pen')) return true;
+    if (form.includes('vial')) return false;
 
-  return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
-}
+    return n.includes('pen') || n.includes('flexpen') || n.includes('cartridge');
+  }
 
   function isVialItem(itemOrName) {
-  const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
-  const name = item ? (item.name || '') : (itemOrName || '');
-  const n = String(name).toLowerCase();
+    const item = (typeof itemOrName === 'object' && itemOrName) ? itemOrName : null;
+    const name = item ? (item.name || '') : (itemOrName || '');
+    const n = String(name).toLowerCase();
 
-  const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
-  if (semaForm === 'vial') return true;
-  if (semaForm === 'pen') return false;
+    const semaForm = item ? String(item.sema_form || '').toLowerCase().trim() : '';
+    if (semaForm === 'vial') return true;
+    if (semaForm === 'pen') return false;
 
-  const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
-  if (form.includes('vial')) return true;
-  if (form.includes('pen')) return false;
+    const form = item ? String(item.form || item.type || item.format || '').toLowerCase() : '';
+    if (form.includes('vial')) return true;
+    if (form.includes('pen')) return false;
 
-  return n.includes('vial');
-}
+    return n.includes('vial');
+  }
 
   function extraLabel(item) {
     if (isPenItem(item) && item.pen_heads) return ` (Pen heads: ${item.pen_heads === 'none' ? 'None required' : item.pen_heads})`;
@@ -290,7 +268,6 @@
     if (cart[index].sema_form === 'vial') cart[index].pen_heads = "";
     saveCartToStorage();
     renderOrderSummary();
-    
   }
 
   function setAccessory(index, field, value) {
@@ -300,7 +277,6 @@
     if (field === 'syringes')  cart[index].syringes  = v;
     saveCartToStorage();
     renderOrderSummary();
-    
   }
 
   function validateAccessories() {
@@ -330,67 +306,64 @@
     return missing;
   }
 
-  
-
-  // ---------- PRICE SYNC ----------
   async function syncCartPricesFromSupabase() {
-  try {
-    const ids = cart.map(i => i.id).filter(Boolean);
-    if (!ids.length) return;
+    try {
+      const ids = cart.map(i => i.id).filter(Boolean);
+      if (!ids.length) return;
 
-    const { data, error } = await supabaseClient
-      .from('Products')
-      .select('id, name, price')
-      .in('id', ids);
+      const { data, error } = await supabaseClient
+        .from('Products')
+        .select('id, name, price')
+        .in('id', ids);
 
-    if (error) {
-      console.error('Price sync failed:', error);
-      return;
+      if (error) {
+        console.error('Price sync failed:', error);
+        return;
+      }
+
+      const map = new Map((data || []).map(p => [p.id, p]));
+
+      cart = cart.map(item => {
+        const p = map.get(item.id);
+        if (!p) return item;
+
+        const variant = item.variant || null;
+
+        return {
+          ...item,
+          name: p.name || item.name,
+          variant: variant,
+          price: variant ? getVariantPrice(p, variant) : Number(p.price || 0)
+        };
+      });
+
+      saveCartToStorage();
+    } catch (e) {
+      console.error('Unexpected price sync error:', e);
     }
-
-    const map = new Map((data || []).map(p => [p.id, p]));
-
-    cart = cart.map(item => {
-      const p = map.get(item.id);
-      if (!p) return item;
-
-      const variant = item.variant || null;
-
-      return {
-        ...item,
-        name: p.name || item.name,
-        variant: variant,
-        price: variant ? getVariantPrice(p, variant) : Number(p.price || 0)
-      };
-    });
-
-    saveCartToStorage();
-  } catch (e) {
-    console.error('Unexpected price sync error:', e);
   }
-}
 
   function calculateBundle(cart) {
-  let baseTotal = 0;
+    let baseTotal = 0;
 
-  cart.forEach(item => {
-    const qty = Number(item.qty || 0);
-    const line = Number(item.price || 0) * qty;
-    baseTotal += line;
-  });
+    cart.forEach(item => {
+      const qty = Number(item.qty || 0);
+      const line = Number(item.price || 0) * qty;
+      baseTotal += line;
+    });
 
-  return {
-    baseTotal,
-    discount: 0,
-    finalTotal: baseTotal,
-    messages: []
-  };
-}
+    return {
+      baseTotal,
+      discount: 0,
+      finalTotal: baseTotal,
+      messages: []
+    };
+  }
 
-  // ---------- CART LOAD ----------
   function getCartFromUrlOrStorage() {
     const params = new URLSearchParams(window.location.search);
     const urlCart = params.get('cart');
+
     if (urlCart) {
       try {
         const parsed = JSON.parse(decodeURIComponent(urlCart));
@@ -400,12 +373,14 @@
         console.error('Error parsing cart from URL', e);
       }
     }
+
     try {
       const saved = localStorage.getItem('cart');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error('Error reading cart from localStorage', e);
     }
+
     return [];
   }
 
@@ -466,34 +441,26 @@
   }
 
   function renderOrderSummary(payableOverride = null) {
-  const bundle = calculateBundle(cart);
-  lastBundleFinal = bundle.finalTotal;
-  discountApplied = bundle.discount;
+    const bundle = calculateBundle(cart);
+    lastBundleFinal = bundle.finalTotal;
+    discountApplied = bundle.discount;
 
-  const summaryEl = document.getElementById('order-summary');
-  const totalEl = document.getElementById('final-total');
+    const summaryEl = document.getElementById('order-summary');
+    const totalEl = document.getElementById('final-total');
 
-  summaryEl.innerHTML = cart.map((i, idx) => `
-    <div class="py-2 border-bottom">
-      <div class="d-flex justify-content-between">
-        <span>
-          ${i.qty} × ${i.name}
-          ${getVariantDisplay(i)}
-          ${extraLabel(i)}
-        </span>
-        <span>£${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}</span>
+    summaryEl.innerHTML = cart.map((i, idx) => `
+      <div class="py-2 border-bottom">
+        <div class="d-flex justify-content-between">
+          <span>
+            ${i.qty} × ${i.name}
+            ${getVariantDisplay(i)}
+            ${extraLabel(i)}
+          </span>
+          <span>£${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}</span>
+        </div>
+        ${accessoryDropdownHTML(i, idx)}
       </div>
-      ${accessoryDropdownHTML(i, idx)}
-    </div>
-  `).join('');
-
-  const shownTotal = (typeof payableOverride === 'number' && isFinite(payableOverride))
-    ? payableOverride
-    : bundle.finalTotal;
-
-  total = shownTotal;
-  totalEl.textContent = `£${shownTotal.toFixed(2)}`;
-}
+    `).join('');
 
     const shownTotal = (typeof payableOverride === 'number' && isFinite(payableOverride))
       ? payableOverride
@@ -519,59 +486,53 @@
   }
 
   async function saveOrderToSupabase(details) {
-  const { data, error } = await supabaseClient.auth.getUser();
-  const userId = (error || !data || !data.user) ? null : data.user.id;
+    const { data, error } = await supabaseClient.auth.getUser();
+    const userId = (error || !data || !data.user) ? null : data.user.id;
 
-  const orderDetails = {
-    customer: {
-      name: details.name,
-      email: details.email,
-      phone: details.phone,
-      address1: details.address1,
-      address2: details.address2,
-      city: details.city,
-      postcode: details.postcode
-    },
-    items: cart.map(i => ({
-      id: i.id || null,
-      name: i.name,
-      variant: i.variant || 'full-kit',
-      variant_label: getVariantLabel(i.variant || 'full-kit'),
-      qty: i.qty,
-      price_each: Number(i.price || 0),
-      line_total: Number(i.price || 0) * Number(i.qty || 0),
-      pen_heads: i.pen_heads || "",
-      syringes: i.syringes || "",
-      sema_form: i.sema_form || ""
-    })),
-    reference: details.ref
-  };
+    const orderDetails = {
+      customer: {
+        name: details.name,
+        email: details.email,
+        phone: details.phone,
+        address1: details.address1,
+        address2: details.address2,
+        city: details.city,
+        postcode: details.postcode
+      },
+      items: cart.map(i => ({
+        id: i.id || null,
+        name: i.name,
+        variant: i.variant || 'full-kit',
+        variant_label: getVariantLabel(i.variant || 'full-kit'),
+        qty: i.qty,
+        price_each: Number(i.price || 0),
+        line_total: Number(i.price || 0) * Number(i.qty || 0),
+        pen_heads: i.pen_heads || "",
+        syringes: i.syringes || "",
+        sema_form: i.sema_form || ""
+      })),
+      reference: details.ref
+    };
 
-  orderDetails.meta = orderDetails.meta || {};
-  
+    orderDetails.meta = orderDetails.meta || {};
 
-  const { error: insertError } = await supabaseClient
-    .from('Orders')
-    .insert({
-      user_id: userId,
-      total_amount: Number(total || 0),
-      status: 'Pending',
-      reference: details.ref,
-      details: orderDetails,
-     
-      
-    });
+    const { error: insertError } = await supabaseClient
+      .from('Orders')
+      .insert({
+        user_id: userId,
+        total_amount: Number(total || 0),
+        status: 'Pending',
+        reference: details.ref,
+        details: orderDetails
+      });
 
-  if (insertError) {
-    console.error('Error saving order to Supabase:', insertError);
-    throw insertError;
+    if (insertError) {
+      console.error('Error saving order to Supabase:', insertError);
+      throw insertError;
+    }
+
+    return true;
   }
-
-  return true;
-
-  }
-
-  
 
   async function deductStock(cartItems) {
     try {
@@ -630,8 +591,6 @@
     });
   }
 
-  
-
   const checkoutStatus = document.getElementById('checkout-status');
 
   document.getElementById('addressForm').onsubmit = async function(e) {
@@ -671,14 +630,13 @@
 
       const bundle = calculateBundle(cart);
       discountApplied = bundle.discount;
-      const totalBeforeCredit = bundle.finalTotal;
-total = totalBeforeCredit;
-renderOrderSummary(total);
+      total = bundle.finalTotal;
+      renderOrderSummary(total);
 
       const details = { name, phone, email, address1, address2, city, postcode, ref };
 
       await saveOrderToSupabase(details);
-await deductStock(cart);
+      await deductStock(cart);
 
       await Promise.allSettled([ sendAdminEmail(details), sendCustomerEmail(details) ]);
 
@@ -696,10 +654,6 @@ await deductStock(cart);
       document.getElementById('customerName').textContent = name;
       document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
       document.getElementById('order-ref').textContent = ref;
-
-      
-
-      
 
       new bootstrap.Modal(document.getElementById('paymentModal')).show();
 
@@ -723,32 +677,28 @@ await deductStock(cart);
   }
 
   (async function initCheckout() {
-  cart = getCartFromUrlOrStorage();
+    cart = getCartFromUrlOrStorage();
 
-  if (!cart.length) {
-    alert('Your cart is empty! Taking you back to the shop.');
-    window.location.href = 'index.html';
-    return;
-  }
+    if (!cart.length) {
+      alert('Your cart is empty! Taking you back to the shop.');
+      window.location.href = 'index.html';
+      return;
+    }
 
-  cart = cart.map(i => ({
-    ...i,
-    variant: i.variant || "",
-    pen_heads: i.pen_heads || "",
-    syringes: i.syringes || "",
-    sema_form: i.sema_form || ""
-  }));
+    cart = cart.map(i => ({
+      ...i,
+      qty: Number(i.qty || 1),
+      price: Number(i.price || 0),
+      variant: i.variant || "",
+      pen_heads: i.pen_heads || "",
+      syringes: i.syringes || "",
+      sema_form: i.sema_form || ""
+    }));
 
-  saveCartToStorage();
+    saveCartToStorage();
 
-  await syncCartPricesFromSupabase();
-  renderOrderSummary();
-})();
-
-    
-
-    
-    
+    await syncCartPricesFromSupabase();
+    renderOrderSummary();
   })();
 </script>
 
