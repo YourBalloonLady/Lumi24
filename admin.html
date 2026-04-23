@@ -554,107 +554,8 @@
   <div id="orders-list" class="mt-3"></div>
 </div>
 
-          <!-- Export buttons (Improvement #10) -->
-          <div class="d-flex gap-2 flex-wrap mt-3">
-            <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
-            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
-            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
-
-            <!-- ✅ Added: Excel-template exports that match your sheet columns -->
-            <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
-          </div>
-
-          <!-- Sticky controls (Improvement #1) -->
-          <div class="sticky-admin-controls">
-            <div class="controls-grid">
-              <div>
-                <div class="input-group mt-3">
-                  <span class="input-group-text">🔎</span>
-                  <input id="order-search" class="form-control"
-                         placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
-                  <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
-                </div>
-
-                <!-- Filter buttons w/ counts (Improvement #4) -->
-                <div class="filter-row mt-2">
-                  <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
-                  <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
-                  <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
-                  <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
-                  <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
-                  <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
-                  <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
-                </div>
-
-                <!-- Client-side toggles -->
-                <div class="d-flex gap-3 flex-wrap mt-2">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-noaddr">No address</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-noemail">No email</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
-                  </div>
-                </div>
-
-                <div class="mt-2">
-                  <small class="text-muted">
-                    Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
-                  </small>
-                </div>
-              </div>
-
-              <div>
-                <div class="bulk-bar mt-3">
-                  <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
-                    <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
-                  </div>
-
-                  <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
-                  <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
-                  <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
-                  
-                  <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
-                  <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
-                    <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
-                    <span class="text-muted small" id="page-indicator">Page …</span>
-                  </div>
-
-                  <div class="d-flex align-items-center gap-2">
-                    <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
-                      <option value="25" selected>25/page</option>
-                      <option value="50">50/page</option>
-                      <option value="100">100/page</option>
-                    </select>
-
-                    <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p id="admin-status" class="text-muted mt-3">Checking access…</p>
-          <div id="admin-warning"></div>
-          <div id="orders-list" class="mt-3"></div>
-        </div>
+          
+        
 
         <!-- REVIEWS -->
         <div class="section-card">
@@ -2029,17 +1930,7 @@ window.copyOrderForText = copyOrderForText;
       ordersCache[id].status = value;
       ordersCache[id].details = updatedDetails;
 
-      // ✅ If admin manually sets to Paid, award credit too
-      if(String(value || "").toLowerCase() === "paid"){
-        try{
-          await awardCreditForPaidOrder(id);
-          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
-          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-        }catch(e){
-          console.error("Credit award failed", e);
-          showToast("Status updated but credit failed (check console)", "warning");
-        }
-      }
+      
 
       loadOrders();
     }
@@ -2415,26 +2306,7 @@ window.copyOrderForText = copyOrderForText;
         ordersCache[orderId].status = "Paid";
         ordersCache[orderId].details = updatedDetails;
 
-        // award credit (idempotent)
-        try{
-          await awardCreditForPaidOrder(orderId);
-          const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
-          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-        }catch(e){
-          console.error("Credit award failed", e);
-          showToast("Paid ✅ but credit failed (check console)", "warning");
-        }
-
-        showToast("Marked paid ✅", "success");
-        loadOrders();
-      } catch (e) {
-        console.error("Payment flow failed", e);
-        alert("Payment flow failed — check console");
-      } finally {
-        setBusy(false);
-      }
-    }
-
+        
     // ---------- ✅ CANCEL + RESTOCK ----------
     async function cancelAndRestockById(orderId){
       if(!orderId) return;
@@ -2868,7 +2740,7 @@ function renderPackingCards(orderIds){
     const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
     const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
     const total = Number(order.total_amount || 0).toFixed(2);
-    const creditAmt = Number(order.details?.meta?.credit_awarded_amount || 0);
+    
 
     const statusLower = String(status || "").toLowerCase();
     const isPaid = statusLower === "paid";
@@ -2914,7 +2786,7 @@ function renderPackingCards(orderIds){
           <div class="text-end">
             <div class="fw-bold">£${escapeHtml(total)}</div>
             <div class="small text-muted">${itemCount} item(s)</div>
-            ${creditAmt > 0 ? `<div class="text-muted small mt-1">🎁 £${creditAmt.toFixed(2)} credit</div>` : ``}
+            
           </div>
         </div>
 
