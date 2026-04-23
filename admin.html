@@ -2031,17 +2031,15 @@ window.copyOrderForText = copyOrderForText;
 
       // ✅ If admin manually sets to Paid, award credit too
       if(String(value || "").toLowerCase() === "paid"){
-  try{
-    await deductCheckoutCreditForOrder(id);
-    await awardCreditForPaidOrder(id);
-
-    const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
-    if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-  }catch(e){
-    console.error("Credit handling failed", e);
-    showToast("Status updated but credit handling failed (check console)", "warning");
-  }
-}
+        try{
+          await awardCreditForPaidOrder(id);
+          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
+          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
+        }catch(e){
+          console.error("Credit award failed", e);
+          showToast("Status updated but credit failed (check console)", "warning");
+        }
+      }
 
       loadOrders();
     }
@@ -2347,197 +2345,95 @@ window.copyOrderForText = copyOrderForText;
     }
 
     async function sendCancelledEmailById(orderId) {
-  const order = ordersCache[orderId];
-  if (!order) return alert("Order not found.");
-  if (!confirm("Send CANCELLED email to customer?")) return;
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+      if (!confirm("Send CANCELLED email to customer?")) return;
 
-  setBusy(true, "Sending cancelled email…", order.reference || order.id);
-  try {
-    await sendCancelledEmail(order);
-    showToast("Cancelled email sent ✅", "success");
-  } catch (e) {
-    console.error("Cancelled email failed", e);
-    const customer = order.details?.customer || {};
-    const toEmail = customer.email || order.customer_email || order.email || "";
-    if(toEmail){
-      const ok = confirm("EmailJS failed. Open a mailto draft instead?");
-      if(ok){
-        openMailto(toEmail, `Your order ${order.reference || order.id} was cancelled`, buildCancelledEmailText(order));
-      }
-    }
-    alert("Cancelled email failed — check console");
-  } finally {
-    setBusy(false);
-  }
-}
-
-function getCheckoutCreditUsed(order){
-  return Number(order?.credit_used || 0);
-}
-
-function getCheckoutCreditEmail(order){
-  return String(order?.credit_email || "").trim().toLowerCase();
-}
-
-function hasCheckoutCreditAlreadyBeenDeducted(order){
-  return order?.credit_deducted === true;
-}
-
-async function deductCheckoutCreditForOrder(orderId){
-  const order = ordersCache[orderId];
-  if(!order) throw new Error("Order not found in cache");
-
-  const creditUsed = getCheckoutCreditUsed(order);
-  const creditEmail = getCheckoutCreditEmail(order);
-
-  if(!(creditUsed > 0)){
-    return { ok: true, skipped: true, reason: "No checkout credit used." };
-  }
-
-  if(!creditEmail){
-    return { ok: false, reason: "Order has credit_used but no credit_email." };
-  }
-
-  if(hasCheckoutCreditAlreadyBeenDeducted(order)){
-    return { ok: true, skipped: true, reason: "Checkout credit already deducted." };
-  }
-
-  const { data: customer, error: customerError } = await supabaseClient
-    .from(CUSTOMERS_TABLE)
-    .select(`id, email, name, ${CREDIT_BALANCE_COL}`)
-    .eq("email", creditEmail)
-    .maybeSingle();
-
-  if(customerError) throw customerError;
-  if(!customer) throw new Error(`No customer record found for ${creditEmail}`);
-
-  const currentBalance = Number(customer?.[CREDIT_BALANCE_COL] || 0);
-  const newBalance = round2(Math.max(0, currentBalance - creditUsed));
-
-  const { error: updateCustomerError } = await supabaseClient
-    .from(CUSTOMERS_TABLE)
-    .update({ [CREDIT_BALANCE_COL]: newBalance })
-    .eq("id", customer.id);
-
-  if(updateCustomerError) throw updateCustomerError;
-
-  let updatedDetails = pushHistory(order, "checkout_credit_deducted", {
-    note: `-£${creditUsed.toFixed(2)} from ${creditEmail}`
-  });
-
-  updatedDetails = {
-    ...updatedDetails,
-    meta: {
-      ...(updatedDetails.meta || {}),
-      checkout_credit_deducted_at: new Date().toISOString(),
-      checkout_credit_deducted_amount: round2(creditUsed),
-      checkout_credit_deducted_email: creditEmail
-    }
-  };
-
-  const { error: updateOrderError } = await supabaseClient
-    .from("Orders")
-    .update({
-      credit_deducted: true,
-      details: updatedDetails
-    })
-    .eq("id", orderId);
-
-  if(updateOrderError) throw updateOrderError;
-
-  ordersCache[orderId].credit_deducted = true;
-  ordersCache[orderId].details = updatedDetails;
-
-  return {
-    ok: true,
-    skipped: false,
-    deducted: round2(creditUsed),
-    newBalance
-  };
-}
-
-async function markPaidAndSendById(orderId) {
-  const order = ordersCache[orderId];
-  if (!order) return alert("Order not found.");
-  if (!confirm("Confirm PAYMENT RECEIVED and email customer?")) return;
-
-  setBusy(true, "Marking paid…", order.reference || order.id);
-  try {
-    try{
-      await sendPaidEmail(order);
-    }catch(emailErr){
-      console.error("Paid email failed", emailErr);
-      const customer = order.details?.customer || {};
-      const toEmail = customer.email || order.customer_email || order.email || "";
-      if(toEmail){
-        const ok = confirm("EmailJS failed. Open a mailto draft instead?");
-        if(ok){
-          openMailto(toEmail, `Payment received (${order.reference || order.id})`, buildPaidEmailText(order));
+      setBusy(true, "Sending cancelled email…", order.reference || order.id);
+      try {
+        await sendCancelledEmail(order);
+        showToast("Cancelled email sent ✅", "success");
+      } catch (e) {
+        console.error("Cancelled email failed", e);
+        const customer = order.details?.customer || {};
+        const toEmail = customer.email || order.customer_email || order.email || "";
+        if(toEmail){
+          const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+          if(ok){
+            openMailto(toEmail, `Your order ${order.reference || order.id} was cancelled`, buildCancelledEmailText(order));
+          }
         }
+        alert("Cancelled email failed — check console");
+      } finally {
+        setBusy(false);
       }
     }
 
-    try{
-      const deductResult = await deductCheckoutCreditForOrder(orderId);
+    // ✅ FIXED: this function had TWO finally blocks in your paste (syntax error)
+    async function markPaidAndSendById(orderId) {
+      const order = ordersCache[orderId];
+      if (!order) return alert("Order not found.");
+      if (!confirm("Confirm PAYMENT RECEIVED and email customer?")) return;
 
-      if(!deductResult.ok){
-        alert(`Could not mark as paid because checkout credit handling failed: ${deductResult.reason || "Unknown error"}`);
-        return;
+      setBusy(true, "Marking paid…", order.reference || order.id);
+      try {
+        // email (best-effort)
+        try{
+          await sendPaidEmail(order);
+        }catch(emailErr){
+          console.error("Paid email failed", emailErr);
+          const customer = order.details?.customer || {};
+          const toEmail = customer.email || order.customer_email || order.email || "";
+          if(toEmail){
+            const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+            if(ok){
+              openMailto(toEmail, `Payment received (${order.reference || order.id})`, buildPaidEmailText(order));
+            }
+          }
+        }
+
+        // update status
+        let updatedDetails = pushHistory(order, "status_paid");
+        const session = await supabaseClient.auth.getSession();
+        const who = session?.data?.session?.user?.email || "admin";
+        updatedDetails = {
+          ...updatedDetails,
+          meta: { ...(updatedDetails.meta || {}), paid_confirmed_at: new Date().toISOString(), paid_confirmed_by: who }
+        };
+
+        const { error } = await supabaseClient
+          .from("Orders")
+          .update({ status: "Paid", details: updatedDetails })
+          .eq("id", orderId);
+
+        if (error) {
+          console.error(error);
+          alert("Status update failed — check Supabase policies.");
+          return;
+        }
+
+        ordersCache[orderId].status = "Paid";
+        ordersCache[orderId].details = updatedDetails;
+
+        // award credit (idempotent)
+        try{
+          await awardCreditForPaidOrder(orderId);
+          const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
+          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
+        }catch(e){
+          console.error("Credit award failed", e);
+          showToast("Paid ✅ but credit failed (check console)", "warning");
+        }
+
+        showToast("Marked paid ✅", "success");
+        loadOrders();
+      } catch (e) {
+        console.error("Payment flow failed", e);
+        alert("Payment flow failed — check console");
+      } finally {
+        setBusy(false);
       }
-
-      if(!deductResult.skipped && deductResult.deducted > 0){
-        showToast(`Checkout credit deducted ✅ (-£${deductResult.deducted.toFixed(2)})`, "success");
-      }
-    }catch(deductErr){
-      console.error("Checkout credit deduction failed", deductErr);
-      alert(`Could not mark as paid because checkout credit deduction failed: ${deductErr.message || deductErr}`);
-      return;
     }
-
-    let updatedDetails = pushHistory(ordersCache[orderId], "status_paid");
-    const session = await supabaseClient.auth.getSession();
-    const who = session?.data?.session?.user?.email || "admin";
-    updatedDetails = {
-      ...updatedDetails,
-      meta: {
-        ...(updatedDetails.meta || {}),
-        paid_confirmed_at: new Date().toISOString(),
-        paid_confirmed_by: who
-      }
-    };
-
-    const { error } = await supabaseClient
-      .from("Orders")
-      .update({ status: "Paid", details: updatedDetails })
-      .eq("id", orderId);
-
-    if (error) {
-      console.error(error);
-      alert("Status update failed — check Supabase policies.");
-      return;
-    }
-
-    ordersCache[orderId].status = "Paid";
-    ordersCache[orderId].details = updatedDetails;
-
-    try{
-      await awardCreditForPaidOrder(orderId);
-      const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
-      if(amt > 0) showToast(`Referral credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-    }catch(e){
-      console.error("Referral credit award failed", e);
-      showToast("Paid ✅ but referral credit failed (check console)", "warning");
-    }
-
-    showToast("Marked paid ✅", "success");
-    loadOrders();
-  } catch (e) {
-    console.error("Payment flow failed", e);
-    alert("Payment flow failed — check console");
-  } finally {
-    setBusy(false);
-  }
-}
 
     // ---------- ✅ CANCEL + RESTOCK ----------
     async function cancelAndRestockById(orderId){
