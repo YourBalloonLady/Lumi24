@@ -13,367 +13,355 @@
   <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
 
   <style>
-  body{
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background:#f3f4f6;
-  }
-
-  #trust-bar{
-    background: linear-gradient(90deg, #22c55e, #16a34a);
-    color:#fff;
-    font-size:.85rem;
-    font-weight:600;
-    padding:6px 0;
-  }
-  #trust-bar span{ white-space: nowrap; }
-
-  .navbar{ background:#020617; }
-  .navbar .nav-link{ color:#e5e7eb; }
-  .navbar .nav-link:hover{ color:#fff; }
-
-  .section-card{
-    background:#fff;
-    border-radius:16px;
-    padding:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:24px;
-  }
-
-  .order-card, .review-card{
-    background:#fff;
-    border-radius:16px;
-    padding:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:12px;
-  }
-
-  .review-meta{ font-size:.85rem; color:#6b7280; }
-
-  .items-box{
-    margin-top:10px;
-    background:#f8fafc;
-    border:1px solid rgba(15,23,42,.08);
-    border-radius:12px;
-    padding:10px 12px;
-    font-size:.9rem;
-    color:#0f172a;
-    white-space: pre-line;
-  }
-  .items-box strong{
-    font-size:.85rem;
-    color:#334155;
-    display:block;
-    margin-bottom:6px;
-  }
-
-  .muted-line{ color:#64748b; font-size:.85rem; }
-
-  .mini-actions{
-    display:flex;
-    gap:6px;
-    flex-wrap:wrap;
-    margin-top:10px;
-  }
-
-  .btn-row{
-    display:grid;
-    gap:6px;
-    margin-top:8px;
-  }
-
-  .kpi-pill{
-    background:#0f172a;
-    color:#fff;
-    border-radius:999px;
-    padding:6px 10px;
-    font-size:.85rem;
-    font-weight:700;
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-  }
-  .kpi-pill span{ opacity:.9; font-weight:600; }
-
-  .controls-grid{
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:10px;
-    margin-top:10px;
-  }
-  @media (min-width: 992px){
-    .controls-grid{ grid-template-columns: 1.4fr 1fr; align-items:start; }
-  }
-
-  .filter-row{
-    display:flex;
-    gap:6px;
-    flex-wrap:wrap;
-  }
-
-  .bulk-bar{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    align-items:center;
-    background:#f8fafc;
-    border:1px solid rgba(15,23,42,.08);
-    border-radius:12px;
-    padding:10px;
-  }
-
-  .note-area{
-    width:100%;
-    min-height:64px;
-    resize:vertical;
-    font-size:.9rem;
-  }
-  .small-input{ font-size:.85rem; }
-
-  #backToTop{
-    position: fixed;
-    right: 18px;
-    bottom: 18px;
-    z-index: 9999;
-    display: none;
-    border-radius: 999px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-  }
-
-  .sticky-admin-controls{
-    position: sticky;
-    top: 0;
-    z-index: 200;
-    background: #fff;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(15,23,42,.08);
-  }
-
-  @media (max-width: 991.98px){
-    .sticky-admin-controls{
-      position: static;
-      top: auto;
+    body{
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background:#f3f4f6;
     }
-  }
 
-  .filter-badge{
-    margin-left: 6px;
-    font-size: .75rem;
-    padding: 2px 8px;
-    border-radius: 999px;
-    background: rgba(15,23,42,.08);
-  }
+    #trust-bar{
+      background: linear-gradient(90deg, #22c55e, #16a34a);
+      color:#fff;
+      font-size:.85rem;
+      font-weight:600;
+      padding:6px 0;
+    }
+    #trust-bar span{ white-space: nowrap; }
 
-  #busyOverlay{
-    display:none;
-    position:fixed;
-    inset:0;
-    z-index:99999;
-    background: rgba(15,23,42,.35);
-    align-items:center;
-    justify-content:center;
-  }
-  #busyOverlay .box{
-    background:#fff;
-    border-radius:16px;
-    padding:16px 18px;
-    box-shadow: 0 18px 50px rgba(0,0,0,.25);
-    display:flex;
-    gap:12px;
-    align-items:center;
-  }
+    .section-card{
+      background:#fff;
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:24px;
+    }
 
-  .btn-outline-purple{
-    --bs-btn-color:#6d28d9;
-    --bs-btn-border-color:#6d28d9;
-    --bs-btn-hover-color:#fff;
-    --bs-btn-hover-bg:#6d28d9;
-    --bs-btn-hover-border-color:#6d28d9;
-    --bs-btn-focus-shadow-rgb:109,40,217;
-    --bs-btn-active-color:#fff;
-    --bs-btn-active-bg:#5b21b6;
-    --bs-btn-active-border-color:#5b21b6;
-  }
+    .order-card, .review-card{
+      background:#fff;
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:12px;
+    }
 
-  .admin-shell{
-    display:flex;
-    min-height:100vh;
-  }
-  .admin-sidebar{
-    width:260px;
-    background:#020617;
-    color:#e5e7eb;
-    position:sticky;
-    top:0;
-    height:100vh;
-    padding:16px;
-    display:none;
-  }
-  .admin-sidebar a{
-    color:#e5e7eb;
-    text-decoration:none;
-    display:block;
-    padding:10px 12px;
-    border-radius:12px;
-    margin-bottom:6px;
-  }
-  .admin-sidebar a:hover{
-    background: rgba(255,255,255,.08);
-    color:#fff;
-  }
-  .admin-main{
-    flex:1;
-    width:100%;
-  }
-  @media (min-width: 992px){
-    .admin-sidebar{ display:block; }
-  }
+    .review-meta{ font-size:.85rem; color:#6b7280; }
 
-  .mobile-topbar{
-    background:#020617;
-    color:#fff;
-    padding:10px 12px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-  }
-  @media (min-width: 992px){
-    .mobile-topbar{ display:none; }
-  }
+    .items-box{
+      margin-top:10px;
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:.9rem;
+      color:#0f172a;
+      white-space: pre-line;
+    }
+    .items-box strong{
+      font-size:.85rem;
+      color:#334155;
+      display:block;
+      margin-bottom:6px;
+    }
 
-  .mobile-order-card{
-    border-radius:18px;
-  }
+    .muted-line{ color:#64748b; font-size:.85rem; }
 
-  .mobile-primary-actions{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:8px;
-  }
+    .mini-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
 
-  .mobile-primary-actions .btn{
-    width:100%;
-    font-weight:700;
-    border-radius:12px;
-    padding:10px 12px;
-  }
+    .kpi-pill{
+      background:#0f172a;
+      color:#fff;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.85rem;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+    }
+    .kpi-pill span{ opacity:.9; font-weight:600; }
 
-  .mobile-secondary-actions{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:8px;
-  }
+    .controls-grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (min-width: 992px){
+      .controls-grid{ grid-template-columns: 1.4fr 1fr; align-items:start; }
+    }
 
-  .mobile-secondary-actions .btn{
-    width:100%;
-    border-radius:12px;
-  }
+    .filter-row{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
 
-  @media (min-width: 992px){
+    .bulk-bar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px;
+    }
+
+    .note-area{
+      width:100%;
+      min-height:64px;
+      resize:vertical;
+      font-size:.9rem;
+    }
+    .small-input{ font-size:.85rem; }
+
+    #backToTop{
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      z-index: 9999;
+      display: none;
+      border-radius: 999px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+    }
+
+    .sticky-admin-controls{
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: #fff;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(15,23,42,.08);
+    }
+
+    @media (max-width: 991.98px){
+      .sticky-admin-controls{
+        position: static;
+        top: auto;
+      }
+    }
+
+    .filter-badge{
+      margin-left: 6px;
+      font-size: .75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,.08);
+    }
+
+    #busyOverlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      background: rgba(15,23,42,.35);
+      align-items:center;
+      justify-content:center;
+    }
+    #busyOverlay .box{
+      background:#fff;
+      border-radius:16px;
+      padding:16px 18px;
+      box-shadow: 0 18px 50px rgba(0,0,0,.25);
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+
+    .btn-outline-purple{
+      --bs-btn-color:#6d28d9;
+      --bs-btn-border-color:#6d28d9;
+      --bs-btn-hover-color:#fff;
+      --bs-btn-hover-bg:#6d28d9;
+      --bs-btn-hover-border-color:#6d28d9;
+      --bs-btn-focus-shadow-rgb:109,40,217;
+      --bs-btn-active-color:#fff;
+      --bs-btn-active-bg:#5b21b6;
+      --bs-btn-active-border-color:#5b21b6;
+    }
+
+    .admin-shell{
+      display:flex;
+      min-height:100vh;
+    }
+    .admin-sidebar{
+      width:260px;
+      background:#020617;
+      color:#e5e7eb;
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:16px;
+      display:none;
+    }
+    .admin-sidebar a{
+      color:#e5e7eb;
+      text-decoration:none;
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      margin-bottom:6px;
+    }
+    .admin-sidebar a:hover{
+      background: rgba(255,255,255,.08);
+      color:#fff;
+    }
+    .admin-main{
+      flex:1;
+      width:100%;
+    }
+    @media (min-width: 992px){
+      .admin-sidebar{ display:block; }
+    }
+
+    .mobile-topbar{
+      background:#020617;
+      color:#fff;
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    @media (min-width: 992px){
+      .mobile-topbar{ display:none; }
+    }
+
+    .mobile-order-card{
+      border-radius:18px;
+    }
+
     .mobile-primary-actions{
-      grid-template-columns:repeat(3, 1fr);
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+    }
+
+    .mobile-primary-actions .btn{
+      width:100%;
+      font-weight:700;
+      border-radius:12px;
+      padding:10px 12px;
     }
 
     .mobile-secondary-actions{
-      grid-template-columns:repeat(2, 1fr);
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
     }
-  }
 
-  .min-w-0{
-    min-width:0;
-  }
+    .mobile-secondary-actions .btn{
+      width:100%;
+      border-radius:12px;
+    }
 
-  /* ✅ PACKING MODE */
-  .admin-only{ display:block; }
-  .packing-only{ display:none; }
+    @media (min-width: 992px){
+      .mobile-primary-actions{
+        grid-template-columns:repeat(3, 1fr);
+      }
 
-  body.packing-mode .admin-only{ display:none !important; }
-  body.packing-mode .packing-only{ display:block !important; }
+      .mobile-secondary-actions{
+        grid-template-columns:repeat(2, 1fr);
+      }
+    }
 
-  .view-toggle-bar{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:12px;
-    margin-bottom:12px;
-  }
+    .min-w-0{
+      min-width:0;
+    }
 
-  .packing-card{
-    background:#fff;
-    border-radius:18px;
-    padding:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,.08);
-    margin-bottom:12px;
-    border:1px solid rgba(15,23,42,.08);
-  }
+    .admin-only{ display:block; }
+    .packing-only{ display:none; }
 
-  .packing-head{
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:12px;
-    flex-wrap:wrap;
-    margin-bottom:10px;
-  }
+    body.packing-mode .admin-only{ display:none !important; }
+    body.packing-mode .packing-only{ display:block !important; }
 
-  .packing-name{
-    font-size:1rem;
-    font-weight:800;
-    color:#0f172a;
-  }
+    .view-toggle-bar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+      margin-bottom:12px;
+    }
 
-  .packing-ref{
-    font-size:.85rem;
-    color:#64748b;
-    margin-top:2px;
-  }
+    .packing-card{
+      background:#fff;
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:12px;
+      border:1px solid rgba(15,23,42,.08);
+    }
 
-  .packing-items,
-  .packing-address{
-    margin-top:10px;
-    background:#f8fafc;
-    border:1px solid rgba(15,23,42,.08);
-    border-radius:12px;
-    padding:10px 12px;
-    font-size:.92rem;
-    white-space:pre-line;
-    color:#0f172a;
-  }
+    .packing-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
 
-  .packing-items strong,
-  .packing-address strong{
-    display:block;
-    margin-bottom:6px;
-    font-size:.82rem;
-    color:#334155;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-  }
+    .packing-name{
+      font-size:1rem;
+      font-weight:800;
+      color:#0f172a;
+    }
 
-  .packing-actions{
-    display:grid;
-    grid-template-columns:1fr;
-    gap:8px;
-    margin-top:12px;
-  }
+    .packing-ref{
+      font-size:.85rem;
+      color:#64748b;
+      margin-top:2px;
+    }
 
-  .packing-actions .btn{
-    width:100%;
-    font-weight:700;
-    border-radius:12px;
-    padding:10px 12px;
-  }
+    .packing-items,
+    .packing-address{
+      margin-top:10px;
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:.92rem;
+      white-space:pre-line;
+      color:#0f172a;
+    }
 
-  @media (min-width: 768px){
+    .packing-items strong,
+    .packing-address strong{
+      display:block;
+      margin-bottom:6px;
+      font-size:.82rem;
+      color:#334155;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
     .packing-actions{
-      grid-template-columns:repeat(4, 1fr);
+      display:grid;
+      grid-template-columns:1fr;
+      gap:8px;
+      margin-top:12px;
     }
-  }
-</style>
+
+    .packing-actions .btn{
+      width:100%;
+      font-weight:700;
+      border-radius:12px;
+      padding:10px 12px;
+    }
+
+    @media (min-width: 768px){
+      .packing-actions{
+        grid-template-columns:repeat(4, 1fr);
+      }
+    }
+  </style>
 </head>
 
 <body>
-  <!-- TRUST BAR -->
   <div id="trust-bar">
     <div class="container d-flex justify-content-center gap-4 flex-wrap">
       <span>🚚 <strong>Next Day Delivery</strong> on orders before <strong>3PM</strong></span>
@@ -383,7 +371,6 @@
     </div>
   </div>
 
-  <!-- ✅ Mobile top bar + menu -->
   <div class="mobile-topbar">
     <div class="fw-bold">🌙 Lumina Admin</div>
     <div class="d-flex gap-2">
@@ -392,7 +379,6 @@
     </div>
   </div>
 
-  <!-- ✅ Offcanvas sidebar (mobile) -->
   <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
     <div class="offcanvas-header">
       <h5 class="offcanvas-title">Lumina Admin</h5>
@@ -405,7 +391,6 @@
     </div>
   </div>
 
-  <!-- ✅ Desktop sidebar + main wrapper -->
   <div class="admin-shell">
     <aside class="admin-sidebar">
       <div class="fw-bold mb-3">🌙 Lumina Admin</div>
@@ -417,147 +402,141 @@
     </aside>
 
     <main class="admin-main">
-      <!-- CONTENT -->
       <div class="container mt-4">
-        <!-- ORDERS -->
         <div class="section-card mb-4">
-  <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
-    <h3 class="mb-0">Orders</h3>
-    <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
-  </div>
-
-  <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
-
-  <div class="view-toggle-bar">
-    <button id="view-normal-btn" class="btn btn-sm btn-dark" onclick="setAdminView('normal')">Full Admin</button>
-    <button id="view-pack-btn" class="btn btn-sm btn-outline-dark" onclick="setAdminView('pack')">Packing Mode</button>
-  </div>
-
-  <div class="section-card mt-3 admin-only">
-    <h5 class="mb-2">Dashboard</h5>
-    <p class="text-muted small mb-2">Charts use loaded orders. For accurate charts across everything, click “Load all”.</p>
-
-    <div class="row g-3">
-      <div class="col-12 col-lg-6">
-        <div class="p-3 bg-white rounded-4 shadow-sm">
-          <div class="fw-bold mb-2">Revenue (last 30 days)</div>
-          <canvas id="chartRevenue"></canvas>
-        </div>
-      </div>
-      <div class="col-12 col-lg-6">
-        <div class="p-3 bg-white rounded-4 shadow-sm">
-          <div class="fw-bold mb-2">Orders per day (last 30 days)</div>
-          <canvas id="chartOrders"></canvas>
-        </div>
-      </div>
-      <div class="col-12">
-        <div class="p-3 bg-white rounded-4 shadow-sm">
-          <div class="fw-bold mb-2">Top products (loaded)</div>
-          <canvas id="chartTopProducts"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="d-flex gap-2 flex-wrap mt-3 admin-only">
-    <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
-    <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
-    <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
-    <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
-    <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
-    <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
-    <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
-  </div>
-
-  <div class="sticky-admin-controls">
-    <div class="controls-grid">
-      <div>
-        <div class="input-group mt-3">
-          <span class="input-group-text">🔎</span>
-          <input id="order-search" class="form-control"
-                 placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
-          <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
-        </div>
-
-        <div class="filter-row mt-2">
-          <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
-          <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
-          <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
-          <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
-          <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
-          <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
-          <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
-        </div>
-
-        <div class="d-flex gap-3 flex-wrap mt-2">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
-            <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
-            <label class="form-check-label" for="flt-noaddr">No address</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
-            <label class="form-check-label" for="flt-noemail">No email</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
-            <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
-          </div>
-        </div>
-
-        <div class="mt-2">
-          <small class="text-muted">
-            Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
-          </small>
-        </div>
-      </div>
-
-      <div>
-        <div class="bulk-bar mt-3 admin-only">
-          <div class="d-flex align-items-center gap-2">
-            <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
-            <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+          <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
+            <h3 class="mb-0">Orders</h3>
+            <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
           </div>
 
-          <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
-          <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
-          <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
-          <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
-        </div>
+          <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
 
-        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
-            <span class="text-muted small" id="page-indicator">Page …</span>
+          <div class="view-toggle-bar">
+            <button id="view-normal-btn" class="btn btn-sm btn-dark" onclick="setAdminView('normal')">Full Admin</button>
+            <button id="view-pack-btn" class="btn btn-sm btn-outline-dark" onclick="setAdminView('pack')">Packing Mode</button>
           </div>
 
-          <div class="d-flex align-items-center gap-2">
-            <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
-              <option value="25" selected>25/page</option>
-              <option value="50">50/page</option>
-              <option value="100">100/page</option>
-            </select>
+          <div class="section-card mt-3 admin-only">
+            <h5 class="mb-2">Dashboard</h5>
+            <p class="text-muted small mb-2">Charts use loaded orders. For accurate charts across everything, click “Load all”.</p>
 
-            <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
+            <div class="row g-3">
+              <div class="col-12 col-lg-6">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Revenue (last 30 days)</div>
+                  <canvas id="chartRevenue"></canvas>
+                </div>
+              </div>
+              <div class="col-12 col-lg-6">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Orders per day (last 30 days)</div>
+                  <canvas id="chartOrders"></canvas>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="p-3 bg-white rounded-4 shadow-sm">
+                  <div class="fw-bold mb-2">Top products (loaded)</div>
+                  <canvas id="chartTopProducts"></canvas>
+                </div>
+              </div>
+            </div>
           </div>
+
+          <div class="d-flex gap-2 flex-wrap mt-3 admin-only">
+            <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
+            <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
+            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
+            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
+            <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
+            <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
+          </div>
+
+          <div class="sticky-admin-controls">
+            <div class="controls-grid">
+              <div>
+                <div class="input-group mt-3">
+                  <span class="input-group-text">🔎</span>
+                  <input id="order-search" class="form-control"
+                         placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
+                  <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
+                </div>
+
+                <div class="filter-row mt-2">
+                  <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
+                  <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
+                  <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
+                  <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
+                  <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
+                  <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
+                  <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
+                </div>
+
+                <div class="d-flex gap-3 flex-wrap mt-2">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-noaddr">No address</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-noemail">No email</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
+                    <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
+                  </div>
+                </div>
+
+                <div class="mt-2">
+                  <small class="text-muted">
+                    Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
+                  </small>
+                </div>
+              </div>
+
+              <div>
+                <div class="bulk-bar mt-3 admin-only">
+                  <div class="d-flex align-items-center gap-2">
+                    <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
+                    <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
+                  </div>
+
+                  <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
+                  <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
+                  <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
+                  <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                  <div class="d-flex align-items-center gap-2">
+                    <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
+                    <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
+                    <span class="text-muted small" id="page-indicator">Page …</span>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
+                      <option value="25" selected>25/page</option>
+                      <option value="50">50/page</option>
+                      <option value="100">100/page</option>
+                    </select>
+
+                    <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <p id="admin-status" class="text-muted mt-3">Checking access…</p>
+          <div id="admin-warning"></div>
+          <div id="orders-list" class="mt-3"></div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <p id="admin-status" class="text-muted mt-3">Checking access…</p>
-  <div id="admin-warning"></div>
-  <div id="orders-list" class="mt-3"></div>
-</div>
-
-          
-        
-
-        <!-- REVIEWS -->
         <div class="section-card">
           <h3>Pending Reviews</h3>
           <p class="text-muted" id="reviews-status">Loading pending reviews…</p>
@@ -569,7 +548,6 @@
 
   <button id="backToTop" class="btn btn-dark btn-sm">⬆️ Top</button>
 
-  <!-- Busy overlay -->
   <div id="busyOverlay">
     <div class="box">
       <div class="spinner-border" role="status" aria-label="Loading"></div>
@@ -580,7 +558,6 @@
     </div>
   </div>
 
-  <!-- ✅ Customer modal (Nice-to-have #2) -->
   <div class="modal fade" id="customerModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
@@ -596,50 +573,20 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <!-- SheetJS for XLSX export (Improvement #10) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
-  <!-- ✅ Chart.js (Nice-to-have #3) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
-    // ────────────────────────────────────────────────
-    // CONFIG
-    // ────────────────────────────────────────────────
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
     const ADMIN_EMAIL = "luminaweight@gmail.com";
-
-      // ────────────────────────────────────────────────
-    // REFERRALS CONFIG
-    // ────────────────────────────────────────────────
-    const REFERRAL_CODE_COL = "referral_code";
-    const REFERRED_BY_COL = "referred_by";
-    const REFERRAL_CREDIT = 10.00;  // £10 to referrer
-    const BUYER_CREDIT = 10.00;     // £10 to buyer
-
-    // ────────────────────────────────────────────────
-    // STORE CREDIT CONFIG
-    // ────────────────────────────────────────────────
-    const CUSTOMERS_TABLE = "customers";
-    const CREDIT_BALANCE_COL = "credit_balance";
-
-    // Flat £10 credit per paid order
-    const CREDIT_RATE = null;
-    const CREDIT_MIN = null;
-    const CREDIT_MAX = null;
-    const CREDIT_FLAT = 10.00;
-
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // EmailJS init (safe)
     (function () {
       try { if (window.emailjs) emailjs.init({ publicKey: "uZOuTrBdIAc6AmKjo" }); }
       catch (e) { console.error("EmailJS init failed", e); }
     })();
 
-    // ────────────────────────────────────────────────
-    // ELEMENTS
-    // ────────────────────────────────────────────────
     const statusEl      = document.getElementById("admin-status");
     const ordersEl      = document.getElementById("orders-list");
     const warningEl     = document.getElementById("admin-warning");
@@ -652,10 +599,8 @@
     const searchInput   = document.getElementById("order-search");
     const pageIndicator = document.getElementById("page-indicator");
 
-    // Cache orders so buttons can reference them
     const ordersCache = {};
 
-    // paging + filtering state
     let PAGE_SIZE = 25;
     let currentPage = 0;
     let totalCount = 0;
@@ -665,12 +610,8 @@
     let filteredOrderIds = [];
     const selectedIds = new Set();
 
-    // admin email cached
     window.__ADMIN_EMAIL = "admin";
 
-    // ────────────────────────────────────────────────
-    // UI HELPERS
-    // ────────────────────────────────────────────────
     function escapeHtml(str){
       return String(str || "")
         .replaceAll("&","&amp;")
@@ -729,9 +670,6 @@
       }
     }
 
-    // ────────────────────────────────────────────────
-    // ✅ CHARTS (Nice-to-have #3)
-    // ────────────────────────────────────────────────
     let chartRevenue, chartOrders, chartTopProducts;
 
     function yyyyMmDd(d){
@@ -762,7 +700,6 @@
 
       const revByDay = Object.fromEntries(days.map(d=>[d,0]));
       const cntByDay = Object.fromEntries(days.map(d=>[d,0]));
-
       const prodCount = new Map();
 
       for(const o of orders){
@@ -818,9 +755,6 @@
       }
     }
 
-    // ────────────────────────────────────────────────
-    // HISTORY (Improvement #7 - minimal timeline)
-    // ────────────────────────────────────────────────
     function pushHistory(order, action, extra={}){
       const details = order.details || {};
       const meta = details.meta || {};
@@ -846,9 +780,6 @@
       }).join("");
     }
 
-    // ────────────────────────────────────────────────
-    // ORDER HELPERS
-    // ────────────────────────────────────────────────
     function getCustomer(order){ return order?.details?.customer || {}; }
 
     function getOrderEmail(order){
@@ -857,328 +788,116 @@
     }
 
     function getItemFormatValue(item = {}) {
-  return String(
-    item?.format ||
-    item?.variant ||
-    item?.selected_format ||
-    item?.option ||
-    item?.type ||
-    ""
-  ).trim().toLowerCase();
-}
-
-function isCartridgeOnly(item = {}) {
-  const format = getItemFormatValue(item);
-  const name = String(item?.name || "").toLowerCase();
-
-  return (
-    format.includes("cartridge") ||
-    format === "cartridge-only" ||
-    format === "cartridge only" ||
-    name.includes("cartridge only")
-  );
-}
-
-function isFullKitPen(item = {}) {
-  const format = getItemFormatValue(item);
-  const name = String(item?.name || "").toLowerCase();
-
-  if (isCartridgeOnly(item)) return false;
-
-  return (
-    format.includes("full-kit") ||
-    format.includes("full kit") ||
-    format.includes("pen") ||
-    name.includes("Pen heads")
-  );
-}
-
-function isVialItem(item = {}) {
-  const format = getItemFormatValue(item);
-  const name = String(item?.name || "").toLowerCase();
-
-  return format.includes("vial") || name.includes("vial");
-}
-
-function getDisplayItemName(item = {}) {
-  const rawName = String(item?.name || "Unnamed item").trim();
-  const format = getItemFormatValue(item);
-
-  if (isCartridgeOnly(item) && !rawName.toLowerCase().includes("cartridge")) {
-    return `${rawName} (Cartridge Only)`;
-  }
-
-  if (
-    isFullKitPen(item) &&
-    format &&
-    format.includes("full") &&
-    !rawName.toLowerCase().includes("full kit")
-  ) {
-    return `${rawName} (Full Kit)`;
-  }
-
-  return rawName;
-}
-/* =====================================================
-   REFERRAL HELPERS  (ADD THEM RIGHT HERE)
-===================================================== */
-
-function getOrderReferralCode(order){
-  return String(
-    order?.details?.meta?.referral_code ||
-    order?.referral_code ||
-    ""
-  ).trim().toUpperCase();
-}
-
-function isPaidLikeStatus(status=""){
-  const s = String(status).toLowerCase();
-  return (s === "paid" || s === "packed" || s === "shipped");
-}
-
-async function isFirstPaidOrderForEmail(email, currentOrderId){
-  if(!email) return false;
-
-  const { data, error } = await supabaseClient
-    .from("Orders")
-    .select("id, status, customer_email, email, details")
-    .order("created_at", { ascending: true });
-
-  if(error) throw error;
-
-  const paidOrdersForEmail = (data || []).filter(o => {
-    if(o.id === currentOrderId) return false;
-    if(!isPaidLikeStatus(o.status)) return false;
-
-    const c = o?.details?.customer || {};
-    const e = String(c.email || o.customer_email || o.email || "")
-      .trim()
-      .toLowerCase();
-
-    return e === email;
-  });
-
-  return paidOrdersForEmail.length === 0;
-}
-
-async function findCustomerByReferralCode(code){
-  if(!code) return null;
-
-  const { data, error } = await supabaseClient
-    .from("ReferralCodes")
-    .select("owner_email, owner_name, code")
-    .eq("code", code)
-    .eq("active", true)
-    .maybeSingle();
-
-  if(error) throw error;
-  if(!data?.owner_email) return null;
-
-  return { email: data.owner_email, name: data.owner_name || "" };
-}
-
-/* =====================================================
-   END REFERRAL HELPERS
-===================================================== */
-    
-    function round2(n){
-      return Math.floor((Number(n || 0) + Number.EPSILON) * 100) / 100;
+      return String(
+        item?.format ||
+        item?.variant ||
+        item?.selected_format ||
+        item?.option ||
+        item?.type ||
+        ""
+      ).trim().toLowerCase();
     }
 
-    function calcCreditAmount(order){
-      // Flat £10 mode
-      if (typeof CREDIT_FLAT === "number") {
-        return round2(CREDIT_FLAT);
+    function isCartridgeOnly(item = {}) {
+      const format = getItemFormatValue(item);
+      const name = String(item?.name || "").toLowerCase();
+      return (
+        format.includes("cartridge") ||
+        format === "cartridge-only" ||
+        format === "cartridge only" ||
+        name.includes("cartridge only")
+      );
+    }
+
+    function isFullKitPen(item = {}) {
+      const format = getItemFormatValue(item);
+      const name = String(item?.name || "").toLowerCase();
+
+      if (isCartridgeOnly(item)) return false;
+
+      return (
+        format.includes("full-kit") ||
+        format.includes("full kit") ||
+        format.includes("pen") ||
+        name.includes("pen heads")
+      );
+    }
+
+    function isVialItem(item = {}) {
+      const format = getItemFormatValue(item);
+      const name = String(item?.name || "").toLowerCase();
+      return format.includes("vial") || name.includes("vial");
+    }
+
+    function getDisplayItemName(item = {}) {
+      const rawName = String(item?.name || "Unnamed item").trim();
+      const format = getItemFormatValue(item);
+
+      if (isCartridgeOnly(item) && !rawName.toLowerCase().includes("cartridge")) {
+        return `${rawName} (Cartridge Only)`;
       }
 
-      // Percentage mode (if you ever enable it)
-      const total = Number(order?.total_amount || 0);
-      let credit = total * CREDIT_RATE;
-
-      // Optional manual override per order
-      const override = order?.details?.meta?.credit_override;
-      if (override !== undefined && override !== null && String(override).trim() !== "") {
-        credit = Number(override);
+      if (
+        isFullKitPen(item) &&
+        format &&
+        format.includes("full") &&
+        !rawName.toLowerCase().includes("full kit")
+      ) {
+        return `${rawName} (Full Kit)`;
       }
 
-      if (CREDIT_MIN !== null) credit = Math.max(CREDIT_MIN, credit);
-      if (CREDIT_MAX !== null) credit = Math.min(CREDIT_MAX, credit);
-
-      return round2(credit);
+      return rawName;
     }
 
-    function hasCreditAlready(order){
-      const meta = order?.details?.meta || {};
-      return !!meta.credit_awarded_at || !!meta.credit_awarded_amount;
-    }
-
-    async function awardCreditToCustomerByEmail(email, name, amount){
-      if(!email) throw new Error("No customer email");
-      if(!(amount > 0)) return; // nothing to award
-
-      // fetch existing balance
-      const { data: existing, error: selErr } = await supabaseClient
-        .from(CUSTOMERS_TABLE)
-        .select(`email, name, ${CREDIT_BALANCE_COL}`)
-        .eq("email", email)
-        .maybeSingle();
-
-      if(selErr) throw selErr;
-
-      if(!existing){
-        // create customer row
-        const { error: insErr } = await supabaseClient
-          .from(CUSTOMERS_TABLE)
-          .insert({
-            email,
-            name: name || "",
-            [CREDIT_BALANCE_COL]: amount
-          });
-
-        if(insErr) throw insErr;
-        return;
-      }
-
-      const current = Number(existing?.[CREDIT_BALANCE_COL] || 0);
-      const next = round2(current + amount);
-
-      const { error: upErr } = await supabaseClient
-        .from(CUSTOMERS_TABLE)
-        .update({
-          name: name || existing.name || "",
-          [CREDIT_BALANCE_COL]: next
-        })
-        .eq("email", email);
-
-      if(upErr) throw upErr;
-    }
-
-  async function awardCreditForPaidOrder(orderId){
-  const order = ordersCache[orderId];
-  if(!order) throw new Error("Order not found in cache");
-
-  // Only award when payment confirmed
-  if(!isPaidLikeStatus(order.status)) return;
-
-  const meta = order?.details?.meta || {};
-
-  // Idempotency: if already processed, stop
-  if(meta.referral_awarded_at) return;
-
-  const buyerEmail = getOrderEmail(order);
-  const buyerName = String(order?.details?.customer?.name || order.customer_name || order.name || "").trim();
-
-  if(!buyerEmail) return;
-
-  // Only FIRST paid order gets rewards
-  const firstPaid = await isFirstPaidOrderForEmail(buyerEmail, orderId);
-  if(!firstPaid) return;
-
-  // Referral code required for "both" mode
-  const code = getOrderReferralCode(order);
-  if(!code) return;
-
-  // Find referrer
-  const referrer = await findCustomerByReferralCode(code);
-  if(!referrer?.email) return;
-
-  const referrerEmail = String(referrer.email).trim().toLowerCase();
-  if(!referrerEmail) return;
-
-  // Block self-referral
-  if(referrerEmail === buyerEmail) return;
-
-  // Award buyer
-  await awardCreditToCustomerByEmail(buyerEmail, buyerName, round2(BUYER_CREDIT));
-
-  // Award referrer
-  await awardCreditToCustomerByEmail(referrerEmail, referrer.name || "", round2(REFERRAL_CREDIT));
-
-  // Mark on order meta + history
-  const session = await supabaseClient.auth.getSession();
-  const who = session?.data?.session?.user?.email || "admin";
-
-  let updatedDetails = order.details || {};
-  updatedDetails = pushHistory({ ...order, details: updatedDetails }, "referral_credit_awarded", {
-  note: `buyer £${BUYER_CREDIT.toFixed(2)} + referrer £${REFERRAL_CREDIT.toFixed(2)} • code ${code}`
-});
-
-  updatedDetails = {
-    ...updatedDetails,
-    meta: {
-      ...(updatedDetails.meta || {}),
-      referral_code: code,
-      referral_awarded_at: new Date().toISOString(),
-      referral_awarded_by: who,
-      referral_buyer_email: buyerEmail,
-      referral_referrer_email: referrerEmail,
-      referral_buyer_amount: round2(BUYER_CREDIT),
-      referral_referrer_amount: round2(REFERRAL_CREDIT)
-    }
-  };
-
-  const { error } = await supabaseClient
-    .from("Orders")
-    .update({ details: updatedDetails })
-    .eq("id", orderId);
-
-  if(error) throw error;
-
-  // Update cache
-  ordersCache[orderId].details = updatedDetails;
-}
     function extrasLabel(item) {
-  if (!item) return "";
+      if (!item) return "";
 
-  const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
-  const syringes = item?.syringes ? String(item.syringes).trim() : "";
+      const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
+      const syringes = item?.syringes ? String(item.syringes).trim() : "";
 
-  // For cartridge-only: still show pen heads if they were selected
-  if (isCartridgeOnly(item)) {
-    if (penHeads && penHeads !== "none") {
-      return ` (Pen heads: ${penHeads})`;
+      if (isCartridgeOnly(item)) {
+        if (penHeads && penHeads !== "none") {
+          return ` (Pen heads: ${penHeads})`;
+        }
+        return " (Cartridge Only)";
+      }
+
+      if (isFullKitPen(item) && penHeads && penHeads !== "none") {
+        return ` (Pen heads: ${penHeads})`;
+      }
+
+      if (isVialItem(item) && syringes && syringes !== "none") {
+        return ` (Syringes: ${syringes})`;
+      }
+
+      return "";
     }
-    return " (Cartridge Only)";
-  }
-
-  // Normal full kit pen
-  if (isFullKitPen(item) && penHeads && penHeads !== "none") {
-    return ` (Pen heads: ${penHeads})`;
-  }
-
-  // Vial
-  if (isVialItem(item) && syringes && syringes !== "none") {
-    return ` (Syringes: ${syringes})`;
-  }
-
-  return "";
-}
 
     function buildItemsText(order) {
-  const items = order?.details?.items || [];
-  if (!items.length) return "Items not recorded.";
+      const items = order?.details?.items || [];
+      if (!items.length) return "Items not recorded.";
 
-  return items.map((i) => {
-    const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
-    const displayName = getDisplayItemName(i);
-    return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
-  }).join("\n");
-}
+      return items.map((i) => {
+        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+        const displayName = getDisplayItemName(i);
+        return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+      }).join("\n");
+    }
 
     function buildItemsHtml(order) {
-  const items = order?.details?.items || [];
-  if (!items.length) {
-    return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
-  }
+      const items = order?.details?.items || [];
+      if (!items.length) {
+        return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
+      }
 
-  const lines = items.map((i) => {
-    const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
-    const displayName = getDisplayItemName(i);
-    return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
-  }).join("\n");
+      const lines = items.map((i) => {
+        const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
+        const displayName = getDisplayItemName(i);
+        return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+      }).join("\n");
 
-  return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
-}
+      return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
+    }
 
     function buildAddressText(order){
       const c = getCustomer(order);
@@ -1187,8 +906,7 @@ async function findCustomerByReferralCode(code){
         c.address1 ? String(c.address1).trim() : "",
         c.address2 ? String(c.address2).trim() : "",
         c.city ? String(c.city).trim() : "",
-        c.postcode ? String(c.postcode).trim() : "",
-        
+        c.postcode ? String(c.postcode).trim() : ""
       ].filter(Boolean);
       return parts.join("\n");
     }
@@ -1250,44 +968,43 @@ async function findCustomerByReferralCode(code){
     }
 
     async function copyOrderForText(orderId){
-  const order = ordersCache[orderId];
-  if(!order){
-    alert("Order not found.");
-    return;
-  }
+      const order = ordersCache[orderId];
+      if(!order){
+        alert("Order not found.");
+        return;
+      }
 
-  const c = getCustomer(order);
-  const ref = String(order.reference || order.id || "").trim();
-  const name = String(c.name || "").trim();
-  const phone = String(c.phone || "").trim();
-  const address = buildAddressText(order);
+      const c = getCustomer(order);
+      const ref = String(order.reference || order.id || "").trim();
+      const name = String(c.name || "").trim();
+      const phone = String(c.phone || "").trim();
+      const address = buildAddressText(order);
 
-  const items = Array.isArray(order?.details?.items) ? order.details.items : [];
-  const itemsText = items.length
-  ? items.map(i => {
-      const displayName = getDisplayItemName(i);
-      const extras = extrasLabel(i);
-      return `${Number(i?.qty || 0)} × ${displayName}${extras}`;
-    }).join("\n")
-  : "No items recorded.";
+      const items = Array.isArray(order?.details?.items) ? order.details.items : [];
+      const itemsText = items.length
+        ? items.map(i => {
+            const displayName = getDisplayItemName(i);
+            const extras = extrasLabel(i);
+            return `${Number(i?.qty || 0)} × ${displayName}${extras}`;
+          }).join("\n")
+        : "No items recorded.";
 
-  const text = [
-    ref ? `Order: ${ref}` : "",
-    name ? `Name: ${name}` : "",
-    phone ? `Phone: ${phone}` : "",
-    address ? `Address:\n${address}` : "Address:\nNo address recorded.",
-    `Items:\n${itemsText}`
-  ].filter(Boolean).join("\n\n");
+      const text = [
+        ref ? `Order: ${ref}` : "",
+        name ? `Name: ${name}` : "",
+        phone ? `Phone: ${phone}` : "",
+        address ? `Address:\n${address}` : "Address:\nNo address recorded.",
+        `Items:\n${itemsText}`
+      ].filter(Boolean).join("\n\n");
 
-  try{
-    await navigator.clipboard.writeText(text);
-    showToast("Copied order summary ✅", "success");
-  }catch(e){
-    prompt("Copy this text:", text);
-  }
-}
-
-window.copyOrderForText = copyOrderForText;
+      try{
+        await navigator.clipboard.writeText(text);
+        showToast("Copied order summary ✅", "success");
+      }catch(e){
+        prompt("Copy this text:", text);
+      }
+    }
+    window.copyOrderForText = copyOrderForText;
 
     function buildPaidEmailText(order){
       const customer = order.details?.customer || {};
@@ -1302,9 +1019,6 @@ window.copyOrderForText = copyOrderForText;
       return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina Weight`;
     }
 
-    // ────────────────────────────────────────────────
-    // ✅ Customer view (Nice-to-have #2)
-    // ────────────────────────────────────────────────
     function openCustomerView(emailRaw){
       const email = String(emailRaw || "").trim().toLowerCase();
       if(!email) return alert("No email on this order.");
@@ -1342,9 +1056,6 @@ window.copyOrderForText = copyOrderForText;
     }
     window.openCustomerView = openCustomerView;
 
-    // ────────────────────────────────────────────────
-    // ✅ "Tim Excel" export helpers
-    // ────────────────────────────────────────────────
     function classifyPeptide(itemName = "") {
       const n = String(itemName).toLowerCase();
       if (n.includes("tirz") || n.includes("tirzep")) return "Tirz";
@@ -1363,11 +1074,11 @@ window.copyOrderForText = copyOrderForText;
     }
 
     function penOrVial(item = {}) {
-  if (isCartridgeOnly(item)) return "Cartridge";
-  if (isFullKitPen(item)) return "Pen";
-  if (isVialItem(item)) return "Vial";
-  return "";
-}
+      if (isCartridgeOnly(item)) return "Cartridge";
+      if (isFullKitPen(item)) return "Pen";
+      if (isVialItem(item)) return "Vial";
+      return "";
+    }
 
     function buildOneLineAddress(order) {
       const c = order?.details?.customer || {};
@@ -1478,9 +1189,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ────────────────────────────────────────────────
-    // EXPORTS (CSV + JSON + XLSX)
-    // ────────────────────────────────────────────────
     function exportOrdersCsv(mode = "all") {
       const rows = [];
       const header = [
@@ -1604,9 +1312,6 @@ window.copyOrderForText = copyOrderForText;
       XLSX.writeFile(wb, `lumina_orders_${mode}_${new Date().toISOString().slice(0,10)}.xlsx`);
     }
 
-    // ────────────────────────────────────────────────
-    // FILTERS + SEARCH
-    // ────────────────────────────────────────────────
     function parseSearch(q){
       const tokens = String(q||"").trim().split(/\s+/).filter(Boolean);
       const filters = {};
@@ -1690,9 +1395,6 @@ window.copyOrderForText = copyOrderForText;
       document.getElementById("select-all").checked = allSelected;
     }
 
-    // ────────────────────────────────────────────────
-    // COUNTS
-    // ────────────────────────────────────────────────
     async function refreshStatusCounts(){
       try{
         const { count: allCount } = await supabaseClient.from("Orders").select("id", { count:"exact", head:true });
@@ -1717,9 +1419,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ────────────────────────────────────────────────
-    // KPI + QUICK STATS
-    // ────────────────────────────────────────────────
     function renderKpis(){
       const orders = Object.values(ordersCache || {});
       const counts = { pending:0, paid:0, packed:0, shipped:0, cancelled:0 };
@@ -1780,9 +1479,6 @@ window.copyOrderForText = copyOrderForText;
       `;
     }
 
-    // ────────────────────────────────────────────────
-    // SAVE HELPERS (tracking inline edit)
-    // ────────────────────────────────────────────────
     async function saveTrackingToOrder(orderId, trackingNumber){
       const order = ordersCache[orderId];
       if(!order) throw new Error("Order not found in cache");
@@ -1836,9 +1532,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ────────────────────────────────────────────────
-    // NOTES + PAYMENT REF
-    // ────────────────────────────────────────────────
     async function saveAdminNote(orderId){
       const order = ordersCache[orderId];
       if(!order) return alert("Order not found.");
@@ -1903,9 +1596,6 @@ window.copyOrderForText = copyOrderForText;
       applyClientFilters();
     }
 
-    // ────────────────────────────────────────────────
-    // STATUS / ACTIONS
-    // ────────────────────────────────────────────────
     async function updateStatus(id, value) {
       const order = ordersCache[id];
       if(!order) return;
@@ -1929,9 +1619,6 @@ window.copyOrderForText = copyOrderForText;
 
       ordersCache[id].status = value;
       ordersCache[id].details = updatedDetails;
-
-      
-
       loadOrders();
     }
 
@@ -2032,7 +1719,6 @@ window.copyOrderForText = copyOrderForText;
       w.print();
     }
 
-    // ✅ FIXED: this function was cut off mid-try in your paste, causing the whole page JS to fail
     async function markPackedById(orderId){
       const order = ordersCache[orderId];
       if(!order) return alert("Order not found.");
@@ -2070,9 +1756,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ────────────────────────────────────────────────
-    // EMAILJS (basic)
-    // ────────────────────────────────────────────────
     function sendShippedEmail(order, trackingNumber) {
       if (!order || !window.emailjs) return;
       const customer = order.details?.customer || {};
@@ -2151,9 +1834,6 @@ window.copyOrderForText = copyOrderForText;
       });
     }
 
-    // ────────────────────────────────────────────────
-    // BUTTON HANDLERS
-    // ────────────────────────────────────────────────
     async function sendShippedEmailById(orderId) {
       const order = ordersCache[orderId];
       if (!order) return alert("Order not found.");
@@ -2224,7 +1904,9 @@ window.copyOrderForText = copyOrderForText;
         if(toEmail){
           const ok = confirm("EmailJS failed. Open a mailto draft instead?");
           if(ok){
-            openMailto(toEmail, `Reminder: pay before 3PM for next day delivery (${order.reference || order.id})`,
+            openMailto(
+              toEmail,
+              `Reminder: pay before 3PM for next day delivery (${order.reference || order.id})`,
               `Hi ${customer.name || "there"},\n\nJust a quick reminder: if payment is made before 3PM, we can dispatch for next day delivery.\n\nOrder: ${order.reference || order.id}\nTotal: £${Number(order.total_amount || 0).toFixed(2)}\n\nThanks,\nLumina Weight`
             );
           }
@@ -2260,7 +1942,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ✅ FIXED: this function had TWO finally blocks in your paste (syntax error)
     async function markPaidAndSendById(orderId) {
       const order = ordersCache[orderId];
       if (!order) return alert("Order not found.");
@@ -2268,7 +1949,6 @@ window.copyOrderForText = copyOrderForText;
 
       setBusy(true, "Marking paid…", order.reference || order.id);
       try {
-        // email (best-effort)
         try{
           await sendPaidEmail(order);
         }catch(emailErr){
@@ -2283,7 +1963,6 @@ window.copyOrderForText = copyOrderForText;
           }
         }
 
-        // update status
         let updatedDetails = pushHistory(order, "status_paid");
         const session = await supabaseClient.auth.getSession();
         const who = session?.data?.session?.user?.email || "admin";
@@ -2306,15 +1985,21 @@ window.copyOrderForText = copyOrderForText;
         ordersCache[orderId].status = "Paid";
         ordersCache[orderId].details = updatedDetails;
 
-        
-    // ---------- ✅ CANCEL + RESTOCK ----------
+        showToast("Marked paid ✅", "success");
+        loadOrders();
+      } catch (e) {
+        console.error("Payment flow failed", e);
+        alert("Payment flow failed — check console");
+      } finally {
+        setBusy(false);
+      }
+    }
+
     async function cancelAndRestockById(orderId){
       if(!orderId) return;
-
       if(!confirm("Cancel this order AND add items back to stock?")) return;
 
       try{
-        // Re-fetch fresh order to avoid stale cache / double clicks
         const { data: order, error: fetchErr } = await supabaseClient
           .from("Orders")
           .select("id, status, details, reference, total_amount, created_at")
@@ -2352,7 +2037,6 @@ window.copyOrderForText = copyOrderForText;
           return;
         }
 
-        // Fetch matching products by name
         const productNames = nameQty.map(x => x.name);
 
         const { data: products, error: prodErr } = await supabaseClient
@@ -2366,7 +2050,6 @@ window.copyOrderForText = copyOrderForText;
           return;
         }
 
-        // Update each product stock (+ qty)
         for(const line of nameQty){
           const p = (products || []).find(pp => pp.name === line.name);
           if(!p){
@@ -2389,7 +2072,6 @@ window.copyOrderForText = copyOrderForText;
           }
         }
 
-        // Mark order cancelled + set restock meta flag
         const session = await supabaseClient.auth.getSession();
         const who = session?.data?.session?.user?.email || "admin";
 
@@ -2413,7 +2095,6 @@ window.copyOrderForText = copyOrderForText;
           return;
         }
 
-        // Send cancelled email after success
         try{
           const emailOrder = { ...order, status: "Cancelled", details: updatedDetails };
           await sendCancelledEmail(emailOrder);
@@ -2433,9 +2114,6 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-    // ────────────────────────────────────────────────
-    // BULK ACTIONS
-    // ────────────────────────────────────────────────
     async function bulkMarkPacked(){
       const ids = Array.from(selectedIds);
       if(!ids.length) return alert("No orders selected.");
@@ -2533,362 +2211,359 @@ window.copyOrderForText = copyOrderForText;
       }
     }
 
-function setAdminView(view){
-  const normalBtn = document.getElementById("view-normal-btn");
-  const packBtn = document.getElementById("view-pack-btn");
+    function setAdminView(view){
+      const normalBtn = document.getElementById("view-normal-btn");
+      const packBtn = document.getElementById("view-pack-btn");
 
-  if(view === "pack"){
-    document.body.classList.add("packing-mode");
-    localStorage.setItem("lumina_admin_view", "pack");
+      if(view === "pack"){
+        document.body.classList.add("packing-mode");
+        localStorage.setItem("lumina_admin_view", "pack");
 
-    if(normalBtn){
-      normalBtn.classList.remove("btn-dark");
-      normalBtn.classList.add("btn-outline-dark");
+        if(normalBtn){
+          normalBtn.classList.remove("btn-dark");
+          normalBtn.classList.add("btn-outline-dark");
+        }
+        if(packBtn){
+          packBtn.classList.remove("btn-outline-dark");
+          packBtn.classList.add("btn-dark");
+        }
+      } else {
+        document.body.classList.remove("packing-mode");
+        localStorage.setItem("lumina_admin_view", "normal");
+
+        if(normalBtn){
+          normalBtn.classList.remove("btn-outline-dark");
+          normalBtn.classList.add("btn-dark");
+        }
+        if(packBtn){
+          packBtn.classList.remove("btn-dark");
+          packBtn.classList.add("btn-outline-dark");
+        }
+      }
     }
-    if(packBtn){
-      packBtn.classList.remove("btn-outline-dark");
-      packBtn.classList.add("btn-dark");
+
+    function initAdminView(){
+      const saved = localStorage.getItem("lumina_admin_view") || "normal";
+      setAdminView(saved);
     }
-  } else {
-    document.body.classList.remove("packing-mode");
-    localStorage.setItem("lumina_admin_view", "normal");
 
-    if(normalBtn){
-      normalBtn.classList.remove("btn-outline-dark");
-      normalBtn.classList.add("btn-dark");
+    function toggleOrderExpanded(orderId){
+      const el = document.getElementById(`packing-more-${orderId}`);
+      if(!el) return;
+      el.style.display = (el.style.display === "none" || !el.style.display) ? "block" : "none";
     }
-    if(packBtn){
-      packBtn.classList.remove("btn-dark");
-      packBtn.classList.add("btn-outline-dark");
-    }
-  }
-}
 
-function initAdminView(){
-  const saved = localStorage.getItem("lumina_admin_view") || "normal";
-  setAdminView(saved);
-}
-
-function toggleOrderExpanded(orderId){
-  const el = document.getElementById(`packing-more-${orderId}`);
-  if(!el) return;
-  el.style.display = (el.style.display === "none" || !el.style.display) ? "block" : "none";
-}
-
-function renderPackingCards(orderIds){
-  if(!Array.isArray(orderIds) || !orderIds.length){
-    ordersEl.innerHTML = `<div class="alert alert-light border text-muted">No orders to show.</div>`;
-    return;
-  }
-
-  ordersEl.innerHTML = orderIds.map(id => {
-    const order = ordersCache[id];
-    if(!order) return "";
-
-    const c = getCustomer(order);
-    const ref = order.reference || (order.id ? order.id.slice(0, 8) : "No ref");
-    const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
-    const total = Number(order.total_amount || 0).toFixed(2);
-    const items = buildItemsText(order);
-    const address = buildAddressText(order) || "No address recorded.";
-
-    return `
-      <div class="packing-card">
-        <div class="packing-head">
-          <div>
-            <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
-            <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
-          </div>
-          <div class="text-end">
-            ${badge(order.status)}
-            <div class="fw-bold mt-1">£${total}</div>
-          </div>
-        </div>
-
-        <div class="packing-items">
-          <strong>Items</strong>
-          ${escapeHtml(items)}
-        </div>
-
-        <div class="packing-address">
-          <strong>Address</strong>
-          ${escapeHtml(address)}
-          ${c.phone ? `\n📞 ${escapeHtml(c.phone)}` : ""}
-        </div>
-
-        <div class="packing-actions">
-          <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
-          <button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
-          <button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
-          <button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
-        </div>
-
-        <div id="packing-more-${order.id}" style="display:none; margin-top:10px;">
-          ${buildItemsHtml(order)}
-          ${buildAddressHtml(order)}
-          <div class="mini-actions">
-            <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy Address</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="openCustomerView('${escapeHtml(getOrderEmail(order))}')">👤 Customer</button>
-            <button class="btn btn-sm btn-outline-success" onclick="markPaidAndSendById('${order.id}')">💷 Mark Paid</button>
-            <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
-          </div>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-    
-    function renderOrdersFromCache(){
-  const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
-
-  const parsed = parseSearch(searchInput.value);
-  const qText = parsed.text;
-  const qFilters = parsed.filters;
-
-  const fltOlder24 = document.getElementById("flt-older24").checked;
-  const fltNoAddr = document.getElementById("flt-noaddr").checked;
-  const fltNoEmail = document.getElementById("flt-noemail").checked;
-  const fltNoTracking = document.getElementById("flt-notracking").checked;
-
-  const now = new Date();
-  const cutoff24 = new Date(now);
-  cutoff24.setHours(now.getHours() - 24);
-
-  let list = orders;
-
-  if(statusFilter !== "all"){
-    const sf = String(statusFilter || "").toLowerCase();
-    list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
-  }
-
-  if(packQueueOnly){
-    list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
-  }
-
-  if(fltOlder24){
-    list = list.filter(o => {
-      const s = String(o.status || "").toLowerCase();
-      const created = o.created_at ? new Date(o.created_at) : null;
-      return (s === "pending") && created && created < cutoff24;
-    });
-  }
-
-  if(fltNoAddr){
-    list = list.filter(o => {
-      const c = getCustomer(o);
-      return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
-    });
-  }
-
-  if(fltNoEmail){
-    list = list.filter(o => {
-      const c = getCustomer(o);
-      const email = c.email || o.customer_email || o.email || "";
-      return !String(email || "").trim();
-    });
-  }
-
-  if(fltNoTracking){
-    list = list.filter(o => {
-      const s = String(o.status || "").toLowerCase();
-      if(s !== "shipped") return false;
-      const t = o.details?.meta?.tracking_number;
-      return !String(t || "").trim();
-    });
-  }
-
-  if(qText || Object.keys(qFilters).length){
-    list = list.filter(o=>{
-      const ref = String(o.reference || o.id || "").toLowerCase();
-      const c = getCustomer(o);
-      const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
-      const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
-      const pc = String(c.postcode || "").toLowerCase();
-      const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
-      const st = String(o.status || "Pending").toLowerCase();
-
-      if(qFilters.status && st !== qFilters.status) return false;
-      if(qFilters.email && !email.includes(qFilters.email)) return false;
-
-      if(qFilters.tracking){
-        if(qFilters.tracking === "missing" && tracking.trim()) return false;
-        if(qFilters.tracking !== "missing" && !tracking.includes(qFilters.tracking)) return false;
+    function renderPackingCards(orderIds){
+      if(!Array.isArray(orderIds) || !orderIds.length){
+        ordersEl.innerHTML = `<div class="alert alert-light border text-muted">No orders to show.</div>`;
+        return;
       }
 
-      if(!qText) return true;
-      return ref.includes(qText) || name.includes(qText) || email.includes(qText) || pc.includes(qText) || tracking.includes(qText);
-    });
-  }
+      ordersEl.innerHTML = orderIds.map(id => {
+        const order = ordersCache[id];
+        if(!order) return "";
 
-  filteredOrderIds = list.map(o => o.id);
+        const c = getCustomer(order);
+        const ref = order.reference || (order.id ? order.id.slice(0, 8) : "No ref");
+        const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+        const total = Number(order.total_amount || 0).toFixed(2);
+        const items = buildItemsText(order);
+        const address = buildAddressText(order) || "No address recorded.";
 
-  const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
-  document.getElementById("select-all").checked = allSelected;
-
-  statusEl.textContent = `${list.length} order(s) shown`;
-
-  if(document.body.classList.contains("packing-mode")){
-    renderPackingCards(filteredOrderIds);
-    return;
-  }
-
-  ordersEl.innerHTML = list.map((order) => {
-    const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
-    const ref = order.reference || order.id;
-    const status = order.status || "Pending";
-
-    const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
-    const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
-    const total = Number(order.total_amount || 0).toFixed(2);
-    
-
-    const statusLower = String(status || "").toLowerCase();
-    const isPaid = statusLower === "paid";
-    const isPacked = statusLower === "packed";
-    const isCancelled = statusLower === "cancelled";
-    const isShipped = statusLower === "shipped";
-
-    const tracking = String(order.details?.meta?.tracking_number || "").trim();
-    const payref   = String(order.details?.meta?.payment_reference || "").trim();
-    const note     = String(order.details?.meta?.admin_note || "").trim();
-
-    const isSelected = selectedIds.has(order.id);
-
-    const addrWarnings = validateAddress(order);
-    const hasNoAddress = addrWarnings.some(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
-    const hasNoEmail = !String(email || "").trim() || email === "No email";
-    const missingTracking = isShipped && !tracking;
-
-    const itemCount = Array.isArray(order?.details?.items) ? order.details.items.reduce((sum, i) => sum + Number(i.qty || 0), 0) : 0;
-
-    return `
-      <div class="order-card mobile-order-card">
-        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
-          <div class="d-flex align-items-start gap-2 flex-grow-1">
-            <input id="sel-${order.id}" class="form-check-input mt-1" type="checkbox"
-              ${isSelected ? "checked" : ""}
-              onchange="toggleSelectOne('${order.id}', this.checked)">
-            <div class="flex-grow-1 min-w-0">
-              <div class="d-flex flex-wrap align-items-center gap-2">
-                <strong>${escapeHtml(ref)}</strong>
-                ${badge(status)}
+        return `
+          <div class="packing-card">
+            <div class="packing-head">
+              <div>
+                <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
+                <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
               </div>
-              <div class="small text-muted mt-1">${escapeHtml(created)}</div>
-              <div class="mt-1">
-                <a href="#" class="text-decoration-none" onclick="openCustomerView('${escapeHtml(email)}'); return false;">
-                  ${escapeHtml(name)}
-                </a>
+              <div class="text-end">
+                ${badge(order.status)}
+                <div class="fw-bold mt-1">£${total}</div>
               </div>
-              <div class="small text-muted">${escapeHtml(email)}</div>
+            </div>
+
+            <div class="packing-items">
+              <strong>Items</strong>
+              ${escapeHtml(items)}
+            </div>
+
+            <div class="packing-address">
+              <strong>Address</strong>
+              ${escapeHtml(address)}
+              ${c.phone ? `\n📞 ${escapeHtml(c.phone)}` : ""}
+            </div>
+
+            <div class="packing-actions">
+              <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
+              <button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
+              <button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
+              <button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
+            </div>
+
+            <div id="packing-more-${order.id}" style="display:none; margin-top:10px;">
+              ${buildItemsHtml(order)}
+              ${buildAddressHtml(order)}
+              <div class="mini-actions">
+                <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy Address</button>
+                <button class="btn btn-sm btn-outline-dark" onclick="openCustomerView('${escapeHtml(getOrderEmail(order))}')">👤 Customer</button>
+                <button class="btn btn-sm btn-outline-success" onclick="markPaidAndSendById('${order.id}')">💷 Mark Paid</button>
+                <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
+              </div>
             </div>
           </div>
+        `;
+      }).join("");
+    }
 
-          <div class="text-end">
-            <div class="fw-bold">£${escapeHtml(total)}</div>
-            <div class="small text-muted">${itemCount} item(s)</div>
-            
-          </div>
-        </div>
+    function renderOrdersFromCache(){
+      const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
 
-        <div class="d-flex flex-wrap gap-2 mb-3">
-          ${hasNoAddress ? `<span class="badge text-bg-warning">No address</span>` : ``}
-          ${hasNoEmail ? `<span class="badge text-bg-danger">No email</span>` : ``}
-          ${missingTracking ? `<span class="badge text-bg-secondary">No tracking</span>` : ``}
-          ${String(statusLower) === "pending" && new Date(order.created_at) < cutoff24 ? `<span class="badge text-bg-dark">Pending > 24h</span>` : ``}
-        </div>
+      const parsed = parseSearch(searchInput.value);
+      const qText = parsed.text;
+      const qFilters = parsed.filters;
 
-        <div class="mobile-primary-actions">
-          <button class="btn btn-success"
-            ${isPaid || isPacked || isShipped || isCancelled ? "disabled" : ""}
-            onclick="markPaidAndSendById('${order.id}')">
-            💷 Mark Paid
-          </button>
+      const fltOlder24 = document.getElementById("flt-older24").checked;
+      const fltNoAddr = document.getElementById("flt-noaddr").checked;
+      const fltNoEmail = document.getElementById("flt-noemail").checked;
+      const fltNoTracking = document.getElementById("flt-notracking").checked;
 
-          <button class="btn btn-secondary"
-            ${isPacked || isShipped || isCancelled ? "disabled" : ""}
-            onclick="markPackedById('${order.id}')">
-            ✅ Mark Packed
-          </button>
+      const now = new Date();
+      const cutoff24 = new Date(now);
+      cutoff24.setHours(now.getHours() - 24);
 
-          <button class="btn btn-primary"
-            ${isShipped || isCancelled ? "disabled" : ""}
-            onclick="sendShippedEmailById('${order.id}')">
-            📦 Mark Shipped
-          </button>
-        </div>
+      let list = orders;
 
-        <div class="accordion mt-3" id="acc-${order.id}">
-          <div class="accordion-item border-0">
-            <h2 class="accordion-header" id="acc-h-${order.id}">
-              <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#acc-c-${order.id}">
-                More details
+      if(statusFilter !== "all"){
+        const sf = String(statusFilter || "").toLowerCase();
+        list = list.filter(o => String(o.status || "Pending").toLowerCase() === sf);
+      }
+
+      if(packQueueOnly){
+        list = list.filter(o => String(o.status || "").toLowerCase() === "paid");
+      }
+
+      if(fltOlder24){
+        list = list.filter(o => {
+          const s = String(o.status || "").toLowerCase();
+          const created = o.created_at ? new Date(o.created_at) : null;
+          return (s === "pending") && created && created < cutoff24;
+        });
+      }
+
+      if(fltNoAddr){
+        list = list.filter(o => {
+          const c = getCustomer(o);
+          return !(c && (c.address1 || c.city || c.postcode || c.name || c.address2));
+        });
+      }
+
+      if(fltNoEmail){
+        list = list.filter(o => {
+          const c = getCustomer(o);
+          const email = c.email || o.customer_email || o.email || "";
+          return !String(email || "").trim();
+        });
+      }
+
+      if(fltNoTracking){
+        list = list.filter(o => {
+          const s = String(o.status || "").toLowerCase();
+          if(s !== "shipped") return false;
+          const t = o.details?.meta?.tracking_number;
+          return !String(t || "").trim();
+        });
+      }
+
+      if(qText || Object.keys(qFilters).length){
+        list = list.filter(o=>{
+          const ref = String(o.reference || o.id || "").toLowerCase();
+          const c = getCustomer(o);
+          const name = String(c.name || o.customer_name || o.name || "").toLowerCase();
+          const email = String(c.email || o.customer_email || o.email || "").toLowerCase();
+          const pc = String(c.postcode || "").toLowerCase();
+          const tracking = String(o.details?.meta?.tracking_number || "").toLowerCase();
+          const st = String(o.status || "Pending").toLowerCase();
+
+          if(qFilters.status && st !== qFilters.status) return false;
+          if(qFilters.email && !email.includes(qFilters.email)) return false;
+
+          if(qFilters.tracking){
+            if(qFilters.tracking === "missing" && tracking.trim()) return false;
+            if(qFilters.tracking !== "missing" && !tracking.includes(qFilters.tracking)) return false;
+          }
+
+          if(!qText) return true;
+          return ref.includes(qText) || name.includes(qText) || email.includes(qText) || pc.includes(qText) || tracking.includes(qText);
+        });
+      }
+
+      filteredOrderIds = list.map(o => o.id);
+
+      const allSelected = filteredOrderIds.length > 0 && filteredOrderIds.every(id => selectedIds.has(id));
+      document.getElementById("select-all").checked = allSelected;
+
+      statusEl.textContent = `${list.length} order(s) shown`;
+
+      if(document.body.classList.contains("packing-mode")){
+        renderPackingCards(filteredOrderIds);
+        return;
+      }
+
+      ordersEl.innerHTML = list.map((order) => {
+        const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+        const ref = order.reference || order.id;
+        const status = order.status || "Pending";
+
+        const email = order.details?.customer?.email || order.customer_email || order.email || "No email";
+        const name  = order.details?.customer?.name  || order.customer_name || order.name  || "Customer";
+        const total = Number(order.total_amount || 0).toFixed(2);
+
+        const statusLower = String(status || "").toLowerCase();
+        const isPaid = statusLower === "paid";
+        const isPacked = statusLower === "packed";
+        const isCancelled = statusLower === "cancelled";
+        const isShipped = statusLower === "shipped";
+
+        const tracking = String(order.details?.meta?.tracking_number || "").trim();
+        const payref   = String(order.details?.meta?.payment_reference || "").trim();
+        const note     = String(order.details?.meta?.admin_note || "").trim();
+
+        const isSelected = selectedIds.has(order.id);
+
+        const addrWarnings = validateAddress(order);
+        const hasNoAddress = addrWarnings.some(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
+        const hasNoEmail = !String(email || "").trim() || email === "No email";
+        const missingTracking = isShipped && !tracking;
+
+        const itemCount = Array.isArray(order?.details?.items) ? order.details.items.reduce((sum, i) => sum + Number(i.qty || 0), 0) : 0;
+
+        return `
+          <div class="order-card mobile-order-card">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+              <div class="d-flex align-items-start gap-2 flex-grow-1">
+                <input id="sel-${order.id}" class="form-check-input mt-1" type="checkbox"
+                  ${isSelected ? "checked" : ""}
+                  onchange="toggleSelectOne('${order.id}', this.checked)">
+                <div class="flex-grow-1 min-w-0">
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                    <strong>${escapeHtml(ref)}</strong>
+                    ${badge(status)}
+                  </div>
+                  <div class="small text-muted mt-1">${escapeHtml(created)}</div>
+                  <div class="mt-1">
+                    <a href="#" class="text-decoration-none" onclick="openCustomerView('${escapeHtml(email)}'); return false;">
+                      ${escapeHtml(name)}
+                    </a>
+                  </div>
+                  <div class="small text-muted">${escapeHtml(email)}</div>
+                </div>
+              </div>
+
+              <div class="text-end">
+                <div class="fw-bold">£${escapeHtml(total)}</div>
+                <div class="small text-muted">${itemCount} item(s)</div>
+              </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2 mb-3">
+              ${hasNoAddress ? `<span class="badge text-bg-warning">No address</span>` : ``}
+              ${hasNoEmail ? `<span class="badge text-bg-danger">No email</span>` : ``}
+              ${missingTracking ? `<span class="badge text-bg-secondary">No tracking</span>` : ``}
+              ${String(statusLower) === "pending" && new Date(order.created_at) < cutoff24 ? `<span class="badge text-bg-dark">Pending > 24h</span>` : ``}
+            </div>
+
+            <div class="mobile-primary-actions">
+              <button class="btn btn-success"
+                ${isPaid || isPacked || isShipped || isCancelled ? "disabled" : ""}
+                onclick="markPaidAndSendById('${order.id}')">
+                💷 Mark Paid
               </button>
-            </h2>
-            <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
-              <div class="accordion-body px-0 pt-3 pb-0">
 
-                <div class="items-box" style="margin-top:0;">
-                  <strong>📦 Tracking number</strong>
-                  <div class="d-flex gap-2 flex-wrap">
-                    <input id="trk-${order.id}" class="form-control form-control-sm small-input"
-                      placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
-                    <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
-                  </div>
-                </div>
+              <button class="btn btn-secondary"
+                ${isPacked || isShipped || isCancelled ? "disabled" : ""}
+                onclick="markPackedById('${order.id}')">
+                ✅ Mark Packed
+              </button>
 
-                ${buildAddressHtml(order)}
-                ${buildItemsHtml(order)}
+              <button class="btn btn-primary"
+                ${isShipped || isCancelled ? "disabled" : ""}
+                onclick="sendShippedEmailById('${order.id}')">
+                📦 Mark Shipped
+              </button>
+            </div>
 
-                <div class="items-box" style="margin-top:8px;">
-                  <strong>💷 Payment reference (internal)</strong>
-                  <div class="d-flex gap-2 flex-wrap">
-                    <input id="payref-${order.id}" class="form-control form-control-sm small-input"
-                      placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
-                    <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
-                  </div>
-                </div>
-
-                <div class="items-box" style="margin-top:8px;">
-                  <strong>📝 Admin notes</strong>
-                  <textarea id="note-${order.id}" class="form-control note-area"
-                    placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
-                  <div class="d-flex justify-content-end mt-2">
-                    <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
-                  </div>
-                </div>
-
-                <div class="items-box" style="margin-top:8px;">
-                  <strong>🕒 Timeline</strong>
-                  ${historyHtml(order)}
-                </div>
-
-                <div class="mobile-secondary-actions mt-3">
-                  <button class="btn btn-outline-dark btn-sm" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
-                  <button class="btn btn-sm btn-outline-dark" onclick="copyOrderForText('${order.id}')">📱 Copy SMS</button>
-                  <button class="btn btn-outline-secondary btn-sm" onclick="printPackingSlipById('${order.id}')">🖨️ Print slip</button>
-                  <button class="btn btn-outline-purple btn-sm" onclick="copyTimExcelTsvOne('${order.id}')">📋 Copy Excel row</button>
-                  <button class="btn btn-warning btn-sm" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">⏰ 3PM reminder</button>
-                  <button class="btn btn-outline-primary btn-sm"
-                    onclick="openMailto(
-                      '${escapeHtml(order.details?.customer?.email || order.customer_email || order.email || "")}',
-                      'Your order ${escapeHtml(ref)} has shipped',
-                      buildShippedEmailText(ordersCache['${order.id}'])
-                    )">
-                    ✉️ Mailto shipped
+            <div class="accordion mt-3" id="acc-${order.id}">
+              <div class="accordion-item border-0">
+                <h2 class="accordion-header" id="acc-h-${order.id}">
+                  <button class="accordion-button collapsed rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#acc-c-${order.id}">
+                    More details
                   </button>
-                  <button class="btn btn-danger btn-sm" onclick="sendCancelledEmailById('${order.id}')">❌ Cancel email</button>
-                  <button class="btn btn-outline-danger btn-sm" ${isCancelled ? "disabled" : ""} onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
-                </div>
+                </h2>
+                <div id="acc-c-${order.id}" class="accordion-collapse collapse" data-bs-parent="#acc-${order.id}">
+                  <div class="accordion-body px-0 pt-3 pb-0">
 
+                    <div class="items-box" style="margin-top:0;">
+                      <strong>📦 Tracking number</strong>
+                      <div class="d-flex gap-2 flex-wrap">
+                        <input id="trk-${order.id}" class="form-control form-control-sm small-input"
+                          placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
+                        <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
+                      </div>
+                    </div>
+
+                    ${buildAddressHtml(order)}
+                    ${buildItemsHtml(order)}
+
+                    <div class="items-box" style="margin-top:8px;">
+                      <strong>💷 Payment reference (internal)</strong>
+                      <div class="d-flex gap-2 flex-wrap">
+                        <input id="payref-${order.id}" class="form-control form-control-sm small-input"
+                          placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
+                        <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
+                      </div>
+                    </div>
+
+                    <div class="items-box" style="margin-top:8px;">
+                      <strong>📝 Admin notes</strong>
+                      <textarea id="note-${order.id}" class="form-control note-area"
+                        placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
+                      <div class="d-flex justify-content-end mt-2">
+                        <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
+                      </div>
+                    </div>
+
+                    <div class="items-box" style="margin-top:8px;">
+                      <strong>🕒 Timeline</strong>
+                      ${historyHtml(order)}
+                    </div>
+
+                    <div class="mobile-secondary-actions mt-3">
+                      <button class="btn btn-outline-dark btn-sm" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
+                      <button class="btn btn-sm btn-outline-dark" onclick="copyOrderForText('${order.id}')">📱 Copy SMS</button>
+                      <button class="btn btn-outline-secondary btn-sm" onclick="printPackingSlipById('${order.id}')">🖨️ Print slip</button>
+                      <button class="btn btn-outline-purple btn-sm" onclick="copyTimExcelTsvOne('${order.id}')">📋 Copy Excel row</button>
+                      <button class="btn btn-warning btn-sm" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">⏰ 3PM reminder</button>
+                      <button class="btn btn-outline-primary btn-sm"
+                        onclick="openMailto(
+                          '${escapeHtml(order.details?.customer?.email || order.customer_email || order.email || "")}',
+                          'Your order ${escapeHtml(ref)} has shipped',
+                          buildShippedEmailText(ordersCache['${order.id}'])
+                        )">
+                        ✉️ Mailto shipped
+                      </button>
+                      <button class="btn btn-danger btn-sm" onclick="sendCancelledEmailById('${order.id}')">❌ Cancel email</button>
+                      <button class="btn btn-outline-danger btn-sm" ${isCancelled ? "disabled" : ""} onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
+                    </div>
+
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    `;
-  }).join("");
-
-}
+        `;
+      }).join("");
+    }
 
     async function copyTimExcelTsvOne(orderId){
       const o = ordersCache[orderId];
@@ -2943,9 +2618,6 @@ function renderPackingCards(orderIds){
       }
     }
 
-    // ────────────────────────────────────────────────
-    // LOAD ORDERS (paginated server-side)
-    // ────────────────────────────────────────────────
     async function loadOrders() {
       statusEl.textContent = "Loading orders…";
 
@@ -3044,9 +2716,6 @@ function renderPackingCards(orderIds){
       }
     }
 
-    // ────────────────────────────────────────────────
-    // REVIEWS
-    // ────────────────────────────────────────────────
     async function loadPendingReviews() {
       reviewsStatus.textContent = "Loading pending reviews…";
 
@@ -3109,9 +2778,6 @@ function renderPackingCards(orderIds){
       loadPendingReviews();
     }
 
-    // ────────────────────────────────────────────────
-    // AUTH INIT
-    // ────────────────────────────────────────────────
     async function init() {
       statusEl.textContent = "Checking access…";
 
@@ -3149,9 +2815,6 @@ function renderPackingCards(orderIds){
     if (logoutBtn) logoutBtn.addEventListener("click", doLogout);
     if (logoutBtnDesktop) logoutBtnDesktop.addEventListener("click", doLogout);
 
-    // ────────────────────────────────────────────────
-    // Keyboard shortcuts
-    // ────────────────────────────────────────────────
     document.addEventListener("keydown", (e)=>{
       if(e.ctrlKey && e.key === "Enter"){
         const a = document.activeElement;
@@ -3176,14 +2839,12 @@ function renderPackingCards(orderIds){
       }
     });
 
-    // Back-to-top
     const backToTopBtn = document.getElementById("backToTop");
     window.addEventListener("scroll", () => {
       backToTopBtn.style.display = window.scrollY > 600 ? "inline-flex" : "none";
     }, { passive: true });
     backToTopBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-    // Inactivity logout
     const INACTIVITY_TIMEOUT = 15 * 60 * 1000;
     let inactivityTimer;
     function resetInactivityTimer() {
@@ -3202,65 +2863,46 @@ function renderPackingCards(orderIds){
     });
     resetInactivityTimer();
 
-    // ────────────────────────────────────────────────
-    // EXPOSE (so onclick works)
-    // ────────────────────────────────────────────────
     window.exportOrdersCsv = exportOrdersCsv;
     window.exportOrdersJson = exportOrdersJson;
     window.exportOrdersXlsx = exportOrdersXlsx;
-
     window.exportTimExcel = exportTimExcel;
     window.copyTimExcelTsv = copyTimExcelTsv;
-
     window.clearSearch = clearSearch;
     window.setStatusFilter = setStatusFilter;
     window.togglePackQueue = togglePackQueue;
     window.applyClientFilters = applyClientFilters;
-
     window.prevPage = prevPage;
     window.nextPage = nextPage;
     window.changePageSize = changePageSize;
     window.loadAllOrdersForSearch = loadAllOrdersForSearch;
-
     window.toggleSelectAll = toggleSelectAll;
     window.toggleSelectOne = toggleSelectOne;
-
     window.bulkMarkPacked = bulkMarkPacked;
     window.bulkMarkShippedNoEmail = bulkMarkShippedNoEmail;
     window.bulkCopyAddresses = bulkCopyAddresses;
-
     window.copyAddressById = copyAddressById;
     window.printPackingSlipById = printPackingSlipById;
     window.markPackedById = markPackedById;
-
     window.saveAdminNote = saveAdminNote;
     window.savePaymentRef = savePaymentRef;
     window.saveTrackingFromInput = saveTrackingFromInput;
-
     window.updateStatus = updateStatus;
-
     window.sendShippedEmailById = sendShippedEmailById;
     window.sendPayBefore3pmById = sendPayBefore3pmById;
     window.markPaidAndSendById = markPaidAndSendById;
     window.sendCancelledEmailById = sendCancelledEmailById;
-
     window.openMailto = openMailto;
     window.buildShippedEmailText = buildShippedEmailText;
-
     window.publishReview = publishReview;
     window.deleteReview = deleteReview;
-
     window.copyTimExcelTsvOne = copyTimExcelTsvOne;
     window.cancelAndRestockById = cancelAndRestockById;
-
     window.setAdminView = setAdminView;
-window.toggleOrderExpanded = toggleOrderExpanded;
+    window.toggleOrderExpanded = toggleOrderExpanded;
 
-// go
-initAdminView();
-init();
-
-  
+    initAdminView();
+    init();
   </script>
 </body>
 </html>
