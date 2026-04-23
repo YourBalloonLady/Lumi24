@@ -712,17 +712,18 @@
       orderDetails.meta.referral_code = (localStorage.getItem('referral_code') || null);
 
       const { error: insertError } = await supabaseClient
-        .from('Orders')
-        .insert({
-          user_id: userId,
-          total_amount: Number(total || 0),
-          status: 'Pending',
-          reference: details.ref,
-          details: orderDetails,
-          referral_code: (localStorage.getItem('referral_code') || null),
-          credit_used: Number(creditUsed || 0),
-          credit_email: (creditEmail ? String(creditEmail).trim().toLowerCase() : null)
-        });
+  .from('Orders')
+  .insert({
+    user_id: userId,
+    total_amount: Number(total || 0),
+    status: 'Pending',
+    reference: details.ref,
+    details: orderDetails,
+    referral_code: (localStorage.getItem('referral_code') || null),
+    credit_used: Number(creditUsed || 0),
+    credit_email: (creditEmail ? String(creditEmail).trim().toLowerCase() : null),
+    credit_deducted: false
+  });
 
       if (insertError) console.error('Error saving order to Supabase:', insertError);
     } catch (err) {
