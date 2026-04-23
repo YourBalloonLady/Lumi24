@@ -189,8 +189,6 @@
   let discountApplied = 0;
   let lastBundleFinal = 0;
 
-  function money(n){ return `£${Number(n || 0).toFixed(2)}`; }
-
   function getVariantLabel(variant) {
     return variant === 'cartridge-only'
       ? 'Cartridge Only'
@@ -209,6 +207,12 @@
       ? `<br><small class="text-muted">${getVariantLabel(item.variant)}</small>`
       : '';
   }
+
+  (function captureReferralOnCheckout(){
+    const p = new URLSearchParams(location.search);
+    const ref = (p.get('ref') || '').trim().toUpperCase();
+    if (ref) localStorage.setItem('referral_code', ref);
+  })();
 
   function isSemaglutide(name){
     const n = (name || '').toLowerCase();
@@ -252,8 +256,12 @@
   }
 
   function extraLabel(item) {
-    if (isPenItem(item) && item.pen_heads) return ` (Pen heads: ${item.pen_heads === 'none' ? 'None required' : item.pen_heads})`;
-    if (isVialItem(item) && item.syringes) return ` (Syringes: ${item.syringes === 'none' ? 'None required' : item.syringes})`;
+    if (isPenItem(item) && item.pen_heads) {
+      return ` (Pen heads: ${item.pen_heads === 'none' ? 'None required' : item.pen_heads})`;
+    }
+    if (isVialItem(item) && item.syringes) {
+      return ` (Syringes: ${item.syringes === 'none' ? 'None required' : item.syringes})`;
+    }
     return '';
   }
 
@@ -486,52 +494,73 @@
   }
 
   async function saveOrderToSupabase(details) {
-    const { data, error } = await supabaseClient.auth.getUser();
-    const userId = (error || !data || !data.user) ? null : data.user.id;
+    try {
+      const { data, error } = await supabaseClient.auth.getUser();
+      const userId = (error || !data || !data.user) ? null : data.user.id;
 
-    const orderDetails = {
-      customer: {
-        name: details.name,
-        email: details.email,
-        phone: details.phone,
-        address1: details.address1,
-        address2: details.address2,
-        city: details.city,
-        postcode: details.postcode
-      },
-      items: cart.map(i => ({
-        id: i.id || null,
-        name: i.name,
-        variant: i.variant || 'full-kit',
-        variant_label: getVariantLabel(i.variant || 'full-kit'),
-        qty: i.qty,
-        price_each: Number(i.price || 0),
-        line_total: Number(i.price || 0) * Number(i.qty || 0),
-        pen_heads: i.pen_heads || "",
-        syringes: i.syringes || "",
-        sema_form: i.sema_form || ""
-      })),
-      reference: details.ref
-    };
+      const orderDetails = {
+        customer: {
+          name: details.name,
+          email: details.email,
+          phone: details.phone,
+          address1: details.address1,
+          address2: details.address2,
+          city: details.city,
+          postcode: details.postcode
+        },
+        items: cart.map(i => ({
+          id: i.id || null,
+          name: i.name,
+          variant: i.variant || 'full-kit',
+          variant_label: getVariantLabel(i.variant || 'full-kit'),
+          qty: i.qty,
+          price_each: Number(i.price || 0),
+          line_total: Number(i.price || 0) * Number(i.qty || 0),
+          pen_heads: i.pen_heads || "",
+          syringes: i.syringes || "",
+          sema_form: i.sema_form || ""
+        })),
+        reference: details.ref
+      };
 
-    orderDetails.meta = orderDetails.meta || {};
+      orderDetails.meta = orderDetails.meta || {};
+      orderDetails.meta.referral_code = (localStorage.getItem('referral_code') || null);
 
-    const { error: insertError } = await supabaseClient
-      .from('Orders')
-      .insert({
-        user_id: userId,
-        total_amount: Number(total || 0),
-        status: 'Pending',
-        reference: details.ref,
-        details: orderDetails
-      });
+      const { error: insertError } = await supabaseClient
+        .from('Orders')
+        .insert({
+          user_id: userId,
+          total_amount: Number(total || 0),
+          status: 'Pending',
+          reference: details.ref,
+          details: orderDetails,
+          referral_code: (localStorage.getItem('referral_code') || null)
+        });
 
-    if (insertError) {
-      console.error('Error saving order to Supabase:', insertError);
-      throw insertError;
+      if (insertError) {
+        console.error('Error saving order to Supabase:', insertError);
+        throw insertError;
+      }
+    } catch (err) {
+      console.error('Unexpected error saving order to Supabase:', err);
+      throw err;
     }
+  }
 
-    return true;
+  async function logReferralEventIfAny(orderRef, buyerEmail, orderTotalBeforeCredit) {
+    const code = (localStorage.getItem('referral_code') || '').trim().toUpperCase();
+    if (!code) return;
+
+    await supabaseClient
+      .from('ReferralEvents')
+      .insert({
+        referral_code: code,
+        referred_email: String(buyerEmail || '').toLowerCase(),
+        order_reference: orderRef,
+        order_total: Number(orderTotalBeforeCredit || 0),
+        credit_amount: 10,
+        status: 'pending'
+      });
   }
 
   async function deductStock(cartItems) {
@@ -560,7 +589,9 @@
           .update({ stock: newStock })
           .eq('id', product.id);
 
-        if (updateError) console.error(`Error updating stock for ${cartItem.name}:`, updateError);
+        if (updateError) {
+          console.error(`Error updating stock for ${cartItem.name}:`, updateError);
+        }
       }
     } catch (err) {
       console.error('Unexpected error deducting stock:', err);
@@ -630,30 +661,23 @@
 
       const bundle = calculateBundle(cart);
       discountApplied = bundle.discount;
-      total = bundle.finalTotal;
+      const totalBeforeCredit = bundle.finalTotal;
+
+      total = totalBeforeCredit;
       renderOrderSummary(total);
 
       const details = { name, phone, email, address1, address2, city, postcode, ref };
 
+      await logReferralEventIfAny(ref, email, totalBeforeCredit);
       await saveOrderToSupabase(details);
       await deductStock(cart);
 
       const emailResults = await Promise.allSettled([
-  sendAdminEmail(details),
-  sendCustomerEmail(details)
-]);
+        sendAdminEmail(details),
+        sendCustomerEmail(details)
+      ]);
 
-console.log('Email results:', emailResults);
-
-const customerEmailOk = emailResults[1]?.status === 'fulfilled';
-
-if (customerEmailOk) {
-  checkoutStatus.textContent = "We've emailed your payment instructions.";
-  checkoutStatus.className = 'small text-success mt-2';
-} else {
-  checkoutStatus.textContent = 'Order saved, but customer email failed to send.';
-  checkoutStatus.className = 'small text-warning mt-2';
-}
+      console.log('Email results:', emailResults);
 
       document.getElementById('payment-summary').innerHTML = cart.map(i => `
         <div class="d-flex justify-content-between">
@@ -674,7 +698,14 @@ if (customerEmailOk) {
 
       clearStoredCart();
 
-      
+      const customerEmailOk = emailResults[1]?.status === 'fulfilled';
+      if (customerEmailOk) {
+        checkoutStatus.textContent = "We've emailed your payment instructions.";
+        checkoutStatus.className = 'small text-success mt-2';
+      } else {
+        checkoutStatus.textContent = 'Order saved, but customer email failed to send.';
+        checkoutStatus.className = 'small text-warning mt-2';
+      }
 
     } catch (err) {
       console.error('Checkout flow error', err);
