@@ -907,9 +907,14 @@
   let currentVariant = '';
 
   function hasCartridgeOption(p) {
-    const name = String(p?.name || '').toLowerCase();
-    return name.includes('pen') && !name.includes('refill pen')  && !name.includes('Empty Pen Storage Case');
-  }
+  const name = String(p?.name || '').toLowerCase();
+
+  return (
+    name.includes('pen') &&
+    !name.includes('refill pen') &&
+    !name.includes('empty pen storage case')
+  );
+}
 
   function getVariantPrice(product, variant) {
     const basePrice = Number(product?.price || 0);
