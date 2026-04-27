@@ -387,10 +387,10 @@
     */
 
     const { data: orders, error: ordersError } = await supabaseClient
-      .from("Orders")
-      .select("*")
-      .or(`user_id.eq.${user.id},customer_email.eq.${userEmail},email.eq.${userEmail}`)
-      .order("created_at", { ascending: false });
+  .from("Orders")
+  .select("*")
+  .eq("user_id", user.id)
+  .order("created_at", { ascending: false });
 
     if (ordersError) {
       statusEl.textContent = "Could not load orders.";
