@@ -365,10 +365,10 @@
   }
 
   @media (min-width: 768px){
-    .packing-actions{
-      grid-template-columns:repeat(4, 1fr);
-    }
+  .packing-actions{
+    grid-template-columns:repeat(5, 1fr);
   }
+}
 </style>
 </head>
 
@@ -729,6 +729,234 @@
     const CREDIT_FLAT = 10.00;
 
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ────────────────────────────────────────────────
+// DIGITAL GUIDE CONFIG
+// ────────────────────────────────────────────────
+const PROTOCOL_EMAIL_TEMPLATE_ID = "template_protocol";
+
+// Change this to wherever you upload the guide images/PDFs
+const GUIDE_BASE_URL = "https://yourdomain.co.uk/guides/";
+
+const PROTOCOL_GUIDES = [
+  {
+    key: "cagri-10mg",
+    label: "Cagrilintide 10mg Digital Guide",
+    match: ["cagrilintide 10mg", "cagri 10mg", "10mg cagri", "10mg cagrilintide"],
+    url: GUIDE_BASE_URL + "cagri-10mg-guide.png"
+  },
+  {
+    key: "nad-1000mg",
+    label: "NAD+ 1000mg Digital Guide",
+    match: ["nad+ 1000mg", "nad 1000mg", "1000mg nad", "1000mg nad+"],
+    url: GUIDE_BASE_URL + "nad-1000mg-guide.png"
+  },
+  {
+    key: "reta-20mg",
+    label: "Retatrutide 20mg Digital Guide",
+    match: ["retatrutide 20mg", "reta 20mg", "20mg reta", "20mg retatrutide"],
+    url: GUIDE_BASE_URL + "reta-20mg-guide.png"
+  },
+  {
+    key: "reta-40mg",
+    label: "Retatrutide 40mg Digital Guide",
+    match: ["retatrutide 40mg", "reta 40mg", "40mg reta", "40mg retatrutide"],
+    url: GUIDE_BASE_URL + "reta-40mg-guide.png"
+  },
+  {
+    key: "reta-60mg",
+    label: "Retatrutide 60mg Digital Guide",
+    match: ["retatrutide 60mg", "reta 60mg", "60mg reta", "60mg retatrutide"],
+    url: GUIDE_BASE_URL + "reta-60mg-guide.png"
+  },
+  {
+    key: "sema-20mg",
+    label: "Semaglutide 20mg Digital Guide",
+    match: ["semaglutide 20mg", "sema 20mg", "20mg sema", "20mg semaglutide"],
+    url: GUIDE_BASE_URL + "sema-20mg-guide.png"
+  },
+  {
+    key: "tirz-10mg",
+    label: "Tirzepatide 10mg Digital Guide",
+    match: ["tirzepatide 10mg", "tirz 10mg", "10mg tirz", "10mg tirzepatide"],
+    url: GUIDE_BASE_URL + "tirz-10mg-guide.png"
+  },
+  {
+    key: "tirz-20mg",
+    label: "Tirzepatide 20mg Digital Guide",
+    match: ["tirzepatide 20mg", "tirz 20mg", "20mg tirz", "20mg tirzepatide"],
+    url: GUIDE_BASE_URL + "tirz-20mg-guide.png"
+  },
+  {
+    key: "tirz-40mg",
+    label: "Tirzepatide 40mg Digital Guide",
+    match: ["tirzepatide 40mg", "tirz 40mg", "40mg tirz", "40mg tirzepatide"],
+    url: GUIDE_BASE_URL + "tirz-40mg-guide.png"
+  },
+  {
+    key: "tirz-60mg",
+    label: "Tirzepatide 60mg Digital Guide",
+    match: ["tirzepatide 60mg", "tirz 60mg", "60mg tirz", "60mg tirzepatide"],
+    url: GUIDE_BASE_URL + "tirz-60mg-guide.png"
+  }
+];
+
+function normaliseGuideText(str = "") {
+  return String(str || "")
+    .toLowerCase()
+    .replace(/\+/g, " plus ")
+    .replace(/-/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function getGuidesForOrder(order) {
+  const items = Array.isArray(order?.details?.items) ? order.details.items : [];
+
+  const haystack = normaliseGuideText(
+    items.map(i => {
+      return [
+        i?.name,
+        i?.format,
+        i?.variant,
+        i?.selected_format,
+        i?.option,
+        i?.type
+      ].filter(Boolean).join(" ");
+    }).join(" ")
+  );
+
+  const matches = PROTOCOL_GUIDES.filter(guide => {
+    return guide.match.some(term => haystack.includes(normaliseGuideText(term)));
+  });
+
+  const seen = new Set();
+
+  return matches.filter(guide => {
+    if (seen.has(guide.key)) return false;
+    seen.add(guide.key);
+    return true;
+  });
+}
+
+function buildDigitalGuideEmailText(order, guides) {
+  const customer = order.details?.customer || {};
+  const ref = order.reference || order.id;
+
+  const guideLines = guides
+    .map(g => `${g.label}\n${g.url}`)
+    .join("\n\n");
+
+  return `Hi ${customer.name || "there"},
+
+Thanks for your order ${ref}.
+
+Your digital guide link is below:
+
+${guideLines}
+
+Please keep this email so you can refer back to your guide when needed.
+
+Thanks,
+Lumina Weight`;
+}
+
+function sendDigitalGuideEmail(order, guides) {
+  if (!order || !window.emailjs) return;
+
+  const customer = order.details?.customer || {};
+  const toEmail = customer.email || order.customer_email || order.email || "";
+  const customerName = customer.name || order.customer_name || order.name || "Customer";
+  const ref = order.reference || order.id;
+
+  if (!toEmail) {
+    alert("No email found on this order.");
+    return;
+  }
+
+  const guideNames = guides.map(g => g.label).join(", ");
+  const guideUrls = guides.map(g => `${g.label}: ${g.url}`).join("\n");
+
+  return emailjs.send("service_i5zi096", PROTOCOL_EMAIL_TEMPLATE_ID, {
+    email: toEmail,
+    customer_name: customerName,
+    order_ref: ref,
+    protocol_name: guideNames,
+    protocol_url: guideUrls
+  });
+}
+
+async function sendDigitalGuideById(orderId) {
+  const order = ordersCache[orderId];
+  if (!order) return alert("Order not found.");
+
+  const guides = getGuidesForOrder(order);
+
+  if (!guides.length) {
+    alert("No matching digital guide found for this order. Check the product name includes strength, e.g. Reta 60mg, Tirz 20mg, Cagri 10mg.");
+    return;
+  }
+
+  const guideNames = guides.map(g => g.label).join("\n");
+
+  if (!confirm(`Send the following digital guide(s)?\n\n${guideNames}`)) return;
+
+  setBusy(true, "Sending digital guide…", order.reference || order.id);
+
+  try {
+    await sendDigitalGuideEmail(order, guides);
+
+    const session = await supabaseClient.auth.getSession();
+    const who = session?.data?.session?.user?.email || "admin";
+
+    let updatedDetails = pushHistory(order, "digital_guide_sent", {
+      note: guides.map(g => g.label).join(", ")
+    });
+
+    updatedDetails = {
+      ...updatedDetails,
+      meta: {
+        ...(updatedDetails.meta || {}),
+        digital_guide_sent_at: new Date().toISOString(),
+        digital_guide_sent_by: who,
+        digital_guide_keys: guides.map(g => g.key)
+      }
+    };
+
+    const { error } = await supabaseClient
+      .from("Orders")
+      .update({ details: updatedDetails })
+      .eq("id", orderId);
+
+    if (error) throw error;
+
+    ordersCache[orderId].details = updatedDetails;
+
+    showToast("Digital guide sent ✅", "success");
+    applyClientFilters();
+
+  } catch (e) {
+    console.error("Digital guide email failed", e);
+
+    const customer = order.details?.customer || {};
+    const toEmail = customer.email || order.customer_email || order.email || "";
+
+    if (toEmail) {
+      const ok = confirm("EmailJS failed. Open a mailto draft instead?");
+      if (ok) {
+        openMailto(
+          toEmail,
+          `Digital guide for order ${order.reference || order.id}`,
+          buildDigitalGuideEmailText(order, guides)
+        );
+      }
+    } else {
+      alert("Digital guide failed — no email found.");
+    }
+  } finally {
+    setBusy(false);
+  }
+}
 
     // EmailJS init (safe)
     (function () {
@@ -2844,9 +3072,10 @@ Lumina Weight`;
 
             <div class="packing-actions">
               <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
-              <button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
-              <button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
-              <button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
+<button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
+<button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
+<button class="btn btn-outline-success btn-sm" onclick="sendDigitalGuideById('${order.id}')">📄 Guide</button>
+<button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
             </div>
 
             <div id="packing-more-${order.id}" style="display:none; margin-top:10px;">
@@ -3098,6 +3327,11 @@ Lumina Weight`;
                         onclick="resendPaymentEmailById('${order.id}')">
                         💸 Resend payment email
                       </button>
+                      <button class="btn btn-outline-success btn-sm"
+  ${hasNoEmail ? "disabled" : ""}
+  onclick="sendDigitalGuideById('${order.id}')">
+  📄 Send digital guide
+</button>
                       <button class="btn btn-warning btn-sm" ${isCancelled || isShipped ? "disabled" : ""} onclick="sendPayBefore3pmById('${order.id}')">⏰ 3PM reminder</button>
                       <button class="btn btn-outline-primary btn-sm"
                         onclick="openMailto(
@@ -3486,6 +3720,7 @@ Lumina Weight`;
 
     window.setAdminView = setAdminView;
     window.toggleOrderExpanded = toggleOrderExpanded;
+    window.sendDigitalGuideById = sendDigitalGuideById;
 
     // go
     initAdminView();
