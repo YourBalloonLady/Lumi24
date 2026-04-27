@@ -554,107 +554,7 @@
   <div id="orders-list" class="mt-3"></div>
 </div>
 
-          <!-- Export buttons (Improvement #10) -->
-          <div class="d-flex gap-2 flex-wrap mt-3">
-            <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
-            <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
-            <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
-            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersJson('all')">⬇️ Export ALL (JSON)</button>
-            <button class="btn btn-sm btn-outline-info" onclick="exportOrdersXlsx('all')">⬇️ Export ALL (XLSX)</button>
-
-            <!-- ✅ Added: Excel-template exports that match your sheet columns -->
-            <button class="btn btn-sm btn-outline-purple" onclick="exportTimExcel('all')">⬇️ Export Tim Excel (XLSX)</button>
-            <button class="btn btn-sm btn-outline-secondary" onclick="copyTimExcelTsv('all')">📋 Copy shown as Excel (TSV)</button>
-          </div>
-
-          <!-- Sticky controls (Improvement #1) -->
-          <div class="sticky-admin-controls">
-            <div class="controls-grid">
-              <div>
-                <div class="input-group mt-3">
-                  <span class="input-group-text">🔎</span>
-                  <input id="order-search" class="form-control"
-                         placeholder="Search ref, name, email... OR status:paid tracking:missing email:@gmail" />
-                  <button class="btn btn-outline-secondary" onclick="clearSearch()">Clear</button>
-                </div>
-
-                <!-- Filter buttons w/ counts (Improvement #4) -->
-                <div class="filter-row mt-2">
-                  <button id="btnAll" class="btn btn-sm btn-outline-dark" onclick="setStatusFilter('all')">All <span id="ctAll" class="filter-badge">…</span></button>
-                  <button id="btnPending" class="btn btn-sm btn-outline-warning" onclick="setStatusFilter('Pending')">Pending <span id="ctPending" class="filter-badge">…</span></button>
-                  <button id="btnPaid" class="btn btn-sm btn-outline-success" onclick="setStatusFilter('Paid')">Paid <span id="ctPaid" class="filter-badge">…</span></button>
-                  <button id="btnPacked" class="btn btn-sm btn-outline-secondary" onclick="setStatusFilter('Packed')">Packed <span id="ctPacked" class="filter-badge">…</span></button>
-                  <button id="btnShipped" class="btn btn-sm btn-outline-primary" onclick="setStatusFilter('Shipped')">Shipped <span id="ctShipped" class="filter-badge">…</span></button>
-                  <button id="btnCancelled" class="btn btn-sm btn-outline-danger" onclick="setStatusFilter('Cancelled')">Cancelled <span id="ctCancelled" class="filter-badge">…</span></button>
-                  <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
-                </div>
-
-                <!-- Client-side toggles -->
-                <div class="d-flex gap-3 flex-wrap mt-2">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-noaddr" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-noaddr">No address</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-noemail" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-noemail">No email</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="flt-notracking" onchange="applyClientFilters()">
-                    <label class="form-check-label" for="flt-notracking">No tracking (shipped)</label>
-                  </div>
-                </div>
-
-                <div class="mt-2">
-                  <small class="text-muted">
-                    Search/filters apply to <strong>loaded orders</strong>. For full search/export across everything, click “Load all”.
-                  </small>
-                </div>
-              </div>
-
-              <div>
-                <div class="bulk-bar mt-3">
-                  <div class="d-flex align-items-center gap-2">
-                    <input class="form-check-input" type="checkbox" id="select-all" onchange="toggleSelectAll(this.checked)">
-                    <label class="form-check-label" for="select-all"><strong>Select all (shown)</strong></label>
-                  </div>
-
-                  <button class="btn btn-sm btn-secondary" onclick="bulkMarkPacked()">✅ Bulk Mark Packed</button>
-                  <button class="btn btn-sm btn-outline-primary" onclick="bulkMarkShippedNoEmail()">📦 Bulk Mark Shipped (no email)</button>
-                  <button class="btn btn-sm btn-outline-dark" onclick="bulkCopyAddresses()">📋 Copy selected addresses</button>
-                  
-                  <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('selected')">⬇️ Export selected</button>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
-                  <div class="d-flex align-items-center gap-2">
-                    <button class="btn btn-sm btn-outline-dark" onclick="prevPage()">◀ Prev</button>
-                    <button class="btn btn-sm btn-outline-dark" onclick="nextPage()">Next ▶</button>
-                    <span class="text-muted small" id="page-indicator">Page …</span>
-                  </div>
-
-                  <div class="d-flex align-items-center gap-2">
-                    <select id="page-size" class="form-select form-select-sm" style="width:110px;" onchange="changePageSize(this.value)">
-                      <option value="25" selected>25/page</option>
-                      <option value="50">50/page</option>
-                      <option value="100">100/page</option>
-                    </select>
-
-                    <button class="btn btn-sm btn-dark" onclick="loadAllOrdersForSearch()">⬇️ Load all</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p id="admin-status" class="text-muted mt-3">Checking access…</p>
-          <div id="admin-warning"></div>
-          <div id="orders-list" class="mt-3"></div>
-        </div>
+        
 
         <!-- REVIEWS -->
         <div class="section-card">
@@ -736,68 +636,68 @@
 const PROTOCOL_EMAIL_TEMPLATE_ID = "template_protocol";
 
 // Change this to wherever you upload the guide images/PDFs
-const GUIDE_BASE_URL = "https://yourdomain.co.uk/guides/";
+const GUIDE_BASE_URL = "https://www.lumi24.org/";
 
 const PROTOCOL_GUIDES = [
   {
     key: "cagri-10mg",
     label: "Cagrilintide 10mg Digital Guide",
     match: ["cagrilintide 10mg", "cagri 10mg", "10mg cagri", "10mg cagrilintide"],
-    url: GUIDE_BASE_URL + "Full Cagri 10mg Guide.png"
+    url: GUIDE_BASE_URL + "cagri-10mg-guide.png"
   },
   {
     key: "nad-1000mg",
     label: "NAD+ 1000mg Digital Guide",
     match: ["nad+ 1000mg", "nad 1000mg", "1000mg nad", "1000mg nad+"],
-    url: GUIDE_BASE_URL + "Full Nad+1000mg Guide.png"
+    url: GUIDE_BASE_URL + "nad-1000mg-guide.png"
   },
   {
     key: "reta-20mg",
     label: "Retatrutide 20mg Digital Guide",
     match: ["retatrutide 20mg", "reta 20mg", "20mg reta", "20mg retatrutide"],
-    url: GUIDE_BASE_URL + "Full Reta 20mg Guide.png"
+    url: GUIDE_BASE_URL + "reta-20mg-guide.png"
   },
   {
     key: "reta-40mg",
     label: "Retatrutide 40mg Digital Guide",
     match: ["retatrutide 40mg", "reta 40mg", "40mg reta", "40mg retatrutide"],
-    url: GUIDE_BASE_URL + "Full Reta 40mg Guide.png"
+    url: GUIDE_BASE_URL + "reta-40mg-guide.png"
   },
   {
     key: "reta-60mg",
     label: "Retatrutide 60mg Digital Guide",
     match: ["retatrutide 60mg", "reta 60mg", "60mg reta", "60mg retatrutide"],
-    url: GUIDE_BASE_URL + "Full Reta 60mg Guide.png"
+    url: GUIDE_BASE_URL + "reta-60mg-guide.png"
   },
   {
     key: "sema-20mg",
     label: "Semaglutide 20mg Digital Guide",
     match: ["semaglutide 20mg", "sema 20mg", "20mg sema", "20mg semaglutide"],
-    url: GUIDE_BASE_URL + "Full Sema 20mg Guide.png"
+    url: GUIDE_BASE_URL + "sema-20mg-guide.png"
   },
   {
     key: "tirz-10mg",
     label: "Tirzepatide 10mg Digital Guide",
     match: ["tirzepatide 10mg", "tirz 10mg", "10mg tirz", "10mg tirzepatide"],
-    url: GUIDE_BASE_URL + "Full Tirz 10mg Guide.png"
+    url: GUIDE_BASE_URL + "tirz-10mg-guide.png"
   },
   {
     key: "tirz-20mg",
     label: "Tirzepatide 20mg Digital Guide",
     match: ["tirzepatide 20mg", "tirz 20mg", "20mg tirz", "20mg tirzepatide"],
-    url: GUIDE_BASE_URL + "Full Tirz 20mg Guide.png"
+    url: GUIDE_BASE_URL + "tirz-20mg-guide.png"
   },
   {
     key: "tirz-40mg",
     label: "Tirzepatide 40mg Digital Guide",
     match: ["tirzepatide 40mg", "tirz 40mg", "40mg tirz", "40mg tirzepatide"],
-    url: GUIDE_BASE_URL + "Full Tirz 40mg Guide.png"
+    url: GUIDE_BASE_URL + "tirz-40mg-guide.png"
   },
   {
     key: "tirz-60mg",
     label: "Tirzepatide 60mg Digital Guide",
     match: ["tirzepatide 60mg", "tirz 60mg", "60mg tirz", "60mg tirzepatide"],
-    url: GUIDE_BASE_URL + "Full Tirz 60mg Guide.png"
+    url: GUIDE_BASE_URL + "tirz-60mg-guide.png"
   }
 ];
 
