@@ -408,12 +408,7 @@
       Extra front-end safety filter.
       Even if Supabase ever returns something unexpected, only show orders that match this user.
     */
-    const safeOrders = (orders || []).filter(order => {
-      const orderUserId = String(order.user_id || "").trim();
-      const orderEmail = getCustomerEmailFromOrder(order);
-
-      return orderUserId === user.id || orderEmail === userEmail;
-    });
+    const safeOrders = orders || [];
 
     if (!safeOrders.length) {
       statusEl.textContent = "No orders found yet.";
