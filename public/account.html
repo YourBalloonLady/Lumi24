@@ -292,12 +292,13 @@
     }
 const userEmail = String(user.email || '').trim().toLowerCase();
 
-// Auto-link guest orders to this account
+// Auto-link only this customer's guest orders to this account
 if (user.id && userEmail) {
   const { error: linkOrdersError } = await supabaseClient
     .from("Orders")
     .update({ user_id: user.id })
-    .is("user_id", null);
+    .is("user_id", null)
+    .or(`customer_email.eq.${userEmail},email.eq.${userEmail}`);
 
   if (linkOrdersError) {
     console.warn("Could not auto-link guest orders:", linkOrdersError);
@@ -310,10 +311,10 @@ if (user.id && userEmail) {
     
 
     const { data: orders, error: ordersError } = await supabaseClient
-      .from('Orders')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+  .from('Orders')
+  .select('*')
+  .or(`user_id.eq.${user.id},customer_email.eq.${userEmail},email.eq.${userEmail}`)
+  .order('created_at', { ascending: false });
 
     if (ordersError) {
       statusEl.textContent = 'Could not load orders.';
