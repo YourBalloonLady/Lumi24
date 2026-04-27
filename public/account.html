@@ -284,88 +284,74 @@
   }
 
   async function loadAccount() {
-    const { data: { user }, error } = await supabaseClient.auth.getUser();
+  const { data: { user }, error } = await supabaseClient.auth.getUser();
 
-    if (error || !user) {
-      window.location.href = 'index.html';
-      return;
-    }
-const userEmail = String(user.email || '').trim().toLowerCase();
-
-// Auto-link only this customer's guest orders to this account
-if (user.id && userEmail) {
-  const { error: linkOrdersError } = await supabaseClient
-    .from("Orders")
-    .update({ user_id: user.id })
-    .is("user_id", null)
-    .or(`customer_email.eq.${userEmail},email.eq.${userEmail}`);
-
-  if (linkOrdersError) {
-    console.warn("Could not auto-link guest orders:", linkOrdersError);
+  if (error || !user) {
+    window.location.href = 'index.html';
+    return;
   }
+
+  const userEmail = String(user.email || '').trim().toLowerCase();
+
+  greetingEl.textContent = `Signed in as ${user.email}`;
+  statusEl.textContent = 'Loading orders…';
+
+  const { data: orders, error: ordersError } = await supabaseClient
+    .from('Orders')
+    .select('*')
+    .or(`user_id.eq.${user.id},customer_email.eq.${userEmail},email.eq.${userEmail}`)
+    .order('created_at', { ascending: false });
+
+  if (ordersError) {
+    statusEl.textContent = 'Could not load orders.';
+    console.error(ordersError);
+    return;
+  }
+
+  if (!orders || orders.length === 0) {
+    statusEl.textContent = 'No orders found yet.';
+    ordersEl.innerHTML = `
+      <div class="alert alert-light border text-muted">
+        When you place an order while logged in, it will appear here for reference.
+      </div>
+    `;
+    return;
+  }
+
+  statusEl.textContent = `${orders.length} order${orders.length > 1 ? 's' : ''}`;
+
+  ordersEl.innerHTML = orders.map(order => {
+    const created = new Date(order.created_at).toLocaleString();
+    const total   = Number(order.total_amount || 0).toFixed(2);
+    const ref     = order.reference || (order.id ? order.id.slice(0,8) + '…' : 'N/A');
+
+    let itemsHtml = '';
+    if (order.details && order.details.items && Array.isArray(order.details.items)) {
+      itemsHtml = order.details.items.map(item => `
+        <div class="small text-muted">
+          ${item.qty} × ${item.name} – £${Number(item.price_each || 0).toFixed(2)} each
+        </div>
+      `.trim()).join('');
+    }
+
+    return `
+      <div class="order-card mb-3">
+        <div class="d-flex justify-content-between flex-wrap gap-2">
+          <div>
+            <div class="small text-muted">Order reference</div>
+            <div class="fw-semibold">${ref}</div>
+            <div class="small text-muted mt-1">${created}</div>
+          </div>
+          <div class="text-end">
+            ${getStatusBadge(order.status)}
+            <div class="fw-bold fs-5 mt-1">£${total}</div>
+          </div>
+        </div>
+        ${itemsHtml ? `<div class="mt-2">${itemsHtml}</div>` : ''}
+      </div>
+    `;
+  }).join('');
 }
-    
-    greetingEl.textContent = `Signed in as ${user.email}`;
-    statusEl.textContent = 'Loading orders…';
-
-    
-
-    const { data: orders, error: ordersError } = await supabaseClient
-  .from('Orders')
-  .select('*')
-  .or(`user_id.eq.${user.id},customer_email.eq.${userEmail},email.eq.${userEmail}`)
-  .order('created_at', { ascending: false });
-
-    if (ordersError) {
-      statusEl.textContent = 'Could not load orders.';
-      console.error(ordersError);
-      return;
-    }
-
-    if (!orders || orders.length === 0) {
-      statusEl.textContent = 'No orders found yet.';
-      ordersEl.innerHTML = `
-        <div class="alert alert-light border text-muted">
-          When you place an order while logged in, it will appear here for reference.
-        </div>
-      `;
-      return;
-    }
-
-    statusEl.textContent = `${orders.length} order${orders.length > 1 ? 's' : ''}`;
-
-    ordersEl.innerHTML = orders.map(order => {
-      const created = new Date(order.created_at).toLocaleString();
-      const total   = Number(order.total_amount || 0).toFixed(2);
-      const ref     = order.reference || (order.id ? order.id.slice(0,8) + '…' : 'N/A');
-
-      let itemsHtml = '';
-      if (order.details && order.details.items && Array.isArray(order.details.items)) {
-        itemsHtml = order.details.items.map(item => `
-          <div class="small text-muted">
-            ${item.qty} × ${item.name} – £${Number(item.price_each || 0).toFixed(2)} each
-          </div>
-        `.trim()).join('');
-      }
-
-      return `
-        <div class="order-card mb-3">
-          <div class="d-flex justify-content-between flex-wrap gap-2">
-            <div>
-              <div class="small text-muted">Order reference</div>
-              <div class="fw-semibold">${ref}</div>
-              <div class="small text-muted mt-1">${created}</div>
-            </div>
-            <div class="text-end">
-              ${getStatusBadge(order.status)}
-              <div class="fw-bold fs-5 mt-1">£${total}</div>
-            </div>
-          </div>
-          ${itemsHtml ? `<div class="mt-2">${itemsHtml}</div>` : ''}
-        </div>
-      `;
-    }).join('');
-  }
 
   // Change password
   pwForm.addEventListener('submit', async (e) => {
