@@ -874,7 +874,6 @@
         <button class="category-chip" data-category="metabolic">Fat Loss Research</button>
         <button class="category-chip" data-category="cognitive">Cognitive Research</button>
         <button class="category-chip" data-category="cellular-energy">Cellular Energy</button>
-        <button class="category-chip" data-category="longevity">Longevity</button>
         <button class="category-chip" data-category="cosmetic">Cosmetic / Skin</button>
         <button class="category-chip" data-category="recovery">Repair</button>
         <button class="category-chip" data-category="accessories">Accessories</button>
@@ -912,7 +911,6 @@
           <option value="metabolic">Fat Loss Research</option>
           <option value="cognitive">Cognitive Research</option>
           <option value="cellular-energy">Cellular Energy</option>
-          <option value="longevity">Longevity</option>
           <option value="cosmetic">Cosmetic / Skin</option>
           <option value="recovery">Repair</option>
           <option value="accessories">Accessories</option>
@@ -1239,7 +1237,7 @@
       const description = String(p.description || '').toLowerCase();
       const haystack = `${name} ${type} ${description}`;
 
-      // Accessories need checking first so items like empty pens do not get pulled into peptide categories.
+      // Accessories are checked first so they never get pulled into product categories by mistake.
       if (
         haystack.includes('syringe') ||
         haystack.includes('needle') ||
@@ -1259,18 +1257,18 @@
         };
       }
 
+      // Fat Loss Research: Sema, Tirz, Reta, Cagri only.
       if (
+        haystack.includes('semaglutide') ||
+        haystack.includes('sema ') ||
+        haystack.includes('sema-') ||
+        haystack.includes('sema_') ||
         haystack.includes('tirzepatide') ||
         haystack.includes('tirz') ||
         haystack.includes('retatrutide') ||
         haystack.includes('reta') ||
-        haystack.includes('semaglutide') ||
-        haystack.includes('sema') ||
-        haystack.includes('cagri') ||
         haystack.includes('cagrilintide') ||
-        haystack.includes('aod') ||
-        haystack.includes('slupp') ||
-        haystack.includes('slup')
+        haystack.includes('cagri')
       ) {
         return {
           key: 'metabolic',
@@ -1280,12 +1278,10 @@
         };
       }
 
+      // Cognitive Research: Selank and Semax only.
       if (
-        haystack.includes('semax') ||
         haystack.includes('selank') ||
-        haystack.includes('nootropic') ||
-        haystack.includes('cognitive') ||
-        haystack.includes('focus')
+        haystack.includes('semax')
       ) {
         return {
           key: 'cognitive',
@@ -1295,15 +1291,13 @@
         };
       }
 
+      // Cellular Energy: NAD and MOTS-c only.
       if (
         haystack.includes('nad') ||
         haystack.includes('nad+') ||
-        haystack.includes('mots') ||
         haystack.includes('mots-c') ||
-        haystack.includes('ss-31') ||
-        haystack.includes('ss31') ||
-        haystack.includes('mitochondrial') ||
-        haystack.includes('cellular')
+        haystack.includes('mots c') ||
+        haystack.includes('mots')
       ) {
         return {
           key: 'cellular-energy',
@@ -1313,14 +1307,14 @@
         };
       }
 
+      // Cosmetic / Skin Research: GHK-Cu and MT2 only.
       if (
-        haystack.includes('ghk') ||
         haystack.includes('ghk-cu') ||
+        haystack.includes('ghk cu') ||
+        haystack.includes('ghkcu') ||
         haystack.includes('mt2') ||
-        haystack.includes('melanotan') ||
-        haystack.includes('skin') ||
-        haystack.includes('cosmetic') ||
-        haystack.includes('copper')
+        haystack.includes('mt-2') ||
+        haystack.includes('melanotan')
       ) {
         return {
           key: 'cosmetic',
@@ -1330,44 +1324,26 @@
         };
       }
 
+      // Repair: CJC, Tesamorelin and BPC stack only.
       if (
-        haystack.includes('bpc') ||
-        haystack.includes('bpc-157') ||
-        haystack.includes('bpc 157') ||
-        haystack.includes('bpc157') ||
+        haystack.includes('cjc') ||
+        haystack.includes('tesamorelin') ||
+        haystack.includes('tesa') ||
+        haystack.includes('bpc stack') ||
         haystack.includes('bpc-157 stack') ||
+        haystack.includes('bpc157 stack') ||
+        haystack.includes('bpc 157 stack') ||
         haystack.includes('wolverine stack') ||
-        haystack.includes('tb500') ||
-        haystack.includes('tb-500') ||
-        haystack.includes('tb 500') ||
-        haystack.includes('kpv') ||
-        haystack.includes('recovery') ||
-        haystack.includes('tissue') ||
-        haystack.includes('repair')
+        haystack.includes('bpc/tb') ||
+        haystack.includes('bpc + tb') ||
+        haystack.includes('bpc-157/tb') ||
+        haystack.includes('bpc-157 + tb')
       ) {
         return {
           key: 'recovery',
           label: 'Repair Research',
           class: 'cat-recovery',
           icon: 'fa-solid fa-screwdriver-wrench'
-        };
-      }
-
-      if (
-        haystack.includes('epithalon') ||
-        haystack.includes('epitalon') ||
-        haystack.includes('tesamorelin') ||
-        haystack.includes('cjc') ||
-        haystack.includes('ipamorelin') ||
-        haystack.includes('longevity') ||
-        haystack.includes('gh') ||
-        haystack.includes('growth hormone')
-      ) {
-        return {
-          key: 'longevity',
-          label: 'Longevity Research',
-          class: 'cat-longevity',
-          icon: 'fa-solid fa-hourglass-half'
         };
       }
 
