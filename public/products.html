@@ -405,13 +405,6 @@
       z-index: 2;
     }
 
-    .pill-popular {
-      background: #22c55e;
-    }
-
-    .pill-premium {
-      background: #6366f1;
-    }
 
     .pill-best-value {
       background: #f97316;
@@ -1169,9 +1162,7 @@
         return { text: 'Most Popular', class: 'pill-popular' };
       }
 
-      if (p.price >= 130) {
-        return { text: 'Premium', class: 'pill-premium' };
-      }
+      
 
       return null;
     }
