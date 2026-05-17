@@ -1,1 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>SS-31 Research Guide | Lumina</title>
+  <meta name="description" content="Educational SS-31 research guide covering mitochondrial research, elamipretide, cardiolipin, oxidative stress, cellular energy, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="SS-31 Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to SS-31, also known as elamipretide, including mitochondrial membrane research, cardiolipin, oxidative stress and cellular energy discussions." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/ss-31.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/ss-31.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-orange-soft: #fff7ed;
+      --lumina-orange: #c2410c;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.13), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-orange-soft);
+      color: var(--lumina-orange);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
+    }
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+    }
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "SS-31 Research Guide",
+    "description": "Educational research-only guide to SS-31, also known as elamipretide, mitochondrial research, cardiolipin, oxidative stress and cellular energy discussions.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/ss-31.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-bolt"></i> Cellular energy research guide</div>
+      <h1>SS-31 Research Guide: mitochondrial function, oxidative stress and cellular energy research.</h1>
+      <p class="lead">
+        SS-31, also known in research contexts as elamipretide, is a mitochondria-targeted peptide discussed around mitochondrial membrane function, cardiolipin interaction, oxidative stress and cellular energy resilience. This guide explains the main research themes and why careful wording matters.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Mitochondrial research and cellular-energy signalling.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Also known as</strong>
+          <span>Elamipretide in many research and clinical-study contexts.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Common themes</strong>
+          <span>Cardiolipin, oxidative stress, mitochondrial membrane function.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What is SS-31?</h2>
+            <p>
+              <strong>SS-31</strong> is a mitochondria-targeted peptide commonly discussed in relation to mitochondrial health, oxidative stress and cellular-energy research. It is also known as <strong>elamipretide</strong> in a number of research and clinical-development contexts.
+            </p>
+            <p>
+              Unlike compounds that are primarily discussed around appetite, fat loss or growth hormone signalling, SS-31 sits more clearly in the cellular-energy and mitochondrial-research category.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">SS-31 is mainly discussed as a mitochondrial research peptide, with interest around cardiolipin, oxidative stress and cellular energy resilience.</p>
+            </div>
+          </section>
+
+          <section id="mitochondria">
+            <h2>Why mitochondria matter in SS-31 research</h2>
+            <p>
+              Mitochondria are often described as the energy centres of the cell because they play a central role in ATP production and cellular metabolism. They are also involved in oxidative stress, cell signalling and many processes linked to ageing, fatigue and tissue function.
+            </p>
+            <p>
+              SS-31 gets attention because it is discussed as a peptide that targets mitochondrial structures directly, rather than working through appetite, incretin or hormone-signalling pathways.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>Cellular energy:</strong> Research interest often centres on mitochondrial ATP production and energetic efficiency.</li>
+              <li><strong>Oxidative stress:</strong> SS-31 is commonly discussed around reactive oxygen species and oxidative damage models.</li>
+              <li><strong>Mitochondrial membrane:</strong> Much of the discussion involves mitochondrial membrane stability and function.</li>
+              <li><strong>Cardiolipin:</strong> SS-31 is frequently linked to cardiolipin, a lipid important for mitochondrial inner membrane structure.</li>
+            </ul>
+          </section>
+
+          <section id="cardiolipin">
+            <h2>What is cardiolipin and why is it mentioned?</h2>
+            <p>
+              Cardiolipin is a specialised lipid found mainly in the inner mitochondrial membrane. It helps support the structure and function of mitochondrial protein complexes involved in energy production.
+            </p>
+            <p>
+              SS-31 is often discussed because of its proposed interaction with cardiolipin. This is one of the reasons it appears in research conversations around mitochondrial resilience, oxidative stress and cellular energy production.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Key research idea</strong>
+              <p class="mb-0">The SS-31 research story is closely tied to mitochondria and cardiolipin, rather than the appetite or hormone pathways seen with many other compounds.</p>
+            </div>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Mitochondrial dysfunction research</h3>
+            <p>
+              SS-31 is often discussed in the context of mitochondrial dysfunction, where cells may struggle with energy production, oxidative stress or impaired mitochondrial signalling. This makes it a frequent topic in cellular-resilience research.
+            </p>
+
+            <h3>2. Oxidative stress</h3>
+            <p>
+              Oxidative stress occurs when reactive oxygen species and antioxidant systems become imbalanced. Because mitochondria are both a source and target of oxidative stress, SS-31 is often discussed in this research area.
+            </p>
+
+            <h3>3. Ageing and cellular resilience</h3>
+            <p>
+              Mitochondrial function is heavily connected to ageing research. SS-31 is therefore often mentioned alongside longevity-focused compounds, although it should not be described as an anti-ageing cure or guaranteed performance enhancer.
+            </p>
+
+            <h3>4. Muscle, heart and high-energy tissue research</h3>
+            <p>
+              Tissues with high energy demand, such as skeletal muscle and cardiac tissue, are often discussed in mitochondrial research. SS-31 appears in these discussions because mitochondrial efficiency and oxidative stress are relevant to high-energy tissues.
+            </p>
+          </section>
+
+          <section id="mechanisms">
+            <h2>Mechanism overview</h2>
+            <p>
+              The most useful way to explain SS-31 is as a mitochondria-targeted peptide connected to inner mitochondrial membrane research. Its discussion often centres on cardiolipin interaction, oxidative stress reduction and mitochondrial function.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Research area</th>
+                  <th>How SS-31 is discussed</th>
+                  <th>Why it matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Cardiolipin</strong></td>
+                  <td>Often linked to cardiolipin interaction and inner mitochondrial membrane stability</td>
+                  <td>Cardiolipin supports mitochondrial energy-production structures</td>
+                </tr>
+                <tr>
+                  <td><strong>Oxidative stress</strong></td>
+                  <td>Discussed around reactive oxygen species and mitochondrial stress models</td>
+                  <td>Oxidative stress can affect cellular function and resilience</td>
+                </tr>
+                <tr>
+                  <td><strong>Cellular energy</strong></td>
+                  <td>Associated with mitochondrial efficiency and ATP-related research themes</td>
+                  <td>Energy production is central to high-demand tissues</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              SS-31 has a stronger formal research identity than many trend-driven peptide discussions because it is also known as elamipretide and has been studied in mitochondrial-disease and clinical-development contexts. That said, claims still need to stay measured.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">SS-31 is a serious mitochondrial research compound, but it should not be oversold as a general energy booster, anti-ageing cure or guaranteed recovery solution.</p>
+            </div>
+            <p>
+              The key is to keep the language focused on mitochondrial research, oxidative stress and cellular energy pathways rather than promising direct outcomes.
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How SS-31 compares with other cellular-energy compounds</h2>
+            <p>
+              SS-31 is often grouped with NAD+, MOTS-C and SLU-PP-332 because all four appear in cellular energy or mitochondrial discussions. However, they are not the same type of compound and they are not researched through the same mechanism.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SS-31</strong></td>
+                  <td>Mitochondrial membrane and oxidative stress</td>
+                  <td>Cardiolipin, cellular energy, mitochondrial resilience</td>
+                </tr>
+                <tr>
+                  <td><strong>NAD+</strong></td>
+                  <td>Redox biology and cellular metabolism</td>
+                  <td>NAD-dependent pathways, sirtuins, energy metabolism</td>
+                </tr>
+                <tr>
+                  <td><strong>MOTS-C</strong></td>
+                  <td>Mitochondrial-derived signalling</td>
+                  <td>AMPK-related pathways, insulin sensitivity, exercise-response research</td>
+                </tr>
+                <tr>
+                  <td><strong>SLU-PP-332</strong></td>
+                  <td>Exercise-mimetic and energy expenditure research</td>
+                  <td>ERR signalling, endurance-like adaptation, metabolism</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              Mitochondrial compounds can easily be overhyped because fatigue, energy, ageing and recovery are all areas people care deeply about. SS-31 has interesting research behind it, but marketing claims should still be kept grounded.
+            </p>
+            <ul>
+              <li>Mitochondrial function is complex and cannot be reduced to one compound.</li>
+              <li>Research context does not automatically equal general wellness benefit.</li>
+              <li>Claims about energy, ageing or recovery should be assessed carefully.</li>
+              <li>This guide does not provide dosing, administration or treatment guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>SS-31 FAQ</h2>
+            <div class="accordion" id="ss31Faq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Is SS-31 the same as elamipretide?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#ss31Faq">
+                  <div class="accordion-body">
+                    SS-31 is commonly associated with the compound known as elamipretide in research contexts. The names may appear differently depending on the source or study being discussed.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Is SS-31 mainly a fat-loss compound?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#ss31Faq">
+                  <div class="accordion-body">
+                    No. SS-31 is more accurately discussed as a mitochondrial and cellular-energy research peptide. It is not usually grouped with GLP-1-based fat-loss compounds.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Why is cardiolipin mentioned with SS-31?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#ss31Faq">
+                  <div class="accordion-body">
+                    Cardiolipin is an important lipid in the inner mitochondrial membrane. SS-31 is often discussed because of its proposed interaction with cardiolipin and mitochondrial membrane function.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use SS-31?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#ss31Faq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What is SS-31?</a>
+            <a href="#mitochondria">Why mitochondria matter</a>
+            <a href="#cardiolipin">Cardiolipin</a>
+            <a href="#research-focus">Research focus</a>
+            <a href="#mechanisms">Mechanism overview</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">Cellular energy</span>
+              <span class="pill">Mitochondrial research</span>
+              <span class="pill">Oxidative stress</span>
+              <span class="pill">Cardiolipin</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>SS-31 is mainly discussed in mitochondrial research.</li>
+              <li>It is also known as elamipretide in many research contexts.</li>
+              <li>Common themes include cardiolipin and oxidative stress.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="nad-plus.html">NAD+ Research Guide</a></li>
+              <li><a href="mots-c.html">MOTS-C Research Guide</a></li>
+              <li><a href="slu-pp-332.html">SLU-PP-332 Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
