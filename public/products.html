@@ -1236,17 +1236,41 @@
     function getResearchCategory(p) {
       const name = String(p.name || '').toLowerCase();
       const type = String(p.type || '').toLowerCase();
+      const description = String(p.description || '').toLowerCase();
+      const haystack = `${name} ${type} ${description}`;
+
+      // Accessories need checking first so items like empty pens do not get pulled into peptide categories.
+      if (
+        haystack.includes('syringe') ||
+        haystack.includes('needle') ||
+        haystack.includes('pen head') ||
+        haystack.includes('empty pen') ||
+        haystack.includes('storage case') ||
+        haystack.includes('bac water') ||
+        haystack.includes('bacteriostatic') ||
+        haystack.includes('accessory') ||
+        haystack.includes('accessories')
+      ) {
+        return {
+          key: 'accessories',
+          label: 'Accessories',
+          class: 'cat-accessories',
+          icon: 'fa-solid fa-box-open'
+        };
+      }
 
       if (
-        type.includes('tirzepatide') ||
-        type.includes('retatrutide') ||
-        type.includes('semaglutide') ||
-        name.includes('tirz') ||
-        name.includes('reta') ||
-        name.includes('sema') ||
-        name.includes('cagri') ||
-        name.includes('cagrilintide') ||
-        name.includes('aod')
+        haystack.includes('tirzepatide') ||
+        haystack.includes('tirz') ||
+        haystack.includes('retatrutide') ||
+        haystack.includes('reta') ||
+        haystack.includes('semaglutide') ||
+        haystack.includes('sema') ||
+        haystack.includes('cagri') ||
+        haystack.includes('cagrilintide') ||
+        haystack.includes('aod') ||
+        haystack.includes('slupp') ||
+        haystack.includes('slup')
       ) {
         return {
           key: 'metabolic',
@@ -1257,8 +1281,11 @@
       }
 
       if (
-        name.includes('semax') ||
-        name.includes('selank')
+        haystack.includes('semax') ||
+        haystack.includes('selank') ||
+        haystack.includes('nootropic') ||
+        haystack.includes('cognitive') ||
+        haystack.includes('focus')
       ) {
         return {
           key: 'cognitive',
@@ -1269,12 +1296,14 @@
       }
 
       if (
-        type.includes('nad') ||
-        type.includes('mots') ||
-        name.includes('ss-31') ||
-        name.includes('ss31') ||
-        name.includes('mots') ||
-        name.includes('nad')
+        haystack.includes('nad') ||
+        haystack.includes('nad+') ||
+        haystack.includes('mots') ||
+        haystack.includes('mots-c') ||
+        haystack.includes('ss-31') ||
+        haystack.includes('ss31') ||
+        haystack.includes('mitochondrial') ||
+        haystack.includes('cellular')
       ) {
         return {
           key: 'cellular-energy',
@@ -1285,9 +1314,13 @@
       }
 
       if (
-        name.includes('ghk') ||
-        name.includes('mt2') ||
-        name.includes('melanotan')
+        haystack.includes('ghk') ||
+        haystack.includes('ghk-cu') ||
+        haystack.includes('mt2') ||
+        haystack.includes('melanotan') ||
+        haystack.includes('skin') ||
+        haystack.includes('cosmetic') ||
+        haystack.includes('copper')
       ) {
         return {
           key: 'cosmetic',
@@ -1298,10 +1331,14 @@
       }
 
       if (
-        name.includes('bpc') ||
-        name.includes('tb500') ||
-        name.includes('tb-500') ||
-        name.includes('kpv')
+        haystack.includes('bpc') ||
+        haystack.includes('bpc-157') ||
+        haystack.includes('tb500') ||
+        haystack.includes('tb-500') ||
+        haystack.includes('kpv') ||
+        haystack.includes('recovery') ||
+        haystack.includes('tissue') ||
+        haystack.includes('repair')
       ) {
         return {
           key: 'recovery',
@@ -1312,33 +1349,20 @@
       }
 
       if (
-        name.includes('epithalon') ||
-        name.includes('tesamorelin') ||
-        name.includes('cjc') ||
-        name.includes('ipamorelin')
+        haystack.includes('epithalon') ||
+        haystack.includes('epitalon') ||
+        haystack.includes('tesamorelin') ||
+        haystack.includes('cjc') ||
+        haystack.includes('ipamorelin') ||
+        haystack.includes('longevity') ||
+        haystack.includes('gh') ||
+        haystack.includes('growth hormone')
       ) {
         return {
           key: 'longevity',
           label: 'Longevity Research',
           class: 'cat-longevity',
           icon: 'fa-solid fa-hourglass-half'
-        };
-      }
-
-      if (
-        name.includes('syringe') ||
-        name.includes('needle') ||
-        name.includes('pen head') ||
-        name.includes('empty pen') ||
-        name.includes('storage case') ||
-        name.includes('bac water') ||
-        name.includes('bacteriostatic')
-      ) {
-        return {
-          key: 'accessories',
-          label: 'Accessories',
-          class: 'cat-accessories',
-          icon: 'fa-solid fa-box-open'
         };
       }
 
