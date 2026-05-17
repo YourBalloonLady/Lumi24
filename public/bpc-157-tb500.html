@@ -1,1 +1,734 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>BPC-157 & TB-500 Research Guide | Lumina</title>
+  <meta name="description" content="Educational BPC-157 and TB-500 research guide covering tissue repair research, tendon and ligament discussions, thymosin beta-4 pathways, recovery themes, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="BPC-157 & TB-500 Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to BPC-157 and TB-500, including repair research, tissue signalling, tendon and ligament discussions, limitations and FAQs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/bpc-157-tb500.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/bpc-157-tb500.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-blue-soft: #eff6ff;
+      --lumina-blue: #1d4ed8;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(29, 78, 216, 0.12), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-blue-soft);
+      color: var(--lumina-blue);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
+    }
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+    }
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "BPC-157 & TB-500 Research Guide",
+    "description": "Educational research-only guide to BPC-157 and TB-500, tissue repair research, tendon and ligament discussions, thymosin beta-4 pathways and evidence limitations.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/bpc-157-tb500.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Repair research guide</div>
+      <h1>BPC-157 & TB-500 Research Guide: tissue signalling, repair pathways and recovery research.</h1>
+      <p class="lead">
+        BPC-157 and TB-500 are two of the most discussed compounds in repair-focused peptide research. This guide explains why they are often grouped together, what each one is usually associated with, and why evidence quality matters when reading online claims.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Tissue repair, tendon, ligament and recovery-related research.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Blend logic</strong>
+          <span>BPC-157 and TB-500 are often discussed together because they sit in similar repair-focused conversations.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Evidence note</strong>
+          <span>Popular online, but many claims rely on early, animal or anecdotal evidence.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What are BPC-157 and TB-500?</h2>
+            <p>
+              <strong>BPC-157</strong> is a synthetic peptide often discussed in relation to soft-tissue repair, tendon research, gut-related studies and recovery-focused mechanisms. The name BPC stands for “Body Protection Compound,” which is why it is frequently positioned in repair conversations.
+            </p>
+            <p>
+              <strong>TB-500</strong> is a synthetic peptide associated with thymosin beta-4 research. It is commonly discussed in relation to tissue repair, mobility, inflammation-related pathways and actin regulation, although the online claims around it can be much stronger than the available evidence.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">BPC-157 and TB-500 are usually discussed as repair-focused research compounds. They are not fat-loss peptides, stimulants or proven medical treatments.</p>
+            </div>
+          </section>
+
+          <section id="why-combined">
+            <h2>Why are they often combined in research discussions?</h2>
+            <p>
+              BPC-157 and TB-500 are often grouped together because they are both discussed around repair, recovery and tissue signalling. In simple terms, BPC-157 is usually associated with localised repair and gut/tendon-style research themes, while TB-500 is often discussed more broadly around tissue remodelling, mobility and thymosin-related pathways.
+            </p>
+            <p>
+              That does not mean they do the same thing. It means they are often placed in the same research category because the conversations around them overlap.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>BPC-157:</strong> Commonly discussed around tendon, ligament, gut and soft-tissue repair research.</li>
+              <li><strong>TB-500:</strong> Commonly discussed around thymosin beta-4, actin regulation, mobility and tissue-remodelling research.</li>
+              <li><strong>Blend interest:</strong> Often described as a “repair stack” because the two compounds are discussed around complementary research themes.</li>
+              <li><strong>Evidence caution:</strong> The popularity of the blend online is much higher than the quality of human evidence available.</li>
+            </ul>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Tendon and ligament research</h3>
+            <p>
+              BPC-157 and TB-500 are frequently discussed in relation to tendon and ligament repair research. This is one of the reasons the combination has become popular in sports, gym and injury-recovery communities. However, online popularity should not be mistaken for proven clinical effect.
+            </p>
+
+            <h3>2. Soft-tissue and wound-healing discussions</h3>
+            <p>
+              Both compounds are often mentioned in broader soft-tissue and wound-healing research conversations. BPC-157 is commonly linked to protective and repair-related mechanisms, while TB-500 is often connected to tissue remodelling and cell migration themes.
+            </p>
+
+            <h3>3. Gut and gastrointestinal research</h3>
+            <p>
+              BPC-157 is especially well known in gut-related research discussions. It is often talked about in relation to gastrointestinal lining, protective signalling and inflammatory stress models. This is a major reason it has a different research profile from TB-500.
+            </p>
+
+            <h3>4. Mobility and recovery interest</h3>
+            <p>
+              TB-500 is often discussed around mobility and recovery because of its connection to thymosin beta-4 research. This area includes interest in tissue remodelling, actin dynamics and cell movement.
+            </p>
+          </section>
+
+          <section id="mechanisms">
+            <h2>Mechanism overview</h2>
+            <p>
+              The exact mechanisms discussed around BPC-157 and TB-500 are complex and still debated. For a simple research-library summary, the most useful distinction is that BPC-157 is often framed around protective and localised repair signalling, while TB-500 is usually connected to thymosin beta-4-related pathways and tissue remodelling.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Common mechanism discussion</th>
+                  <th>Research themes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>BPC-157</strong></td>
+                  <td>Protective peptide signalling, tissue repair pathways, angiogenesis-related discussion</td>
+                  <td>Tendon, ligament, gut, soft tissue</td>
+                </tr>
+                <tr>
+                  <td><strong>TB-500</strong></td>
+                  <td>Thymosin beta-4-related pathways, actin regulation, cell migration themes</td>
+                  <td>Mobility, remodelling, recovery, tissue response</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              This is where the honest answer matters. BPC-157 and TB-500 are extremely popular online, but the strength of human clinical evidence is not as strong as the claims often suggest. Much of the discussion comes from animal research, preclinical work, mechanistic theory and user anecdote.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">BPC-157 and TB-500 are interesting repair-research compounds, but they should not be presented as proven cures for injury, tendon problems or pain.</p>
+            </div>
+            <p>
+              A good research summary should separate what is genuinely interesting from what is simply repeated online. “Popular” does not always mean “well proven.”
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How this blend compares with other research compounds</h2>
+            <p>
+              The BPC-157 and TB-500 blend belongs firmly in the repair and tissue-research category. It is very different from metabolic compounds like Tirzepatide or Retatrutide, and also different from cellular-energy compounds like NAD+, MOTS-C or SS-31.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>BPC-157 & TB-500</strong></td>
+                  <td>Repair and recovery research</td>
+                  <td>Tendon, ligament, soft tissue, mobility</td>
+                </tr>
+                <tr>
+                  <td><strong>CJC-1295 + Ipamorelin</strong></td>
+                  <td>Growth hormone signalling</td>
+                  <td>Recovery, body composition, sleep-related discussions</td>
+                </tr>
+                <tr>
+                  <td><strong>GHK-Cu</strong></td>
+                  <td>Cosmetic and skin research</td>
+                  <td>Skin, hair, collagen, tissue signalling</td>
+                </tr>
+                <tr>
+                  <td><strong>SS-31</strong></td>
+                  <td>Mitochondrial research</td>
+                  <td>Cellular energy, oxidative stress, mitochondrial resilience</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              Repair-focused peptides are some of the most exaggerated compounds online. It is common to see bold claims around injury healing, pain relief, tendon repair and recovery speed. Those claims should be treated cautiously unless supported by strong evidence.
+            </p>
+            <ul>
+              <li>Much of the evidence discussed online is preclinical or anecdotal.</li>
+              <li>Human outcomes cannot be assumed from animal or mechanistic research.</li>
+              <li>Injuries and tissue damage require proper medical assessment.</li>
+              <li>This guide does not provide dosing, administration or treatment guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>BPC-157 & TB-500 FAQ</h2>
+            <div class="accordion" id="bpcTbFaq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Are BPC-157 and TB-500 the same thing?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    No. They are different compounds. BPC-157 is commonly discussed around protective and repair-related peptide signalling, while TB-500 is associated with thymosin beta-4-related research themes.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Why is this combination sometimes called a repair stack?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    It is called a repair stack because both compounds are commonly discussed in relation to recovery and tissue repair research. The phrase is popular online, but it should not be treated as proof of medical effect.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Is the evidence strong in humans?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    The online interest is strong, but the quality of human evidence is limited compared with the claims often made. Much of the discussion relies on preclinical research and anecdotal reports.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use BPC-157 or TB-500?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What are they?</a>
+            <a href="#why-combined">Why combined?</a>
+            <a href="#research-focus">Research focus</a>
+            <a href="#mechanisms">Mechanism overview</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">Repair research</span>
+              <span class="pill">Tissue signalling</span>
+              <span class="pill">Tendon interest</span>
+              <span class="pill">Recovery discussions</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>BPC-157 and TB-500 are different compounds.</li>
+              <li>They are grouped together because both sit in repair-focused research discussions.</li>
+              <li>Claims online can be much stronger than the available human evidence.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="cjc-1295-ipamorelin.html">CJC-1295 + Ipamorelin Guide</a></li>
+              <li><a href="ghk-cu.html">GHK-Cu Research Guide</a></li>
+              <li><a href="ss-31.html">SS-31 Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
