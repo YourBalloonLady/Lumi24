@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
+
   <!-- FAVICON / TAB ICON -->
   <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
   <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
   <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
- 
+
   <!-- SEO (neutral / research supply language) -->
   <title>Research Materials Catalogue UK | Lumina</title>
   <meta name="description" content="Browse all Lumina research materials in the UK. Product formats and quantities available with discreet UK dispatch — for laboratory research use only. Not for human consumption.">
@@ -19,12 +19,12 @@
   <meta property="og:description" content="Full UK range of research materials and accessories where applicable. Discreet packaging • UK dispatch • Research use only. Not for human consumption.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.lumi24.org/products.html">
- 
+
   <link rel="canonical" href="https://www.lumi24.org/products.html">
- 
+
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
- 
+
   <style>
     :root {
       --lw-mint: #22c55e;
@@ -35,7 +35,7 @@
       --lw-muted: #64748b;
       --lw-bg: #f3f4f6;
     }
- 
+
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
       background: var(--lw-bg);
@@ -43,7 +43,7 @@
       margin: 0;
       padding-top: 80px;
     }
- 
+
     #trust-bar {
       position: fixed;
       top: 0;
@@ -56,51 +56,51 @@
       z-index: 1100;
       text-align: center;
     }
- 
+
     #trust-bar span {
       white-space: nowrap;
     }
- 
+
     .navbar {
       background: #ffffff !important;
       box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
     }
- 
+
     .navbar.fixed-top {
       top: 32px;
     }
- 
+
     .navbar-brand img {
       height: 36px;
       margin-right: 10px;
     }
- 
+
     .navbar-brand span {
       font-weight: 700;
       font-size: 1.15rem;
     }
- 
+
     .nav-link {
       font-weight: 500;
       color: var(--lw-muted) !important;
     }
- 
+
     .nav-link.active,
     .nav-link:hover {
       color: var(--lw-dark) !important;
     }
- 
+
     .cart-icon {
       cursor: pointer;
       font-size: 1.5rem;
       color: var(--lw-dark);
     }
- 
+
     .hero {
       background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
       padding: 120px 0 80px;
     }
- 
+
     .hero-eyebrow {
       display: inline-flex;
       align-items: center;
@@ -112,204 +112,367 @@
       font-size: 0.85rem;
       font-weight: 600;
     }
- 
+
     .hero-eyebrow i {
       font-size: 0.9rem;
     }
- 
-    .hero-title {
-  font-size: clamp(2.2rem, 4vw, 2.6rem);
-  font-weight: 800;
-  line-height: 1.1;
-  margin-top: 18px;
-}
- 
-.hero-subtitle {
-  color: var(--lw-muted);
-  font-size: 1rem;
-  max-width: 650px;
-  margin: 16px auto 0;
-}
- 
-#products {
-  padding: 60px 0 80px;
-}
- 
-.section-eyebrow {
-  text-transform: uppercase;
-  letter-spacing: .08em;
-  font-size: 0.78rem;
-  color: #0f766e;
-  font-weight: 700;
-}
- 
-.section-title {
-  font-size: 2rem;
-  font-weight: 800;
-}
- 
-.section-subtitle {
-  color: var(--lw-muted);
-  max-width: 560px;
-  margin: 10px auto 0;
-}
- 
-.product-card {
-  border: 0;
-  border-radius: 24px;
-  background: #ffffff;
-  padding-top: 4px;
-  overflow: hidden;
-  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
-  transition: transform .2s ease, box-shadow .2s ease;
-  cursor: pointer;
-}
- 
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
-}
- 
-.product-card.out-of-stock {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
- 
-.product-card img {
-  height: 200px;
-  object-fit: contain;
-}
- 
-.product-body {
-  padding: 1.5rem 1.6rem 1.6rem;
-}
- 
-.product-name {
-  font-weight: 700;
-  font-size: 1.05rem;
-  margin-bottom: .15rem;
-}
- 
-.product-price {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #0f172a;
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  flex-wrap: wrap;
-}
- 
-.product-price .unit-suffix {
-  font-size: .85rem;
-  color: var(--lw-muted);
-  font-weight: 500;
-}
- 
-.sale-old {
-  text-decoration: line-through;
-  color: #9ca3af;
-  font-weight: 700;
-  font-size: 1rem;
-}
- 
-.sale-new {
-  color: #16a34a;
-  font-weight: 800;
-  font-size: 1.3rem;
-}
- 
-.sale-tag {
-  display: inline-block;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: .04em;
-  color: #dc2626;
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
- 
-.pill-label {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #ffffff;
-  z-index: 2;
-}
- 
-.pill-popular {
-  background: #22c55e;
-}
- 
-.pill-premium {
-  background: #6366f1;
-}
- 
-.pill-best-value {
-  background: #f97316;
-}
- 
-.pill-wolverine {
-  background: #111827;
-}
- 
-.pill-restock {
-  position: absolute;
-  top: 16px;
-  left: -40px;
-  background: #ef4444;
-  color: white;
-  font-weight: 800;
-  font-size: 0.75rem;
-  padding: 6px 60px;
-  transform: rotate(-35deg);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  z-index: 2;
-}
- 
-.pill-coming-soon {
-  position: absolute;
-  top: 16px;
-  left: -46px;
-  background: #dc2626;
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 0.72rem;
-  padding: 6px 64px;
-  transform: rotate(-35deg);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.25);
-  z-index: 3;
-}
 
-   
-      .stock {
-  font-size: 0.9rem;
-  margin-top: 4px;
-  margin-bottom: 0;
-}
- 
+    .hero-title {
+      font-size: clamp(2.2rem, 4vw, 2.6rem);
+      font-weight: 800;
+      line-height: 1.1;
+      margin-top: 18px;
+    }
+
+    .hero-subtitle {
+      color: var(--lw-muted);
+      font-size: 1rem;
+      max-width: 650px;
+      margin: 16px auto 0;
+    }
+
+    .category-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin: 28px auto 0;
+      max-width: 980px;
+    }
+
+    .category-chip {
+      border: 1px solid rgba(15, 23, 42, 0.08);
+      background: #ffffff;
+      color: #475569;
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(15, 23, 42, 0.05);
+      transition: all .18s ease;
+    }
+
+    .category-chip:hover,
+    .category-chip.active {
+      background: #0f172a;
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    #products {
+      padding: 60px 0 80px;
+    }
+
+    .section-eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-size: 0.78rem;
+      color: #0f766e;
+      font-weight: 700;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+
+    .section-subtitle {
+      color: var(--lw-muted);
+      max-width: 560px;
+      margin: 10px auto 0;
+    }
+
+    .catalogue-toolbar {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 14px;
+      margin: 28px auto 28px;
+      display: grid;
+      grid-template-columns: 1fr 220px 200px;
+      gap: 12px;
+      box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      border: 1px solid rgba(15, 23, 42, 0.06);
+    }
+
+    .catalogue-search {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f8fafc;
+      border-radius: 999px;
+      padding: 0 16px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .catalogue-search i {
+      color: #94a3b8;
+    }
+
+    .catalogue-search input {
+      border: 0;
+      outline: 0;
+      background: transparent;
+      width: 100%;
+      padding: 12px 0;
+      font-size: 0.95rem;
+    }
+
+    .catalogue-toolbar .form-select {
+      border-radius: 999px;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .results-count {
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .product-card {
+      border: 0;
+      border-radius: 24px;
+      background: #ffffff;
+      padding-top: 4px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+      transition: transform .2s ease, box-shadow .2s ease;
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 26px 60px rgba(15, 23, 42, 0.12);
+    }
+
+    .product-card.out-of-stock {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .product-image-wrap {
+      margin: 12px 12px 0;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #f8fafc, #ecfdf5);
+      min-height: 210px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .product-image-wrap img {
+      max-height: 180px;
+      object-fit: contain;
+      filter: drop-shadow(0 14px 18px rgba(15,23,42,.12));
+    }
+
+    .product-body {
+      padding: 1.5rem 1.6rem 1.6rem;
+    }
+
+    .product-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+
+    .cat-metabolic {
+      background: #ecfdf5;
+      color: #15803d;
+    }
+
+    .cat-cognitive {
+      background: #eef2ff;
+      color: #4338ca;
+    }
+
+    .cat-energy {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .cat-cosmetic {
+      background: #fdf2f8;
+      color: #be185d;
+    }
+
+    .cat-recovery {
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .cat-longevity {
+      background: #f5f3ff;
+      color: #6d28d9;
+    }
+
+    .cat-accessories {
+      background: #f8fafc;
+      color: #475569;
+    }
+
+    .cat-general {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .product-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: .15rem;
+    }
+
+    .quick-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 10px 0;
+    }
+
+    .quick-specs span {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      color: #64748b;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: .72rem;
+      font-weight: 700;
+    }
+
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .product-price .unit-suffix {
+      font-size: .85rem;
+      color: var(--lw-muted);
+      font-weight: 500;
+    }
+
+    .sale-old {
+      text-decoration: line-through;
+      color: #9ca3af;
+      font-weight: 700;
+      font-size: 1rem;
+    }
+
+    .sale-new {
+      color: #16a34a;
+      font-weight: 800;
+      font-size: 1.3rem;
+    }
+
+    .sale-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      color: #dc2626;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .pill-label {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #ffffff;
+      z-index: 2;
+    }
+
+    .pill-popular {
+      background: #22c55e;
+    }
+
+    .pill-premium {
+      background: #6366f1;
+    }
+
+    .pill-best-value {
+      background: #f97316;
+    }
+
+    .pill-wolverine {
+      background: #111827;
+    }
+
+    .pill-restock {
+      position: absolute;
+      top: 16px;
+      left: -40px;
+      background: #ef4444;
+      color: white;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 6px 60px;
+      transform: rotate(-35deg);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      z-index: 2;
+    }
+
+    .pill-coming-soon {
+      position: absolute;
+      top: 16px;
+      left: -46px;
+      background: #dc2626;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.72rem;
+      padding: 6px 64px;
+      transform: rotate(-35deg);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+      z-index: 3;
+    }
+
+    .stock {
+      font-size: 0.9rem;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+
     .btn-add {
       border-radius: 999px;
       font-weight: 600;
       padding-inline: 24px;
       margin-top: 12px;
     }
- 
+
     .info-card {
       border-radius: 20px;
       background: #ffffff;
       padding: 20px 18px;
       box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06);
     }
- 
+
     .info-icon {
       width: 42px;
       height: 42px;
@@ -321,7 +484,7 @@
       color: #15803d;
       font-size: 1.1rem;
     }
- 
+
     .btn-info-link {
       font-size: 0.85rem;
       font-weight: 600;
@@ -333,12 +496,12 @@
       padding: 0;
       text-decoration: none;
     }
- 
+
     .btn-info-link:hover {
       text-decoration: underline;
       color: #115e59;
     }
- 
+
     .cart-sidebar {
       height: 100vh;
       width: 420px;
@@ -351,11 +514,11 @@
       z-index: 9999;
       overflow-y: auto;
     }
- 
+
     .cart-sidebar.open {
       right: 0;
     }
- 
+
     .overlay {
       display: none;
       position: fixed;
@@ -363,55 +526,28 @@
       background: rgba(15, 23, 42, 0.45);
       z-index: 9998;
     }
- 
+
     .overlay.show {
       display: block;
     }
- 
+
     .qty-btn {
       width: 38px;
       height: 38px;
     }
- 
+
     .qty-input {
       width: 60px;
       text-align: center;
     }
- 
+
     footer {
       background: #020617;
       color: #9ca3af;
       padding: 22px 0;
       font-size: 0.9rem;
     }
- 
-    @media (min-width: 769px) {
-      .navbar.fixed-top {
-        position: fixed;
-        left: 0;
-        right: 0;
-      }
- 
-      body {
-        padding-top: 80px;
-      }
-    }
- 
-    @media (max-width: 768px) {
-      #trust-bar {
-        position: static;
-      }
- 
-      .navbar.fixed-top {
-        position: static;
-        top: auto;
-      }
- 
-      body {
-        padding-top: 0;
-      }
-    }
- 
+
     #backToTop {
       position: fixed;
       right: 18px;
@@ -421,172 +557,226 @@
       border-radius: 999px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.18);
     }
-  </style>
-  <style>
-  #lumi-launcher {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: #28a745;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    z-index: 9999;
-  }
 
-  #lumi-chat-container {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 350px;
-    height: 450px;
-    max-width: calc(100vw - 24px);
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.2);
-    display: none;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 9999;
-    font-family: sans-serif;
-  }
-
-  #lumi-header {
-    background: #28a745;
-    color: white;
-    padding: 15px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  #lumi-messages {
-    flex-grow: 1;
-    padding: 15px;
-    overflow-y: auto;
-    background: #f8f9fa;
-    font-size: 14px;
-    line-height: 1.5;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  #lumi-input-area {
-    border-top: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-  }
-
-  #lumi-user-text {
-    border: 1px solid #ddd;
-    border-radius: 20px;
-    padding: 10px 15px;
-    flex: 1 1 auto;
-    min-width: 0;
-    outline: none;
-  }
-
-  #lumi-send-btn {
-    background: #28a745;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    min-width: 40px;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    line-height: 1;
-    padding: 0;
-  }
-
-  .msg-bot,
-  .msg-user {
-    max-width: 85%;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    padding: 8px 12px;
-    border-radius: 15px;
-    margin-bottom: 0;
-  }
-
-  .msg-bot {
-    background: #e9ecef;
-    align-self: flex-start;
-  }
-
-  .msg-user {
-    background: #28a745;
-    color: white;
-    align-self: flex-end;
-    text-align: right;
-  }
-
-  @media (max-width: 576px) {
     #lumi-launcher {
-      right: 14px;
-      bottom: 14px;
-      width: 56px;
-      height: 56px;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: #28a745;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 9999;
     }
 
     #lumi-chat-container {
-      right: 12px;
-      left: 12px;
-      bottom: 80px;
-      width: auto;
-      height: min(70vh, 520px);
-      max-width: none;
-      border-radius: 16px;
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 350px;
+      height: 450px;
+      max-width: calc(100vw - 24px);
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 9999;
+      font-family: sans-serif;
     }
 
     #lumi-header {
-      padding: 12px 14px;
-      font-size: 15px;
+      background: #28a745;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     #lumi-messages {
-      padding: 12px;
+      flex-grow: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background: #f8f9fa;
       font-size: 14px;
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
     #lumi-input-area {
+      border-top: 1px solid #eee;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       padding: 10px;
     }
 
     #lumi-user-text {
-      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 10px 15px;
+      flex: 1 1 auto;
+      min-width: 0;
+      outline: none;
     }
-  }
-</style>
+
+    #lumi-send-btn {
+      background: #28a745;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .msg-bot,
+    .msg-user {
+      max-width: 85%;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      padding: 8px 12px;
+      border-radius: 15px;
+      margin-bottom: 0;
+    }
+
+    .msg-bot {
+      background: #e9ecef;
+      align-self: flex-start;
+    }
+
+    .msg-user {
+      background: #28a745;
+      color: white;
+      align-self: flex-end;
+      text-align: right;
+    }
+
+    @media (min-width: 769px) {
+      .navbar.fixed-top {
+        position: fixed;
+        left: 0;
+        right: 0;
+      }
+
+      body {
+        padding-top: 80px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #trust-bar {
+        position: static;
+      }
+
+      .navbar.fixed-top {
+        position: static;
+        top: auto;
+      }
+
+      body {
+        padding-top: 0;
+      }
+
+      .hero {
+        padding: 70px 0 55px;
+      }
+
+      .catalogue-toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .category-strip {
+        justify-content: flex-start;
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 4px;
+      }
+
+      .category-chip {
+        white-space: nowrap;
+      }
+
+      .cart-sidebar {
+        width: 100%;
+        right: -100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      #lumi-launcher {
+        right: 14px;
+        bottom: 14px;
+        width: 56px;
+        height: 56px;
+      }
+
+      #lumi-chat-container {
+        right: 12px;
+        left: 12px;
+        bottom: 80px;
+        width: auto;
+        height: min(70vh, 520px);
+        max-width: none;
+        border-radius: 16px;
+      }
+
+      #lumi-header {
+        padding: 12px 14px;
+        font-size: 15px;
+      }
+
+      #lumi-messages {
+        padding: 12px;
+        font-size: 14px;
+      }
+
+      #lumi-input-area {
+        padding: 10px;
+      }
+
+      #lumi-user-text {
+        font-size: 16px;
+      }
+    }
+  </style>
 </head>
- 
+
 <body>
-
   <div id="lumi-launcher" onclick="toggleLumiChat()">💬</div>
-<div id="lumi-chat-container">
-  <div id="lumi-header"><span>Lumi24 Assistant</span> <span onclick="document.getElementById('lumi-chat-container').style.display = 'none'" style="cursor:pointer">×</span></div>
-  <div id="lumi-messages"><div class="msg-bot">Hi! I'm here to help with technical questions about our research materials. What can I help you find?</div></div>
-  <div id="lumi-input-area">
-    <input type="text" id="lumi-user-text" placeholder="Type a message...">
-    <button id="lumi-send-btn" type="button" onclick="sendMessage()">➔</button>
-  </div>
-</div>
 
+  <div id="lumi-chat-container">
+    <div id="lumi-header">
+      <span>Lumi24 Assistant</span>
+      <span onclick="document.getElementById('lumi-chat-container').style.display = 'none'" style="cursor:pointer">×</span>
+    </div>
+    <div id="lumi-messages">
+      <div class="msg-bot">Hi! I'm here to help with technical questions about our research materials. What can I help you find?</div>
+    </div>
+    <div id="lumi-input-area">
+      <input type="text" id="lumi-user-text" placeholder="Type a message...">
+      <button id="lumi-send-btn" type="button" onclick="sendMessage()">➔</button>
+    </div>
+  </div>
 
   <div id="trust-bar">
     <div class="container d-flex justify-content-center gap-4 flex-wrap">
@@ -596,38 +786,38 @@
       <span>📦 Discreet Packaging</span>
     </div>
   </div>
- 
+
   <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container">
       <a class="navbar-brand d-flex align-items-center" href="index.html#home">
         <span>Lumina</span>
       </a>
- 
+
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
- 
+
       <div class="collapse navbar-collapse" id="mainNav">
-      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-        <li class="nav-item"><a class="nav-link" href="product-bundles.html">Bundles</a></li>
-        <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
-        <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
- 
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="product-bundles.html">Bundles</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+
           <li class="nav-item" id="logout-nav-item" style="display:none;">
             <a class="nav-link" href="#" id="logout-btn">Logout</a>
           </li>
- 
+
           <li class="nav-item" id="admin-nav-item" style="display:none;">
             <a class="nav-link" href="admin.html">Admin</a>
           </li>
- 
+
           <li class="nav-item">
             <a class="nav-link" href="account.html" id="account-link">My Account</a>
           </li>
- 
+
           <li class="nav-item ms-lg-3">
             <div class="position-relative">
               <i class="fas fa-shopping-cart cart-icon" onclick="toggleCart()"></i>
@@ -638,19 +828,19 @@
       </div>
     </div>
   </nav>
- 
+
   <div class="overlay" onclick="toggleCart()"></div>
- 
+
   <div class="cart-sidebar" id="cart-sidebar">
     <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
       <h5 class="mb-0 fw-semibold">Your Cart (<span id="cart-items-count">0</span>)</h5>
       <button class="btn-close" onclick="toggleCart()"></button>
     </div>
- 
+
     <div id="cart-items" class="p-4" style="min-height: 60vh;">
       <p class="text-center text-muted m-0">Your cart is empty</p>
     </div>
- 
+
     <div class="p-4 border-top bg-light">
       <div class="d-flex justify-content-between fs-5 mb-3">
         <span class="fw-semibold">Total:</span>
@@ -662,52 +852,91 @@
       </small>
     </div>
   </div>
- 
+
   <section class="hero text-center">
     <div class="container">
       <div class="hero-eyebrow">
         <i class="fa-solid fa-vial-circle-check"></i>
         UK Research Materials Catalogue
       </div>
- 
+
       <h1 class="hero-title">All Lumina Products</h1>
- 
+
       <p class="hero-subtitle">
         Browse the full Lumina range of laboratory research materials supplied from the UK.
         Orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
         <br><br>
         All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
       </p>
+
+      <div class="category-strip">
+        <button class="category-chip active" data-category="all">All</button>
+        <button class="category-chip" data-category="metabolic">Metabolic Research</button>
+        <button class="category-chip" data-category="cognitive">Cognitive Research</button>
+        <button class="category-chip" data-category="cellular-energy">Cellular Energy</button>
+        <button class="category-chip" data-category="longevity">Longevity</button>
+        <button class="category-chip" data-category="cosmetic">Cosmetic / Skin</button>
+        <button class="category-chip" data-category="recovery">Recovery</button>
+        <button class="category-chip" data-category="accessories">Accessories</button>
+      </div>
     </div>
   </section>
- 
+
   <section id="products">
     <div class="container">
       <div class="text-center mb-4">
         <div class="section-eyebrow">Research Materials</div>
- 
-        <h2 class="section-title">Choose Your Format</h2>
- 
+
+        <h2 class="section-title">Full Research Catalogue</h2>
+
         <p class="section-subtitle">
-          Lumina supplies research materials in multiple formats depending on laboratory requirements.
-          Each product listing displays the available format, stock level and price.
+          Explore Lumina research materials by category, format, availability and price.
+          Use the filters below to quickly find the right listing for your laboratory requirements.
         </p>
- 
+
         <p class="text-muted small mt-2">
           <strong>Where applicable, accessories are supplied for laboratory handling and measurement.</strong><br>
           <strong>Lumina does not provide dosing, administration or medical guidance.</strong><br>
           <strong>All products are supplied strictly for laboratory research use only.</strong>
         </p>
       </div>
- 
+
+      <div class="catalogue-toolbar">
+        <div class="catalogue-search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="productSearch" type="text" placeholder="Search research materials...">
+        </div>
+
+        <select id="categoryFilter" class="form-select">
+          <option value="all">All categories</option>
+          <option value="metabolic">Metabolic Research</option>
+          <option value="cognitive">Cognitive Research</option>
+          <option value="cellular-energy">Cellular Energy</option>
+          <option value="longevity">Longevity</option>
+          <option value="cosmetic">Cosmetic / Skin</option>
+          <option value="recovery">Recovery</option>
+          <option value="accessories">Accessories</option>
+        </select>
+
+        <select id="sortFilter" class="form-select">
+          <option value="default">Sort by default</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="name">Name A-Z</option>
+          <option value="stock">Stock level</option>
+        </select>
+      </div>
+
+      <div id="results-count" class="results-count text-center"></div>
+
       <div id="all-products-status" class="text-center text-muted mb-3">
         Loading products…
       </div>
- 
+
       <div class="row g-4" id="all-products-list"></div>
     </div>
   </section>
- 
+
   <section id="info-cards" class="py-5">
     <div class="container">
       <div class="text-center mb-4">
@@ -718,7 +947,7 @@
           All information provided on this website is administrative in nature and does not constitute medical guidance.
         </p>
       </div>
- 
+
       <div class="row g-4">
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
@@ -731,7 +960,7 @@
             <a href="disclaimer.html" class="btn-info-link">Read now</a>
           </div>
         </div>
- 
+
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
             <div class="info-icon mb-3"><i class="fa-solid fa-shield-halved"></i></div>
@@ -740,14 +969,16 @@
             <a href="terms.html" class="btn-info-link">View terms</a>
           </div>
         </div>
- 
+
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
             <div class="info-icon mb-3"><i class="fa-regular fa-star"></i></div>
+            <h5 class="fw-semibold mb-2">Customer Feedback</h5>
             <p class="small mb-3">Ordering experience, delivery speed, packaging and customer service feedback.</p>
+            <a href="reviews.html" class="btn-info-link">View reviews</a>
           </div>
         </div>
- 
+
         <div class="col-md-3">
           <div class="info-card h-100 text-center">
             <div class="info-icon mb-3"><i class="fa-solid fa-truck-fast"></i></div>
@@ -759,41 +990,41 @@
       </div>
     </div>
   </section>
- 
+
   <footer class="text-center">
     <div class="container">
       © 2026 Lumina • UK Research Materials Supplier • Research Purposes Only • Not For Human Consumption
     </div>
   </footer>
- 
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
- 
+
   <script>
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
- 
+
     const ADMIN_EMAIL = "luminaweight@gmail.com";
     const adminNavItem = document.getElementById('admin-nav-item');
     const accountLink = document.getElementById('account-link');
     const logoutNavItem = document.getElementById('logout-nav-item');
     const logoutBtn = document.getElementById('logout-btn');
- 
+
     (async () => {
       try {
         const { data, error } = await supabaseClient.auth.getUser();
         const user = data?.user || null;
- 
+
         if (!error && adminNavItem) {
           adminNavItem.style.display = (user && user.email === ADMIN_EMAIL) ? 'block' : 'none';
         }
- 
+
         if (accountLink) {
           accountLink.textContent = user ? 'My Account' : 'Login';
           accountLink.href = 'account.html';
         }
- 
+
         if (logoutNavItem) {
           logoutNavItem.style.display = user ? 'block' : 'none';
         }
@@ -801,7 +1032,7 @@
         console.error('Error checking auth', e);
       }
     })();
- 
+
     if (logoutBtn) {
       logoutBtn.addEventListener('click', async (e) => {
         e.preventDefault();
@@ -814,304 +1045,359 @@
       });
     }
   </script>
- 
+
   <script>
-  // ---------- CART ----------
-  let cart = [];
-  const savedCart = localStorage.getItem('cart');
-  if (savedCart) {
-    try {
-      cart = JSON.parse(savedCart);
-    } catch (e) {
-      cart = [];
+    // ---------- CART ----------
+    let cart = [];
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
+      try {
+        cart = JSON.parse(savedCart);
+      } catch (e) {
+        cart = [];
+      }
     }
-  }
 
-  function saveCart() {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
 
-  function getVariantLabel(variant) {
-    return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
-  }
+    function getVariantLabel(variant) {
+      return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
+    }
 
-  function updateCart() {
-    const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
-    const total = cart.reduce((s, i) => s + (Number(i.price || 0) * (i.qty || 0)), 0);
+    function updateCart() {
+      const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
+      const total = cart.reduce((s, i) => s + (Number(i.price || 0) * (i.qty || 0)), 0);
 
-    document.getElementById('cart-count').textContent = totalItems;
-    document.getElementById('cart-items-count').textContent = totalItems;
-    document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
+      document.getElementById('cart-count').textContent = totalItems;
+      document.getElementById('cart-items-count').textContent = totalItems;
+      document.getElementById('cart-total').textContent = `£${total.toFixed(2)}`;
 
-    document.getElementById('cart-items').innerHTML = cart.length === 0
-      ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
-      : cart.map((item, i) => `
-        <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
-          <div class="flex-grow-1">
-            <strong>${item.name}</strong><br>
-            ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
-            ${item.penColour ? `<small class="text-muted d-block">Pen Colour: ${item.penColour}</small>` : ''}
-            <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
+      document.getElementById('cart-items').innerHTML = cart.length === 0
+        ? '<p class="text-center text-muted m-0">Your cart is empty</p>'
+        : cart.map((item, i) => `
+          <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+            <div class="flex-grow-1">
+              <strong>${item.name}</strong><br>
+              ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
+              ${item.penColour ? `<small class="text-muted d-block">Pen Colour: ${item.penColour}</small>` : ''}
+              <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
+              <span class="fw-bold">${item.qty}</span>
+              <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
+              <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
+            </div>
           </div>
-          <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
-            <span class="fw-bold">${item.qty}</span>
-            <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, 1)">+</button>
-            <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
-          </div>
-        </div>
-      `).join('');
-  }
+        `).join('');
+    }
 
-  updateCart();
+    updateCart();
 
-  function updateQty(i, delta) {
-    if (!cart[i]) return;
-    const next = (cart[i].qty || 0) + delta;
+    function updateQty(i, delta) {
+      if (!cart[i]) return;
+      const next = (cart[i].qty || 0) + delta;
 
-    if (next <= 0) {
+      if (next <= 0) {
+        cart.splice(i, 1);
+      } else {
+        cart[i].qty = next;
+      }
+
+      updateCart();
+      saveCart();
+    }
+
+    function removeFromCart(i) {
       cart.splice(i, 1);
-    } else {
-      cart[i].qty = next;
+      updateCart();
+      saveCart();
     }
 
-    updateCart();
-    saveCart();
-  }
-
-  function removeFromCart(i) {
-    cart.splice(i, 1);
-    updateCart();
-    saveCart();
-  }
-
-  function toggleCart(force) {
-    const sb = document.getElementById('cart-sidebar');
-    const ov = document.querySelector('.overlay');
-    const open = force !== undefined ? force : !sb.classList.contains('open');
-    sb.classList.toggle('open', open);
-    ov.classList.toggle('show', open);
-  }
-
-  function goToCheckout() {
-    if (cart.length === 0) return alert('Your cart is empty!');
-    const cartData = encodeURIComponent(JSON.stringify(cart));
-    const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
-    const refPart = ref ? `&ref=${ref}` : '';
-    window.location.href = `checkout.html?cart=${cartData}${refPart}`;
-  }
-
-  // ---------- PRODUCTS FROM SUPABASE ----------
-  let products = [];
-  let currentProduct = null;
-  let currentVariant = '';
-
-  function hasCartridgeOption(p) {
-  const name = String(p?.name || '').toLowerCase();
-
-  return (
-    name.includes('pen') &&
-    !name.includes('refill pen') &&
-    !name.includes('empty pen storage case')
-  );
-}
-
-  function getVariantPrice(product, variant) {
-    const basePrice = Number(product?.price || 0);
-
-    if (variant === 'cartridge-only') {
-      return Math.max(0, basePrice - 10);
+    function toggleCart(force) {
+      const sb = document.getElementById('cart-sidebar');
+      const ov = document.querySelector('.overlay');
+      const open = force !== undefined ? force : !sb.classList.contains('open');
+      sb.classList.toggle('open', open);
+      ov.classList.toggle('show', open);
     }
 
-    return basePrice;
-  }
-
-  function computeBadge(p) {
-    const name = (p.name || '').toLowerCase();
-
-    if (name.includes('bpc-157') || name.includes('tb500')) {
-      return { text: 'Wolverine Stack', class: 'pill-wolverine' };
+    function goToCheckout() {
+      if (cart.length === 0) return alert('Your cart is empty!');
+      const cartData = encodeURIComponent(JSON.stringify(cart));
+      const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
+      const refPart = ref ? `&ref=${ref}` : '';
+      window.location.href = `checkout.html?cart=${cartData}${refPart}`;
     }
 
-    if (p.name?.includes('20mg')) {
-      return { text: 'Most Popular', class: 'pill-popular' };
+    // ---------- PRODUCTS FROM SUPABASE ----------
+    let products = [];
+    let currentProduct = null;
+    let currentVariant = '';
+    let activeCategory = 'all';
+    let activeSearch = '';
+    let activeSort = 'default';
+
+    function hasCartridgeOption(p) {
+      const name = String(p?.name || '').toLowerCase();
+
+      return (
+        name.includes('pen') &&
+        !name.includes('refill pen') &&
+        !name.includes('empty pen storage case')
+      );
     }
 
-    if (p.price >= 130) {
-      return { text: 'Premium', class: 'pill-premium' };
+    function getVariantPrice(product, variant) {
+      const basePrice = Number(product?.price || 0);
+
+      if (variant === 'cartridge-only') {
+        return Math.max(0, basePrice - 10);
+      }
+
+      return basePrice;
     }
 
-    return null;
-  }
+    function computeBadge(p) {
+      const name = (p.name || '').toLowerCase();
 
-  function isComingSoonProduct(p) {
-    const name = String(p?.name || '').toLowerCase();
-    return (
-      name.includes('cagrilintide') ||
-      name.includes('mt2') ||
-      name.includes('ghk-cu')
-    );
-  }
+      if (name.includes('bpc-157') || name.includes('tb500') || name.includes('tb-500')) {
+        return { text: 'Wolverine Stack', class: 'pill-wolverine' };
+      }
 
-  function imgSrc(image) {
-    if (!image) return '';
-    return './' + encodeURIComponent(image);
-  }
+      if (p.name?.includes('20mg')) {
+        return { text: 'Most Popular', class: 'pill-popular' };
+      }
 
-  function getDisplayPriceHtml(p, unitSuffix) {
-    const price = Number(p.price || 0);
-    const compareAt = Number(p.compare_at_price || 0);
+      if (p.price >= 130) {
+        return { text: 'Premium', class: 'pill-premium' };
+      }
 
-    if (compareAt > price) {
+      return null;
+    }
+
+    function isComingSoonProduct(p) {
+      const name = String(p?.name || '').toLowerCase();
+      return (
+        name.includes('cagrilintide') ||
+        name.includes('mt2') ||
+        name.includes('ghk-cu')
+      );
+    }
+
+    function imgSrc(image) {
+      if (!image) return '';
+      return './' + encodeURIComponent(image);
+    }
+
+    function getDisplayPriceHtml(p, unitSuffix) {
+      const price = Number(p.price || 0);
+      const compareAt = Number(p.compare_at_price || 0);
+
+      if (compareAt > price) {
+        return `
+          <div class="product-price">
+            <span class="sale-old">£${compareAt.toFixed(2)}</span>
+            <span class="sale-new">£${price.toFixed(2)}</span>
+            <span class="unit-suffix">${unitSuffix}</span>
+          </div>
+        `;
+      }
+
       return `
         <div class="product-price">
-          <span class="sale-old">£${compareAt.toFixed(2)}</span>
-          <span class="sale-new">£${price.toFixed(2)}</span>
+          £${price.toFixed(2)}
           <span class="unit-suffix">${unitSuffix}</span>
         </div>
       `;
     }
 
-    return `
-      <div class="product-price">
-        £${price.toFixed(2)}
-        <span class="unit-suffix">${unitSuffix}</span>
-      </div>
-    `;
-  }
-
-  function getTypeLabel(p) {
-    switch (String(p.type || '').toLowerCase().trim()) {
-      case 'blend':
-        return 'RESEARCH PEPTIDE BLEND';
-      case 'retatrutide':
-        return 'RETATRUTIDE (RESEARCH)';
-      case 'semaglutide':
-        return 'SEMAGLUTIDE (RESEARCH)';
-      case 'tirzepatide':
-        return 'TIRZEPATIDE (RESEARCH)';
-      case 'nad':
-        return 'NAD+ (RESEARCH)';
-      case 'mots-c':
-        return 'MOTS-c (RESEARCH)';
-      default:
-        return 'RESEARCH PEPTIDE';
-    }
-  }
-
-  function renderProducts() {
-    const listEl = document.getElementById('all-products-list');
-    const statusEl = document.getElementById('all-products-status');
-
-    if (!products.length) {
-      statusEl.textContent = 'No products available yet.';
-      listEl.innerHTML = '';
-      return;
+    function getTypeLabel(p) {
+      switch (String(p.type || '').toLowerCase().trim()) {
+        case 'blend':
+          return 'RESEARCH PEPTIDE BLEND';
+        case 'retatrutide':
+          return 'RETATRUTIDE (RESEARCH)';
+        case 'semaglutide':
+          return 'SEMAGLUTIDE (RESEARCH)';
+        case 'tirzepatide':
+          return 'TIRZEPATIDE (RESEARCH)';
+        case 'nad':
+          return 'NAD+ (RESEARCH)';
+        case 'mots-c':
+          return 'MOTS-c (RESEARCH)';
+        default:
+          return 'RESEARCH PEPTIDE';
+      }
     }
 
-    statusEl.textContent = '';
+    function getResearchCategory(p) {
+      const name = String(p.name || '').toLowerCase();
+      const type = String(p.type || '').toLowerCase();
 
-    listEl.innerHTML = products.map((p, i) => {
-      const badge = computeBadge(p);
+      if (
+        type.includes('tirzepatide') ||
+        type.includes('retatrutide') ||
+        type.includes('semaglutide') ||
+        name.includes('tirz') ||
+        name.includes('reta') ||
+        name.includes('sema') ||
+        name.includes('cagri') ||
+        name.includes('cagrilintide') ||
+        name.includes('aod')
+      ) {
+        return {
+          key: 'metabolic',
+          label: 'Metabolic Research',
+          class: 'cat-metabolic',
+          icon: 'fa-solid fa-chart-line'
+        };
+      }
 
+      if (
+        name.includes('semax') ||
+        name.includes('selank')
+      ) {
+        return {
+          key: 'cognitive',
+          label: 'Cognitive Research',
+          class: 'cat-cognitive',
+          icon: 'fa-solid fa-brain'
+        };
+      }
 
+      if (
+        type.includes('nad') ||
+        type.includes('mots') ||
+        name.includes('ss-31') ||
+        name.includes('ss31') ||
+        name.includes('mots') ||
+        name.includes('nad')
+      ) {
+        return {
+          key: 'cellular-energy',
+          label: 'Cellular Energy',
+          class: 'cat-energy',
+          icon: 'fa-solid fa-bolt'
+        };
+      }
 
-      const typeLabel = getTypeLabel(p);
-      const baseDesc = p.description || 'Research material supplied for laboratory environments.';
-      const extraInfo = ' Accessories (if applicable) are supplied for laboratory handling and measurement.';
-      const unitSuffix = '/unit';
+      if (
+        name.includes('ghk') ||
+        name.includes('mt2') ||
+        name.includes('melanotan')
+      ) {
+        return {
+          key: 'cosmetic',
+          label: 'Cosmetic / Skin Research',
+          class: 'cat-cosmetic',
+          icon: 'fa-solid fa-sparkles'
+        };
+      }
 
-      const stockNum = Number(p.stock ?? 0);
-      const stockLabel =
-        stockNum === 0 ? '<strong>Out of stock</strong>' :
-        stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` :
-        `<strong>In stock</strong> • ${stockNum} available`;
+      if (
+        name.includes('bpc') ||
+        name.includes('tb500') ||
+        name.includes('tb-500') ||
+        name.includes('kpv')
+      ) {
+        return {
+          key: 'recovery',
+          label: 'Recovery Research',
+          class: 'cat-recovery',
+          icon: 'fa-solid fa-screwdriver-wrench'
+        };
+      }
 
-      const stockClass =
-        stockNum === 0 ? 'text-danger' :
-        stockNum <= 5 ? 'text-warning' :
-        'text-success';
+      if (
+        name.includes('epithalon') ||
+        name.includes('tesamorelin') ||
+        name.includes('cjc') ||
+        name.includes('ipamorelin')
+      ) {
+        return {
+          key: 'longevity',
+          label: 'Longevity Research',
+          class: 'cat-longevity',
+          icon: 'fa-solid fa-hourglass-half'
+        };
+      }
 
-      return `
-        <div class="col-md-3">
-          <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${i})` : ''}">
-            ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
-            
+      if (
+        name.includes('syringe') ||
+        name.includes('needle') ||
+        name.includes('pen head') ||
+        name.includes('empty pen') ||
+        name.includes('storage case') ||
+        name.includes('bac water') ||
+        name.includes('bacteriostatic')
+      ) {
+        return {
+          key: 'accessories',
+          label: 'Accessories',
+          class: 'cat-accessories',
+          icon: 'fa-solid fa-box-open'
+        };
+      }
 
-            <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
-
-            <div class="product-body d-flex flex-column h-100">
-              <div class="text-start">
-                <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">${typeLabel}</div>
-                <div class="product-name">${p.name}</div>
-                <div class="text-muted" style="font-size:0.85rem;">
-                  ${baseDesc + extraInfo}
-                </div>
-              </div>
-
-              <div class="mt-3">
-                ${getDisplayPriceHtml(p, unitSuffix)}
-                <p class="stock ${stockClass} mt-2">${stockLabel}</p>
-
-                <button
-                  class="btn btn-success btn-add mt-auto"
-                  ${stockNum === 0 ? 'disabled' : ''}
-                  onclick="event.stopPropagation(); openModal(${i})"
-                >
-                  ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
-  }
-
-  function getTypeSortOrder(type) {
-    switch (String(type || '').toLowerCase().trim()) {
-      case 'blend': return 1;
-      case 'nad': return 2;
-      case 'mots-c': return 3;
-      case 'semaglutide': return 4;
-      case 'tirzepatide': return 5;
-      case 'retatrutide': return 6;
-      default: return 99;
+      return {
+        key: 'general',
+        label: 'General Research',
+        class: 'cat-general',
+        icon: 'fa-solid fa-vial'
+      };
     }
-  }
 
-  function getMgValue(name) {
-    const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
-    return match ? Number(match[1]) : 0;
-  }
+    function getFormatLabel(p) {
+      const name = String(p.name || '').toLowerCase();
 
-  async function loadProductsFromDb() {
-    const statusEl = document.getElementById('all-products-status');
-    statusEl.textContent = 'Loading products…';
+      if (name.includes('pen')) return 'Pen Format';
+      if (name.includes('cartridge')) return 'Cartridge';
+      if (name.includes('vial')) return 'Vial Format';
+      if (name.includes('blend')) return 'Blend';
 
-    const { data, error } = await supabaseClient
-      .from('Products')
-      .select('id, name, price, compare_at_price, image, stock, description, type, bundle_options');
-
-    if (error) {
-      console.error('Error loading products', error);
-      statusEl.textContent = 'Could not load products.';
-      return;
+      return 'Research Material';
     }
 
-    products = (data || [])
-      .map(row => ({
-        id: row.id,
-        name: row.name,
-        price: Number(row.price || 0),
-        compare_at_price: Number(row.compare_at_price || 0),
-        image: row.image || '20mg Tirz Vial.png',
-        stock: row.stock ?? 0,
-        description: row.description || '',
-        type: String(row.type || '').toLowerCase().trim(),
-        bundle_options: row.bundle_options || {}
-      }))
-      .sort((a, b) => {
+    function getFilteredProducts() {
+      let filtered = [...products];
+
+      if (activeCategory !== 'all') {
+        filtered = filtered.filter(p => getResearchCategory(p).key === activeCategory);
+      }
+
+      if (activeSearch) {
+        const q = activeSearch.toLowerCase();
+        filtered = filtered.filter(p => {
+          const category = getResearchCategory(p);
+          return (
+            String(p.name || '').toLowerCase().includes(q) ||
+            String(p.description || '').toLowerCase().includes(q) ||
+            String(p.type || '').toLowerCase().includes(q) ||
+            category.label.toLowerCase().includes(q)
+          );
+        });
+      }
+
+      filtered.sort((a, b) => {
+        if (activeSort === 'price-low') {
+          return Number(a.price || 0) - Number(b.price || 0);
+        }
+
+        if (activeSort === 'price-high') {
+          return Number(b.price || 0) - Number(a.price || 0);
+        }
+
+        if (activeSort === 'name') {
+          return String(a.name || '').localeCompare(String(b.name || ''));
+        }
+
+        if (activeSort === 'stock') {
+          return Number(b.stock || 0) - Number(a.stock || 0);
+        }
+
         const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
         if (typeDiff !== 0) return typeDiff;
 
@@ -1121,285 +1407,505 @@
         return a.name.localeCompare(b.name);
       });
 
-    renderProducts();
-  }
-
-  function parseBundleOptions(raw) {
-    if (!raw) return {};
-    if (typeof raw === 'object' && !Array.isArray(raw)) return raw;
-
-    try {
-      const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
-    } catch {
-      return {};
+      return filtered;
     }
-  }
 
-  // ---------- MODAL ----------
-  function openModal(i) {
-    const p = products[i];
-    if (!p || Number(p.stock ?? 0) === 0) return;
+    function renderProducts() {
+      const listEl = document.getElementById('all-products-list');
+      const statusEl = document.getElementById('all-products-status');
+      const resultsCountEl = document.getElementById('results-count');
 
-    currentProduct = p;
+      if (!products.length) {
+        statusEl.textContent = 'No products available yet.';
+        listEl.innerHTML = '';
+        if (resultsCountEl) resultsCountEl.textContent = '';
+        return;
+      }
 
-    const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
-    const stockNum = Number(p.stock ?? 0);
+      const visibleProducts = getFilteredProducts();
 
-    let modal = document.getElementById('productModal');
+      statusEl.textContent = '';
 
-    if (!modal) {
-      const wrapper = document.createElement('div');
-      wrapper.innerHTML = `
-        <div class="modal fade" id="productModal" tabindex="-1">
-          <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle"></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      if (resultsCountEl) {
+        const total = products.length;
+        const showing = visibleProducts.length;
+
+        resultsCountEl.textContent =
+          showing === total
+            ? `Showing all ${total} listings`
+            : `Showing ${showing} of ${total} listings`;
+      }
+
+      if (!visibleProducts.length) {
+        listEl.innerHTML = `
+          <div class="col-12">
+            <div class="text-center bg-white rounded-4 p-5 shadow-sm">
+              <div class="mb-3" style="font-size:2rem;">🔍</div>
+              <h5 class="fw-bold mb-2">No matching listings found</h5>
+              <p class="text-muted mb-0">Try changing the search term, category or sort option.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = visibleProducts.map((p) => {
+        const realIndex = products.findIndex(item => item.id === p.id);
+        const badge = computeBadge(p);
+        const category = getResearchCategory(p);
+
+        const baseDesc = p.description || 'Research material supplied for laboratory environments.';
+        const extraInfo = ' Accessories, where applicable, are supplied for laboratory handling and measurement.';
+        const unitSuffix = '/unit';
+
+        const stockNum = Number(p.stock ?? 0);
+        const stockLabel =
+          stockNum === 0 ? '<strong>Out of stock</strong>' :
+          stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` :
+          `<strong>In stock</strong> • ${stockNum} available`;
+
+        const stockClass =
+          stockNum === 0 ? 'text-danger' :
+          stockNum <= 5 ? 'text-warning' :
+          'text-success';
+
+        const mgValue = getMgValue(p.name);
+
+        return `
+          <div class="col-md-3">
+            <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${realIndex})` : ''}">
+              ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
+
+              <div class="product-image-wrap">
+                <img src="${imgSrc(p.image)}" class="w-100" alt="${p.name}">
               </div>
-              <div class="modal-body text-center">
-                <div id="modalMedia" class="mb-4"></div>
-                <h3 id="modalName"></h3>
-                <p class="product-price fs-1" id="modalPrice"></p>
-                <p class="stock text-success mb-2" id="modalStock"></p>
-                <div id="modalDescription" class="text-start small text-muted mb-3"></div>
-                <div id="modalVariantWrap" class="mb-3"></div>
-                <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
-                  <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
-                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
+
+              <div class="product-body d-flex flex-column h-100">
+                <div class="text-start">
+                  <div class="product-meta-row">
+                    <span class="category-badge ${category.class}">
+                      <i class="${category.icon}"></i> ${category.label}
+                    </span>
+                  </div>
+
+                  <div class="product-name">${p.name}</div>
+
+                  <div class="quick-specs">
+                    <span>Research Use</span>
+                    ${mgValue ? `<span>${mgValue}mg</span>` : ''}
+                    <span>${getFormatLabel(p)}</span>
+                  </div>
+
+                  <div class="text-muted" style="font-size:0.85rem;">
+                    ${baseDesc + extraInfo}
+                  </div>
                 </div>
-                <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
+
+                <div class="mt-3">
+                  ${getDisplayPriceHtml(p, unitSuffix)}
+                  <p class="stock ${stockClass} mt-2">${stockLabel}</p>
+
+                  <button
+                    class="btn btn-success btn-add mt-auto"
+                    ${stockNum === 0 ? 'disabled' : ''}
+                    onclick="event.stopPropagation(); openModal(${realIndex})"
+                  >
+                    ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      `;
-      document.body.appendChild(wrapper.firstElementChild);
-      modal = document.getElementById('productModal');
+        `;
+      }).join('');
     }
 
-    const modalMedia = document.getElementById('modalMedia');
-    modalMedia.innerHTML = `
-      <img
-        id="modalImg"
-        src="${imgSrc(p.image)}"
-        class="img-fluid"
-        style="max-height: 320px;"
-        alt="${p.name}"
-      >
-    `;
-
-    document.getElementById('modalTitle').textContent = p.name;
-    document.getElementById('modalName').textContent = p.name;
-
-    const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
-    const modalPrice = initialVariant
-      ? Number(getVariantPrice(p, initialVariant))
-      : Number(p.price || 0);
-
-    const modalCompareAt = Number(p.compare_at_price || 0);
-
-    document.getElementById('modalPrice').innerHTML =
-      modalCompareAt > modalPrice
-        ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
-        : `£${modalPrice.toFixed(2)}`;
-
-    document.getElementById('modalStock').innerHTML =
-      stockNum === 0
-        ? '<span class="text-danger fw-bold">Out of stock</span>'
-        : stockNum <= 5
-          ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
-          : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
-
-    const descEl = document.getElementById('modalDescription');
-    descEl.innerHTML = `
-      <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
-      <p><strong>${accessoriesLine}</strong></p>
-      <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
-      <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
-    `;
-
-    const variantWrap = document.getElementById('modalVariantWrap');
-    currentVariant = hasCartridgeOption(p) ? 'full-kit' : '';
-
-    const bundleOptions = parseBundleOptions(p.bundle_options);
-    let optionsHtml = '';
-
-    if (hasCartridgeOption(p)) {
-      optionsHtml += `
-        <div class="product-variant-selection text-start mb-3">
-          <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
-          <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
-            <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
-            <option value="cartridge-only">Cartridge Only</option>
-          </select>
-        </div>
-      `;
+    function getTypeSortOrder(type) {
+      switch (String(type || '').toLowerCase().trim()) {
+        case 'blend': return 1;
+        case 'nad': return 2;
+        case 'mots-c': return 3;
+        case 'semaglutide': return 4;
+        case 'tirzepatide': return 5;
+        case 'retatrutide': return 6;
+        default: return 99;
+      }
     }
 
-    if (Array.isArray(bundleOptions.penColours) && bundleOptions.penColours.length) {
-      optionsHtml += `
-        <div class="product-variant-selection text-start">
-          <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
-          <select id="modalPenColourSelect" class="form-select">
-            ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
-          </select>
-        </div>
-      `;
+    function getMgValue(name) {
+      const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
+      return match ? Number(match[1]) : 0;
     }
 
-    variantWrap.innerHTML = optionsHtml;
+    async function loadProductsFromDb() {
+      const statusEl = document.getElementById('all-products-status');
+      statusEl.textContent = 'Loading products…';
 
-    const qtyInput = document.getElementById('modalQty');
-    qtyInput.value = 1;
-    qtyInput.max = stockNum;
+      const { data, error } = await supabaseClient
+        .from('Products')
+        .select('id, name, price, compare_at_price, image, stock, description, type, bundle_options');
 
-    document.getElementById('modalAddBtn').onclick = () => {
-      let qty = parseInt(document.getElementById('modalQty').value) || 1;
-      qty = Math.max(1, Math.min(qty, stockNum));
-
-      const existing = cart.find(item => item.id === p.id && (item.variant || '') === (currentVariant || ''));
-      const already = existing ? (existing.qty || 0) : 0;
-
-      if (already + qty > stockNum) {
-        return alert(`Only ${stockNum} available. You already have ${already} in your cart for this format.`);
+      if (error) {
+        console.error('Error loading products', error);
+        statusEl.textContent = 'Could not load products.';
+        return;
       }
 
-      const penColourSelect = document.getElementById('modalPenColourSelect');
-      const selectedPenColour = penColourSelect ? penColourSelect.value : null;
+      products = (data || [])
+        .map(row => ({
+          id: row.id,
+          name: row.name,
+          price: Number(row.price || 0),
+          compare_at_price: Number(row.compare_at_price || 0),
+          image: row.image || '20mg Tirz Vial.png',
+          stock: row.stock ?? 0,
+          description: row.description || '',
+          type: String(row.type || '').toLowerCase().trim(),
+          bundle_options: row.bundle_options || {}
+        }))
+        .sort((a, b) => {
+          const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
+          if (typeDiff !== 0) return typeDiff;
 
-      addToCart(p, qty, currentVariant, selectedPenColour);
-      bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
-    };
+          const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+          if (mgDiff !== 0) return mgDiff;
 
-    new bootstrap.Modal(modal).show();
-  }
+          return a.name.localeCompare(b.name);
+        });
 
-  function updateModalVariant() {
-    const select = document.getElementById('modalFormatSelect');
-    if (!currentProduct) return;
+      renderProducts();
+    }
 
-    currentVariant = select ? select.value : '';
+    function parseBundleOptions(raw) {
+      if (!raw) return {};
+      if (typeof raw === 'object' && !Array.isArray(raw)) return raw;
 
-    const price = currentVariant
-      ? Number(getVariantPrice(currentProduct, currentVariant))
-      : Number(currentProduct.price || 0);
+      try {
+        const parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+        return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
 
-    const compareAt = Number(currentProduct.compare_at_price || 0);
+    // ---------- MODAL ----------
+    function openModal(i) {
+      const p = products[i];
+      if (!p || Number(p.stock ?? 0) === 0) return;
 
-    document.getElementById('modalPrice').innerHTML =
-      compareAt > price
-        ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
-        : `£${price.toFixed(2)}`;
-  }
+      currentProduct = p;
 
-  function changeQty(delta) {
-    const input = document.getElementById('modalQty');
-    const max = parseInt(input.max) || 999999;
-    let val = parseInt(input.value) || 1;
-    val = Math.max(1, Math.min(max, val + delta));
-    input.value = val;
-  }
+      const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
+      const stockNum = Number(p.stock ?? 0);
 
-  function addToCart(product, qty, variant = '', penColour = null) {
-    const finalVariant = variant || '';
-    const price = finalVariant
-      ? getVariantPrice(product, finalVariant)
-      : Number(product?.price || 0);
+      let modal = document.getElementById('productModal');
 
-    const existing = cart.find(item =>
-      item.id === product.id &&
-      (item.variant || '') === finalVariant &&
-      (item.penColour || null) === (penColour || null)
-    );
+      if (!modal) {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = `
+          <div class="modal fade" id="productModal" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modalTitle"></h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                  <div id="modalMedia" class="mb-4"></div>
+                  <h3 id="modalName"></h3>
+                  <p class="product-price fs-1 justify-content-center" id="modalPrice"></p>
+                  <p class="stock text-success mb-2" id="modalStock"></p>
+                  <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+                  <div id="modalVariantWrap" class="mb-3"></div>
+                  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
+                    <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
+                  </div>
+                  <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(wrapper.firstElementChild);
+        modal = document.getElementById('productModal');
+      }
 
-    if (existing) {
-      existing.qty += qty;
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: price,
-        qty: qty,
-        image: product.image || '',
-        variant: finalVariant,
-        penColour: penColour
+      const modalMedia = document.getElementById('modalMedia');
+      modalMedia.innerHTML = `
+        <img
+          id="modalImg"
+          src="${imgSrc(p.image)}"
+          class="img-fluid"
+          style="max-height: 320px;"
+          alt="${p.name}"
+        >
+      `;
+
+      document.getElementById('modalTitle').textContent = p.name;
+      document.getElementById('modalName').textContent = p.name;
+
+      const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
+      const modalPrice = initialVariant
+        ? Number(getVariantPrice(p, initialVariant))
+        : Number(p.price || 0);
+
+      const modalCompareAt = Number(p.compare_at_price || 0);
+
+      document.getElementById('modalPrice').innerHTML =
+        modalCompareAt > modalPrice
+          ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
+          : `£${modalPrice.toFixed(2)}`;
+
+      document.getElementById('modalStock').innerHTML =
+        stockNum === 0
+          ? '<span class="text-danger fw-bold">Out of stock</span>'
+          : stockNum <= 5
+            ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+            : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+
+      const descEl = document.getElementById('modalDescription');
+      descEl.innerHTML = `
+        <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
+        <p><strong>${accessoriesLine}</strong></p>
+        <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+        <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+      `;
+
+      const variantWrap = document.getElementById('modalVariantWrap');
+      currentVariant = hasCartridgeOption(p) ? 'full-kit' : '';
+
+      const bundleOptions = parseBundleOptions(p.bundle_options);
+      let optionsHtml = '';
+
+      if (hasCartridgeOption(p)) {
+        optionsHtml += `
+          <div class="product-variant-selection text-start mb-3">
+            <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
+            <select id="modalFormatSelect" class="form-select" onchange="updateModalVariant()">
+              <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
+              <option value="cartridge-only">Cartridge Only</option>
+            </select>
+          </div>
+        `;
+      }
+
+      if (Array.isArray(bundleOptions.penColours) && bundleOptions.penColours.length) {
+        optionsHtml += `
+          <div class="product-variant-selection text-start">
+            <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
+            <select id="modalPenColourSelect" class="form-select">
+              ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      variantWrap.innerHTML = optionsHtml;
+
+      const qtyInput = document.getElementById('modalQty');
+      qtyInput.value = 1;
+      qtyInput.max = stockNum;
+
+      document.getElementById('modalAddBtn').onclick = () => {
+        let qty = parseInt(document.getElementById('modalQty').value) || 1;
+        qty = Math.max(1, Math.min(qty, stockNum));
+
+        const penColourSelect = document.getElementById('modalPenColourSelect');
+        const selectedPenColour = penColourSelect ? penColourSelect.value : null;
+
+        const existing = cart.find(item =>
+          item.id === p.id &&
+          (item.variant || '') === (currentVariant || '') &&
+          (item.penColour || null) === (selectedPenColour || null)
+        );
+
+        const already = existing ? (existing.qty || 0) : 0;
+
+        if (already + qty > stockNum) {
+          return alert(`Only ${stockNum} available. You already have ${already} in your cart for this format.`);
+        }
+
+        addToCart(p, qty, currentVariant, selectedPenColour);
+        bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+      };
+
+      new bootstrap.Modal(modal).show();
+    }
+
+    function updateModalVariant() {
+      const select = document.getElementById('modalFormatSelect');
+      if (!currentProduct) return;
+
+      currentVariant = select ? select.value : '';
+
+      const price = currentVariant
+        ? Number(getVariantPrice(currentProduct, currentVariant))
+        : Number(currentProduct.price || 0);
+
+      const compareAt = Number(currentProduct.compare_at_price || 0);
+
+      document.getElementById('modalPrice').innerHTML =
+        compareAt > price
+          ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
+          : `£${price.toFixed(2)}`;
+    }
+
+    function changeQty(delta) {
+      const input = document.getElementById('modalQty');
+      const max = parseInt(input.max) || 999999;
+      let val = parseInt(input.value) || 1;
+      val = Math.max(1, Math.min(max, val + delta));
+      input.value = val;
+    }
+
+    function addToCart(product, qty, variant = '', penColour = null) {
+      const finalVariant = variant || '';
+      const price = finalVariant
+        ? getVariantPrice(product, finalVariant)
+        : Number(product?.price || 0);
+
+      const existing = cart.find(item =>
+        item.id === product.id &&
+        (item.variant || '') === finalVariant &&
+        (item.penColour || null) === (penColour || null)
+      );
+
+      if (existing) {
+        existing.qty += qty;
+      } else {
+        cart.push({
+          id: product.id,
+          name: product.name,
+          price: price,
+          qty: qty,
+          image: product.image || '',
+          variant: finalVariant,
+          penColour: penColour
+        });
+      }
+
+      updateCart();
+      saveCart();
+      toggleCart(true);
+    }
+
+    function setupCatalogueControls() {
+      const searchInput = document.getElementById('productSearch');
+      const categoryFilter = document.getElementById('categoryFilter');
+      const sortFilter = document.getElementById('sortFilter');
+      const categoryChips = document.querySelectorAll('.category-chip');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', () => {
+          activeSearch = searchInput.value.trim();
+          renderProducts();
+        });
+      }
+
+      if (categoryFilter) {
+        categoryFilter.addEventListener('change', () => {
+          activeCategory = categoryFilter.value;
+
+          categoryChips.forEach(chip => {
+            chip.classList.toggle('active', chip.dataset.category === activeCategory);
+          });
+
+          renderProducts();
+        });
+      }
+
+      if (sortFilter) {
+        sortFilter.addEventListener('change', () => {
+          activeSort = sortFilter.value;
+          renderProducts();
+        });
+      }
+
+      categoryChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          activeCategory = chip.dataset.category || 'all';
+
+          categoryChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+
+          if (categoryFilter) {
+            categoryFilter.value = activeCategory;
+          }
+
+          renderProducts();
+        });
       });
     }
 
-    updateCart();
-    saveCart();
-    toggleCart(true);
-  }
+    setupCatalogueControls();
+    loadProductsFromDb();
+  </script>
 
-  loadProductsFromDb();
-</script>
- 
   <script>
-  window.toggleLumiChat = function () {
-    const chat = document.getElementById('lumi-chat-container');
-    chat.style.display = (chat.style.display === 'flex') ? 'none' : 'flex';
-  };
+    window.toggleLumiChat = function () {
+      const chat = document.getElementById('lumi-chat-container');
+      chat.style.display = (chat.style.display === 'flex') ? 'none' : 'flex';
+    };
 
-  function appendMessage(text, className) {
-    const msgBox = document.getElementById('lumi-messages');
-    const div = document.createElement('div');
-    div.className = className;
-    div.textContent = text;
-    msgBox.appendChild(div);
-    msgBox.scrollTop = msgBox.scrollHeight;
-  }
+    function appendMessage(text, className) {
+      const msgBox = document.getElementById('lumi-messages');
+      const div = document.createElement('div');
+      div.className = className;
+      div.textContent = text;
+      msgBox.appendChild(div);
+      msgBox.scrollTop = msgBox.scrollHeight;
+    }
 
-  let lumiSending = false;
+    let lumiSending = false;
 
-  window.sendMessage = async function () {
-    if (lumiSending) return;
+    window.sendMessage = async function () {
+      if (lumiSending) return;
 
-    const input = document.getElementById('lumi-user-text');
-    const userText = input.value.trim();
+      const input = document.getElementById('lumi-user-text');
+      const userText = input.value.trim();
 
-    if (!userText) return;
+      if (!userText) return;
 
-    appendMessage(userText, 'msg-user');
-    input.value = '';
-    lumiSending = true;
+      appendMessage(userText, 'msg-user');
+      input.value = '';
+      lumiSending = true;
 
-    try {
-      const res = await fetch('https://lumi24-chat-api.lumi365admin.workers.dev/api/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ message: userText })
-});
+      try {
+        const res = await fetch('https://lumi24-chat-api.lumi365admin.workers.dev/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText })
+        });
 
-      const data = await res.json();
+        const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data?.error || 'Chat request failed.');
+        if (!res.ok) {
+          throw new Error(data?.error || 'Chat request failed.');
+        }
+
+        appendMessage(
+          data.reply || 'Sorry, I could not generate a reply.',
+          'msg-bot'
+        );
+      } catch (err) {
+        console.error('Chat error:', err);
+        appendMessage(
+          'Sorry, the assistant is temporarily unavailable. Please try again shortly.',
+          'msg-bot'
+        );
+      } finally {
+        lumiSending = false;
       }
+    };
 
-      appendMessage(
-        data.reply || 'Sorry, I could not generate a reply.',
-        'msg-bot'
-      );
-    } catch (err) {
-      console.error('Chat error:', err);
-      appendMessage(
-        'Sorry, the assistant is temporarily unavailable. Please try again shortly.',
-        'msg-bot'
-      );
-    } finally {
-      lumiSending = false;
-    }
-  };
-
-  document.getElementById('lumi-user-text').addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-</script>
+    document.getElementById('lumi-user-text').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
 </body>
 </html>
