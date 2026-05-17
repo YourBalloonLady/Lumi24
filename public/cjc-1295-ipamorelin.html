@@ -1,1 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>CJC-1295 + Ipamorelin Research Guide | Lumina</title>
+  <meta name="description" content="Educational CJC-1295 and Ipamorelin research guide covering growth hormone signalling, GHRH analogues, GH secretagogue research, recovery, sleep and body-composition discussions, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="CJC-1295 + Ipamorelin Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to CJC-1295 and Ipamorelin, including GH-axis research, growth hormone signalling, recovery, sleep and body-composition discussions." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/cjc-1295-ipamorelin.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/cjc-1295-ipamorelin.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-blue-soft: #eff6ff;
+      --lumina-blue: #1d4ed8;
+      --lumina-purple-soft: #f5f3ff;
+      --lumina-purple: #6d28d9;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-purple-soft);
+      color: var(--lumina-purple);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
+    }
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+    }
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "CJC-1295 + Ipamorelin Research Guide",
+    "description": "Educational research-only guide to CJC-1295 and Ipamorelin, GH-axis research, GHRH analogues, GH secretagogue signalling, recovery and body-composition discussions.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/cjc-1295-ipamorelin.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-wave-square"></i> GH-axis research guide</div>
+      <h1>CJC-1295 + Ipamorelin Research Guide: growth hormone signalling, recovery and body-composition research.</h1>
+      <p class="lead">
+        CJC-1295 and Ipamorelin are commonly discussed together because they target related areas of growth-hormone signalling from different angles. This guide explains what each compound is, why they are paired, and how to keep the research context realistic.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Growth-hormone signalling, recovery and body-composition research.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Pairing logic</strong>
+          <span>CJC-1295 is GHRH-related; Ipamorelin is a GH secretagogue.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Common themes</strong>
+          <span>GH pulse research, sleep discussions, recovery and lean-mass interest.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What are CJC-1295 and Ipamorelin?</h2>
+            <p>
+              <strong>CJC-1295</strong> is a synthetic analogue of growth-hormone-releasing hormone, often shortened to GHRH. It is usually discussed in research settings because of its relationship with growth-hormone signalling and the body’s GH-axis.
+            </p>
+            <p>
+              <strong>Ipamorelin</strong> is a growth hormone secretagogue. It is commonly described as a ghrelin receptor agonist that is studied for its ability to stimulate growth-hormone release with a more selective profile than some older secretagogues discussed in research circles.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">CJC-1295 and Ipamorelin are commonly paired in research discussions because they approach growth-hormone signalling through related but different mechanisms.</p>
+            </div>
+          </section>
+
+          <section id="why-combined">
+            <h2>Why are CJC-1295 and Ipamorelin often combined?</h2>
+            <p>
+              They are often discussed together because CJC-1295 is connected to the GHRH side of the GH-axis, while Ipamorelin is connected to secretagogue-style signalling. In research discussions, this pairing is usually framed around supporting or studying growth-hormone pulse dynamics.
+            </p>
+            <p>
+              That does not mean the combination should be treated as a proven therapy or outcome guarantee. It simply explains why researchers and online communities often place them together.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>CJC-1295:</strong> Commonly discussed as a GHRH analogue connected to growth-hormone release signalling.</li>
+              <li><strong>Ipamorelin:</strong> Commonly discussed as a GH secretagogue with ghrelin receptor-related activity.</li>
+              <li><strong>Combination interest:</strong> Often discussed around GH pulse research, recovery, sleep and body-composition pathways.</li>
+              <li><strong>Evidence caution:</strong> Online claims can be stronger than the quality of research evidence available.</li>
+            </ul>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Growth hormone signalling</h3>
+            <p>
+              The main reason this pairing gets attention is its relationship with growth-hormone signalling. CJC-1295 is usually framed around GHRH-style activity, while Ipamorelin is framed around secretagogue-style activity. Together, they are often discussed in GH-axis research.
+            </p>
+
+            <h3>2. Recovery and repair discussions</h3>
+            <p>
+              Because growth hormone is involved in many biological processes related to tissue turnover and recovery, the combination is often mentioned in repair and recovery conversations. This is a research theme, not a medical claim.
+            </p>
+
+            <h3>3. Sleep and circadian interest</h3>
+            <p>
+              Growth-hormone release is connected with sleep architecture and circadian biology. For that reason, CJC-1295 and Ipamorelin are often discussed in sleep-related research contexts, especially around nocturnal GH pulse patterns.
+            </p>
+
+            <h3>4. Body-composition research</h3>
+            <p>
+              GH-axis compounds are frequently discussed around body composition, lean mass, recovery and fat-mass-related research. These areas are complex and influenced by many variables, so simple before-and-after claims should be treated carefully.
+            </p>
+          </section>
+
+          <section id="mechanisms">
+            <h2>Mechanism overview</h2>
+            <p>
+              CJC-1295 and Ipamorelin are not identical compounds. Their pairing makes sense in research discussions because they relate to complementary parts of growth-hormone signalling.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Common mechanism discussion</th>
+                  <th>Research themes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>CJC-1295</strong></td>
+                  <td>GHRH analogue; associated with growth-hormone-releasing hormone signalling</td>
+                  <td>GH-axis, pulse dynamics, body-composition research</td>
+                </tr>
+                <tr>
+                  <td><strong>Ipamorelin</strong></td>
+                  <td>GH secretagogue; commonly discussed around ghrelin receptor-related activity</td>
+                  <td>GH release, recovery interest, sleep-related discussions</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="dac-note">
+            <h2>CJC-1295, DAC and naming confusion</h2>
+            <p>
+              CJC-1295 is one of those compounds where naming can cause confusion. Some discussions distinguish between CJC-1295 with DAC and shorter-acting GHRH analogues sometimes marketed under similar names. This matters because duration of action and research interpretation may differ depending on the exact compound being discussed.
+            </p>
+            <div class="highlight-box">
+              <strong>Important naming note</strong>
+              <p class="mb-0">When reading about CJC-1295, always pay attention to whether the source is discussing CJC-1295 with DAC, without DAC, or a related GHRH analogue being labelled casually as CJC.</p>
+            </div>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              CJC-1295 and Ipamorelin are popular in research and biohacking discussions, but not every claim online is equally supported. Some discussion is based on mechanistic reasoning, some on small studies or related compounds, and some on anecdote.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">CJC-1295 and Ipamorelin are best understood as GH-axis research compounds. They should not be presented as guaranteed solutions for fat loss, muscle gain, sleep or recovery.</p>
+            </div>
+            <p>
+              Growth-hormone biology is complex. Research outcomes can be influenced by age, baseline hormone status, sleep, nutrition, training, metabolic health and many other variables.
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How this pairing compares with other research compounds</h2>
+            <p>
+              CJC-1295 + Ipamorelin sits in the hormone-signalling and recovery-research space. It is different from repair-focused compounds like BPC-157/TB-500 and different again from cellular-energy compounds like NAD+, MOTS-C and SS-31.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>CJC-1295 + Ipamorelin</strong></td>
+                  <td>Growth hormone signalling</td>
+                  <td>GH-axis, recovery, sleep and body composition</td>
+                </tr>
+                <tr>
+                  <td><strong>Tesamorelin</strong></td>
+                  <td>GHRH analogue research</td>
+                  <td>Body composition, visceral-fat-related research</td>
+                </tr>
+                <tr>
+                  <td><strong>BPC-157 & TB-500</strong></td>
+                  <td>Repair and recovery research</td>
+                  <td>Tendon, ligament, soft tissue, mobility</td>
+                </tr>
+                <tr>
+                  <td><strong>Epithalon</strong></td>
+                  <td>Longevity research</td>
+                  <td>Circadian rhythm, telomere-related theories, healthy ageing</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              Compounds linked to growth hormone signalling are often surrounded by big claims. These may include claims about muscle gain, fat loss, recovery, sleep and anti-ageing. Those claims should be treated cautiously unless supported by high-quality evidence.
+            </p>
+            <ul>
+              <li>Growth-hormone biology is complex and highly context-dependent.</li>
+              <li>CJC-1295 naming can be confusing, especially around DAC status.</li>
+              <li>Research interest does not equal proven human outcome.</li>
+              <li>This guide does not provide dosing, administration or treatment guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>CJC-1295 + Ipamorelin FAQ</h2>
+            <div class="accordion" id="cjcIpaFaq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Are CJC-1295 and Ipamorelin the same thing?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#cjcIpaFaq">
+                  <div class="accordion-body">
+                    No. CJC-1295 is commonly discussed as a GHRH analogue, while Ipamorelin is commonly discussed as a GH secretagogue. They are different compounds with related research themes.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Why are they often paired together?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#cjcIpaFaq">
+                  <div class="accordion-body">
+                    They are often paired in research discussions because they relate to complementary parts of growth-hormone signalling: GHRH-style activity and secretagogue-style activity.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Is this mainly a fat-loss stack?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#cjcIpaFaq">
+                  <div class="accordion-body">
+                    Not directly. It is more accurately discussed as a GH-axis research pairing. Body-composition research may overlap with fat-mass discussions, but it should not be presented in the same way as GLP-1-based metabolic compounds.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use CJC-1295 or Ipamorelin?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#cjcIpaFaq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What are they?</a>
+            <a href="#why-combined">Why combined?</a>
+            <a href="#research-focus">Research focus</a>
+            <a href="#mechanisms">Mechanism overview</a>
+            <a href="#dac-note">DAC naming note</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">GH-axis research</span>
+              <span class="pill">Hormone signalling</span>
+              <span class="pill">Recovery interest</span>
+              <span class="pill">Body composition</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>CJC-1295 and Ipamorelin are different but related research compounds.</li>
+              <li>The pairing is usually discussed around GH-axis signalling.</li>
+              <li>Claims about muscle, fat loss or recovery should be treated cautiously.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="tesamorelin.html">Tesamorelin Research Guide</a></li>
+              <li><a href="bpc-157-tb500.html">BPC-157 & TB-500 Guide</a></li>
+              <li><a href="epithalon.html">Epithalon Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
