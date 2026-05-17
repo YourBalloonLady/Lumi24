@@ -871,12 +871,12 @@
 
       <div class="category-strip">
         <button class="category-chip active" data-category="all">All</button>
-        <button class="category-chip" data-category="metabolic">Metabolic Research</button>
+        <button class="category-chip" data-category="metabolic">Fat Loss Research</button>
         <button class="category-chip" data-category="cognitive">Cognitive Research</button>
         <button class="category-chip" data-category="cellular-energy">Cellular Energy</button>
         <button class="category-chip" data-category="longevity">Longevity</button>
         <button class="category-chip" data-category="cosmetic">Cosmetic / Skin</button>
-        <button class="category-chip" data-category="recovery">Recovery</button>
+        <button class="category-chip" data-category="recovery">Repair</button>
         <button class="category-chip" data-category="accessories">Accessories</button>
       </div>
     </div>
@@ -909,12 +909,12 @@
 
         <select id="categoryFilter" class="form-select">
           <option value="all">All categories</option>
-          <option value="metabolic">Metabolic Research</option>
+          <option value="metabolic">Fat Loss Research</option>
           <option value="cognitive">Cognitive Research</option>
           <option value="cellular-energy">Cellular Energy</option>
           <option value="longevity">Longevity</option>
           <option value="cosmetic">Cosmetic / Skin</option>
-          <option value="recovery">Recovery</option>
+          <option value="recovery">Repair</option>
           <option value="accessories">Accessories</option>
         </select>
 
@@ -1274,7 +1274,7 @@
       ) {
         return {
           key: 'metabolic',
-          label: 'Metabolic Research',
+          label: 'Fat Loss Research',
           class: 'cat-metabolic',
           icon: 'fa-solid fa-chart-line'
         };
@@ -1333,8 +1333,13 @@
       if (
         haystack.includes('bpc') ||
         haystack.includes('bpc-157') ||
+        haystack.includes('bpc 157') ||
+        haystack.includes('bpc157') ||
+        haystack.includes('bpc-157 stack') ||
+        haystack.includes('wolverine stack') ||
         haystack.includes('tb500') ||
         haystack.includes('tb-500') ||
+        haystack.includes('tb 500') ||
         haystack.includes('kpv') ||
         haystack.includes('recovery') ||
         haystack.includes('tissue') ||
@@ -1342,7 +1347,7 @@
       ) {
         return {
           key: 'recovery',
-          label: 'Recovery Research',
+          label: 'Repair Research',
           class: 'cat-recovery',
           icon: 'fa-solid fa-screwdriver-wrench'
         };
