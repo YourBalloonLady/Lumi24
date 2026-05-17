@@ -1,1 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Epithalon Research Guide | Lumina</title>
+  <meta name="description" content="Educational Epithalon research guide covering what Epithalon is, how it is discussed in longevity research, telomere-related theories, sleep and circadian research, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="Epithalon Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to Epithalon, including longevity theories, telomere-related research, sleep and circadian signalling, limitations and FAQs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/epithalon.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/epithalon.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-purple-soft: #f5f3ff;
+      --lumina-purple: #6d28d9;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(109, 40, 217, 0.13), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-purple-soft);
+      color: var(--lumina-purple);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
+    }
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+    }
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Epithalon Research Guide",
+    "description": "Educational research-only guide to Epithalon, longevity theories, telomere-related research, sleep and circadian signalling.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/epithalon.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-hourglass-half"></i> Longevity research guide</div>
+      <h1>Epithalon Research Guide: longevity theories, circadian signalling and telomere-related research.</h1>
+      <p class="lead">
+        Epithalon, also commonly written as Epitalon, is a short synthetic peptide often discussed in healthy-aging and longevity research circles. This guide explains what it is, why it gets attention, what researchers tend to focus on, and where the evidence should be treated cautiously.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Healthy-aging and cellular signalling research.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Common themes</strong>
+          <span>Telomeres, circadian rhythm, sleep and pineal signalling.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Evidence note</strong>
+          <span>Often discussed with enthusiasm, but claims should be assessed carefully.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What is Epithalon?</h2>
+            <p>
+              <strong>Epithalon</strong> is a synthetic tetrapeptide, meaning it is made from four amino acids. It is most often discussed in research settings connected to longevity, cellular ageing theories, pineal gland signalling, circadian rhythm and telomere-related mechanisms.
+            </p>
+            <p>
+              The compound is also commonly referred to as <strong>Epitalon</strong>, so both spellings may appear in articles, discussions and older references. For consistency, this guide uses the spelling <strong>Epithalon</strong>.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">Epithalon is mainly discussed as a longevity and cellular-signalling research peptide, not as a stimulant, fat-loss compound or acute performance product.</p>
+            </div>
+          </section>
+
+          <section id="mechanism">
+            <h2>Why does Epithalon get attention in research?</h2>
+            <p>
+              Epithalon is usually discussed because of its proposed relationship with biological ageing pathways. The most common conversation points include telomere-related theories, regulation of circadian biology, melatonin-related pathways and cellular repair signalling.
+            </p>
+            <p>
+              Telomeres are protective structures found at the ends of chromosomes. They are often compared to caps on shoelaces because they help protect genetic material from degradation. In ageing research, telomere shortening is one area of interest, although it is only one part of a much bigger and more complex biological picture.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>Telomere-related research:</strong> Epithalon is often discussed in relation to telomere biology and cellular ageing theories.</li>
+              <li><strong>Circadian rhythm:</strong> It is also commonly linked to pineal gland and sleep-wake cycle research themes.</li>
+              <li><strong>Healthy-aging interest:</strong> Some research discussions place it within broader longevity and lifespan-related study areas.</li>
+              <li><strong>Cellular signalling:</strong> Researchers are interested in how short peptides may interact with gene expression and repair-related pathways.</li>
+            </ul>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Longevity and healthy-ageing research</h3>
+            <p>
+              Epithalon is most strongly associated with healthy-ageing conversations. It is often positioned as a peptide of interest in discussions around biological age, lifespan research and cellular maintenance. However, longevity claims are often exaggerated online, so it is important to distinguish research interest from proven outcomes.
+            </p>
+
+            <h3>2. Telomere and telomerase theories</h3>
+            <p>
+              One of the most repeated claims around Epithalon involves telomerase and telomere length. In basic terms, telomerase is an enzyme involved in maintaining telomere structures. This area is scientifically interesting, but it is also complicated, and simple claims like “lengthens telomeres” can be misleading without proper context.
+            </p>
+
+            <h3>3. Sleep and circadian rhythm</h3>
+            <p>
+              Epithalon is also discussed in relation to pineal gland function and circadian rhythm. Because the pineal gland is involved in melatonin signalling, researchers and biohacking communities often connect Epithalon with sleep quality and rhythm regulation. This does not mean it should be treated as a direct sleep product; it simply explains why the topic appears in research discussion.
+            </p>
+
+            <h3>4. Oxidative stress and cellular maintenance</h3>
+            <p>
+              Some discussions also connect Epithalon to oxidative stress, repair signalling and cellular maintenance. These are broad research themes and should not be read as direct claims of clinical effect.
+            </p>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              Epithalon is interesting, but it is also a compound where online claims can run ahead of the evidence. It has been discussed in ageing research for many years, but users should be cautious with simple, confident claims about anti-ageing effects, lifespan extension or direct human benefits.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">Epithalon is best understood as a longevity research compound with interesting theoretical and experimental discussion, rather than a proven anti-ageing solution.</p>
+            </div>
+            <p>
+              When assessing any Epithalon content, it is useful to separate three things: early scientific research, mechanistic theories and anecdotal online reports. These are not the same level of evidence.
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How Epithalon compares with other research compounds</h2>
+            <p>
+              Epithalon sits in a different category from compounds like Tirzepatide, Retatrutide or Semaglutide. Those are usually discussed in metabolic and appetite research, while Epithalon is more commonly placed in longevity, sleep-cycle and cellular-ageing discussions.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Epithalon</strong></td>
+                  <td>Longevity and cellular ageing</td>
+                  <td>Telomeres, circadian rhythm, pineal signalling</td>
+                </tr>
+                <tr>
+                  <td><strong>NAD+</strong></td>
+                  <td>Cellular energy</td>
+                  <td>Redox biology, mitochondria, metabolism</td>
+                </tr>
+                <tr>
+                  <td><strong>MOTS-C</strong></td>
+                  <td>Mitochondrial signalling</td>
+                  <td>Energy regulation, AMPK-related pathways</td>
+                </tr>
+                <tr>
+                  <td><strong>SS-31</strong></td>
+                  <td>Mitochondrial resilience</td>
+                  <td>Oxidative stress and mitochondrial membrane research</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              Epithalon is often surrounded by bold claims, especially in online longevity communities. Some of those claims may be based on limited, early or non-human research. Others may be anecdotal. That does not make the compound uninteresting, but it does mean that careful wording matters.
+            </p>
+            <ul>
+              <li>Longevity research is complex and cannot be reduced to a single compound.</li>
+              <li>Telomere biology is only one part of ageing research.</li>
+              <li>Animal, cell and mechanistic research cannot automatically be treated as proven human outcomes.</li>
+              <li>This page does not provide dosing, administration or medical guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>Epithalon FAQ</h2>
+            <div class="accordion" id="epithalonFaq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Is Epithalon the same as Epitalon?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#epithalonFaq">
+                  <div class="accordion-body">
+                    Yes, the names are commonly used to refer to the same peptide in online and research discussions. Spelling varies, with both Epithalon and Epitalon appearing in different places.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Is Epithalon mainly a fat-loss peptide?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#epithalonFaq">
+                  <div class="accordion-body">
+                    No. Epithalon is not usually discussed as a primary fat-loss compound. It is more commonly associated with longevity, circadian rhythm and cellular-ageing research themes.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Why is Epithalon linked to telomeres?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#epithalonFaq">
+                  <div class="accordion-body">
+                    Epithalon is often discussed in relation to telomerase and telomere-related research. However, the topic is complex, and simple claims about telomere lengthening should be treated carefully.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use Epithalon?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#epithalonFaq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What is Epithalon?</a>
+            <a href="#mechanism">Why it gets attention</a>
+            <a href="#research-focus">Research focus areas</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">Longevity research</span>
+              <span class="pill">Cellular ageing</span>
+              <span class="pill">Circadian rhythm</span>
+              <span class="pill">Telomere interest</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>Epithalon is usually discussed as a longevity research peptide.</li>
+              <li>Common themes include telomeres, sleep and pineal signalling.</li>
+              <li>Online claims can be overstated, so evidence quality matters.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="nad-plus.html">NAD+ Research Guide</a></li>
+              <li><a href="mots-c.html">MOTS-C Research Guide</a></li>
+              <li><a href="ss-31.html">SS-31 Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
