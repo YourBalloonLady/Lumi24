@@ -1,1 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>SLU-PP-332 Research Guide | Lumina</title>
+  <meta name="description" content="Educational SLU-PP-332 research guide covering exercise-mimetic research, ERR signalling, energy expenditure, endurance, metabolic research, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="SLU-PP-332 Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to SLU-PP-332, including ERR signalling, exercise-mimetic research, endurance, energy expenditure and metabolic research discussions." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/slu-pp-332.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/slu-pp-332.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-orange-soft: #fff7ed;
+      --lumina-orange: #c2410c;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
+    }
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
+    }
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(249, 115, 22, 0.13), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-orange-soft);
+      color: var(--lumina-orange);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
+    }
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
+    }
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+    }
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "SLU-PP-332 Research Guide",
+    "description": "Educational research-only guide to SLU-PP-332, exercise-mimetic research, ERR signalling, energy expenditure, endurance and metabolic research discussions.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/slu-pp-332.html"
+  }
+  </script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-person-running"></i> Exercise-mimetic research guide</div>
+      <h1>SLU-PP-332 Research Guide: ERR signalling, endurance research and energy expenditure.</h1>
+      <p class="lead">
+        SLU-PP-332 is an emerging research compound often discussed as an exercise-mimetic style material because of its relationship with ERR signalling, endurance-like adaptations and metabolic research. This guide explains the key themes while keeping claims grounded.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Exercise-mimetic, endurance and metabolic research.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Mechanism area</strong>
+          <span>ERR signalling and energy-metabolism pathway research.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Important note</strong>
+          <span>Emerging compound with limited human context; claims need caution.</span>
+        </div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What is SLU-PP-332?</h2>
+            <p>
+              <strong>SLU-PP-332</strong> is an experimental research compound discussed around energy metabolism, endurance-like signalling and exercise-mimetic research. It is not a peptide in the strict structural sense, but it is often grouped alongside peptide and metabolic research materials because of the audience and research themes around it.
+            </p>
+            <p>
+              The compound is commonly connected with <strong>ERR signalling</strong>, short for estrogen-related receptors. These receptors are involved in energy metabolism, mitochondrial function and exercise-adaptation pathways.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">SLU-PP-332 is best understood as an emerging exercise-mimetic and energy-metabolism research compound, not as a proven fat-loss or performance product.</p>
+            </div>
+          </section>
+
+          <section id="exercise-mimetic">
+            <h2>Why is SLU-PP-332 called exercise-mimetic?</h2>
+            <p>
+              The phrase “exercise mimetic” is used when a compound is studied for pathways that overlap with some biological effects of exercise, such as mitochondrial activity, endurance signalling or energy expenditure. This does not mean it replaces exercise or produces the same full-body benefits as training.
+            </p>
+            <p>
+              Exercise is a complex whole-body stimulus involving muscles, heart, lungs, nervous system, hormones, immune signalling and mechanical loading. A compound can interact with some exercise-related pathways without duplicating the full effects of training.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>Endurance signalling:</strong> Research interest often centres around pathways linked to endurance-like adaptation.</li>
+              <li><strong>Energy expenditure:</strong> SLU-PP-332 is discussed around metabolic rate and energy-use research themes.</li>
+              <li><strong>Mitochondrial function:</strong> ERR signalling is strongly connected with mitochondrial and oxidative-metabolism pathways.</li>
+              <li><strong>Exercise-mimetic caution:</strong> The phrase is useful for research categorisation but can be misleading if used as marketing hype.</li>
+            </ul>
+          </section>
+
+          <section id="err-signalling">
+            <h2>What is ERR signalling?</h2>
+            <p>
+              ERRs, or estrogen-related receptors, are nuclear receptors involved in regulating genes connected to energy metabolism, mitochondrial function and oxidative capacity. Despite the name, they are not the same as classical estrogen receptors.
+            </p>
+            <p>
+              SLU-PP-332 is discussed because of its relationship with ERR pathway activation. This places it in a different category from GLP-1 compounds like Semaglutide or Tirzepatide, and also different from mitochondrial-targeted peptides like SS-31.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Key research idea</strong>
+              <p class="mb-0">SLU-PP-332 is mainly discussed through ERR signalling and metabolic pathway research, not appetite suppression or hormone secretagogue activity.</p>
+            </div>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Endurance and exercise-adaptation research</h3>
+            <p>
+              SLU-PP-332 is often discussed in relation to endurance-like biological adaptations. The interest is whether ERR-related signalling may influence pathways normally associated with exercise training and oxidative metabolism.
+            </p>
+
+            <h3>2. Energy expenditure and metabolic research</h3>
+            <p>
+              Because ERR pathways are tied to energy metabolism, SLU-PP-332 is frequently discussed around energy expenditure and fat-oxidation research. This should be framed carefully because “metabolic interest” does not automatically mean proven weight-loss outcomes.
+            </p>
+
+            <h3>3. Mitochondrial and oxidative metabolism</h3>
+            <p>
+              ERR signalling overlaps with mitochondrial biogenesis and oxidative metabolism conversations. This is why SLU-PP-332 is often grouped near cellular-energy compounds in research libraries.
+            </p>
+
+            <h3>4. Obesity and inactivity-related research themes</h3>
+            <p>
+              Exercise-mimetic compounds are sometimes discussed in the context of obesity, inactivity, metabolic disease models or reduced exercise tolerance. These are research themes, not claims of medical effect.
+            </p>
+          </section>
+
+          <section id="mechanisms">
+            <h2>Mechanism overview</h2>
+            <p>
+              SLU-PP-332 is usually discussed as an ERR agonist or ERR-related activator in research contexts. The practical takeaway is that its research identity sits around nuclear receptor signalling, energy metabolism and endurance-like adaptation pathways.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Research area</th>
+                  <th>How SLU-PP-332 is discussed</th>
+                  <th>Why it matters</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ERR signalling</strong></td>
+                  <td>Discussed around estrogen-related receptor pathway activation</td>
+                  <td>ERRs influence energy metabolism and mitochondrial gene programs</td>
+                </tr>
+                <tr>
+                  <td><strong>Endurance research</strong></td>
+                  <td>Linked to endurance-like adaptations and oxidative capacity models</td>
+                  <td>Endurance pathways are central to exercise adaptation research</td>
+                </tr>
+                <tr>
+                  <td><strong>Energy expenditure</strong></td>
+                  <td>Discussed around metabolic rate, substrate use and energy-balance research</td>
+                  <td>Energy expenditure is relevant to obesity and metabolic research</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              SLU-PP-332 is exciting because it is emerging and mechanistically interesting, but that also means caution is needed. Early-stage and preclinical excitement should not be treated as proof of real-world human outcomes.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">SLU-PP-332 is best presented as an emerging research compound with interesting exercise-mimetic and metabolic pathway discussion, not as a proven fat-loss or endurance solution.</p>
+            </div>
+            <p>
+              The biggest mistake would be to market it as “exercise in a bottle.” That phrase may grab attention, but it oversimplifies the science and creates unrealistic expectations.
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How SLU-PP-332 compares with other energy compounds</h2>
+            <p>
+              SLU-PP-332 is often grouped with cellular-energy compounds because of its relationship with metabolism and endurance pathways. However, it is mechanistically different from NAD+, MOTS-C and SS-31.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SLU-PP-332</strong></td>
+                  <td>Exercise-mimetic and energy expenditure research</td>
+                  <td>ERR signalling, endurance-like adaptation, metabolism</td>
+                </tr>
+                <tr>
+                  <td><strong>SS-31</strong></td>
+                  <td>Mitochondrial membrane and oxidative stress</td>
+                  <td>Cardiolipin, cellular energy, mitochondrial resilience</td>
+                </tr>
+                <tr>
+                  <td><strong>MOTS-C</strong></td>
+                  <td>Mitochondrial-derived signalling</td>
+                  <td>AMPK-related pathways, insulin sensitivity, exercise-response research</td>
+                </tr>
+                <tr>
+                  <td><strong>NAD+</strong></td>
+                  <td>Redox biology and cellular metabolism</td>
+                  <td>NAD-dependent pathways, sirtuins, mitochondrial metabolism</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              SLU-PP-332 is exactly the kind of compound that can become overhyped online. Because it is connected to exercise-like pathways, it is easy for people to exaggerate what that means. Research interest does not equal proven human benefit.
+            </p>
+            <ul>
+              <li>SLU-PP-332 is an emerging research compound with limited human context.</li>
+              <li>Exercise-mimetic does not mean exercise replacement.</li>
+              <li>Energy expenditure research should not be simplified into guaranteed fat loss.</li>
+              <li>This guide does not provide dosing, administration or treatment guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>SLU-PP-332 FAQ</h2>
+            <div class="accordion" id="sluFaq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Is SLU-PP-332 a peptide?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#sluFaq">
+                  <div class="accordion-body">
+                    Not in the strict structural sense. It is often discussed alongside peptide and research compounds because it overlaps with metabolic, endurance and cellular-energy research themes.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Does exercise-mimetic mean it replaces exercise?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#sluFaq">
+                  <div class="accordion-body">
+                    No. Exercise-mimetic means researchers are interested in pathways that overlap with some exercise-related adaptations. It does not mean the compound replaces the full effects of training.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Is SLU-PP-332 mainly a fat-loss compound?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#sluFaq">
+                  <div class="accordion-body">
+                    It is more accurate to describe it as an energy-metabolism and exercise-mimetic research compound. Fat-loss discussions may appear because energy expenditure is involved, but it should not be framed like a GLP-1 appetite compound.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use SLU-PP-332?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#sluFaq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What is SLU-PP-332?</a>
+            <a href="#exercise-mimetic">Exercise-mimetic</a>
+            <a href="#err-signalling">ERR signalling</a>
+            <a href="#research-focus">Research focus</a>
+            <a href="#mechanisms">Mechanism overview</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">Cellular energy</span>
+              <span class="pill">Exercise-mimetic</span>
+              <span class="pill">ERR signalling</span>
+              <span class="pill">Metabolic research</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>SLU-PP-332 is often discussed as an exercise-mimetic style compound.</li>
+              <li>Its research identity is connected to ERR signalling.</li>
+              <li>Exercise-mimetic does not mean exercise replacement.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="ss-31.html">SS-31 Research Guide</a></li>
+              <li><a href="mots-c.html">MOTS-C Research Guide</a></li>
+              <li><a href="nad-plus.html">NAD+ Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
