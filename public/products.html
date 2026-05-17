@@ -405,6 +405,13 @@
       z-index: 2;
     }
 
+    .pill-popular {
+      background: #22c55e;
+    }
+
+    .pill-premium {
+      background: #6366f1;
+    }
 
     .pill-best-value {
       background: #f97316;
@@ -1071,6 +1078,8 @@
           <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
             <div class="flex-grow-1">
               <strong>${item.name}</strong><br>
+              ${item.groupLabel ? `<small class="text-muted d-block">${item.groupLabel}</small>` : ''}
+              ${item.strength ? `<small class="text-muted d-block">Strength: ${item.strength}</small>` : ''}
               ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
               ${item.penColour ? `<small class="text-muted d-block">Pen Colour: ${item.penColour}</small>` : ''}
               <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
@@ -1125,55 +1134,44 @@
 
     // ---------- PRODUCTS FROM SUPABASE ----------
     let products = [];
+    let displayItems = [];
     let currentProduct = null;
     let currentVariant = '';
+    let currentGroup = null;
     let activeCategory = 'all';
     let activeSearch = '';
     let activeSort = 'default';
 
-    function hasCartridgeOption(p) {
-      const name = String(p?.name || '').toLowerCase();
+    function cleanText(value) {
+      return String(value || '').toLowerCase();
+    }
 
-      return (
-        name.includes('pen') &&
-        !name.includes('refill pen') &&
-        !name.includes('empty pen storage case')
-      );
+    function getMgValue(name) {
+      const text = String(name || '').toLowerCase();
+      const mgIndex = text.indexOf('mg');
+      if (mgIndex === -1) return 0;
+
+      let start = mgIndex - 1;
+      while (start >= 0) {
+        const char = text[start];
+        if (!'0123456789.'.includes(char)) break;
+        start--;
+      }
+
+      const numberText = text.slice(start + 1, mgIndex).trim();
+      const value = Number(numberText);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function hasCartridgeOption(p) {
+      const name = cleanText(p?.name);
+      return name.includes('pen') && !name.includes('refill pen') && !name.includes('empty pen storage case');
     }
 
     function getVariantPrice(product, variant) {
       const basePrice = Number(product?.price || 0);
-
-      if (variant === 'cartridge-only') {
-        return Math.max(0, basePrice - 10);
-      }
-
+      if (variant === 'cartridge-only') return Math.max(0, basePrice - 10);
       return basePrice;
-    }
-
-    function computeBadge(p) {
-      const name = (p.name || '').toLowerCase();
-
-      if (name.includes('bpc-157') || name.includes('tb500') || name.includes('tb-500')) {
-        return { text: 'Wolverine Stack', class: 'pill-wolverine' };
-      }
-
-      if (p.name?.includes('20mg')) {
-        return { text: 'Most Popular', class: 'pill-popular' };
-      }
-
-      
-
-      return null;
-    }
-
-    function isComingSoonProduct(p) {
-      const name = String(p?.name || '').toLowerCase();
-      return (
-        name.includes('cagrilintide') ||
-        name.includes('mt2') ||
-        name.includes('ghk-cu')
-      );
     }
 
     function imgSrc(image) {
@@ -1203,32 +1201,27 @@
       `;
     }
 
-    function getTypeLabel(p) {
-      switch (String(p.type || '').toLowerCase().trim()) {
-        case 'blend':
-          return 'RESEARCH PEPTIDE BLEND';
-        case 'retatrutide':
-          return 'RETATRUTIDE (RESEARCH)';
-        case 'semaglutide':
-          return 'SEMAGLUTIDE (RESEARCH)';
-        case 'tirzepatide':
-          return 'TIRZEPATIDE (RESEARCH)';
-        case 'nad':
-          return 'NAD+ (RESEARCH)';
-        case 'mots-c':
-          return 'MOTS-c (RESEARCH)';
-        default:
-          return 'RESEARCH PEPTIDE';
+    function computeBadge(p) {
+      const name = cleanText(p.name);
+
+      if (name.includes('bpc-157') || name.includes('tb500') || name.includes('tb-500')) {
+        return { text: 'Wolverine Stack', class: 'pill-wolverine' };
       }
+
+      if (name.includes('20mg')) {
+        return { text: 'Most Popular', class: 'pill-popular' };
+      }
+
+      if (Number(p.price || 0) >= 130) {
+        return { text: 'Premium', class: 'pill-premium' };
+      }
+
+      return null;
     }
 
     function getResearchCategory(p) {
-      const name = String(p.name || '').toLowerCase();
-      const type = String(p.type || '').toLowerCase();
-      const description = String(p.description || '').toLowerCase();
-      const haystack = `${name} ${type} ${description}`;
+      const haystack = `${cleanText(p.name)} ${cleanText(p.type)} ${cleanText(p.description)}`;
 
-      // Accessories are checked first so they never get pulled into product categories by mistake.
       if (
         haystack.includes('syringe') ||
         haystack.includes('needle') ||
@@ -1236,19 +1229,14 @@
         haystack.includes('empty pen') ||
         haystack.includes('storage case') ||
         haystack.includes('refill pen') ||
+        haystack.includes('bac water') ||
         haystack.includes('bacteriostatic') ||
         haystack.includes('accessory') ||
         haystack.includes('accessories')
       ) {
-        return {
-          key: 'accessories',
-          label: 'Accessories',
-          class: 'cat-accessories',
-          icon: 'fa-solid fa-box-open'
-        };
+        return { key: 'accessories', label: 'Accessories', class: 'cat-accessories', icon: 'fa-solid fa-box-open' };
       }
 
-      // Fat Loss Research: Sema, Tirz, Reta, Cagri only.
       if (
         haystack.includes('semaglutide') ||
         haystack.includes('sema ') ||
@@ -1261,146 +1249,177 @@
         haystack.includes('cagrilintide') ||
         haystack.includes('cagri')
       ) {
-        return {
-          key: 'metabolic',
-          label: 'Fat Loss Research',
-          class: 'cat-metabolic',
-          icon: 'fa-solid fa-chart-line'
-        };
+        return { key: 'metabolic', label: 'Fat Loss Research', class: 'cat-metabolic', icon: 'fa-solid fa-chart-line' };
       }
 
-      // Cognitive Research: Selank and Semax only.
-      if (
-        haystack.includes('selank') ||
-        haystack.includes('semax')
-      ) {
-        return {
-          key: 'cognitive',
-          label: 'Cognitive Research',
-          class: 'cat-cognitive',
-          icon: 'fa-solid fa-brain'
-        };
+      if (haystack.includes('selank') || haystack.includes('semax')) {
+        return { key: 'cognitive', label: 'Cognitive Research', class: 'cat-cognitive', icon: 'fa-solid fa-brain' };
       }
 
-      // Cellular Energy: NAD and MOTS-c only.
-      if (
-        haystack.includes('nad') ||
-        haystack.includes('nad+') ||
-        haystack.includes('mots-c') ||
-        haystack.includes('mots c') ||
-        haystack.includes('mots')
-      ) {
-        return {
-          key: 'cellular-energy',
-          label: 'Cellular Energy',
-          class: 'cat-energy',
-          icon: 'fa-solid fa-bolt'
-        };
+      if (haystack.includes('nad') || haystack.includes('nad+') || haystack.includes('mots-c') || haystack.includes('mots c') || haystack.includes('mots')) {
+        return { key: 'cellular-energy', label: 'Cellular Energy', class: 'cat-energy', icon: 'fa-solid fa-bolt' };
       }
 
-      // Cosmetic / Skin Research: GHK-Cu and MT2 only.
-      if (
-        haystack.includes('ghk-cu') ||
-        haystack.includes('ghk cu') ||
-        haystack.includes('ghkcu') ||
-        haystack.includes('mt2') ||
-        haystack.includes('mt-2') ||
-        haystack.includes('melanotan')
-      ) {
-        return {
-          key: 'cosmetic',
-          label: 'Cosmetic / Skin Research',
-          class: 'cat-cosmetic',
-          icon: 'fa-solid fa-sparkles'
-        };
+      if (haystack.includes('ghk-cu') || haystack.includes('ghk cu') || haystack.includes('ghkcu') || haystack.includes('mt2') || haystack.includes('mt-2') || haystack.includes('melanotan')) {
+        return { key: 'cosmetic', label: 'Cosmetic / Skin Research', class: 'cat-cosmetic', icon: 'fa-solid fa-sparkles' };
       }
 
-      // Repair: CJC, Tesamorelin and BPC stack only.
       if (
         haystack.includes('cjc') ||
         haystack.includes('tesamorelin') ||
         haystack.includes('tesa') ||
         haystack.includes('bpc stack') ||
-        haystack.includes('BPC-157 & TB500 Blend 10mg') ||
-        haystack.includes('bpc-157 & tb500 blend') ||
+        haystack.includes('bpc-157 stack') ||
+        haystack.includes('bpc157 stack') ||
         haystack.includes('bpc 157 stack') ||
+        haystack.includes('bpc-157 & tb500 blend') ||
         haystack.includes('wolverine stack') ||
         haystack.includes('bpc/tb') ||
         haystack.includes('bpc + tb') ||
         haystack.includes('bpc-157/tb') ||
         haystack.includes('bpc-157 + tb')
       ) {
-        return {
-          key: 'recovery',
-          label: 'Repair Research',
-          class: 'cat-recovery',
-          icon: 'fa-solid fa-screwdriver-wrench'
-        };
+        return { key: 'recovery', label: 'Repair Research', class: 'cat-recovery', icon: 'fa-solid fa-screwdriver-wrench' };
       }
 
-      return {
-        key: 'general',
-        label: 'General Research',
-        class: 'cat-general',
-        icon: 'fa-solid fa-vial'
-      };
+      return { key: 'general', label: 'General Research', class: 'cat-general', icon: 'fa-solid fa-vial' };
     }
 
     function getFormatLabel(p) {
-      const name = String(p.name || '').toLowerCase();
-
+      const name = cleanText(p.name);
       if (name.includes('pen')) return 'Pen Format';
       if (name.includes('cartridge')) return 'Cartridge';
       if (name.includes('vial')) return 'Vial Format';
       if (name.includes('blend')) return 'Blend';
-
       return 'Research Material';
     }
 
-    function getFilteredProducts() {
-      let filtered = [...products];
+    function getCompoundInfo(p) {
+      const haystack = `${cleanText(p.name)} ${cleanText(p.type)}`;
+
+      if (haystack.includes('tirzepatide') || haystack.includes('tirz')) return { key: 'tirzepatide', label: 'Tirzepatide' };
+      if (haystack.includes('retatrutide') || haystack.includes('reta')) return { key: 'retatrutide', label: 'Retatrutide' };
+      if (haystack.includes('semaglutide') || haystack.includes('sema ') || haystack.includes('sema-') || haystack.includes('sema_')) return { key: 'semaglutide', label: 'Semaglutide' };
+      if (haystack.includes('cagrilintide') || haystack.includes('cagri')) return { key: 'cagrilintide', label: 'Cagrilintide' };
+
+      return null;
+    }
+
+    function getFormatKey(p) {
+      const name = cleanText(p.name);
+
+      if (name.includes('pen') && !name.includes('pen head') && !name.includes('empty pen') && !name.includes('refill pen')) return 'pen';
+      if (name.includes('vial') || name.includes('mg')) return 'vial';
+      return 'item';
+    }
+
+    function shouldGroupProduct(p) {
+      const compound = getCompoundInfo(p);
+      const format = getFormatKey(p);
+      const category = getResearchCategory(p);
+      return compound && category.key === 'metabolic' && (format === 'vial' || format === 'pen');
+    }
+
+    function makeGroupedDisplayItems(sourceProducts) {
+      const groups = new Map();
+      const standalone = [];
+
+      sourceProducts.forEach(p => {
+        if (!shouldGroupProduct(p)) {
+          standalone.push({ kind: 'single', product: p });
+          return;
+        }
+
+        const compound = getCompoundInfo(p);
+        const format = getFormatKey(p);
+        const key = `${compound.key}-${format}`;
+
+        if (!groups.has(key)) {
+          groups.set(key, {
+            kind: 'group',
+            key,
+            compound,
+            format,
+            products: [],
+            category: getResearchCategory(p)
+          });
+        }
+
+        groups.get(key).products.push(p);
+      });
+
+      const grouped = Array.from(groups.values()).map(group => {
+        group.products.sort((a, b) => {
+          const mgDiff = getMgValue(a.name) - getMgValue(b.name);
+          if (mgDiff !== 0) return mgDiff;
+          return Number(a.price || 0) - Number(b.price || 0);
+        });
+
+        group.name = `${group.compound.label} Research ${group.format === 'pen' ? 'Pen' : 'Vial'}`;
+        group.image = group.products.find(p => p.image)?.image || group.products[0]?.image || '';
+        group.price = Math.min(...group.products.map(p => Number(p.price || 0)));
+        group.stock = group.products.reduce((sum, p) => sum + Number(p.stock || 0), 0);
+        group.description = `${group.products.length} strength${group.products.length === 1 ? '' : 's'} available.`;
+        return group;
+      });
+
+      return [...grouped, ...standalone];
+    }
+
+    function getItemCategory(item) {
+      return item.kind === 'group' ? item.category : getResearchCategory(item.product);
+    }
+
+    function getItemSearchText(item) {
+      if (item.kind === 'group') {
+        return `${item.name} ${item.compound.label} ${item.format} ${item.products.map(p => `${p.name} ${p.description || ''} ${p.type || ''}`).join(' ')}`.toLowerCase();
+      }
+
+      const p = item.product;
+      return `${p.name || ''} ${p.description || ''} ${p.type || ''} ${getResearchCategory(p).label}`.toLowerCase();
+    }
+
+    function getCategorySortOrder(key) {
+      switch (key) {
+        case 'metabolic': return 1;
+        case 'cognitive': return 2;
+        case 'cellular-energy': return 3;
+        case 'cosmetic': return 4;
+        case 'recovery': return 5;
+        case 'accessories': return 6;
+        default: return 99;
+      }
+    }
+
+    function getFilteredItems() {
+      let filtered = [...displayItems];
 
       if (activeCategory !== 'all') {
-        filtered = filtered.filter(p => getResearchCategory(p).key === activeCategory);
+        filtered = filtered.filter(item => getItemCategory(item).key === activeCategory);
       }
 
       if (activeSearch) {
         const q = activeSearch.toLowerCase();
-        filtered = filtered.filter(p => {
-          const category = getResearchCategory(p);
-          return (
-            String(p.name || '').toLowerCase().includes(q) ||
-            String(p.description || '').toLowerCase().includes(q) ||
-            String(p.type || '').toLowerCase().includes(q) ||
-            category.label.toLowerCase().includes(q)
-          );
-        });
+        filtered = filtered.filter(item => getItemSearchText(item).includes(q));
       }
 
       filtered.sort((a, b) => {
-        if (activeSort === 'price-low') {
-          return Number(a.price || 0) - Number(b.price || 0);
-        }
+        const priceA = a.kind === 'group' ? Number(a.price || 0) : Number(a.product.price || 0);
+        const priceB = b.kind === 'group' ? Number(b.price || 0) : Number(b.product.price || 0);
+        const nameA = a.kind === 'group' ? a.name : String(a.product.name || '');
+        const nameB = b.kind === 'group' ? b.name : String(b.product.name || '');
+        const stockA = a.kind === 'group' ? Number(a.stock || 0) : Number(a.product.stock || 0);
+        const stockB = b.kind === 'group' ? Number(b.stock || 0) : Number(b.product.stock || 0);
 
-        if (activeSort === 'price-high') {
-          return Number(b.price || 0) - Number(a.price || 0);
-        }
+        if (activeSort === 'price-low') return priceA - priceB;
+        if (activeSort === 'price-high') return priceB - priceA;
+        if (activeSort === 'name') return nameA.localeCompare(nameB);
+        if (activeSort === 'stock') return stockB - stockA;
 
-        if (activeSort === 'name') {
-          return String(a.name || '').localeCompare(String(b.name || ''));
-        }
+        const categoryDiff = getCategorySortOrder(getItemCategory(a).key) - getCategorySortOrder(getItemCategory(b).key);
+        if (categoryDiff !== 0) return categoryDiff;
 
-        if (activeSort === 'stock') {
-          return Number(b.stock || 0) - Number(a.stock || 0);
-        }
-
-        const typeDiff = getTypeSortOrder(a.type) - getTypeSortOrder(b.type);
-        if (typeDiff !== 0) return typeDiff;
-
-        const mgDiff = getMgValue(a.name) - getMgValue(b.name);
-        if (mgDiff !== 0) return mgDiff;
-
-        return a.name.localeCompare(b.name);
+        return nameA.localeCompare(nameB);
       });
 
       return filtered;
@@ -1418,21 +1437,16 @@
         return;
       }
 
-      const visibleProducts = getFilteredProducts();
-
+      const visibleItems = getFilteredItems();
       statusEl.textContent = '';
 
       if (resultsCountEl) {
-        const total = products.length;
-        const showing = visibleProducts.length;
-
-        resultsCountEl.textContent =
-          showing === total
-            ? `Showing all ${total} listings`
-            : `Showing ${showing} of ${total} listings`;
+        const total = displayItems.length;
+        const showing = visibleItems.length;
+        resultsCountEl.textContent = showing === total ? `Showing all ${total} listings` : `Showing ${showing} of ${total} listings`;
       }
 
-      if (!visibleProducts.length) {
+      if (!visibleItems.length) {
         listEl.innerHTML = `
           <div class="col-12">
             <div class="text-center bg-white rounded-4 p-5 shadow-sm">
@@ -1445,79 +1459,134 @@
         return;
       }
 
-      listEl.innerHTML = visibleProducts.map((p) => {
-        const realIndex = products.findIndex(item => item.id === p.id);
-        const badge = computeBadge(p);
-        const category = getResearchCategory(p);
+      listEl.innerHTML = visibleItems.map(item => item.kind === 'group' ? renderGroupCard(item) : renderSingleCard(item.product)).join('');
+    }
 
-        const baseDesc = p.description || 'Research material supplied for laboratory environments.';
-        const extraInfo = ' Accessories, where applicable, are supplied for laboratory handling and measurement.';
-        const unitSuffix = '/unit';
+    function renderGroupCard(group) {
+      const category = group.category;
+      const stockNum = Number(group.stock || 0);
+      const inStockProducts = group.products.filter(p => Number(p.stock || 0) > 0);
+      const strengthLabels = group.products.map(p => {
+        const mg = getMgValue(p.name);
+        return mg ? `${mg}mg` : p.name;
+      });
+      const price = Number(group.price || 0);
+      const stockLabel = stockNum === 0 ? '<strong>Out of stock</strong>' : `${inStockProducts.length} strength${inStockProducts.length === 1 ? '' : 's'} in stock`;
+      const stockClass = stockNum === 0 ? 'text-danger' : 'text-success';
 
-        const stockNum = Number(p.stock ?? 0);
-        const stockLabel =
-          stockNum === 0 ? '<strong>Out of stock</strong>' :
-          stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` :
-          `<strong>In stock</strong> • ${stockNum} available`;
+      return `
+        <div class="col-md-3">
+          <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openGroupModal('${group.key}')` : ''}">
+            <span class="pill-label pill-popular">Choose Strength</span>
 
-        const stockClass =
-          stockNum === 0 ? 'text-danger' :
-          stockNum <= 5 ? 'text-warning' :
-          'text-success';
+            <div class="product-image-wrap">
+              <img src="${imgSrc(group.image)}" class="w-100" alt="${group.name}">
+            </div>
 
-        const mgValue = getMgValue(p.name);
+            <div class="product-body d-flex flex-column h-100">
+              <div class="text-start">
+                <div class="product-meta-row">
+                  <span class="category-badge ${category.class}">
+                    <i class="${category.icon}"></i> ${category.label}
+                  </span>
+                </div>
 
-        return `
-          <div class="col-md-3">
-            <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${realIndex})` : ''}">
-              ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
+                <div class="product-name">${group.name}</div>
 
-              <div class="product-image-wrap">
-                <img src="${imgSrc(p.image)}" class="w-100" alt="${p.name}">
+                <div class="quick-specs">
+                  <span>Research Use</span>
+                  <span>${group.format === 'pen' ? 'Pen Format' : 'Vial Format'}</span>
+                  <span>${group.products.length} strengths</span>
+                </div>
+
+                <div class="text-muted" style="font-size:0.85rem;">
+                  Available strengths: ${strengthLabels.join(' • ')}.
+                </div>
               </div>
 
-              <div class="product-body d-flex flex-column h-100">
-                <div class="text-start">
-                  <div class="product-meta-row">
-                    <span class="category-badge ${category.class}">
-                      <i class="${category.icon}"></i> ${category.label}
-                    </span>
-                  </div>
-
-                  <div class="product-name">${p.name}</div>
-
-                  <div class="quick-specs">
-                    <span>Research Use</span>
-                    ${mgValue ? `<span>${mgValue}mg</span>` : ''}
-                    <span>${getFormatLabel(p)}</span>
-                  </div>
-
-                  <div class="text-muted" style="font-size:0.85rem;">
-                    ${baseDesc + extraInfo}
-                  </div>
+              <div class="mt-3">
+                <div class="product-price">
+                  From £${price.toFixed(2)}
+                  <span class="unit-suffix">/unit</span>
                 </div>
+                <p class="stock ${stockClass} mt-2">${stockLabel}</p>
 
-                <div class="mt-3">
-                  ${getDisplayPriceHtml(p, unitSuffix)}
-                  <p class="stock ${stockClass} mt-2">${stockLabel}</p>
-
-                  <button
-                    class="btn btn-success btn-add mt-auto"
-                    ${stockNum === 0 ? 'disabled' : ''}
-                    onclick="event.stopPropagation(); openModal(${realIndex})"
-                  >
-                    ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
-                  </button>
-                </div>
+                <button
+                  class="btn btn-success btn-add mt-auto"
+                  ${stockNum === 0 ? 'disabled' : ''}
+                  onclick="event.stopPropagation(); openGroupModal('${group.key}')"
+                >
+                  ${stockNum > 0 ? 'Choose strength' : 'Sold out'}
+                </button>
               </div>
             </div>
           </div>
-        `;
-      }).join('');
+        </div>
+      `;
+    }
+
+    function renderSingleCard(p) {
+      const realIndex = products.findIndex(item => item.id === p.id);
+      const badge = computeBadge(p);
+      const category = getResearchCategory(p);
+      const baseDesc = p.description || 'Research material supplied for laboratory environments.';
+      const extraInfo = ' Accessories, where applicable, are supplied for laboratory handling and measurement.';
+      const unitSuffix = '/unit';
+      const stockNum = Number(p.stock ?? 0);
+      const stockLabel = stockNum === 0 ? '<strong>Out of stock</strong>' : stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` : `<strong>In stock</strong> • ${stockNum} available`;
+      const stockClass = stockNum === 0 ? 'text-danger' : stockNum <= 5 ? 'text-warning' : 'text-success';
+      const mgValue = getMgValue(p.name);
+
+      return `
+        <div class="col-md-3">
+          <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openModal(${realIndex})` : ''}">
+            ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
+
+            <div class="product-image-wrap">
+              <img src="${imgSrc(p.image)}" class="w-100" alt="${p.name}">
+            </div>
+
+            <div class="product-body d-flex flex-column h-100">
+              <div class="text-start">
+                <div class="product-meta-row">
+                  <span class="category-badge ${category.class}">
+                    <i class="${category.icon}"></i> ${category.label}
+                  </span>
+                </div>
+
+                <div class="product-name">${p.name}</div>
+
+                <div class="quick-specs">
+                  <span>Research Use</span>
+                  ${mgValue ? `<span>${mgValue}mg</span>` : ''}
+                  <span>${getFormatLabel(p)}</span>
+                </div>
+
+                <div class="text-muted" style="font-size:0.85rem;">
+                  ${baseDesc + extraInfo}
+                </div>
+              </div>
+
+              <div class="mt-3">
+                ${getDisplayPriceHtml(p, unitSuffix)}
+                <p class="stock ${stockClass} mt-2">${stockLabel}</p>
+
+                <button
+                  class="btn btn-success btn-add mt-auto"
+                  ${stockNum === 0 ? 'disabled' : ''}
+                  onclick="event.stopPropagation(); openModal(${realIndex})"
+                >
+                  ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function getTypeSortOrder(type) {
-      switch (String(type || '').toLowerCase().trim()) {
+      switch (cleanText(type).trim()) {
         case 'blend': return 1;
         case 'nad': return 2;
         case 'mots-c': return 3;
@@ -1526,11 +1595,6 @@
         case 'retatrutide': return 6;
         default: return 99;
       }
-    }
-
-    function getMgValue(name) {
-      const match = String(name || '').match(/(\d+(?:\.\d+)?)\s*mg/i);
-      return match ? Number(match[1]) : 0;
     }
 
     async function loadProductsFromDb() {
@@ -1556,7 +1620,7 @@
           image: row.image || '20mg Tirz Vial.png',
           stock: row.stock ?? 0,
           description: row.description || '',
-          type: String(row.type || '').toLowerCase().trim(),
+          type: cleanText(row.type).trim(),
           bundle_options: row.bundle_options || {}
         }))
         .sort((a, b) => {
@@ -1566,9 +1630,10 @@
           const mgDiff = getMgValue(a.name) - getMgValue(b.name);
           if (mgDiff !== 0) return mgDiff;
 
-          return a.name.localeCompare(b.name);
+          return String(a.name || '').localeCompare(String(b.name || ''));
         });
 
+      displayItems = makeGroupedDisplayItems(products);
       renderProducts();
     }
 
@@ -1584,75 +1649,163 @@
       }
     }
 
-    // ---------- MODAL ----------
-    function openModal(i) {
-      const p = products[i];
-      if (!p || Number(p.stock ?? 0) === 0) return;
+    function createProductModalShell() {
+      const existing = document.getElementById('productModal');
+      if (existing) return;
 
-      currentProduct = p;
-
-      const accessoriesLine = 'Accessories (if applicable) are supplied for laboratory handling and measurement only.';
-      const stockNum = Number(p.stock ?? 0);
-
-      let modal = document.getElementById('productModal');
-
-      if (!modal) {
-        const wrapper = document.createElement('div');
-        wrapper.innerHTML = `
-          <div class="modal fade" id="productModal" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="modalTitle"></h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = `
+        <div class="modal fade" id="productModal" tabindex="-1">
+          <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body text-center">
+                <div id="modalMedia" class="mb-4"></div>
+                <h3 id="modalName"></h3>
+                <p class="product-price fs-1 justify-content-center" id="modalPrice"></p>
+                <p class="stock text-success mb-2" id="modalStock"></p>
+                <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+                <div id="modalVariantWrap" class="mb-3"></div>
+                <div class="d-flex justify-content-center align-items-center gap-3 my-3">
+                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
+                  <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
+                  <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
                 </div>
-                <div class="modal-body text-center">
-                  <div id="modalMedia" class="mb-4"></div>
-                  <h3 id="modalName"></h3>
-                  <p class="product-price fs-1 justify-content-center" id="modalPrice"></p>
-                  <p class="stock text-success mb-2" id="modalStock"></p>
-                  <div id="modalDescription" class="text-start small text-muted mb-3"></div>
-                  <div id="modalVariantWrap" class="mb-3"></div>
-                  <div class="d-flex justify-content-center align-items-center gap-3 my-3">
-                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
-                    <input type="number" id="modalQty" value="1" min="1" class="form-control qty-input">
-                    <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(1)">+</button>
-                  </div>
-                  <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
-                </div>
+                <button id="modalAddBtn" class="btn btn-success btn-lg rounded-pill">Add to Cart</button>
               </div>
             </div>
           </div>
-        `;
-        document.body.appendChild(wrapper.firstElementChild);
-        modal = document.getElementById('productModal');
-      }
+        </div>
+      `;
+      document.body.appendChild(wrapper.firstElementChild);
+    }
 
-      const modalMedia = document.getElementById('modalMedia');
-      modalMedia.innerHTML = `
-        <img
-          id="modalImg"
-          src="${imgSrc(p.image)}"
-          class="img-fluid"
-          style="max-height: 320px;"
-          alt="${p.name}"
-        >
+    function getSelectedGroupProduct() {
+      const select = document.getElementById('modalStrengthSelect');
+      if (!select || !currentGroup) return null;
+      return currentGroup.products.find(p => String(p.id) === String(select.value)) || currentGroup.products[0] || null;
+    }
+
+    function openGroupModal(groupKey) {
+      const group = displayItems.find(item => item.kind === 'group' && item.key === groupKey);
+      if (!group || !group.products.length) return;
+
+      currentGroup = group;
+      const firstAvailable = group.products.find(p => Number(p.stock || 0) > 0) || group.products[0];
+      currentProduct = firstAvailable;
+      currentVariant = group.format === 'pen' && hasCartridgeOption(firstAvailable) ? 'full-kit' : '';
+
+      createProductModalShell();
+
+      document.getElementById('modalTitle').textContent = group.name;
+      document.getElementById('modalName').textContent = group.name;
+      document.getElementById('modalMedia').innerHTML = `
+        <img id="modalImg" src="${imgSrc(group.image)}" class="img-fluid" style="max-height: 320px;" alt="${group.name}">
       `;
 
-      document.getElementById('modalTitle').textContent = p.name;
-      document.getElementById('modalName').textContent = p.name;
+      const options = group.products.map(p => {
+        const mg = getMgValue(p.name);
+        const stock = Number(p.stock || 0);
+        const label = `${mg ? `${mg}mg` : p.name} - £${Number(p.price || 0).toFixed(2)}${stock <= 0 ? ' - Out of stock' : stock <= 5 ? ` - ${stock} left` : ''}`;
+        return `<option value="${p.id}" ${String(p.id) === String(firstAvailable.id) ? 'selected' : ''} ${stock <= 0 ? 'disabled' : ''}>${label}</option>`;
+      }).join('');
 
-      const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
-      const modalPrice = initialVariant
-        ? Number(getVariantPrice(p, initialVariant))
-        : Number(p.price || 0);
+      const bundleOptions = parseBundleOptions(firstAvailable.bundle_options);
+      let optionsHtml = `
+        <div class="product-variant-selection text-start mb-3">
+          <label for="modalStrengthSelect" class="form-label fw-semibold mb-2">Choose Strength:</label>
+          <select id="modalStrengthSelect" class="form-select" onchange="updateGroupedModalSelection()">
+            ${options}
+          </select>
+        </div>
+      `;
 
-      const modalCompareAt = Number(p.compare_at_price || 0);
+      if (group.format === 'pen' && hasCartridgeOption(firstAvailable)) {
+        optionsHtml += `
+          <div class="product-variant-selection text-start mb-3">
+            <label for="modalFormatSelect" class="form-label fw-semibold mb-2">Choose Format:</label>
+            <select id="modalFormatSelect" class="form-select" onchange="updateGroupedModalSelection()">
+              <option value="full-kit" selected>Full Kit (Pen + Cartridge)</option>
+              <option value="cartridge-only">Cartridge Only</option>
+            </select>
+          </div>
+        `;
+      }
 
-      document.getElementById('modalPrice').innerHTML =
-        modalCompareAt > modalPrice
-          ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
-          : `£${modalPrice.toFixed(2)}`;
+      if (Array.isArray(bundleOptions.penColours) && bundleOptions.penColours.length) {
+        optionsHtml += `
+          <div class="product-variant-selection text-start">
+            <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
+            <select id="modalPenColourSelect" class="form-select">
+              ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+            </select>
+          </div>
+        `;
+      }
+
+      document.getElementById('modalVariantWrap').innerHTML = optionsHtml;
+      document.getElementById('modalDescription').innerHTML = `
+        <p>Select the required strength from the dropdown above.</p>
+        <p><strong>Accessories, where applicable, are supplied for laboratory handling and measurement only.</strong></p>
+        <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
+        <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
+      `;
+
+      document.getElementById('modalQty').value = 1;
+      updateGroupedModalSelection();
+
+      document.getElementById('modalAddBtn').onclick = () => {
+        const selectedProduct = getSelectedGroupProduct();
+        if (!selectedProduct) return;
+
+        let qty = parseInt(document.getElementById('modalQty').value) || 1;
+        const stockNum = Number(selectedProduct.stock || 0);
+        qty = Math.max(1, Math.min(qty, stockNum));
+
+        const formatSelect = document.getElementById('modalFormatSelect');
+        const selectedVariant = formatSelect ? formatSelect.value : '';
+
+        const penColourSelect = document.getElementById('modalPenColourSelect');
+        const selectedPenColour = penColourSelect ? penColourSelect.value : null;
+
+        const existing = cart.find(item =>
+          item.id === selectedProduct.id &&
+          (item.variant || '') === (selectedVariant || '') &&
+          (item.penColour || null) === (selectedPenColour || null)
+        );
+
+        const already = existing ? (existing.qty || 0) : 0;
+
+        if (already + qty > stockNum) {
+          return alert(`Only ${stockNum} available. You already have ${already} in your cart for this strength/format.`);
+        }
+
+        addToCart(selectedProduct, qty, selectedVariant, selectedPenColour, group.name);
+        bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
+      };
+
+      new bootstrap.Modal(document.getElementById('productModal')).show();
+    }
+
+    function updateGroupedModalSelection() {
+      const selectedProduct = getSelectedGroupProduct();
+      if (!selectedProduct) return;
+
+      currentProduct = selectedProduct;
+
+      const formatSelect = document.getElementById('modalFormatSelect');
+      currentVariant = formatSelect ? formatSelect.value : '';
+
+      const price = currentVariant ? Number(getVariantPrice(selectedProduct, currentVariant)) : Number(selectedProduct.price || 0);
+      const compareAt = Number(selectedProduct.compare_at_price || 0);
+      const stockNum = Number(selectedProduct.stock || 0);
+
+      document.getElementById('modalPrice').innerHTML = compareAt > price
+        ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
+        : `£${price.toFixed(2)}`;
 
       document.getElementById('modalStock').innerHTML =
         stockNum === 0
@@ -1661,10 +1814,52 @@
             ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
-      const descEl = document.getElementById('modalDescription');
-      descEl.innerHTML = `
+      const qtyInput = document.getElementById('modalQty');
+      qtyInput.value = 1;
+      qtyInput.max = stockNum;
+
+      const img = document.getElementById('modalImg');
+      if (img && selectedProduct.image) {
+        img.src = imgSrc(selectedProduct.image);
+        img.alt = selectedProduct.name;
+      }
+    }
+
+    function openModal(i) {
+      const p = products[i];
+      if (!p || Number(p.stock ?? 0) === 0) return;
+
+      currentGroup = null;
+      currentProduct = p;
+
+      const stockNum = Number(p.stock ?? 0);
+      createProductModalShell();
+
+      document.getElementById('modalMedia').innerHTML = `
+        <img id="modalImg" src="${imgSrc(p.image)}" class="img-fluid" style="max-height: 320px;" alt="${p.name}">
+      `;
+
+      document.getElementById('modalTitle').textContent = p.name;
+      document.getElementById('modalName').textContent = p.name;
+
+      const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
+      const modalPrice = initialVariant ? Number(getVariantPrice(p, initialVariant)) : Number(p.price || 0);
+      const modalCompareAt = Number(p.compare_at_price || 0);
+
+      document.getElementById('modalPrice').innerHTML = modalCompareAt > modalPrice
+        ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
+        : `£${modalPrice.toFixed(2)}`;
+
+      document.getElementById('modalStock').innerHTML =
+        stockNum === 0
+          ? '<span class="text-danger fw-bold">Out of stock</span>'
+          : stockNum <= 5
+            ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
+            : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+
+      document.getElementById('modalDescription').innerHTML = `
         <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
-        <p><strong>${accessoriesLine}</strong></p>
+        <p><strong>Accessories, where applicable, are supplied for laboratory handling and measurement only.</strong></p>
         <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
         <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
       `;
@@ -1723,11 +1918,11 @@
           return alert(`Only ${stockNum} available. You already have ${already} in your cart for this format.`);
         }
 
-        addToCart(p, qty, currentVariant, selectedPenColour);
+        addToCart(p, qty, currentVariant, selectedPenColour, '');
         bootstrap.Modal.getInstance(document.getElementById('productModal')).hide();
       };
 
-      new bootstrap.Modal(modal).show();
+      new bootstrap.Modal(document.getElementById('productModal')).show();
     }
 
     function updateModalVariant() {
@@ -1735,17 +1930,12 @@
       if (!currentProduct) return;
 
       currentVariant = select ? select.value : '';
-
-      const price = currentVariant
-        ? Number(getVariantPrice(currentProduct, currentVariant))
-        : Number(currentProduct.price || 0);
-
+      const price = currentVariant ? Number(getVariantPrice(currentProduct, currentVariant)) : Number(currentProduct.price || 0);
       const compareAt = Number(currentProduct.compare_at_price || 0);
 
-      document.getElementById('modalPrice').innerHTML =
-        compareAt > price
-          ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
-          : `£${price.toFixed(2)}`;
+      document.getElementById('modalPrice').innerHTML = compareAt > price
+        ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
+        : `£${price.toFixed(2)}`;
     }
 
     function changeQty(delta) {
@@ -1756,11 +1946,11 @@
       input.value = val;
     }
 
-    function addToCart(product, qty, variant = '', penColour = null) {
+    function addToCart(product, qty, variant = '', penColour = null, groupLabel = '') {
       const finalVariant = variant || '';
-      const price = finalVariant
-        ? getVariantPrice(product, finalVariant)
-        : Number(product?.price || 0);
+      const price = finalVariant ? getVariantPrice(product, finalVariant) : Number(product?.price || 0);
+      const mgValue = getMgValue(product.name);
+      const strength = mgValue ? `${mgValue}mg` : '';
 
       const existing = cart.find(item =>
         item.id === product.id &&
@@ -1778,7 +1968,9 @@
           qty: qty,
           image: product.image || '',
           variant: finalVariant,
-          penColour: penColour
+          penColour: penColour,
+          strength: strength,
+          groupLabel: groupLabel
         });
       }
 
