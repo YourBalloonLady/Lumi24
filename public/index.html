@@ -6,7 +6,7 @@
 
 <!-- SEO -->
 <title>UK Research Materials Supplier | Lumina</title>
-<meta name="description" content="UK-based supplier of research materials. Tirzepatide, Retatrutide, and related materials supplied strictly for laboratory research use only (not for human consumption). Discreet UK dispatch.">
+<meta name="description" content="UK-based supplier of research materials. Tirzepatide, Retatrutide, Semaglutide and related materials supplied strictly for laboratory research use only. Not for human consumption. Discreet UK dispatch.">
 <meta name="robots" content="index, follow">
 <meta property="og:title" content="UK Research Materials Supplier | Lumina">
 <meta property="og:description" content="UK supplier of research materials. Laboratory research use only • Not for human consumption • Discreet UK dispatch.">
@@ -35,12 +35,20 @@
     --lw-border: rgba(148, 163, 184, 0.18);
   }
 
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background: var(--lw-bg);
     color: var(--lw-dark);
     margin: 0;
     padding-top: 112px;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   #trust-bar {
@@ -82,12 +90,13 @@
   }
 
   .navbar-brand span {
-    font-weight: 700;
-    font-size: 1.15rem;
+    font-weight: 800;
+    font-size: 1.2rem;
+    letter-spacing: -0.03em;
   }
 
   .nav-link {
-    font-weight: 500;
+    font-weight: 600;
     color: var(--lw-muted) !important;
   }
 
@@ -116,14 +125,15 @@
     background: rgba(34, 197, 94, 0.08);
     color: #15803d;
     font-size: 0.85rem;
-    font-weight: 700;
+    font-weight: 800;
   }
 
   .hero-title {
     font-size: clamp(2.5rem, 5vw, 3.35rem);
-    font-weight: 800;
+    font-weight: 850;
     line-height: 1.08;
     margin-top: 18px;
+    letter-spacing: -0.045em;
   }
 
   .hero-title span.highlight {
@@ -133,8 +143,9 @@
   .hero-subtitle {
     color: var(--lw-muted);
     font-size: 1.05rem;
-    max-width: 690px;
+    max-width: 760px;
     margin: 16px auto 0;
+    line-height: 1.65;
   }
 
   .hero-cta {
@@ -162,7 +173,7 @@
     border-radius: 999px;
     padding: 10px 14px;
     font-size: 0.92rem;
-    font-weight: 600;
+    font-weight: 650;
     color: var(--lw-dark);
     box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
   }
@@ -170,20 +181,23 @@
   .btn-primary-lw {
     background: var(--lw-mint);
     border-color: var(--lw-mint);
-    font-weight: 600;
+    color: #ffffff;
+    font-weight: 700;
     padding-inline: 32px;
     border-radius: 999px;
+    box-shadow: 0 12px 24px rgba(34,197,94,0.18);
   }
 
   .btn-primary-lw:hover {
     background: #16a34a;
     border-color: #16a34a;
+    color: #ffffff;
   }
 
   .btn-ghost {
     border-radius: 999px;
     border: 1px solid rgba(148, 163, 184, 0.5);
-    font-weight: 500;
+    font-weight: 600;
     color: var(--lw-muted);
     background: rgba(255, 255, 255, 0.8);
   }
@@ -198,22 +212,24 @@
     letter-spacing: .08em;
     font-size: 0.78rem;
     color: #0f766e;
-    font-weight: 700;
+    font-weight: 800;
   }
 
   .section-title {
-    font-size: 2rem;
-    font-weight: 800;
+    font-size: clamp(1.75rem, 3vw, 2.15rem);
+    font-weight: 850;
+    letter-spacing: -0.035em;
   }
 
   .section-subtitle {
     color: var(--lw-muted);
     max-width: 650px;
     margin: 10px auto 0;
+    line-height: 1.65;
   }
 
   #why-lumina {
-    padding: 12px 0 20px;
+    padding: 46px 0 20px;
   }
 
   .why-card {
@@ -240,7 +256,7 @@
 
   .why-card h3 {
     font-size: 1.08rem;
-    font-weight: 700;
+    font-weight: 750;
     margin-bottom: 8px;
   }
 
@@ -248,10 +264,11 @@
     margin: 0;
     color: var(--lw-muted);
     font-size: 0.95rem;
+    line-height: 1.55;
   }
 
   #products {
-    padding: 60px 0 80px;
+    padding: 60px 0 60px;
   }
 
   .product-card {
@@ -285,14 +302,14 @@
   }
 
   .product-name {
-    font-weight: 700;
+    font-weight: 750;
     font-size: 1.1rem;
     margin-bottom: .15rem;
   }
 
   .product-price {
     font-size: 1.4rem;
-    font-weight: 800;
+    font-weight: 850;
     color: #0f172a;
   }
 
@@ -309,7 +326,7 @@
     padding: 4px 12px;
     border-radius: 999px;
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 750;
     color: #ffffff;
   }
 
@@ -328,7 +345,7 @@
 
   .btn-add {
     border-radius: 999px;
-    font-weight: 600;
+    font-weight: 650;
     padding-inline: 24px;
     margin-top: 10px;
   }
@@ -362,6 +379,10 @@
     display: block;
   }
 
+  #feedback-preview {
+    padding: 30px 0 20px;
+  }
+
   #contact {
     padding: 70px 0;
   }
@@ -376,6 +397,7 @@
   .contact-note {
     color: var(--lw-muted);
     font-size: 0.95rem;
+    line-height: 1.6;
   }
 
   .review-card {
@@ -398,6 +420,13 @@
 
   footer a:hover {
     color: #ffffff;
+  }
+
+  @media (max-width: 992px) {
+    .navbar-nav {
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
   }
 
   @media (max-width: 768px) {
@@ -435,11 +464,12 @@
   }
 </style>
 </head>
+
 <body>
 
 <div id="trust-bar">
   <div class="container">
-    <span>🚚 24-48 Delivery on orders before 3PM</span>
+    <span>🚚 Same working day dispatch before 3PM where possible</span>
     <span>🔒 Secure Bank Transfer</span>
     <span>🇬🇧 UK Dispatch</span>
     <span>📦 Discreet Packaging</span>
@@ -454,11 +484,12 @@
         <h5 class="modal-title fw-bold">Frequently Asked Questions</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
+
       <div class="modal-body">
         <h6 class="fw-semibold">Are your products for human consumption?</h6>
         <p class="small text-muted">
           No. All products sold by Lumina are strictly supplied for <strong>laboratory research purposes only</strong>.
-          They are not approved for human consumption or medical use.
+          They are not approved for human consumption, medical use, or personal use.
         </p>
 
         <h6 class="fw-semibold">How do I pay?</h6>
@@ -469,26 +500,26 @@
 
         <h6 class="fw-semibold">When will my order be dispatched?</h6>
         <p class="small text-muted">
-          Orders placed before <strong>3PM are dispatched the same working day</strong>.
-          Orders placed after 3PM are dispatched the next working day.
+          Orders placed before <strong>3PM are usually dispatched the same working day where possible</strong>.
+          Orders placed after 3PM are usually dispatched the next working day.
         </p>
 
         <h6 class="fw-semibold">Is shipping discreet?</h6>
         <p class="small text-muted">
-          Yes — all orders are shipped in <strong>plain, unbranded, discreet packaging</strong> with no reference
+          Yes — all orders are shipped in <strong>plain, discreet packaging</strong> with no unnecessary reference
           to the contents on the outside.
         </p>
 
         <h6 class="fw-semibold">What is included with my order?</h6>
         <p class="small text-muted">
-          Included items (if any) are listed on each product page. All products are supplied strictly for
-          <strong>laboratory research use only</strong> (not for human consumption).
+          Included items, if any, are listed on each product page. All products are supplied strictly for
+          <strong>laboratory research use only</strong> and are not for human consumption.
         </p>
 
         <h6 class="fw-semibold">Do you provide usage, dosing, or administration advice?</h6>
         <p class="small text-muted">
-          No. We do not provide guidance on usage, dosing, administration, or protocols. Our products are supplied strictly
-          for laboratory research use only and are not for human consumption.
+          No. We do not provide guidance on usage, dosing, administration, protocols, or personal use.
+          Our products are supplied strictly for laboratory research use only and are not for human consumption.
         </p>
 
         <h6 class="fw-semibold">Can I track my delivery?</h6>
@@ -498,9 +529,10 @@
 
         <h6 class="fw-semibold">Do you ship outside the UK?</h6>
         <p class="small text-muted">
-          Currently we <strong>only ship within the UK</strong> to ensure fast delivery and reliability.
+          Currently we <strong>only ship within the UK</strong> to keep fulfilment straightforward and reliable.
         </p>
       </div>
+
       <div class="modal-footer">
         <button class="btn btn-success rounded-pill" data-bs-dismiss="modal">Close</button>
       </div>
@@ -511,7 +543,7 @@
 <!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
-    <a class="navbar-brand d-flex align-items-center" href="index.html#home">
+    <a class="navbar-brand d-flex align-items-center" href="#home">
       <span>Lumina</span>
     </a>
 
@@ -521,13 +553,13 @@
 
     <div class="collapse navbar-collapse" id="mainNav">
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-        <li class="nav-item"><a class="nav-link active" href="home">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
         <li class="nav-item"><a class="nav-link" href="product-bundles.html">Bundles</a></li>
-        <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+        <li class="nav-item"><a class="nav-link" href="peptide-library.html">Peptide Library</a></li>
         <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact">Contact</a></li>
-        <li class="nav-item"><a class="nav-link" href="reviews.html">Customer Feedback</a></li>
+        <li class="nav-item"><a class="nav-link" href="reviews.html">Feedback</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
 
         <li class="nav-item" id="logout-nav-item" style="display:none;">
           <a class="nav-link" href="#" id="logout-btn">Logout</a>
@@ -594,7 +626,7 @@
     </h1>
 
     <p class="hero-subtitle">
-      High-purity research materials supplied from the UK with discreet packaging and clear product information.
+      Research materials supplied from the UK with discreet packaging, clear product information and straightforward ordering.
       All materials are supplied strictly for <strong>laboratory research purposes only</strong> and are
       <strong>not for human consumption or medical use</strong>.
     </p>
@@ -603,6 +635,7 @@
       <a href="products.html" class="btn btn-primary-lw btn-lg">
         View Products <i class="fa-solid fa-arrow-right ms-1"></i>
       </a>
+
       <a href="#contact" class="btn btn-ghost btn-lg">
         Contact Us
       </a>
@@ -611,7 +644,7 @@
     <div class="hero-trust">
       <div class="hero-chip"><i class="fa-solid fa-truck-fast text-success"></i> UK Dispatch</div>
       <div class="hero-chip"><i class="fa-solid fa-box text-success"></i> Discreet Packaging</div>
-      <div class="hero-chip"><i class="fa-solid fa-clock text-success"></i> Same Day Dispatch before 3PM</div>
+      <div class="hero-chip"><i class="fa-solid fa-clock text-success"></i> Same working day dispatch before 3PM</div>
       <div class="hero-chip"><i class="fa-solid fa-building-columns text-success"></i> Secure Bank Transfer</div>
     </div>
   </div>
@@ -641,7 +674,7 @@
         <div class="why-card">
           <div class="why-icon"><i class="fa-solid fa-box-open"></i></div>
           <h3>Discreet packaging</h3>
-          <p>Plain, unbranded packaging with no unnecessary reference to contents on the outside.</p>
+          <p>Plain, careful packaging with no unnecessary reference to contents on the outside.</p>
         </div>
       </div>
 
@@ -672,6 +705,7 @@
         <h5 class="modal-title" id="modalTitle"></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body text-center">
         <img id="modalImg" src="" class="img-fluid mb-4" style="max-height: 320px;" alt="">
         <h3 id="modalName"></h3>
@@ -699,12 +733,43 @@
       <div class="section-eyebrow">Featured</div>
       <h2 class="section-title">Featured Research Materials</h2>
       <p class="section-subtitle">
-        Selected items supplied strictly for <strong>laboratory research use only</strong> (not for human consumption).
-        For all products, strengths, and formats, head to the full products page.
+        Selected items supplied strictly for <strong>laboratory research use only</strong> and
+        <strong>not for human consumption</strong>. For all products, strengths, and formats, head to the full products page.
       </p>
     </div>
 
     <div class="row g-4" id="product-list"></div>
+
+    <div class="text-center mt-4">
+      <small class="text-muted">
+        Product listings are for catalogue and research-supply information only. Lumina does not provide usage,
+        dosing, administration, protocol, medical, or human-consumption guidance.
+      </small>
+    </div>
+  </div>
+</section>
+
+<!-- CUSTOMER FEEDBACK CTA -->
+<section id="feedback-preview">
+  <div class="container">
+    <div class="contact-card p-4 p-md-5">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-8">
+          <div class="section-eyebrow">Customer Feedback</div>
+          <h2 class="section-title mt-1">Service-led feedback from Lumina customers</h2>
+          <p class="section-subtitle text-start mx-0">
+            Read feedback relating to ordering experience, communication, dispatch and packaging.
+            Feedback is moderated to avoid personal-use, medical, dosing or product-result claims.
+          </p>
+        </div>
+
+        <div class="col-lg-4 text-lg-end">
+          <a href="reviews.html" class="btn btn-primary-lw btn-lg">
+            Read Feedback <i class="fa-solid fa-arrow-right ms-1"></i>
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -719,10 +784,12 @@
           If you have questions about an order, dispatch, delivery, or available documentation, please get in touch.
           We aim to respond within <strong>24 hours</strong>, often sooner during working hours.
         </p>
+
         <p class="contact-note mt-3 mb-2">
-          Please note we do <strong>not</strong> provide guidance on usage, dosing, administration, or protocols,
-          as all materials are supplied strictly for laboratory research purposes only.
+          Please note we do <strong>not</strong> provide guidance on usage, dosing, administration, protocols,
+          or personal use, as all materials are supplied strictly for laboratory research purposes only.
         </p>
+
         <ul class="list-unstyled mt-3 mb-0">
           <li><i class="fa-regular fa-envelope me-2 text-success"></i>Email: luminaweight@gmail.com</li>
         </ul>
@@ -732,22 +799,31 @@
         <div class="card contact-card shadow-sm border-0">
           <div class="card-body p-4">
             <h5 class="fw-semibold mb-3">Quick message</h5>
+
             <form id="quickMessageForm">
               <div class="mb-3">
                 <input type="text" class="form-control" id="qm-name" placeholder="Name" required>
               </div>
+
               <div class="mb-3">
                 <input type="email" class="form-control" id="qm-email" placeholder="Email" required>
               </div>
+
               <div class="mb-3">
                 <textarea class="form-control" id="qm-message" rows="3" placeholder="How can we help?" required></textarea>
               </div>
+
               <button type="submit" class="btn btn-primary-lw w-100" id="qm-button">
                 Send enquiry
               </button>
+
               <div id="qm-status" class="mt-2 small text-muted">
                 We usually reply within 24 hours.
               </div>
+
+              <small class="text-muted d-block mt-2">
+                Please do not include requests for dosing, administration, protocols, or personal-use advice.
+              </small>
             </form>
           </div>
         </div>
@@ -764,20 +840,25 @@
         <h5 class="modal-title">Sign in to Lumina</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
+
       <div class="modal-body">
         <form id="login-form" class="mb-4">
           <h6 class="mb-3">Login</h6>
+
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" id="login-email" required>
           </div>
+
           <div class="mb-2">
             <label class="form-label">Password</label>
             <input type="password" class="form-control" id="login-password" required>
           </div>
+
           <div class="mb-3 text-end">
             <a href="forgot-password.html" class="small text-decoration-none">Forgot password?</a>
           </div>
+
           <button type="submit" class="btn btn-success w-100 rounded-pill">Login</button>
         </form>
 
@@ -785,14 +866,17 @@
 
         <form id="signup-form">
           <h6 class="mb-3">Create an account</h6>
+
           <div class="mb-3">
             <label class="form-label">Email</label>
             <input type="email" class="form-control" id="signup-email" required>
           </div>
+
           <div class="mb-3">
             <label class="form-label">Password</label>
             <input type="password" class="form-control" id="signup-password" required>
           </div>
+
           <button type="submit" class="btn btn-outline-success w-100 rounded-pill">Sign up</button>
         </form>
 
@@ -806,7 +890,7 @@
   <div class="container">
     <p class="mb-0">
       © 2026 Lumina • UK Research Materials Supplier • Research Supply Only • Not For Human Consumption<br>
-      <a href="peptides.html" class="text-decoration-none">Peptide Library</a> •
+      <a href="peptide-library.html" class="text-decoration-none">Peptide Library</a> •
       <a href="privacy.html" class="text-decoration-none">Privacy</a> •
       <a href="shipping.html" class="text-decoration-none">Shipping</a> •
       <a href="terms.html" class="text-decoration-none">Terms</a> •
@@ -829,7 +913,11 @@ function imgSrc(image) {
   image = String(image).trim();
 
   if (/^https?:\/\//i.test(image)) return image;
-  return SITE_ROOT + "/" + encodeURIComponent(image);
+
+  return SITE_ROOT + "/" + image
+    .split("/")
+    .map(part => encodeURIComponent(part))
+    .join("/");
 }
 
 const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
@@ -839,60 +927,120 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let products = [];
 let cart = [];
 const savedCart = localStorage.getItem("cart");
+
 if (savedCart) {
-  try { cart = JSON.parse(savedCart); } catch(e) { cart = []; }
+  try {
+    cart = JSON.parse(savedCart);
+  } catch(e) {
+    cart = [];
+  }
 }
+
 let currentProduct = null;
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
+function productLabel(p) {
+  const name = String(p.name || "").toLowerCase();
+  const format = name.includes("pen") ? "PEN" : name.includes("vial") ? "VIAL" : "MATERIAL";
+
+  if (name.includes("tirzepatide")) return `TIRZEPATIDE ${format}`;
+  if (name.includes("retatrutide")) return `RETATRUTIDE ${format}`;
+  if (name.includes("semaglutide")) return `SEMAGLUTIDE ${format}`;
+  if (name.includes("cagrilintide")) return `CAGRILINTIDE ${format}`;
+  if (name.includes("bpc")) return `BPC-157 ${format}`;
+  if (name.includes("tb-500") || name.includes("tb500")) return `TB-500 ${format}`;
+  if (name.includes("nad")) return `NAD+ ${format}`;
+  if (name.includes("mots")) return `MOTS-C ${format}`;
+  if (name.includes("ss-31") || name.includes("ss31")) return `SS-31 ${format}`;
+  if (name.includes("ghk")) return `GHK-CU ${format}`;
+  if (name.includes("mt-2") || name.includes("melanotan")) return `MT-2 ${format}`;
+  if (name.includes("tesamorelin")) return `TESAMORELIN ${format}`;
+  if (name.includes("epithalon")) return `EPITHALON ${format}`;
+  if (name.includes("selank")) return `SELANK ${format}`;
+  if (name.includes("semax")) return `SEMAX ${format}`;
+  if (name.includes("slu")) return `SLU-PP-332 ${format}`;
+  if (name.includes("5-amino") || name.includes("1mq")) return `5-AMINO-1MQ ${format}`;
+
+  return p.category ? String(p.category).toUpperCase() : `RESEARCH ${format}`;
+}
+
+function productUnitLabel(p) {
+  const name = String(p.name || "").toLowerCase();
+
+  if (name.includes("pen")) return "/pen";
+  if (name.includes("vial")) return "/vial";
+  if (name.includes("kit")) return "/kit";
+
+  return "";
+}
+
 function renderProducts() {
   const featured = products.filter(p => p.featured);
+  const list = document.getElementById("product-list");
 
-  document.getElementById("product-list").innerHTML =
-    featured.map((p, i) => `
-      <div class="col-md-6 col-lg-3">
-        <div class="position-relative h-100 product-card ${p.stock === 0 ? "out-of-stock" : ""}" onclick="${p.stock > 0 ? "openModal(" + i + ")" : ""}">
-          ${p.badge ? `<span class="pill-label ${p.badgeClass || ""}">${p.badge}</span>` : ""}
-          <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name}">
-          <div class="product-body d-flex flex-column">
-            <div class="text-start">
-              <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">
-                ${
-                  p.name.includes("Retatrutide")
-                    ? (p.name.includes("Pen") ? "RETATRUTIDE PEN" : "RETATRUTIDE VIAL")
-                    : p.name.includes("Semaglutide")
-                      ? (p.name.includes("Pen") ? "SEMAGLUTIDE PEN" : "SEMAGLUTIDE VIAL")
-                      : (p.name.includes("Pen") ? "TIRZEPATIDE PEN" : "TIRZEPATIDE VIAL")
-                }
-              </div>
-              <div class="product-name">${p.name}</div>
-              <div class="text-muted" style="font-size:0.85rem;">
-                Research material supplied strictly for laboratory research use only.
-              </div>
-            </div>
+  if (!list) return;
 
-            <div class="d-flex justify-content-between align-items-center mt-2">
-              <div class="product-price">£${p.price}<span>${p.name.includes("Pen") ? "/pen" : "/vial"}</span></div>
-            </div>
-
-            <p class="stock ${p.stock <= 5 ? "text-danger" : "text-success"} mb-1">
-              ${p.stock > 0 ? (p.stock <= 5 ? `Low stock: ${p.stock} left` : `In stock: ${p.stock} units`) : "<strong>Out of stock</strong>"}
-            </p>
-
-            <button
-              class="btn btn-success btn-add mt-auto"
-              ${p.stock === 0 ? "disabled" : ""}
-              onclick="event.stopPropagation(); openModal(${i})"
-            >
-              ${p.stock > 0 ? "Add to cart" : "Sold out"}
-            </button>
-          </div>
+  if (!featured.length) {
+    list.innerHTML = `
+      <div class="col-12">
+        <div class="contact-card p-4 text-center">
+          <h5 class="fw-bold mb-2">Featured products loading</h5>
+          <p class="text-muted mb-0">Please visit the full catalogue to view available research materials.</p>
+          <a href="products.html" class="btn btn-outline-success rounded-pill px-4 mt-3">View all products</a>
         </div>
       </div>
-    `).join("") +
+    `;
+    return;
+  }
+
+  list.innerHTML =
+    featured.map((p, i) => {
+      const stock = Number(p.stock || 0);
+      const price = Number(p.price || 0);
+
+      return `
+        <div class="col-md-6 col-lg-3">
+          <div class="position-relative h-100 product-card ${stock === 0 ? "out-of-stock" : ""}" onclick="${stock > 0 ? "openModal(" + i + ")" : ""}">
+            ${p.badge ? `<span class="pill-label ${p.badgeClass || ""}">${p.badge}</span>` : ""}
+
+            <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name || "Research material"}" loading="lazy">
+
+            <div class="product-body d-flex flex-column">
+              <div class="text-start">
+                <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">
+                  ${productLabel(p)}
+                </div>
+
+                <div class="product-name">${p.name || "Research Material"}</div>
+
+                <div class="text-muted" style="font-size:0.85rem;">
+                  Research material supplied strictly for laboratory research use only.
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <div class="product-price">£${price.toFixed(2)}<span>${productUnitLabel(p)}</span></div>
+              </div>
+
+              <p class="stock ${stock <= 5 ? "text-danger" : "text-success"} mb-1">
+                ${stock > 0 ? (stock <= 5 ? `Low stock: ${stock} left` : `In stock: ${stock} units`) : "<strong>Out of stock</strong>"}
+              </p>
+
+              <button
+                class="btn btn-success btn-add mt-auto"
+                ${stock === 0 ? "disabled" : ""}
+                onclick="event.stopPropagation(); openModal(${i})"
+              >
+                ${stock > 0 ? "Add to cart" : "Sold out"}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("") +
     `
       <div class="col-12 text-center mt-3">
         <a href="products.html" class="btn btn-outline-success rounded-pill px-4">
@@ -916,24 +1064,32 @@ async function loadFeaturedProducts() {
 
   products = (data || []).map(p => ({
     ...p,
-    badge: "Best Seller",
-    badgeClass: "pill-popular"
+    price: Number(p.price || 0),
+    stock: Number(p.stock || 0),
+    badge: p.badge || "Featured",
+    badgeClass: p.badgeClass || "pill-popular"
   }));
 
   renderProducts();
 }
+
 loadFeaturedProducts();
 
 function changeQty(delta) {
   const input = document.getElementById("modalQty");
+  if (!input || !currentProduct) return;
+
+  const maxStock = Number(currentProduct.stock || 0);
   let val = parseInt(input.value) || 1;
-  val = Math.max(1, Math.min(val + delta, currentProduct.stock));
+
+  val = Math.max(1, Math.min(val + delta, maxStock));
   input.value = val;
 }
 
 function openModal(i) {
   currentProduct = products[i];
-  if (!currentProduct || currentProduct.stock === 0) return;
+
+  if (!currentProduct || Number(currentProduct.stock || 0) === 0) return;
 
   const modalImg = document.getElementById("modalImg");
   const modalTitle = document.getElementById("modalTitle");
@@ -942,20 +1098,24 @@ function openModal(i) {
   const modalStock = document.getElementById("modalStock");
   const descEl = document.getElementById("modalDescription");
 
+  const stock = Number(currentProduct.stock || 0);
+  const price = Number(currentProduct.price || 0);
+
   modalImg.src = imgSrc(currentProduct.image);
-  modalImg.alt = currentProduct.name;
-  modalTitle.textContent = currentProduct.name;
-  modalName.textContent = currentProduct.name;
-  modalPrice.textContent = `£${currentProduct.price}`;
-  modalStock.innerHTML = `In stock – ${currentProduct.stock} units`;
+  modalImg.alt = currentProduct.name || "Research material";
+  modalTitle.textContent = currentProduct.name || "Research Material";
+  modalName.textContent = currentProduct.name || "Research Material";
+  modalPrice.textContent = `£${price.toFixed(2)}`;
+  modalStock.innerHTML = `In stock – ${stock} units`;
 
   descEl.innerHTML = `
     <p><strong>Research use only.</strong> This product is supplied strictly for laboratory research purposes.</p>
     <p>Not a medicine. Not a supplement. <strong>Not for human consumption.</strong></p>
     <ul class="mb-0">
-      <li><strong>Category:</strong> Research material</li>
+      <li><strong>Category:</strong> ${productLabel(currentProduct)}</li>
       <li><strong>Dispatch:</strong> UK dispatch where applicable</li>
       <li><strong>Packaging:</strong> Discreet</li>
+      <li><strong>Guidance:</strong> No usage, dosing, administration or personal-use advice is provided.</li>
     </ul>
   `;
 
@@ -964,29 +1124,64 @@ function openModal(i) {
   document.getElementById("modalAddBtn").onclick = () => {
     const qty = parseInt(document.getElementById("modalQty").value) || 1;
     addToCart(currentProduct, qty);
-    bootstrap.Modal.getInstance(document.getElementById("productModal")).hide();
+
+    const modalInstance = bootstrap.Modal.getInstance(document.getElementById("productModal"));
+    if (modalInstance) modalInstance.hide();
   };
 
   new bootstrap.Modal(document.getElementById("productModal")).show();
 }
 
 function addToCart(product, qty) {
-  const existing = cart.find(item => item.name === product.name);
-  if (existing) existing.qty += qty;
-  else cart.push({ name: product.name, price: product.price, qty });
+  const available = Number(product.stock || 0);
 
-  product.stock -= qty;
-  renderProducts();
+  const currentInCart = cart
+    .filter(item => item.name === product.name)
+    .reduce((sum, item) => sum + Number(item.qty || 0), 0);
+
+  if (qty + currentInCart > available) {
+    alert(`Only ${available} available for this item.`);
+    return;
+  }
+
+  const existing = cart.find(item => item.name === product.name);
+
+  if (existing) {
+    existing.qty += qty;
+  } else {
+    cart.push({
+      id: product.id || null,
+      name: product.name,
+      price: Number(product.price || 0),
+      qty
+    });
+  }
+
   updateCart();
   saveCart();
   toggleCart(true);
 }
 
 function updateQty(i, delta) {
-  cart[i].qty += delta;
-  if (cart[i].qty <= 0) {
+  const item = cart[i];
+  if (!item) return;
+
+  if (delta > 0) {
+    const product = products.find(p => p.name === item.name);
+    const available = Number(product?.stock || 0);
+
+    if (product && item.qty + 1 > available) {
+      alert(`Only ${available} available for this item.`);
+      return;
+    }
+  }
+
+  item.qty += delta;
+
+  if (item.qty <= 0) {
     cart.splice(i, 1);
   }
+
   updateCart();
   saveCart();
 }
@@ -998,14 +1193,15 @@ function removeFromCart(i) {
 }
 
 function updateCart() {
-  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
-  const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+  const totalItems = cart.reduce((s, i) => s + Number(i.qty || 0), 0);
+  const total = cart.reduce((s, i) => s + (Number(i.price || 0) * Number(i.qty || 0)), 0);
 
   document.getElementById("cart-count").textContent = totalItems;
   document.getElementById("cart-items-count").textContent = totalItems;
   document.getElementById("cart-total").textContent = `£${total.toFixed(2)}`;
 
   const itemsEl = document.getElementById("cart-items");
+
   if (!cart.length) {
     itemsEl.innerHTML = '<p class="text-center text-muted m-0">Your cart is empty</p>';
   } else {
@@ -1013,11 +1209,12 @@ function updateCart() {
       <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
         <div class="flex-grow-1">
           <strong>${item.name}</strong><br>
-          <small>£${item.price} × ${item.qty}</small>
+          <small>£${Number(item.price || 0).toFixed(2)} × ${Number(item.qty || 0)}</small>
         </div>
+
         <div class="d-flex align-items-center gap-2">
           <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},-1)">–</button>
-          <span class="fw-bold">${item.qty}</span>
+          <span class="fw-bold">${Number(item.qty || 0)}</span>
           <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i},1)">+</button>
           <button class="btn btn-sm btn-danger ms-2" onclick="removeFromCart(${i})">×</button>
         </div>
@@ -1031,13 +1228,19 @@ updateCart();
 function toggleCart(force) {
   const sb = document.getElementById("cart-sidebar");
   const ov = document.querySelector(".overlay");
+
   const open = force !== undefined ? force : !sb.classList.contains("open");
+
   sb.classList.toggle("open", open);
   ov.classList.toggle("show", open);
 }
 
 function goToCheckout() {
-  if (cart.length === 0) return alert("Your cart is empty!");
+  if (cart.length === 0) {
+    alert("Your cart is empty!");
+    return;
+  }
+
   const cartData = encodeURIComponent(JSON.stringify(cart));
   window.location.href = `checkout.html?cart=${cartData}`;
 }
@@ -1057,7 +1260,32 @@ if (qmForm) {
     const name = document.getElementById("qm-name").value.trim();
     const email = document.getElementById("qm-email").value.trim();
     const message = document.getElementById("qm-message").value.trim();
+
     if (!name || !email || !message) return;
+
+    const restrictedTerms = [
+      "dose",
+      "dosage",
+      "inject",
+      "injection",
+      "how much",
+      "how many units",
+      "cycle",
+      "protocol",
+      "take it",
+      "use it",
+      "using it",
+      "human use",
+      "weight loss result",
+      "side effect"
+    ];
+
+    const lowerMessage = message.toLowerCase();
+
+    if (restrictedTerms.some(term => lowerMessage.includes(term))) {
+      qmStatus.textContent = "Please keep enquiries focused on orders, dispatch, delivery, documentation, or stock. We cannot provide usage, dosing, administration, protocol, or personal-use advice.";
+      return;
+    }
 
     qmBtn.disabled = true;
     qmBtn.textContent = "Sending...";
@@ -1075,7 +1303,7 @@ if (qmForm) {
       qmStatus.textContent = "Thanks! Your message has been sent.";
       qmForm.reset();
     }).catch(() => {
-      qmStatus.textContent = "Error sending message. Please try again.";
+      qmStatus.textContent = "Error sending message. Please email luminaweight@gmail.com directly.";
     }).finally(() => {
       qmBtn.disabled = false;
       qmBtn.textContent = "Send enquiry";
@@ -1116,6 +1344,7 @@ async function updateAccountUI() {
     console.error("Error updating account UI", e);
   }
 }
+
 updateAccountUI();
 
 if (logoutBtn) {
@@ -1127,9 +1356,11 @@ if (logoutBtn) {
 }
 
 const signupForm = document.getElementById("signup-form");
+
 if (signupForm) {
   signupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     authMessage.textContent = "";
     authMessage.classList.remove("text-danger", "text-success");
 
@@ -1149,9 +1380,11 @@ if (signupForm) {
 }
 
 const loginForm = document.getElementById("login-form");
+
 if (loginForm) {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
     authMessage.textContent = "";
     authMessage.classList.remove("text-danger", "text-success");
 
@@ -1175,5 +1408,6 @@ supabaseClient.auth.onAuthStateChange(() => {
   updateAccountUI();
 });
 </script>
+
 </body>
 </html>
