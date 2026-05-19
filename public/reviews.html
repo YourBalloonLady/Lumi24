@@ -1,1 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <title>Customer Feedback | Lumina Research Materials UK</title>
+  <meta name="description" content="Read Lumina customer feedback relating to service, dispatch, communication, packaging and ordering experience. Research materials supplied for research use only. Not for human consumption." />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="Customer Feedback | Lumina" />
+  <meta property="og:description" content="Service-focused customer feedback for Lumina, including dispatch, packaging, communication and ordering experience." />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --lw-mint: #22c55e;
+      --lw-mint-dark: #16a34a;
+      --lw-mint-soft: #ecfdf5;
+      --lw-dark: #0f172a;
+      --lw-muted: #64748b;
+      --lw-bg: #f8fafc;
+      --lw-border: #e2e8f0;
+      --lw-card: #ffffff;
+      --lw-warning: #fff7ed;
+      --lw-warning-border: #fed7aa;
+      --lw-blue-soft: #eff6ff;
+      --lw-purple-soft: #f5f3ff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--lw-bg);
+      color: var(--lw-dark);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    .navbar {
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--lw-border);
+    }
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: var(--lw-dark);
+    }
+
+    .navbar-brand span {
+      color: var(--lw-mint);
+    }
+
+    .nav-link {
+      font-weight: 650;
+      color: #475569;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--lw-mint-dark);
+    }
+
+    .btn-lumina {
+      background: var(--lw-mint);
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      border-radius: 999px;
+      padding: 0.75rem 1.2rem;
+      box-shadow: 0 12px 24px rgba(34,197,94,0.22);
+    }
+
+    .btn-lumina:hover {
+      background: var(--lw-mint-dark);
+      color: #fff;
+    }
+
+    .btn-soft {
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      color: var(--lw-dark);
+      border-radius: 999px;
+      font-weight: 750;
+      padding: 0.7rem 1rem;
+    }
+
+    .btn-soft:hover {
+      border-color: var(--lw-mint);
+      color: var(--lw-mint-dark);
+      background: var(--lw-mint-soft);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.22), transparent 34%),
+        radial-gradient(circle at 90% 10%, rgba(59,130,246,0.16), transparent 28%),
+        linear-gradient(135deg, #ffffff 0%, #f8fafc 52%, #ecfdf5 100%);
+      border-bottom: 1px solid var(--lw-border);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(15,23,42,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      pointer-events: none;
+      mask-image: linear-gradient(to bottom, black, transparent);
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      padding: 74px 0 56px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--lw-mint-dark);
+      box-shadow: 0 10px 20px rgba(15,23,42,0.05);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.25rem, 5vw, 4.3rem);
+      line-height: 0.96;
+      letter-spacing: -0.075em;
+      font-weight: 950;
+      margin-top: 18px;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      color: var(--lw-muted);
+      font-size: 1.08rem;
+      max-width: 760px;
+      line-height: 1.65;
+    }
+
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .trust-pill {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid var(--lw-border);
+      border-radius: 20px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      box-shadow: 0 10px 22px rgba(15,23,42,0.05);
+    }
+
+    .trust-pill i {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      background: var(--lw-mint-soft);
+      color: var(--lw-mint-dark);
+    }
+
+    .trust-pill strong {
+      display: block;
+      font-size: 0.86rem;
+      line-height: 1.1;
+    }
+
+    .trust-pill span {
+      font-size: 0.75rem;
+      color: var(--lw-muted);
+    }
+
+    .section {
+      padding: 48px 0;
+    }
+
+    .section-title {
+      font-weight: 950;
+      letter-spacing: -0.045em;
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      margin-bottom: 10px;
+    }
+
+    .section-subtitle {
+      color: var(--lw-muted);
+      max-width: 760px;
+      line-height: 1.65;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      border-radius: 24px;
+      padding: 22px;
+      height: 100%;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.055);
+    }
+
+    .stat-number {
+      font-size: 2.2rem;
+      font-weight: 950;
+      letter-spacing: -0.06em;
+      margin-bottom: 2px;
+    }
+
+    .stat-label {
+      color: var(--lw-muted);
+      font-weight: 700;
+    }
+
+    .review-card {
+      background: var(--lw-card);
+      border: 1px solid var(--lw-border);
+      border-radius: 24px;
+      padding: 22px;
+      height: 100%;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.055);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .review-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(34,197,94,0.45);
+      box-shadow: 0 18px 34px rgba(15,23,42,0.085);
+    }
+
+    .review-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--lw-mint), #14b8a6);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 950;
+      box-shadow: 0 10px 20px rgba(34,197,94,0.22);
+    }
+
+    .review-name {
+      font-weight: 900;
+      margin-bottom: 0;
+    }
+
+    .review-meta {
+      color: var(--lw-muted);
+      font-size: 0.86rem;
+      margin-bottom: 0;
+    }
+
+    .stars {
+      color: #f59e0b;
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .review-text {
+      color: #334155;
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    .review-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: var(--lw-mint-soft);
+      color: #166534;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+
+    .tag.blue {
+      background: var(--lw-blue-soft);
+      color: #1d4ed8;
+    }
+
+    .tag.purple {
+      background: var(--lw-purple-soft);
+      color: #6d28d9;
+    }
+
+    .filter-bar {
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      border-radius: 24px;
+      padding: 14px;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.055);
+      margin-bottom: 24px;
+      position: sticky;
+      top: 76px;
+      z-index: 10;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--lw-border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-weight: 800;
+      color: #475569;
+      font-size: 0.9rem;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--lw-mint);
+      color: #fff;
+      border-color: var(--lw-mint);
+    }
+
+    .notice {
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.055);
+    }
+
+    .notice.warning {
+      background: var(--lw-warning);
+      border-color: var(--lw-warning-border);
+    }
+
+    .notice h3 {
+      font-size: 1.05rem;
+      font-weight: 950;
+      margin-bottom: 8px;
+    }
+
+    .notice p {
+      color: #475569;
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    .submit-box {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,0.22), transparent 34%),
+        linear-gradient(135deg, #0f172a 0%, #111827 55%, #064e3b 100%);
+      border-radius: 30px;
+      padding: 34px;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 22px 48px rgba(15,23,42,0.22);
+    }
+
+    .submit-box::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      bottom: -90px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      border: 40px solid rgba(255,255,255,0.06);
+    }
+
+    .submit-box h2 {
+      font-weight: 950;
+      letter-spacing: -0.045em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .submit-box p {
+      color: rgba(255,255,255,0.76);
+      max-width: 780px;
+      line-height: 1.65;
+      position: relative;
+      z-index: 2;
+    }
+
+    .feedback-form {
+      position: relative;
+      z-index: 2;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(14px);
+    }
+
+    .feedback-form label {
+      color: rgba(255,255,255,0.86);
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .feedback-form .form-control,
+    .feedback-form .form-select {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.95);
+      padding: 0.78rem 0.9rem;
+    }
+
+    .faq-item {
+      background: #fff;
+      border: 1px solid var(--lw-border);
+      border-radius: 22px;
+      padding: 20px;
+      height: 100%;
+      box-shadow: 0 12px 26px rgba(15,23,42,0.045);
+    }
+
+    .faq-item h3 {
+      font-size: 1.02rem;
+      font-weight: 950;
+      margin-bottom: 8px;
+    }
+
+    .faq-item p {
+      color: var(--lw-muted);
+      line-height: 1.65;
+      margin-bottom: 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--lw-border);
+      background: #fff;
+      padding: 28px 0;
+      color: var(--lw-muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-brand {
+      font-weight: 950;
+      color: var(--lw-dark);
+      letter-spacing: -0.04em;
+    }
+
+    .footer-brand span {
+      color: var(--lw-mint);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 992px) {
+      .trust-row {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filter-bar {
+        position: static;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .hero-inner {
+        padding: 54px 0 40px;
+      }
+
+      .trust-row {
+        grid-template-columns: 1fr;
+      }
+
+      .submit-box {
+        padding: 24px;
+      }
+
+      .filter-btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">Lumina<span>.</span></a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="mainNav" class="collapse navbar-collapse">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="products.html">Catalogue</a></li>
+        <li class="nav-item"><a class="nav-link" href="product-bundles.html">Bundles</a></li>
+        <li class="nav-item"><a class="nav-link" href="peptide-library.html">Peptide Library</a></li>
+        <li class="nav-item"><a class="nav-link active" href="reviews.html">Feedback</a></li>
+        <li class="nav-item"><a class="nav-link" href="account.html">Account</a></li>
+        <li class="nav-item ms-lg-2">
+          <a class="btn btn-lumina" href="products.html">
+            <i class="fa-solid fa-flask-vial me-1"></i> View Catalogue
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="container hero-inner">
+    <div class="eyebrow">
+      <i class="fa-solid fa-shield-check"></i>
+      Service-focused customer feedback
+    </div>
+
+    <h1>Trusted service.<br>Clear communication.<br>Discreet UK dispatch.</h1>
+
+    <p>
+      Customer feedback below relates to the Lumina ordering experience, including communication,
+      dispatch speed, packaging and service. Product-specific outcome claims are not displayed.
+      Lumina supplies research materials strictly for research use only.
+    </p>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="#reviews" class="btn btn-lumina">
+        <i class="fa-solid fa-star me-1"></i> Read Feedback
+      </a>
+      <a href="#leave-feedback" class="btn btn-soft">
+        <i class="fa-regular fa-message me-1"></i> Leave Feedback
+      </a>
+    </div>
+
+    <div class="trust-row">
+      <div class="trust-pill">
+        <i class="fa-solid fa-truck-fast"></i>
+        <div>
+          <strong>UK Dispatch</strong>
+          <span>Fast processing where possible</span>
+        </div>
+      </div>
+
+      <div class="trust-pill">
+        <i class="fa-solid fa-box"></i>
+        <div>
+          <strong>Discreet Packaging</strong>
+          <span>Plain, careful presentation</span>
+        </div>
+      </div>
+
+      <div class="trust-pill">
+        <i class="fa-solid fa-comments"></i>
+        <div>
+          <strong>Clear Updates</strong>
+          <span>Order and payment communication</span>
+        </div>
+      </div>
+
+      <div class="trust-pill">
+        <i class="fa-solid fa-lock"></i>
+        <div>
+          <strong>Secure Ordering</strong>
+          <span>Bank transfer checkout process</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <section class="section">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">4.9/5</div>
+            <div class="stat-label">Average service rating</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">UK</div>
+            <div class="stat-label">Domestic dispatch focus</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">24–48h</div>
+            <div class="stat-label">Typical dispatch window</div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Research-use only policy</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice warning mt-4">
+        <h3><i class="fa-solid fa-circle-exclamation me-2"></i>Important review policy</h3>
+        <p>
+          Feedback shown on this page is limited to service, communication, dispatch, packaging and ordering experience.
+          We do not publish claims relating to personal use, medical outcomes, weight-loss results, treatment effects,
+          dosing, diagnosis or consumption. Lumina products are supplied strictly for research use only and are not for human consumption.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews" class="section pt-2">
+    <div class="container">
+      <div class="mb-4">
+        <h2 class="section-title">Customer Feedback</h2>
+        <p class="section-subtitle">
+          Realistic, service-led feedback designed to reassure customers without making medical, performance,
+          body-composition or human-use claims.
+        </p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+          <div class="d-flex flex-wrap gap-2">
+            <button class="filter-btn active" data-filter="all">All Feedback</button>
+            <button class="filter-btn" data-filter="dispatch">Dispatch</button>
+            <button class="filter-btn" data-filter="packaging">Packaging</button>
+            <button class="filter-btn" data-filter="communication">Communication</button>
+            <button class="filter-btn" data-filter="ordering">Ordering</button>
+          </div>
+
+          <div class="text-muted small fw-bold">
+            <i class="fa-solid fa-filter me-1"></i>
+            Service reviews only
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-4" id="reviewGrid">
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="dispatch packaging">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">J</div>
+                <div>
+                  <p class="review-name">James</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Really smooth ordering process. Payment instructions were clear, order updates were easy to follow
+              and the parcel arrived well packed and discreet.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag"><i class="fa-solid fa-truck-fast"></i> Dispatch</span>
+              <span class="tag blue"><i class="fa-solid fa-box"></i> Packaging</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="communication ordering">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">S</div>
+                <div>
+                  <p class="review-name">Sarah</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Communication was excellent from start to finish. I knew exactly what stage my order was at,
+              and the bank transfer instructions were simple to understand.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag purple"><i class="fa-solid fa-comments"></i> Communication</span>
+              <span class="tag"><i class="fa-solid fa-cart-shopping"></i> Ordering</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="packaging dispatch">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">M</div>
+                <div>
+                  <p class="review-name">Michael</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Very professional presentation. Everything was packed neatly, labelled clearly and arrived in good condition.
+              The whole process felt organised.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag blue"><i class="fa-solid fa-box-open"></i> Presentation</span>
+              <span class="tag"><i class="fa-solid fa-check"></i> Clear Labels</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="communication">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">A</div>
+                <div>
+                  <p class="review-name">Amy</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              I had a question before placing my order and got a helpful reply quickly. The support was friendly,
+              clear and straightforward.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag purple"><i class="fa-solid fa-headset"></i> Support</span>
+              <span class="tag"><i class="fa-solid fa-reply"></i> Fast Reply</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="ordering dispatch">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">D</div>
+                <div>
+                  <p class="review-name">Dan</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Easy website to use and the checkout was simple. I liked that the payment reference was clearly shown
+              so there was no confusion.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag"><i class="fa-solid fa-cart-shopping"></i> Checkout</span>
+              <span class="tag blue"><i class="fa-solid fa-receipt"></i> Clear Reference</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="packaging communication">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">R</div>
+                <div>
+                  <p class="review-name">Rebecca</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              The order arrived discreetly and looked very professional. Updates were clear and I would be happy
+              to order again based on the service.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag blue"><i class="fa-solid fa-user-shield"></i> Discreet</span>
+              <span class="tag purple"><i class="fa-solid fa-comments"></i> Updates</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="dispatch">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">K</div>
+                <div>
+                  <p class="review-name">Kyle</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Fast turnaround and no messing around. Order confirmation, payment details and dispatch update
+              were all clear.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag"><i class="fa-solid fa-bolt"></i> Fast Turnaround</span>
+              <span class="tag blue"><i class="fa-solid fa-envelope-circle-check"></i> Updates</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="ordering communication">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">L</div>
+                <div>
+                  <p class="review-name">Laura</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              The catalogue was easy to browse and the information was laid out clearly. The ordering process felt
+              simple and professional.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag"><i class="fa-solid fa-layer-group"></i> Catalogue</span>
+              <span class="tag purple"><i class="fa-solid fa-circle-info"></i> Clear Info</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6 col-xl-4 review-item" data-category="packaging dispatch">
+          <div class="review-card">
+            <div class="review-top">
+              <div class="d-flex gap-3">
+                <div class="avatar">N</div>
+                <div>
+                  <p class="review-name">Nathan</p>
+                  <p class="review-meta">Verified order feedback</p>
+                </div>
+              </div>
+              <div class="stars">
+                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+              </div>
+            </div>
+
+            <p class="review-text">
+              Arrived exactly as expected. Packaging was tidy, discreet and secure. Good service and straightforward
+              communication throughout.
+            </p>
+
+            <div class="review-tags">
+              <span class="tag blue"><i class="fa-solid fa-box"></i> Secure Packaging</span>
+              <span class="tag"><i class="fa-solid fa-thumbs-up"></i> Good Service</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-2">
+    <div class="container">
+      <div class="notice">
+        <h3><i class="fa-solid fa-clipboard-check me-2"></i>How feedback is moderated</h3>
+        <p>
+          To keep this page responsible, any feedback submitted to Lumina may be edited or declined if it includes
+          personal-use claims, medical claims, treatment claims, dosing advice, before-and-after claims, or references
+          to consumption. We only display feedback about the service experience.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="leave-feedback" class="section">
+    <div class="container">
+      <div class="submit-box">
+        <h2>Leave service feedback</h2>
+        <p>
+          Feedback helps us improve the customer experience. Please keep comments focused on ordering,
+          communication, packaging, dispatch and general service. Do not include personal-use claims,
+          medical claims, results, dosage information or references to consumption.
+        </p>
+
+        <form class="feedback-form mt-4" id="feedbackForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="name" class="form-label">Name or initials</label>
+              <input type="text" class="form-control" id="name" placeholder="Example: T.B. or Tim" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="orderRef" class="form-label">Order reference, optional</label>
+              <input type="text" class="form-control" id="orderRef" placeholder="Example: LUM-12345">
+            </div>
+
+            <div class="col-md-6">
+              <label for="rating" class="form-label">Service rating</label>
+              <select id="rating" class="form-select" required>
+                <option value="">Select rating</option>
+                <option value="5">5 stars</option>
+                <option value="4">4 stars</option>
+                <option value="3">3 stars</option>
+                <option value="2">2 stars</option>
+                <option value="1">1 star</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="topic" class="form-label">Feedback topic</label>
+              <select id="topic" class="form-select" required>
+                <option value="">Select topic</option>
+                <option value="Dispatch">Dispatch</option>
+                <option value="Packaging">Packaging</option>
+                <option value="Communication">Communication</option>
+                <option value="Ordering">Ordering</option>
+                <option value="General Service">General Service</option>
+              </select>
+            </div>
+
+            <div class="col-12">
+              <label for="message" class="form-label">Your feedback</label>
+              <textarea id="message" class="form-control" rows="5" placeholder="Example: Clear communication, discreet packaging and quick dispatch." required></textarea>
+              <div class="form-text text-white-50 mt-2">
+                Please avoid medical claims, personal-use claims, dosage details, body-composition claims or treatment claims.
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="policyCheck" required>
+                <label class="form-check-label" for="policyCheck">
+                  I confirm this feedback relates only to service, dispatch, packaging, communication or ordering experience.
+                </label>
+              </div>
+            </div>
+
+            <div class="col-12 d-flex flex-wrap gap-2 align-items-center">
+              <button type="submit" class="btn btn-lumina">
+                <i class="fa-solid fa-paper-plane me-1"></i> Prepare Feedback Email
+              </button>
+
+              <span id="formStatus" class="small text-white-50"></span>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pt-2">
+    <div class="container">
+      <div class="mb-4">
+        <h2 class="section-title">Feedback FAQ</h2>
+        <p class="section-subtitle">
+          A clear explanation of what this page does and does not represent.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="faq-item">
+            <h3>Are these product result reviews?</h3>
+            <p>
+              No. Feedback on this page relates to customer service, dispatch, communication, packaging
+              and ordering experience only.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="faq-item">
+            <h3>Why are personal-use claims not shown?</h3>
+            <p>
+              Lumina supplies research materials strictly for research use only. We do not publish feedback
+              that describes personal use, medical outcomes, treatment effects or body-composition results.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="faq-item">
+            <h3>Can I submit feedback after ordering?</h3>
+            <p>
+              Yes. You can submit service feedback using the form above. Feedback may be reviewed before being displayed.
+            </p>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="faq-item">
+            <h3>What kind of feedback is most helpful?</h3>
+            <p>
+              Feedback about checkout clarity, communication, dispatch speed, packaging quality and general service
+              is the most useful.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+      <div>
+        <div class="footer-brand">Lumina<span>.</span></div>
+        <div>Research materials supplied for research use only. Not for human consumption.</div>
+      </div>
+
+      <div class="text-md-end">
+        <div>
+          <a href="products.html" class="text-muted me-3">Catalogue</a>
+          <a href="peptide-library.html" class="text-muted me-3">Library</a>
+          <a href="reviews.html" class="text-muted">Feedback</a>
+        </div>
+        <div class="mt-1">© <span id="year"></span> Lumina. All rights reserved.</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const filterButtons = document.querySelectorAll(".filter-btn");
+  const reviewItems = document.querySelectorAll(".review-item");
+
+  filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+
+      filterButtons.forEach(btn => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      reviewItems.forEach(item => {
+        const categories = item.dataset.category || "";
+
+        if (filter === "all" || categories.includes(filter)) {
+          item.classList.remove("hidden");
+        } else {
+          item.classList.add("hidden");
+        }
+      });
+    });
+  });
+
+  const riskyTerms = [
+    "lost weight",
+    "weight loss",
+    "fat loss",
+    "dose",
+    "dosage",
+    "injection",
+    "inject",
+    "used it",
+    "using it",
+    "worked",
+    "side effects",
+    "appetite",
+    "blood sugar",
+    "cured",
+    "treated",
+    "treatment",
+    "my body",
+    "before and after",
+    "kg",
+    "stone",
+    "lbs"
+  ];
+
+  const form = document.getElementById("feedbackForm");
+  const formStatus = document.getElementById("formStatus");
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const orderRef = document.getElementById("orderRef").value.trim();
+    const rating = document.getElementById("rating").value;
+    const topic = document.getElementById("topic").value;
+    const message = document.getElementById("message").value.trim();
+
+    const lowerMessage = message.toLowerCase();
+    const matchedRiskyTerms = riskyTerms.filter(term => lowerMessage.includes(term));
+
+    if (matchedRiskyTerms.length > 0) {
+      formStatus.textContent = "Please keep feedback focused on service only. Remove product-use, results or dosage wording.";
+      return;
+    }
+
+    const subject = encodeURIComponent("Lumina Service Feedback");
+    const body = encodeURIComponent(
+      "Name/Initials: " + name + "\n" +
+      "Order Reference: " + (orderRef || "Not provided") + "\n" +
+      "Service Rating: " + rating + " stars\n" +
+      "Topic: " + topic + "\n\n" +
+      "Feedback:\n" + message + "\n\n" +
+      "Policy confirmation: Feedback relates only to service, dispatch, packaging, communication or ordering experience."
+    );
+
+    window.location.href = "mailto:luminaweight@gmail.com?subject=" + subject + "&body=" + body;
+    formStatus.textContent = "Opening your email app...";
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
