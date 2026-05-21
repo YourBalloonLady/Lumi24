@@ -369,6 +369,88 @@
     grid-template-columns:repeat(5, 1fr);
   }
 }
+
+  /* ✅ BUSINESS INTELLIGENCE DASHBOARD */
+  .analytics-grid{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+    margin-top:14px;
+  }
+  @media (min-width: 992px){
+    .analytics-grid{ grid-template-columns: repeat(4, 1fr); }
+  }
+  .analytics-card{
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.08);
+    border-radius:16px;
+    padding:14px;
+    min-height:112px;
+  }
+  .analytics-label{
+    font-size:.78rem;
+    color:#64748b;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    font-weight:800;
+  }
+  .analytics-value{
+    font-size:1.4rem;
+    color:#0f172a;
+    font-weight:900;
+    margin-top:4px;
+  }
+  .analytics-note{
+    font-size:.85rem;
+    color:#64748b;
+    margin-top:4px;
+  }
+  .insight-list{
+    display:grid;
+    gap:8px;
+  }
+  .insight-row{
+    background:#f8fafc;
+    border:1px solid rgba(15,23,42,.08);
+    border-radius:12px;
+    padding:10px 12px;
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    align-items:flex-start;
+  }
+  .insight-row strong{ color:#0f172a; }
+  .insight-row small{ color:#64748b; display:block; margin-top:2px; }
+  .restock-high{ border-left:5px solid #dc2626; }
+  .restock-med{ border-left:5px solid #f59e0b; }
+  .restock-low{ border-left:5px solid #22c55e; }
+  .heatmap-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:4px;
+    font-size:.78rem;
+  }
+  .heatmap-table th{
+    color:#64748b;
+    font-weight:700;
+    text-align:center;
+    white-space:nowrap;
+  }
+  .heatmap-table td{
+    background:#eef2ff;
+    border-radius:8px;
+    padding:6px;
+    text-align:center;
+    min-width:34px;
+    color:#0f172a;
+    font-weight:800;
+  }
+  .heat-0{ opacity:.25; }
+  .heat-1{ opacity:.45; }
+  .heat-2{ opacity:.65; }
+  .heat-3{ opacity:.82; }
+  .heat-4{ opacity:1; }
+
 </style>
 </head>
 
@@ -459,6 +541,66 @@
         </div>
       </div>
     </div>
+
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <div class="analytics-label">Best order day</div>
+        <div class="analytics-value" id="analyticsBestDay">—</div>
+        <div class="analytics-note" id="analyticsBestDayNote">Load all for best accuracy.</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Best order time</div>
+        <div class="analytics-value" id="analyticsBestHour">—</div>
+        <div class="analytics-note" id="analyticsBestHourNote">Based on loaded orders.</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Repeat customers</div>
+        <div class="analytics-value" id="analyticsRepeatRate">—</div>
+        <div class="analytics-note" id="analyticsRepeatNote">Customer retention signal.</div>
+      </div>
+      <div class="analytics-card">
+        <div class="analytics-label">Avg order value</div>
+        <div class="analytics-value" id="analyticsAov">—</div>
+        <div class="analytics-note" id="analyticsAovNote">Paid/packed/shipped orders.</div>
+      </div>
+    </div>
+
+    <div class="row g-3 mt-1">
+      <div class="col-12 col-lg-6">
+        <div class="p-3 bg-white rounded-4 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <div class="fw-bold">Restock radar</div>
+            <span class="badge text-bg-light">Velocity</span>
+          </div>
+          <div id="restockRadar" class="insight-list"></div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="p-3 bg-white rounded-4 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <div class="fw-bold">Frequently bought together</div>
+            <span class="badge text-bg-light">Pairs</span>
+          </div>
+          <div id="boughtTogether" class="insight-list"></div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="p-3 bg-white rounded-4 shadow-sm">
+          <div class="d-flex justify-content-between align-items-center gap-2 mb-2">
+            <div class="fw-bold">Reorder watchlist</div>
+            <span class="badge text-bg-light">Customers</span>
+          </div>
+          <div id="reorderWatchlist" class="insight-list"></div>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
+        <div class="p-3 bg-white rounded-4 shadow-sm">
+          <div class="fw-bold mb-2">Order heatmap</div>
+          <div id="orderHeatmap" class="table-responsive"></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="d-flex gap-2 flex-wrap mt-3 admin-only">
@@ -1088,6 +1230,342 @@ async function sendDigitalGuideById(orderId) {
         });
       }
     }
+
+
+    // ────────────────────────────────────────────────
+    // ✅ BUSINESS INTELLIGENCE / STOCK PLANNING
+    // ────────────────────────────────────────────────
+    function isRevenueOrder(order){
+      return isPaidLikeStatus(order?.status || "");
+    }
+
+    function normaliseProductName(name = ""){
+      return String(name || "Unknown")
+        .replace(/\s+/g, " ")
+        .replace(/\s+\((cartridge only|full kit)\)$/i, "")
+        .trim() || "Unknown";
+    }
+
+    function getOrderDate(order){
+      const d = order?.created_at ? new Date(order.created_at) : null;
+      return d && !isNaN(d) ? d : null;
+    }
+
+    function daysBetween(a, b){
+      const ms = 1000 * 60 * 60 * 24;
+      return Math.max(1, Math.ceil((b - a) / ms));
+    }
+
+    function setText(id, val){
+      const el = document.getElementById(id);
+      if(el) el.textContent = val;
+    }
+
+    function renderBusinessIntelligence(){
+      const orders = Object.values(ordersCache || {});
+      const revenueOrders = orders.filter(isRevenueOrder);
+
+      if(!orders.length){
+        ["analyticsBestDay","analyticsBestHour","analyticsRepeatRate","analyticsAov"].forEach(id => setText(id, "—"));
+        const empty = `<div class="text-muted small">No loaded orders yet.</div>`;
+        ["restockRadar","boughtTogether","reorderWatchlist","orderHeatmap"].forEach(id => {
+          const el = document.getElementById(id);
+          if(el) el.innerHTML = empty;
+        });
+        return;
+      }
+
+      renderAnalyticsSummary(orders, revenueOrders);
+      renderRestockRadar(revenueOrders);
+      renderBoughtTogether(revenueOrders);
+      renderReorderWatchlist(revenueOrders);
+      renderOrderHeatmap(orders);
+    }
+
+    function renderAnalyticsSummary(orders, revenueOrders){
+      const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const dayCounts = new Map(dayNames.map(d => [d, 0]));
+      const hourCounts = new Map();
+
+      for(const o of orders){
+        const d = getOrderDate(o);
+        if(!d) continue;
+        const day = dayNames[d.getDay()];
+        const hr = d.getHours();
+        dayCounts.set(day, (dayCounts.get(day) || 0) + 1);
+        hourCounts.set(hr, (hourCounts.get(hr) || 0) + 1);
+      }
+
+      const bestDay = [...dayCounts.entries()].sort((a,b)=>b[1]-a[1])[0] || ["—",0];
+      const bestHour = [...hourCounts.entries()].sort((a,b)=>b[1]-a[1])[0] || [null,0];
+
+      const customerCounts = new Map();
+      for(const o of revenueOrders){
+        const email = getOrderEmail(o);
+        if(!email) continue;
+        customerCounts.set(email, (customerCounts.get(email) || 0) + 1);
+      }
+
+      const customerTotal = customerCounts.size;
+      const repeatCustomers = [...customerCounts.values()].filter(n => n > 1).length;
+      const repeatRate = customerTotal ? Math.round((repeatCustomers / customerTotal) * 100) : 0;
+
+      const totalRevenue = revenueOrders.reduce((sum,o)=>sum + Number(o.total_amount || 0), 0);
+      const aov = revenueOrders.length ? totalRevenue / revenueOrders.length : 0;
+
+      setText("analyticsBestDay", bestDay[1] ? bestDay[0] : "—");
+      setText("analyticsBestDayNote", bestDay[1] ? `${bestDay[1]} loaded order(s)` : "No dated orders found.");
+
+      if(bestHour[0] !== null){
+        const end = (Number(bestHour[0]) + 1) % 24;
+        setText("analyticsBestHour", `${String(bestHour[0]).padStart(2,"0")}:00`);
+        setText("analyticsBestHourNote", `${bestHour[1]} order(s), ${String(bestHour[0]).padStart(2,"0")}:00–${String(end).padStart(2,"0")}:00`);
+      }else{
+        setText("analyticsBestHour", "—");
+        setText("analyticsBestHourNote", "No dated orders found.");
+      }
+
+      setText("analyticsRepeatRate", `${repeatRate}%`);
+      setText("analyticsRepeatNote", `${repeatCustomers} repeat buyer(s) from ${customerTotal} customer(s)`);
+
+      setText("analyticsAov", `£${aov.toFixed(2)}`);
+      setText("analyticsAovNote", `${revenueOrders.length} paid/packed/shipped order(s)`);
+    }
+
+    function renderRestockRadar(orders){
+      const el = document.getElementById("restockRadar");
+      if(!el) return;
+
+      const now = new Date();
+      const last30 = new Date(now);
+      last30.setDate(now.getDate() - 30);
+
+      const productMap = new Map();
+
+      for(const o of orders){
+        const d = getOrderDate(o);
+        if(!d || d < last30) continue;
+
+        const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+        for(const item of items){
+          const name = normaliseProductName(getDisplayItemName(item));
+          const qty = Number(item?.qty || 1);
+          const line = Number(item?.line_total || (item?.price_each || 0) * qty || 0);
+          const rec = productMap.get(name) || { qty:0, revenue:0, orders:0 };
+          rec.qty += qty;
+          rec.revenue += line;
+          rec.orders += 1;
+          productMap.set(name, rec);
+        }
+      }
+
+      const rows = [...productMap.entries()]
+        .map(([name, rec]) => {
+          const perWeek = rec.qty / 30 * 7;
+          const priority = perWeek >= 5 ? "HIGH" : perWeek >= 2 ? "MED" : "LOW";
+          return { name, ...rec, perWeek, priority };
+        })
+        .sort((a,b)=> b.perWeek - a.perWeek)
+        .slice(0,8);
+
+      if(!rows.length){
+        el.innerHTML = `<div class="text-muted small">No paid product sales in the last 30 days from loaded orders.</div>`;
+        return;
+      }
+
+      el.innerHTML = rows.map(r => {
+        const cls = r.priority === "HIGH" ? "restock-high" : r.priority === "MED" ? "restock-med" : "restock-low";
+        const label = r.priority === "HIGH" ? "Order soon" : r.priority === "MED" ? "Watch stock" : "Steady";
+        return `
+          <div class="insight-row ${cls}">
+            <div>
+              <strong>${escapeHtml(r.name)}</strong>
+              <small>${r.qty} unit(s) sold in 30 days • £${r.revenue.toFixed(2)} revenue</small>
+            </div>
+            <div class="text-end">
+              <span class="badge ${r.priority === "HIGH" ? "text-bg-danger" : r.priority === "MED" ? "text-bg-warning" : "text-bg-success"}">${label}</span>
+              <small>${r.perWeek.toFixed(1)}/week</small>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderBoughtTogether(orders){
+      const el = document.getElementById("boughtTogether");
+      if(!el) return;
+
+      const pairMap = new Map();
+
+      for(const o of orders){
+        const items = Array.isArray(o?.details?.items) ? o.details.items : [];
+        const names = [...new Set(items.map(i => normaliseProductName(getDisplayItemName(i))).filter(Boolean))].sort();
+
+        for(let i=0;i<names.length;i++){
+          for(let j=i+1;j<names.length;j++){
+            const key = `${names[i]}|||${names[j]}`;
+            pairMap.set(key, (pairMap.get(key) || 0) + 1);
+          }
+        }
+      }
+
+      const rows = [...pairMap.entries()]
+        .map(([key,count]) => ({ names:key.split("|||"), count }))
+        .sort((a,b)=>b.count-a.count)
+        .slice(0,8);
+
+      if(!rows.length){
+        el.innerHTML = `<div class="text-muted small">Not enough multi-item orders loaded yet.</div>`;
+        return;
+      }
+
+      el.innerHTML = rows.map(r => `
+        <div class="insight-row">
+          <div>
+            <strong>${escapeHtml(r.names[0])}</strong>
+            <small>Often with ${escapeHtml(r.names[1])}</small>
+          </div>
+          <div class="text-end">
+            <span class="badge text-bg-dark">${r.count}x</span>
+            <small>bundle signal</small>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderReorderWatchlist(orders){
+      const el = document.getElementById("reorderWatchlist");
+      if(!el) return;
+
+      const byEmail = new Map();
+      const now = new Date();
+
+      for(const o of orders){
+        const email = getOrderEmail(o);
+        const d = getOrderDate(o);
+        if(!email || !d) continue;
+
+        const c = getCustomer(o);
+        const rec = byEmail.get(email) || { email, name:c.name || "", orders:[] };
+        rec.orders.push(o);
+        if(c.name && !rec.name) rec.name = c.name;
+        byEmail.set(email, rec);
+      }
+
+      const rows = [...byEmail.values()]
+        .map(cust => {
+          const sorted = cust.orders.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+          const last = sorted[0];
+          const lastDate = getOrderDate(last);
+          const daysSince = daysBetween(lastDate, now);
+          const items = buildItemsText(last).split("\n").slice(0,2).join(" • ");
+
+          let cycle = 35;
+          if(sorted.length >= 2){
+            const intervals = [];
+            for(let i=0;i<sorted.length-1;i++){
+              const a = getOrderDate(sorted[i]);
+              const b = getOrderDate(sorted[i+1]);
+              if(a && b) intervals.push(Math.abs(daysBetween(b, a)));
+            }
+            if(intervals.length){
+              cycle = Math.round(intervals.reduce((s,n)=>s+n,0) / intervals.length);
+              cycle = Math.min(Math.max(cycle, 21), 60);
+            }
+          }
+
+          const dueIn = cycle - daysSince;
+          return { ...cust, last, daysSince, cycle, dueIn, items };
+        })
+        .filter(r => r.daysSince >= 21)
+        .sort((a,b)=>a.dueIn-b.dueIn)
+        .slice(0,8);
+
+      if(!rows.length){
+        el.innerHTML = `<div class="text-muted small">No obvious reorder customers yet. This improves once you load all orders.</div>`;
+        return;
+      }
+
+      el.innerHTML = rows.map(r => {
+        const urgent = r.dueIn <= 0;
+        return `
+          <div class="insight-row ${urgent ? "restock-high" : "restock-med"}">
+            <div>
+              <strong>${escapeHtml(r.name || r.email)}</strong>
+              <small>${escapeHtml(r.email)} • last ordered ${r.daysSince} day(s) ago</small>
+              <small>${escapeHtml(r.items)}</small>
+            </div>
+            <div class="text-end">
+              <span class="badge ${urgent ? "text-bg-danger" : "text-bg-warning"}">${urgent ? "Due now" : `Due ${r.dueIn}d`}</span>
+              <small>cycle ~${r.cycle}d</small>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderOrderHeatmap(orders){
+      const el = document.getElementById("orderHeatmap");
+      if(!el) return;
+
+      const dayNames = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+      const hourBands = [
+        [0,5,"00–05"],
+        [6,8,"06–08"],
+        [9,11,"09–11"],
+        [12,14,"12–14"],
+        [15,17,"15–17"],
+        [18,20,"18–20"],
+        [21,23,"21–23"]
+      ];
+
+      const matrix = dayNames.map(()=>hourBands.map(()=>0));
+      let max = 0;
+
+      for(const o of orders){
+        const d = getOrderDate(o);
+        if(!d) continue;
+        const day = d.getDay();
+        const hour = d.getHours();
+        const bandIdx = hourBands.findIndex(([a,b]) => hour >= a && hour <= b);
+        if(bandIdx >= 0){
+          matrix[day][bandIdx] += 1;
+          max = Math.max(max, matrix[day][bandIdx]);
+        }
+      }
+
+      const heatClass = (n) => {
+        if(!n || !max) return "heat-0";
+        const p = n / max;
+        if(p >= .8) return "heat-4";
+        if(p >= .55) return "heat-3";
+        if(p >= .3) return "heat-2";
+        return "heat-1";
+      };
+
+      el.innerHTML = `
+        <table class="heatmap-table">
+          <thead>
+            <tr>
+              <th></th>
+              ${hourBands.map(h => `<th>${h[2]}</th>`).join("")}
+            </tr>
+          </thead>
+          <tbody>
+            ${dayNames.map((day, dIdx) => `
+              <tr>
+                <th>${day}</th>
+                ${hourBands.map((h, hIdx) => {
+                  const n = matrix[dIdx][hIdx];
+                  return `<td class="${heatClass(n)}" title="${day} ${h[2]}: ${n} order(s)">${n}</td>`;
+                }).join("")}
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      `;
+    }
+
 
     // ────────────────────────────────────────────────
     // HISTORY (Improvement #7 - minimal timeline)
@@ -1925,6 +2403,7 @@ Lumina Weight`;
     function applyClientFilters(){
       renderOrdersFromCache();
       renderCharts();
+      renderBusinessIntelligence();
     }
 
     searchInput.addEventListener("input", () => applyClientFilters());
@@ -3402,6 +3881,7 @@ Lumina Weight`;
       refreshStatusCounts();
       renderOrdersFromCache();
       renderCharts();
+      renderBusinessIntelligence();
     }
 
     async function loadAllOrdersForSearch(){
@@ -3441,6 +3921,7 @@ Lumina Weight`;
         refreshStatusCounts();
         renderOrdersFromCache();
         renderCharts();
+      renderBusinessIntelligence();
         showToast("All orders loaded ✅", "success");
       }catch(e){
         console.error("Load all failed", e);
