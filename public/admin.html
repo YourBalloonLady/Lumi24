@@ -2965,8 +2965,43 @@ Lumina Weight`;
         if (trackingClean) await saveTrackingToOrder(orderId, trackingClean);
 
         try{
-          await sendShippedEmail(ordersCache[orderId], trackingClean);
-        }catch(emailErr){
+  await sendShippedEmail(ordersCache[orderId], trackingClean);
+
+  // Auto-send digital guide after shipped email
+  try {
+    const currentOrder = ordersCache[orderId];
+    const alreadySent = currentOrder?.details?.meta?.digital_guide_sent_at;
+    const guides = getGuidesForOrder(currentOrder);
+
+    if (!alreadySent && guides.length) {
+      await sendDigitalGuideEmail(currentOrder, guides);
+
+      let guideDetails = pushHistory(currentOrder, "digital_guide_sent_auto", {
+        note: guides.map(g => g.label).join(", ")
+      });
+
+      guideDetails = {
+        ...guideDetails,
+        meta: {
+          ...(guideDetails.meta || {}),
+          digital_guide_sent_at: new Date().toISOString(),
+          digital_guide_sent_by: "auto_ship",
+          digital_guide_keys: guides.map(g => g.key)
+        }
+      };
+
+      await supabaseClient
+        .from("Orders")
+        .update({ details: guideDetails })
+        .eq("id", orderId);
+
+      ordersCache[orderId].details = guideDetails;
+    }
+  } catch (guideErr) {
+    console.error("Auto digital guide send failed", guideErr);
+  }
+
+}catch(emailErr){
           console.error("EmailJS failed, offering mailto fallback", emailErr);
           const customer = ordersCache[orderId].details?.customer || {};
           const toEmail = customer.email || ordersCache[orderId].customer_email || ordersCache[orderId].email || "";
