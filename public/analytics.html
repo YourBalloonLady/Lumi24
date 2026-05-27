@@ -1,1 +1,427 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Analytics | Lumina Weight</title>
 
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
+  <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
+
+  <style>
+    body{
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      background:#f3f4f6;
+      color:#0f172a;
+    }
+    #trust-bar{
+      background:linear-gradient(90deg,#22c55e,#16a34a);
+      color:#fff;
+      font-size:.85rem;
+      font-weight:600;
+      padding:6px 0;
+    }
+    #trust-bar span{white-space:nowrap;}
+    .admin-shell{display:flex;min-height:100vh;}
+    .admin-sidebar{
+      width:260px;
+      background:#020617;
+      color:#e5e7eb;
+      position:sticky;
+      top:0;
+      height:100vh;
+      padding:16px;
+      display:none;
+    }
+    .admin-sidebar a{
+      color:#e5e7eb;
+      text-decoration:none;
+      display:block;
+      padding:10px 12px;
+      border-radius:12px;
+      margin-bottom:6px;
+    }
+    .admin-sidebar a:hover,.admin-sidebar a.active{background:rgba(255,255,255,.1);color:#fff;}
+    .admin-main{flex:1;width:100%;}
+    @media(min-width:992px){.admin-sidebar{display:block;}}
+    .mobile-topbar{
+      background:#020617;
+      color:#fff;
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+    }
+    @media(min-width:992px){.mobile-topbar{display:none;}}
+    .section-card{
+      background:#fff;
+      border-radius:16px;
+      padding:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      margin-bottom:24px;
+    }
+    .kpi-grid,.analytics-grid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+    }
+    @media(min-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(min-width:992px){.kpi-grid,.analytics-grid{grid-template-columns:repeat(4,1fr);}}
+    .analytics-card{
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:16px;
+      padding:14px;
+      min-height:112px;
+    }
+    .analytics-label{
+      font-size:.78rem;
+      color:#64748b;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+      font-weight:800;
+    }
+    .analytics-value{
+      font-size:1.5rem;
+      color:#0f172a;
+      font-weight:900;
+      margin-top:4px;
+    }
+    .analytics-note{font-size:.85rem;color:#64748b;margin-top:4px;}
+    .insight-list{display:grid;gap:8px;}
+    .insight-row{
+      background:#f8fafc;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:12px;
+      padding:10px 12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+    }
+    .insight-row strong{color:#0f172a;}
+    .insight-row small{color:#64748b;display:block;margin-top:2px;}
+    .restock-high{border-left:5px solid #dc2626;}
+    .restock-med{border-left:5px solid #f59e0b;}
+    .restock-low{border-left:5px solid #22c55e;}
+    .heatmap-table{width:100%;border-collapse:separate;border-spacing:4px;font-size:.78rem;}
+    .heatmap-table th{color:#64748b;font-weight:700;text-align:center;white-space:nowrap;}
+    .heatmap-table td{background:#eef2ff;border-radius:8px;padding:6px;text-align:center;min-width:34px;color:#0f172a;font-weight:800;}
+    .heat-0{opacity:.25}.heat-1{opacity:.45}.heat-2{opacity:.65}.heat-3{opacity:.82}.heat-4{opacity:1}
+    #busyOverlay{
+      display:none;
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      background:rgba(15,23,42,.35);
+      align-items:center;
+      justify-content:center;
+    }
+    #busyOverlay .box{
+      background:#fff;
+      border-radius:16px;
+      padding:16px 18px;
+      box-shadow:0 18px 50px rgba(0,0,0,.25);
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+  </style>
+</head>
+<body>
+  <div id="trust-bar">
+    <div class="container d-flex justify-content-center gap-4 flex-wrap">
+      <span>📊 Lumina Analytics</span>
+      <span>📦 Stock Planning</span>
+      <span>👥 Customer Reorder Signals</span>
+    </div>
+  </div>
+
+  <div class="mobile-topbar">
+    <div class="fw-bold">🌙 Lumina Analytics</div>
+    <div class="d-flex gap-2">
+      <button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">Menu</button>
+      <button id="logout-btn" class="btn btn-sm btn-outline-light">Logout</button>
+    </div>
+  </div>
+
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title">Lumina Admin</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+      <a href="admin.html" class="d-block mb-2">Orders</a>
+      <a href="analytics.html" class="d-block mb-2 fw-bold">Analytics</a>
+      <a href="products.html" class="d-block mb-2">Products</a>
+      <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
+      <button id="logout-btn-mobile-menu" class="btn btn-sm btn-outline-dark mt-2">Logout</button>
+    </div>
+  </div>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <div class="fw-bold mb-3">🌙 Lumina Admin</div>
+      <a href="admin.html">Orders</a>
+      <a href="analytics.html" class="active">Analytics</a>
+      <a href="products.html">Products</a>
+      <a href="reviews.html">Customer Feedback</a>
+      <a href="index.html#home">Store Home</a>
+      <hr style="border-color:rgba(255,255,255,.12);">
+      <button id="logout-btn-desktop" class="btn btn-sm btn-outline-light w-100">Logout</button>
+    </aside>
+
+    <main class="admin-main">
+      <div class="container mt-4">
+        <div class="section-card">
+          <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
+            <div>
+              <h3 class="mb-1">Analytics Dashboard</h3>
+              <p class="text-muted mb-0 small">This page is only for data, stock planning, reorder patterns, and customer insight.</p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-dark btn-sm" onclick="loadAllOrders()">Refresh analytics</button>
+              <button class="btn btn-outline-success btn-sm" onclick="exportProductVelocityCsv()">Export velocity CSV</button>
+            </div>
+          </div>
+          <p id="analytics-status" class="text-muted mt-3 mb-0">Checking access…</p>
+          <div id="admin-warning" class="mt-3"></div>
+        </div>
+
+        <div class="kpi-grid mb-4">
+          <div class="analytics-card"><div class="analytics-label">Revenue 7 days</div><div class="analytics-value" id="rev7">—</div><div class="analytics-note" id="rev7Note">Paid/packed/shipped only</div></div>
+          <div class="analytics-card"><div class="analytics-label">Revenue 30 days</div><div class="analytics-value" id="rev30">—</div><div class="analytics-note" id="rev30Note">Paid/packed/shipped only</div></div>
+          <div class="analytics-card"><div class="analytics-label">Orders 30 days</div><div class="analytics-value" id="orders30">—</div><div class="analytics-note">All statuses</div></div>
+          <div class="analytics-card"><div class="analytics-label">Avg order value</div><div class="analytics-value" id="analyticsAov">—</div><div class="analytics-note" id="analyticsAovNote">Paid/packed/shipped orders</div></div>
+        </div>
+
+        <div class="analytics-grid mb-4">
+          <div class="analytics-card"><div class="analytics-label">Best order day</div><div class="analytics-value" id="analyticsBestDay">—</div><div class="analytics-note" id="analyticsBestDayNote">Based on all loaded orders</div></div>
+          <div class="analytics-card"><div class="analytics-label">Best order time</div><div class="analytics-value" id="analyticsBestHour">—</div><div class="analytics-note" id="analyticsBestHourNote">Most common hour</div></div>
+          <div class="analytics-card"><div class="analytics-label">Repeat customers</div><div class="analytics-value" id="analyticsRepeatRate">—</div><div class="analytics-note" id="analyticsRepeatNote">Customer retention signal</div></div>
+          <div class="analytics-card"><div class="analytics-label">Unique customers</div><div class="analytics-value" id="uniqueCustomers">—</div><div class="analytics-note">By email address</div></div>
+        </div>
+
+        <div class="row g-3">
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Revenue - last 30 days</div><canvas id="chartRevenue"></canvas></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Orders - last 30 days</div><canvas id="chartOrders"></canvas></div></div>
+          <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products</div><canvas id="chartTopProducts"></canvas></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Restock radar</div><span class="badge text-bg-light">Velocity</span></div><div id="restockRadar" class="insight-list"></div></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Frequently bought together</div><span class="badge text-bg-light">Pairs</span></div><div id="boughtTogether" class="insight-list"></div></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Customers</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Order heatmap</div><div id="orderHeatmap" class="table-responsive"></div></div></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="busyOverlay">
+    <div class="box">
+      <div class="spinner-border" role="status"></div>
+      <div><div class="fw-bold" id="busyTitle">Working…</div><div class="text-muted small" id="busyMeta">Please wait</div></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <script>
+    const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJx...PASTE_YOUR_FULL_KEY_HERE";
+    const ADMIN_EMAIL = "luminaweight@gmail.com";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const statusEl = document.getElementById("analytics-status");
+    const warningEl = document.getElementById("admin-warning");
+    let ordersCache = [];
+    let chartRevenue, chartOrders, chartTopProducts;
+
+    function setBusy(on,title="Working…",meta="Please wait"){
+      document.getElementById("busyTitle").textContent = title;
+      document.getElementById("busyMeta").textContent = meta;
+      document.getElementById("busyOverlay").style.display = on ? "flex" : "none";
+    }
+    function escapeHtml(str){return String(str||"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
+    function setText(id,val){const el=document.getElementById(id);if(el)el.textContent=val;}
+    function isPaidLikeStatus(status=""){const s=String(status).toLowerCase();return s==="paid"||s==="packed"||s==="shipped";}
+    function isRevenueOrder(order){return isPaidLikeStatus(order?.status||"");}
+    function getCustomer(order){return order?.details?.customer||{};}
+    function getOrderEmail(order){const c=getCustomer(order);return String(c.email||order.customer_email||order.email||"").trim().toLowerCase();}
+    function getOrderDate(order){const d=order?.created_at?new Date(order.created_at):null;return d&&!isNaN(d)?d:null;}
+    function yyyyMmDd(d){const x=new Date(d);return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`;}
+    function buildLastNDays(n){const out=[];const now=new Date();for(let i=n-1;i>=0;i--){const d=new Date(now);d.setDate(now.getDate()-i);d.setHours(0,0,0,0);out.push(yyyyMmDd(d));}return out;}
+    function daysBetween(a,b){const ms=1000*60*60*24;return Math.max(1,Math.ceil((b-a)/ms));}
+    function normaliseProductName(name=""){return String(name||"Unknown").replace(/\s+/g," ").replace(/\s+\((cartridge only|full kit)\)$/i,"").trim()||"Unknown";}
+    function getItemFormatValue(item={}){return String(item?.format||item?.variant||item?.selected_format||item?.option||item?.type||"").trim().toLowerCase();}
+    function isCartridgeOnly(item={}){const f=getItemFormatValue(item);const n=String(item?.name||"").toLowerCase();return f.includes("cartridge")||f==="cartridge-only"||f==="cartridge only"||n.includes("cartridge only");}
+    function isFullKitPen(item={}){const f=getItemFormatValue(item);const n=String(item?.name||"").toLowerCase();if(isCartridgeOnly(item))return false;return f.includes("full-kit")||f.includes("full kit")||f.includes("pen")||n.includes("pen");}
+    function getDisplayItemName(item={}){const raw=String(item?.name||"Unnamed item").trim();const f=getItemFormatValue(item);if(isCartridgeOnly(item)&&!raw.toLowerCase().includes("cartridge"))return `${raw} (Cartridge Only)`;if(isFullKitPen(item)&&f&&f.includes("full")&&!raw.toLowerCase().includes("full kit"))return `${raw} (Full Kit)`;return raw;}
+    function buildItemsText(order){const items=order?.details?.items||[];if(!items.length)return "Items not recorded.";return items.map(i=>`${i.qty} × ${getDisplayItemName(i)}`).join("\n");}
+
+    async function init(){
+      statusEl.textContent="Checking access…";
+      const {data:sessionData,error}=await supabaseClient.auth.getSession();
+      if(error||!sessionData?.session?.user){window.location.href="index.html";return;}
+      const user=sessionData.session.user;
+      if((user.email||"").toLowerCase()!==ADMIN_EMAIL.toLowerCase()){
+        warningEl.innerHTML=`<div class="alert alert-danger">Access denied.</div>`;
+        statusEl.textContent="Not authorised";
+        return;
+      }
+      statusEl.textContent="Admin verified ✅";
+      await loadAllOrders();
+    }
+
+    async function loadAllOrders(){
+      setBusy(true,"Loading analytics…","Loading all orders");
+      statusEl.textContent="Loading all orders…";
+      try{
+        const all=[];
+        let page=0;
+        const chunk=500;
+        while(true){
+          const from=page*chunk;
+          const to=from+chunk-1;
+          const {data,error}=await supabaseClient.from("Orders").select("*").order("created_at",{ascending:false}).range(from,to);
+          if(error)throw error;
+          if(!data||!data.length)break;
+          all.push(...data);
+          document.getElementById("busyMeta").textContent=`Loaded ${all.length} orders…`;
+          if(data.length<chunk)break;
+          page++;
+        }
+        ordersCache=all;
+        statusEl.textContent=`${all.length} orders loaded`;
+        renderAllAnalytics();
+      }catch(e){
+        console.error(e);
+        statusEl.textContent="Could not load analytics.";
+        alert("Analytics failed to load — check console.");
+      }finally{setBusy(false);}
+    }
+
+    function renderAllAnalytics(){
+      const orders=ordersCache;
+      const revenueOrders=orders.filter(isRevenueOrder);
+      renderKpis(orders,revenueOrders);
+      renderCharts(orders);
+      renderAnalyticsSummary(orders,revenueOrders);
+      renderRestockRadar(revenueOrders);
+      renderBoughtTogether(revenueOrders);
+      renderReorderWatchlist(revenueOrders);
+      renderOrderHeatmap(orders);
+    }
+
+    function renderKpis(orders,revenueOrders){
+      const now=new Date();
+      const weekAgo=new Date(now);weekAgo.setDate(now.getDate()-7);
+      const monthAgo=new Date(now);monthAgo.setDate(now.getDate()-30);
+      let rev7=0,rev30=0,orders30=0;
+      for(const o of orders){const d=getOrderDate(o);if(d&&d>=monthAgo)orders30++;}
+      for(const o of revenueOrders){const d=getOrderDate(o);const amt=Number(o.total_amount||0);if(d&&d>=weekAgo)rev7+=amt;if(d&&d>=monthAgo)rev30+=amt;}
+      setText("rev7",`£${rev7.toFixed(2)}`);
+      setText("rev30",`£${rev30.toFixed(2)}`);
+      setText("orders30",orders30);
+    }
+
+    function renderAnalyticsSummary(orders,revenueOrders){
+      const dayNames=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+      const dayCounts=new Map(dayNames.map(d=>[d,0]));
+      const hourCounts=new Map();
+      for(const o of orders){const d=getOrderDate(o);if(!d)continue;const day=dayNames[d.getDay()];const hr=d.getHours();dayCounts.set(day,(dayCounts.get(day)||0)+1);hourCounts.set(hr,(hourCounts.get(hr)||0)+1);}
+      const bestDay=[...dayCounts.entries()].sort((a,b)=>b[1]-a[1])[0]||["—",0];
+      const bestHour=[...hourCounts.entries()].sort((a,b)=>b[1]-a[1])[0]||[null,0];
+      const customerCounts=new Map();
+      for(const o of revenueOrders){const email=getOrderEmail(o);if(!email)continue;customerCounts.set(email,(customerCounts.get(email)||0)+1);}
+      const customerTotal=customerCounts.size;
+      const repeatCustomers=[...customerCounts.values()].filter(n=>n>1).length;
+      const repeatRate=customerTotal?Math.round((repeatCustomers/customerTotal)*100):0;
+      const totalRevenue=revenueOrders.reduce((sum,o)=>sum+Number(o.total_amount||0),0);
+      const aov=revenueOrders.length?totalRevenue/revenueOrders.length:0;
+      setText("analyticsBestDay",bestDay[1]?bestDay[0]:"—");
+      setText("analyticsBestDayNote",bestDay[1]?`${bestDay[1]} order(s)`:"No dated orders found.");
+      if(bestHour[0]!==null){const end=(Number(bestHour[0])+1)%24;setText("analyticsBestHour",`${String(bestHour[0]).padStart(2,"0")}:00`);setText("analyticsBestHourNote",`${bestHour[1]} order(s), ${String(bestHour[0]).padStart(2,"0")}:00–${String(end).padStart(2,"0")}:00`);}else{setText("analyticsBestHour","—");}
+      setText("analyticsRepeatRate",`${repeatRate}%`);
+      setText("analyticsRepeatNote",`${repeatCustomers} repeat buyer(s) from ${customerTotal} customer(s)`);
+      setText("uniqueCustomers",customerTotal);
+      setText("analyticsAov",`£${aov.toFixed(2)}`);
+      setText("analyticsAovNote",`${revenueOrders.length} paid/packed/shipped order(s)`);
+    }
+
+    function renderCharts(orders){
+      if(!window.Chart)return;
+      const days=buildLastNDays(30);
+      const revByDay=Object.fromEntries(days.map(d=>[d,0]));
+      const cntByDay=Object.fromEntries(days.map(d=>[d,0]));
+      const prodCount=new Map();
+      for(const o of orders){
+        const day=o.created_at?yyyyMmDd(o.created_at):null;
+        if(day&&revByDay[day]!==undefined){if(isRevenueOrder(o))revByDay[day]+=Number(o.total_amount||0);cntByDay[day]+=1;}
+        for(const it of (o.details?.items||[])){const key=normaliseProductName(getDisplayItemName(it));prodCount.set(key,(prodCount.get(key)||0)+Number(it?.qty||1));}
+      }
+      const revenueData=days.map(d=>Number(revByDay[d]||0));
+      const ordersData=days.map(d=>Number(cntByDay[d]||0));
+      const top=[...prodCount.entries()].sort((a,b)=>b[1]-a[1]).slice(0,12);
+      if(chartRevenue)chartRevenue.destroy();
+      chartRevenue=new Chart(document.getElementById("chartRevenue"),{type:"line",data:{labels:days,datasets:[{label:"£ Revenue",data:revenueData}]},options:{responsive:true,maintainAspectRatio:true}});
+      if(chartOrders)chartOrders.destroy();
+      chartOrders=new Chart(document.getElementById("chartOrders"),{type:"bar",data:{labels:days,datasets:[{label:"Orders",data:ordersData}]},options:{responsive:true,maintainAspectRatio:true}});
+      if(chartTopProducts)chartTopProducts.destroy();
+      chartTopProducts=new Chart(document.getElementById("chartTopProducts"),{type:"bar",data:{labels:top.map(x=>x[0]),datasets:[{label:"Qty",data:top.map(x=>x[1])}]},options:{responsive:true,maintainAspectRatio:true,indexAxis:"y"}});
+    }
+
+    function getVelocityRows(){
+      const now=new Date();const last30=new Date(now);last30.setDate(now.getDate()-30);
+      const productMap=new Map();
+      for(const o of ordersCache.filter(isRevenueOrder)){const d=getOrderDate(o);if(!d||d<last30)continue;for(const item of (o.details?.items||[])){const name=normaliseProductName(getDisplayItemName(item));const qty=Number(item?.qty||1);const line=Number(item?.line_total||(item?.price_each||0)*qty||0);const rec=productMap.get(name)||{qty:0,revenue:0,orders:0};rec.qty+=qty;rec.revenue+=line;rec.orders+=1;productMap.set(name,rec);}}
+      return [...productMap.entries()].map(([name,rec])=>{const perWeek=rec.qty/30*7;const priority=perWeek>=5?"HIGH":perWeek>=2?"MED":"LOW";return{name,...rec,perWeek,priority};}).sort((a,b)=>b.perWeek-a.perWeek);
+    }
+
+    function renderRestockRadar(){
+      const el=document.getElementById("restockRadar");const rows=getVelocityRows().slice(0,10);
+      if(!rows.length){el.innerHTML=`<div class="text-muted small">No paid product sales in the last 30 days.</div>`;return;}
+      el.innerHTML=rows.map(r=>{const cls=r.priority==="HIGH"?"restock-high":r.priority==="MED"?"restock-med":"restock-low";const label=r.priority==="HIGH"?"Order soon":r.priority==="MED"?"Watch stock":"Steady";return `<div class="insight-row ${cls}"><div><strong>${escapeHtml(r.name)}</strong><small>${r.qty} unit(s) sold in 30 days • £${r.revenue.toFixed(2)} revenue</small></div><div class="text-end"><span class="badge ${r.priority==="HIGH"?"text-bg-danger":r.priority==="MED"?"text-bg-warning":"text-bg-success"}">${label}</span><small>${r.perWeek.toFixed(1)}/week</small></div></div>`;}).join("");
+    }
+
+    function renderBoughtTogether(orders){
+      const el=document.getElementById("boughtTogether");const pairMap=new Map();
+      for(const o of orders){const names=[...new Set((o.details?.items||[]).map(i=>normaliseProductName(getDisplayItemName(i))).filter(Boolean))].sort();for(let i=0;i<names.length;i++){for(let j=i+1;j<names.length;j++){const key=`${names[i]}|||${names[j]}`;pairMap.set(key,(pairMap.get(key)||0)+1);}}}
+      const rows=[...pairMap.entries()].map(([key,count])=>({names:key.split("|||"),count})).sort((a,b)=>b.count-a.count).slice(0,10);
+      if(!rows.length){el.innerHTML=`<div class="text-muted small">Not enough multi-item orders yet.</div>`;return;}
+      el.innerHTML=rows.map(r=>`<div class="insight-row"><div><strong>${escapeHtml(r.names[0])}</strong><small>Often with ${escapeHtml(r.names[1])}</small></div><div class="text-end"><span class="badge text-bg-dark">${r.count}x</span><small>bundle signal</small></div></div>`).join("");
+    }
+
+    function renderReorderWatchlist(orders){
+      const el=document.getElementById("reorderWatchlist");const byEmail=new Map();const now=new Date();
+      for(const o of orders){const email=getOrderEmail(o);const d=getOrderDate(o);if(!email||!d)continue;const c=getCustomer(o);const rec=byEmail.get(email)||{email,name:c.name||"",orders:[]};rec.orders.push(o);if(c.name&&!rec.name)rec.name=c.name;byEmail.set(email,rec);}
+      const rows=[...byEmail.values()].map(cust=>{const sorted=cust.orders.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));const last=sorted[0];const lastDate=getOrderDate(last);const daysSince=daysBetween(lastDate,now);const items=buildItemsText(last).split("\n").slice(0,2).join(" • ");let cycle=35;if(sorted.length>=2){const intervals=[];for(let i=0;i<sorted.length-1;i++){const a=getOrderDate(sorted[i]);const b=getOrderDate(sorted[i+1]);if(a&&b)intervals.push(Math.abs(daysBetween(b,a)));}if(intervals.length){cycle=Math.round(intervals.reduce((s,n)=>s+n,0)/intervals.length);cycle=Math.min(Math.max(cycle,21),60);}}const dueIn=cycle-daysSince;return{...cust,last,daysSince,cycle,dueIn,items};}).filter(r=>r.daysSince>=21).sort((a,b)=>a.dueIn-b.dueIn).slice(0,10);
+      if(!rows.length){el.innerHTML=`<div class="text-muted small">No obvious reorder customers yet.</div>`;return;}
+      el.innerHTML=rows.map(r=>{const urgent=r.dueIn<=0;return `<div class="insight-row ${urgent?"restock-high":"restock-med"}"><div><strong>${escapeHtml(r.name||r.email)}</strong><small>${escapeHtml(r.email)} • last ordered ${r.daysSince} day(s) ago</small><small>${escapeHtml(r.items)}</small></div><div class="text-end"><span class="badge ${urgent?"text-bg-danger":"text-bg-warning"}">${urgent?"Due now":`Due ${r.dueIn}d`}</span><small>cycle ~${r.cycle}d</small></div></div>`;}).join("");
+    }
+
+    function renderOrderHeatmap(orders){
+      const el=document.getElementById("orderHeatmap");const dayNames=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];const hourBands=[[0,5,"00–05"],[6,8,"06–08"],[9,11,"09–11"],[12,14,"12–14"],[15,17,"15–17"],[18,20,"18–20"],[21,23,"21–23"]];
+      const matrix=dayNames.map(()=>hourBands.map(()=>0));let max=0;
+      for(const o of orders){const d=getOrderDate(o);if(!d)continue;const day=d.getDay();const hour=d.getHours();const idx=hourBands.findIndex(([a,b])=>hour>=a&&hour<=b);if(idx>=0){matrix[day][idx]+=1;max=Math.max(max,matrix[day][idx]);}}
+      const heatClass=n=>{if(!n||!max)return"heat-0";const p=n/max;if(p>=.8)return"heat-4";if(p>=.55)return"heat-3";if(p>=.3)return"heat-2";return"heat-1";};
+      el.innerHTML=`<table class="heatmap-table"><thead><tr><th></th>${hourBands.map(h=>`<th>${h[2]}</th>`).join("")}</tr></thead><tbody>${dayNames.map((day,dIdx)=>`<tr><th>${day}</th>${hourBands.map((h,hIdx)=>{const n=matrix[dIdx][hIdx];return`<td class="${heatClass(n)}" title="${day} ${h[2]}: ${n} order(s)">${n}</td>`;}).join("")}</tr>`).join("")}</tbody></table>`;
+    }
+
+    function exportProductVelocityCsv(){
+      const rows=getVelocityRows();
+      const header=["Product","Qty sold 30d","Revenue 30d","Units per week","Priority"];
+      const csv=[header,...rows.map(r=>[r.name,r.qty,r.revenue.toFixed(2),r.perWeek.toFixed(2),r.priority])].map(row=>row.map(v=>`"${String(v??"").replaceAll('"','""')}"`).join(",")).join("\n");
+      const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`lumina_product_velocity_${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+    }
+
+    async function doLogout(){try{await supabaseClient.auth.signOut();}finally{window.location.href="index.html";}}
+    ["logout-btn","logout-btn-desktop","logout-btn-mobile-menu"].forEach(id=>{const b=document.getElementById(id);if(b)b.addEventListener("click",doLogout);});
+    window.loadAllOrders=loadAllOrders;
+    window.exportProductVelocityCsv=exportProductVelocityCsv;
+    init();
+  </script>
+</body>
+</html>
