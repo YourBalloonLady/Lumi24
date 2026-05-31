@@ -84,10 +84,17 @@
     top: 32px;
   }
 
-  .navbar-brand img {
-    height: 36px;
-    margin-right: 10px;
+  .navbar-brand img.site-logo {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .navbar-brand img.site-logo {
+    height: 42px;
   }
+}
 
   .navbar-brand span {
     font-weight: 800;
@@ -544,8 +551,8 @@
 <nav class="navbar navbar-expand-lg fixed-top">
   <div class="container">
     <a class="navbar-brand d-flex align-items-center" href="#home">
-      <span>Lumina</span>
-    </a>
+  <img src="/Lumina-logo.png" alt="Lumina logo" class="site-logo">
+</a>
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
