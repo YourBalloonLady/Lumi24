@@ -1333,16 +1333,23 @@ async function sendDigitalGuideById(orderId) {
       return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
     }
 
+    
     function buildAddressText(order){
-      const c = getCustomer(order);
-      const parts = [
-        c.name ? String(c.name).trim() : "",
-        c.address1 ? String(c.address1).trim() : "",
-        c.address2 ? String(c.address2).trim() : "",
-        c.city ? String(c.city).trim() : "",
-        c.postcode ? String(c.postcode).trim() : "",
-      ].filter(Boolean);
-      return parts.join("\n");
+  const c = getCustomer(order);
+
+  const postcode = String(c.postcode || "")
+    .trim()
+    .toUpperCase();
+
+  const parts = [
+    c.name ? String(c.name).trim() : "",
+    c.address1 ? String(c.address1).trim() : "",
+    c.address2 ? String(c.address2).trim() : "",
+    c.city ? String(c.city).trim() : "",
+    postcode
+  ].filter(Boolean);
+
+  return parts.join("\n");
     }
 
     function buildAddressHtml(order){
