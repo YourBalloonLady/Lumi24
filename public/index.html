@@ -11,7 +11,7 @@
 <meta property="og:title" content="UK Research Materials Supplier | Lumina">
 <meta property="og:description" content="UK supplier of research materials. Laboratory research use only • Not for human consumption • Discreet UK dispatch.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://luminaweight.co.uk/">
+<meta property="og:url" content="https://www.lumi24.org/">
 
 <!-- FAVICON / TAB ICON -->
 <link rel="icon" href="/favicon.ico?v=4">
@@ -247,6 +247,49 @@
     height: 100%;
     box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
   }
+
+  .research-area-card {
+  background: #ffffff;
+  border: 1px solid var(--lw-border);
+  border-radius: 22px;
+  padding: 24px;
+  height: 100%;
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.research-area-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 22px 45px rgba(15, 23, 42, 0.08);
+}
+
+.research-area-card h3 {
+  font-size: 1.08rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.research-area-card p {
+  color: var(--lw-muted);
+  font-size: 0.95rem;
+  line-height: 1.55;
+  margin-bottom: 14px;
+}
+
+.area-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.area-tags span {
+  background: var(--lw-mint-soft);
+  color: #15803d;
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
 
   .why-icon {
     width: 46px;
@@ -628,35 +671,36 @@
   <div class="container">
     <div class="hero-eyebrow">
       <i class="fa-solid fa-flask"></i>
-      Laboratory Research Supply Only
+      UK Research Supply • Laboratory Use Only
     </div>
 
     <h1 class="hero-title">
-      UK Research Materials Supplier<br>
-      <span class="highlight">Tirzepatide, Retatrutide &amp; More</span>
+      UK Research Materials,<br>
+      <span class="highlight">Built Around Clarity</span>
     </h1>
 
     <p class="hero-subtitle">
-      Research materials supplied from the UK with discreet packaging, clear product information and straightforward ordering.
+      Lumina supplies research materials from within the UK with discreet packaging, clear product information,
+      and straightforward ordering — without hype-heavy claims or personal-use guidance.
       All materials are supplied strictly for <strong>laboratory research purposes only</strong> and are
-      <strong>not for human consumption or medical use</strong>.
+      <strong>not for human consumption, medical use, or personal use</strong>.
     </p>
 
     <div class="hero-cta">
       <a href="products.html" class="btn btn-primary-lw btn-lg">
-        View Products <i class="fa-solid fa-arrow-right ms-1"></i>
+        Shop Research Materials <i class="fa-solid fa-arrow-right ms-1"></i>
       </a>
 
-      <a href="#contact" class="btn btn-ghost btn-lg">
-        Contact Us
+      <a href="peptides.html" class="btn btn-ghost btn-lg">
+        Explore Research Library
       </a>
     </div>
 
     <div class="hero-trust">
       <div class="hero-chip"><i class="fa-solid fa-truck-fast text-success"></i> UK Dispatch</div>
       <div class="hero-chip"><i class="fa-solid fa-box text-success"></i> Discreet Packaging</div>
-      <div class="hero-chip"><i class="fa-solid fa-clock text-success"></i> Same working day dispatch before 3PM</div>
-      <div class="hero-chip"><i class="fa-solid fa-building-columns text-success"></i> Secure Bank Transfer</div>
+      <div class="hero-chip"><i class="fa-solid fa-book-open text-success"></i> Research Library</div>
+      <div class="hero-chip"><i class="fa-solid fa-headset text-success"></i> Responsive Support</div>
     </div>
   </div>
 </section>
@@ -704,6 +748,76 @@
           <p>Questions about orders, shipping, or documentation can be handled quickly through direct contact.</p>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+  <!-- BROWSE BY RESEARCH AREA -->
+<section id="research-areas" class="py-5">
+  <div class="container">
+    <div class="text-center mb-5">
+      <div class="section-eyebrow">Start Here</div>
+      <h2 class="section-title">Browse by research area</h2>
+      <p class="section-subtitle">
+        Not sure where to begin? Explore materials by research category, then use the Lumina library for further educational context.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3">
+        <a href="products.html" class="research-area-card d-block text-dark">
+          <h3><i class="fa-solid fa-scale-balanced text-success me-2"></i>Weight Management</h3>
+          <p>Research materials commonly associated with metabolic and weight-management research areas.</p>
+          <div class="area-tags">
+            <span>Tirzepatide</span>
+            <span>Retatrutide</span>
+            <span>Semaglutide</span>
+            <span>Cagrilintide</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <a href="products.html" class="research-area-card d-block text-dark">
+          <h3><i class="fa-solid fa-bolt text-success me-2"></i>Cellular Energy</h3>
+          <p>Materials researched in relation to mitochondrial, cellular energy and longevity pathways.</p>
+          <div class="area-tags">
+            <span>MOTS-C</span>
+            <span>SS-31</span>
+            <span>NAD+</span>
+            <span>Epithalon</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <a href="products.html" class="research-area-card d-block text-dark">
+          <h3><i class="fa-solid fa-screwdriver-wrench text-success me-2"></i>Repair Research</h3>
+          <p>Research areas linked to tissue, recovery, repair and related biological pathways.</p>
+          <div class="area-tags">
+            <span>BPC-157</span>
+            <span>TB-500</span>
+            <span>GHK-Cu</span>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <a href="products.html" class="research-area-card d-block text-dark">
+          <h3><i class="fa-solid fa-brain text-success me-2"></i>Cognitive Research</h3>
+          <p>Materials researched in relation to cognition, focus, signalling and neuropeptide pathways.</p>
+          <div class="area-tags">
+            <span>Semax</span>
+            <span>Selank</span>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="peptides.html" class="btn btn-outline-success rounded-pill px-4">
+        Visit the Research Library
+      </a>
     </div>
   </div>
 </section>
@@ -901,7 +1015,7 @@
   <div class="container">
     <p class="mb-0">
       © 2026 Lumina • UK Research Materials Supplier • Research Supply Only • Not For Human Consumption<br>
-      <a href="peptide-library.html" class="text-decoration-none">Peptide Library</a> •
+      <a href="peptides.html" class="text-decoration-none">Peptide Library</a> •
       <a href="privacy.html" class="text-decoration-none">Privacy</a> •
       <a href="shipping.html" class="text-decoration-none">Shipping</a> •
       <a href="terms.html" class="text-decoration-none">Terms</a> •
@@ -917,7 +1031,7 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 
 <script>
-const SITE_ROOT = "https://luminaweight.co.uk";
+const SITE_ROOT = "https://www.lumi24.org";
 
 function imgSrc(image) {
   if (!image) return "";
