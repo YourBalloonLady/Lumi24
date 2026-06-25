@@ -1353,23 +1353,30 @@ async function sendDigitalGuideById(orderId) {
     }
 
     function buildAddressHtml(order){
-      const c = getCustomer(order);
-      const hasAny = c && (c.address1 || c.city || c.postcode || c.name || c.phone || c.address2);
-      if(!hasAny){
-        return `<div class="items-box" style="margin-top:8px;"><strong>📍 Delivery address</strong><div class="muted-line">No address recorded.</div></div>`;
-      }
-      return `
-        <div class="items-box" style="margin-top:8px;">
-          <strong>📍 Delivery address</strong>
-          ${c.name ? `${escapeHtml(c.name)}\n` : ""}
-          ${c.address1 ? `${escapeHtml(c.address1)}\n` : ""}
-          ${c.address2 ? `${escapeHtml(c.address2)}\n` : ""}
-          ${c.city ? `${escapeHtml(c.city)}\n` : ""}
-          ${c.postcode ? `${escapeHtml(c.postcode)}\n` : ""}
-          ${c.phone ? `📞 ${escapeHtml(c.phone)}` : ""}
-        </div>
-      `;
-    }
+  const c = getCustomer(order);
+
+  const postcode = String(c.postcode || "")
+    .trim()
+    .toUpperCase();
+
+  const hasAny = c && (c.address1 || c.city || postcode || c.name || c.phone || c.address2);
+
+  if(!hasAny){
+    return `<div class="items-box" style="margin-top:8px;"><strong>📍 Delivery address</strong><div class="muted-line">No address recorded.</div></div>`;
+  }
+
+  return `
+    <div class="items-box" style="margin-top:8px;">
+      <strong>📍 Delivery address</strong>
+      ${c.name ? `${escapeHtml(c.name)}\n` : ""}
+      ${c.address1 ? `${escapeHtml(c.address1)}\n` : ""}
+      ${c.address2 ? `${escapeHtml(c.address2)}\n` : ""}
+      ${c.city ? `${escapeHtml(c.city)}\n` : ""}
+      ${postcode ? `${escapeHtml(postcode)}\n` : ""}
+      ${c.phone ? `📞 ${escapeHtml(c.phone)}` : ""}
+    </div>
+  `;
+}
 
     function validateAddress(order){
       const c = getCustomer(order);
@@ -1552,12 +1559,18 @@ Lumina Weight`;
     }
 
     function buildOneLineAddress(order) {
-      const c = order?.details?.customer || {};
-      const parts = [c.address1, c.address2, c.city, c.postcode]
-        .map(x => String(x || "").trim())
-        .filter(Boolean);
-      return parts.join(", ");
-    }
+  const c = order?.details?.customer || {};
+
+  const postcode = String(c.postcode || "")
+    .trim()
+    .toUpperCase();
+
+  const parts = [c.address1, c.address2, c.city, postcode]
+    .map(x => String(x || "").trim())
+    .filter(Boolean);
+
+  return parts.join(", ");
+}
 
     function paidFlagFromStatus(status = "") {
       const s = String(status).toLowerCase();
