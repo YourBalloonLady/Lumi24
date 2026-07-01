@@ -471,7 +471,59 @@
   footer a:hover {
     color: #ffffff;
   }
+  .proof-strip {
+    margin-top: -34px;
+    position: relative;
+    z-index: 5;
+  }
 
+  .proof-panel {
+    background: #ffffff;
+    border: 1px solid rgba(34, 197, 94, 0.18);
+    border-radius: 26px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    padding: 22px;
+  }
+
+  .proof-stat {
+    text-align: center;
+    padding: 12px 10px;
+  }
+
+  .proof-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--lw-mint-soft);
+    color: #15803d;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    font-size: 1.15rem;
+  }
+
+  .proof-number {
+    font-size: clamp(1.6rem, 3vw, 2.1rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    color: #0f172a;
+    line-height: 1;
+  }
+
+  .proof-label {
+    margin-top: 6px;
+    font-size: 0.92rem;
+    font-weight: 750;
+    color: var(--lw-muted);
+  }
+
+  .proof-small {
+    text-align: center;
+    color: var(--lw-muted);
+    font-size: 0.82rem;
+    margin-top: 10px;
+  }
   @media (max-width: 992px) {
     .navbar-nav {
       padding-top: 12px;
@@ -519,9 +571,9 @@
 
 <div id="trust-bar">
   <div class="container">
-    <span>🚚 Same working day dispatch before 3PM where possible</span>
-    <span>🔒 Secure Bank Transfer</span>
-    <span>🇬🇧 UK Dispatch</span>
+    <span>📦 450+ Orders Fulfilled</span>
+    <span>👥 200+ UK Customers</span>
+    <span>🚚 Same Working Day Dispatch Before 3PM Where Possible</span>
     <span>📦 Discreet Packaging</span>
   </div>
 </div>
@@ -701,6 +753,43 @@
       <div class="hero-chip"><i class="fa-solid fa-box text-success"></i> Discreet Packaging</div>
       <div class="hero-chip"><i class="fa-solid fa-book-open text-success"></i> Research Library</div>
       <div class="hero-chip"><i class="fa-solid fa-headset text-success"></i> Responsive Support</div>
+    </div>
+  </div>
+</section>
+
+  <!-- TRUST / SOCIAL PROOF STRIP -->
+<section class="proof-strip">
+  <div class="container">
+    <div class="proof-panel">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-4">
+          <div class="proof-stat">
+            <div class="proof-icon"><i class="fa-solid fa-box-open"></i></div>
+            <div class="proof-number">450+</div>
+            <div class="proof-label">Orders fulfilled</div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="proof-stat">
+            <div class="proof-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="proof-number">200+</div>
+            <div class="proof-label">UK customers served</div>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <div class="proof-stat">
+            <div class="proof-icon"><i class="fa-solid fa-truck-fast"></i></div>
+            <div class="proof-number">UK</div>
+            <div class="proof-label">Fast discreet dispatch</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="proof-small">
+        Built on clear communication, discreet packaging and reliable UK fulfilment.
+      </div>
     </div>
   </div>
 </section>
