@@ -1044,6 +1044,27 @@ async function sendDigitalGuideById(orderId) {
   return `<span class="badge text-bg-light border text-muted">Telegram: Not connected</span>`;
 }
 
+    function whatsappStatusBadge(order) {
+  const c = order?.details?.customer || {};
+  const meta = order?.details?.meta || {};
+
+  const optedIn =
+    !!c.whatsapp_opt_in ||
+    !!meta.whatsapp_opt_in;
+
+  const phone =
+    c.whatsapp_phone ||
+    meta.whatsapp_phone ||
+    c.phone ||
+    "";
+
+  if (optedIn && phone) {
+    return `<span class="badge text-bg-success">WhatsApp: Opted in ✅</span>`;
+  }
+
+  return `<span class="badge text-bg-light border text-muted">WhatsApp: Not opted in</span>`;
+}
+
     function getItemFormatValue(item = {}) {
       return String(
         item?.format ||
@@ -3130,20 +3151,31 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
         const total = Number(order.total_amount || 0).toFixed(2);
         const items = buildItemsText(order);
         const address = buildAddressText(order) || "No address recorded.";
+return `
+  <div class="packing-card">
+    <div class="packing-head">
+      <div>
+        <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
+        <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
+      </div>
 
-        return `
-          <div class="packing-card">
-            <div class="packing-head">
-              <div>
-                <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
-                <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
-              </div>
-              <div class="text-end">
-                ${badge(order.status)}
-<div class="mt-1">${telegramStatusBadge(order)}</div>
-                <div class="fw-bold mt-1">£${total}</div>
-              </div>
-            </div>
+      <div class="text-end">
+        ${badge(order.status)}
+
+        <div class="mt-1">
+          ${telegramStatusBadge(order)}
+        </div>
+
+        <div class="mt-1">
+          ${whatsappStatusBadge(order)}
+        </div>
+
+        <div class="fw-bold mt-1">£${total}</div>
+      </div>
+    </div>
+`;
+
+            
 
             <div class="packing-items">
               <strong>Items</strong>
@@ -3815,6 +3847,7 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
     window.sendDigitalGuideById = sendDigitalGuideById;
     window.sendTelegramOrderUpdate = sendTelegramOrderUpdate;
     window.telegramStatusBadge = telegramStatusBadge;
+    window.whatsappStatusBadge = whatsappStatusBadge;
 
     // go
     initAdminView();
