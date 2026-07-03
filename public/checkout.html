@@ -199,19 +199,23 @@
             <div class="row g-3">
 
               <div class="col-md-6">
-  <input type="text" class="form-control" id="fullName" placeholder="Full name" required>
-</div>
+                <input type="text" class="form-control" id="fullName" placeholder="Full name" required>
+              </div>
 
-<div class="col-md-6">
-  <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
+              <div class="col-md-6">
+                <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
 
-  <div class="form-check mt-2">
-    <input class="form-check-input" type="checkbox" id="whatsappOptIn">
-    <label class="form-check-label small text-muted" for="whatsappOptIn">
-      Send me WhatsApp updates about this order
-    </label>
-  </div>
-</div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="whatsappOptIn">
+                  <label class="form-check-label small text-muted" for="whatsappOptIn">
+                    Send me WhatsApp updates about this order
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <input type="email" class="form-control" id="email" placeholder="Email address" required>
+              </div>
 
               <div class="col-12">
                 <input type="text" class="form-control" id="address1" placeholder="Address line 1" required>
@@ -430,14 +434,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-
 emailjs.init('uZOuTrBdIAc6AmKjo');
 
 const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true
+  }
 });
 
 const TELEGRAM_BOT_USERNAME = "LuminaUpdatesBot";
@@ -452,7 +459,6 @@ let deliveryLabel = 'Tracked24';
 let deliveryCost = 0;
 
 function setDeliveryOption(value){
-
   deliveryMethod = value;
 
   if(value === 'signed'){
@@ -478,17 +484,11 @@ function getDeliveryLabel() {
 }
 
 function updateDeliverySelectedUI() {
-
   const trackedBox = document.getElementById('delivery-tracked24-box');
   const signedBox = document.getElementById('delivery-signed-box');
 
-  if (trackedBox) {
-    trackedBox.classList.remove('selected');
-  }
-
-  if (signedBox) {
-    signedBox.classList.remove('selected');
-  }
+  trackedBox?.classList.remove('selected');
+  signedBox?.classList.remove('selected');
 
   if (deliveryMethod === 'signed') {
     signedBox?.classList.add('selected');
@@ -518,14 +518,12 @@ function getVariantDisplay(item) {
 }
 
 (function captureReferralOnCheckout(){
-
   const p = new URLSearchParams(location.search);
   const ref = (p.get('ref') || '').trim().toUpperCase();
 
   if (ref) {
     localStorage.setItem('referral_code', ref);
   }
-
 })();
 
 function isSemaglutide(name){
@@ -534,7 +532,6 @@ function isSemaglutide(name){
 }
 
 function isPenItem(itemOrName) {
-
   const item =
     (typeof itemOrName === 'object' && itemOrName)
       ? itemOrName
@@ -577,7 +574,6 @@ function isPenItem(itemOrName) {
 }
 
 function isVialItem(itemOrName) {
-
   const item =
     (typeof itemOrName === 'object' && itemOrName)
       ? itemOrName
@@ -607,7 +603,6 @@ function isVialItem(itemOrName) {
 }
 
 function extraLabel(item) {
-
   if (isPenItem(item) && item.pen_heads) {
     return ` (Pen heads: ${
       item.pen_heads === 'none'
@@ -636,22 +631,19 @@ function saveCartToStorage() {
 function cleanWhatsAppPhone(phone) {
   let p = String(phone || "").trim();
 
-  // Remove spaces, brackets, hyphens etc.
   p = p.replace(/[^\d+]/g, "");
 
-  // Convert UK numbers like 07123... to +447123...
   if (p.startsWith("07")) {
     p = "+44" + p.slice(1);
   }
 
-  // Convert 447123... to +447123...
   if (p.startsWith("44") && !p.startsWith("+44")) {
     p = "+" + p;
   }
 
   return p;
 }
-  
+
 function generateTelegramToken(orderReference) {
   let randomPart = '';
 
@@ -715,10 +707,8 @@ async function saveTelegramNotificationLink(details, telegramToken) {
     console.warn('Telegram notification link unexpected error:', err);
   }
 }
-  
 
 function setSemaForm(index, value){
-
   if (!cart[index]) return;
 
   cart[index].sema_form = String(value || '').trim();
@@ -736,7 +726,6 @@ function setSemaForm(index, value){
 }
 
 function setAccessory(index, field, value) {
-
   if (!cart[index]) return;
 
   const v = (value || '').trim();
@@ -754,11 +743,9 @@ function setAccessory(index, field, value) {
 }
 
 function validateAccessories() {
-
   const missing = [];
 
   cart.forEach((item) => {
-
     const n = (item?.name || '').toLowerCase();
 
     const sema = isSemaglutide(n);
@@ -796,16 +783,13 @@ function validateAccessories() {
         `Select Syringes for: ${item.name}`
       );
     }
-
   });
 
   return missing;
 }
 
 async function syncCartPricesFromSupabase() {
-
   try {
-
     const ids = cart
       .map(i => i.id)
       .filter(Boolean);
@@ -827,7 +811,6 @@ async function syncCartPricesFromSupabase() {
     );
 
     cart = cart.map(item => {
-
       const p = map.get(item.id);
 
       if (!p) return item;
@@ -842,7 +825,6 @@ async function syncCartPricesFromSupabase() {
           ? getVariantPrice(p, variant)
           : Number(p.price || 0)
       };
-
     });
 
     saveCartToStorage();
@@ -853,18 +835,12 @@ async function syncCartPricesFromSupabase() {
 }
 
 function calculateBundle(cart) {
-
   let baseTotal = 0;
 
   cart.forEach(item => {
-
     const qty = Number(item.qty || 0);
-
-    const line =
-      Number(item.price || 0) * qty;
-
+    const line = Number(item.price || 0) * qty;
     baseTotal += line;
-
   });
 
   return {
@@ -876,15 +852,11 @@ function calculateBundle(cart) {
 }
 
 function getCartFromUrlOrStorage() {
-
   const params = new URLSearchParams(window.location.search);
-
   const urlCart = params.get('cart');
 
   if (urlCart) {
-
     try {
-
       const parsed = JSON.parse(
         decodeURIComponent(urlCart)
       );
@@ -905,7 +877,6 @@ function getCartFromUrlOrStorage() {
   }
 
   try {
-
     const saved = localStorage.getItem('cart');
 
     if (saved) {
@@ -913,12 +884,10 @@ function getCartFromUrlOrStorage() {
     }
 
   } catch (e) {
-
     console.error(
       'Error reading cart from localStorage',
       e
     );
-
   }
 
   return [];
@@ -1098,16 +1067,16 @@ async function saveOrderToSupabase(details) {
 
     const orderDetails = {
       customer: {
-  name: details.name,
-  email: details.email,
-  phone: details.phone,
-  whatsapp_opt_in: !!details.whatsappOptIn,
-  whatsapp_phone: details.whatsappPhone || "",
-  address1: details.address1,
-  address2: details.address2,
-  city: details.city,
-  postcode: details.postcode
-},
+        name: details.name,
+        email: details.email,
+        phone: details.phone,
+        whatsapp_opt_in: !!details.whatsappOptIn,
+        whatsapp_phone: details.whatsappPhone || "",
+        address1: details.address1,
+        address2: details.address2,
+        city: details.city,
+        postcode: details.postcode
+      },
       delivery: {
         method: deliveryMethod,
         label: getDeliveryLabel(),
@@ -1125,19 +1094,19 @@ async function saveOrderToSupabase(details) {
         syringes: i.syringes || "",
         sema_form: i.sema_form || ""
       })),
-      reference: details.ref
+      reference: details.ref,
+      meta: {
+        referral_code: (localStorage.getItem('referral_code') || null),
+        delivery_method: deliveryMethod,
+        delivery_label: getDeliveryLabel(),
+        delivery_price: getDeliveryCost(),
+        telegram_link_token: details.telegramToken || null,
+        whatsapp_opt_in: !!details.whatsappOptIn,
+        whatsapp_phone: details.whatsappPhone || "",
+        whatsapp_opt_in_at: details.whatsappOptIn ? new Date().toISOString() : null
+      }
     };
 
-    orderDetails.meta = orderDetails.meta || {};
-    orderDetails.meta.referral_code = (localStorage.getItem('referral_code') || null);
-    orderDetails.meta.delivery_method = deliveryMethod;
-    orderDetails.meta.delivery_label = getDeliveryLabel();
-    orderDetails.meta.delivery_price = getDeliveryCost();
-    orderDetails.meta.telegram_link_token = details.telegramToken || null;
-orderDetails.meta.whatsapp_opt_in = !!details.whatsappOptIn;
-orderDetails.meta.whatsapp_phone = details.whatsappPhone || "";
-orderDetails.meta.whatsapp_opt_in_at = details.whatsappOptIn ? new Date().toISOString() : null;
-    
     const { error: insertError } = await supabaseClient
       .from('Orders')
       .insert({
@@ -1224,6 +1193,7 @@ function sendAdminEmail(details) {
     to_email: 'luminaweight@gmail.com',
     customer_name: details.name,
     customer_phone: details.phone,
+    customer_email: details.email,
     customer_address: buildAddressText(details),
     order_reference: details.ref,
     order_items: buildItemsText(),
@@ -1237,6 +1207,7 @@ function sendCustomerEmail(details) {
   return emailjs.send('service_i5zi096', 'template_x5lnd1u', {
     to_email: details.email,
     customer_email: details.email,
+    email: details.email,
     customer_name: details.name,
     customer_address: buildAddressText(details),
     order_reference: details.ref,
@@ -1255,10 +1226,10 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const btn = this.querySelector('button[type="submit"]');
 
   const name = document.getElementById('fullName').value.trim() || 'Customer';
-const phone = document.getElementById('phone').value.trim();
-const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
-const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
-const email = document.getElementById('email').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
+  const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
+  const email = document.getElementById('email').value.trim();
   const address1 = document.getElementById('address1').value.trim();
   const address2 = document.getElementById('address2').value.trim();
   const city = document.getElementById('city').value.trim();
@@ -1266,8 +1237,14 @@ const email = document.getElementById('email').value.trim();
   const ref = 'LW' + Date.now().toString().slice(-6);
   const telegramToken = generateTelegramToken(ref);
 
-  if (!email || !cart.length) {
-    checkoutStatus.textContent = 'Please ensure your cart and email are valid.';
+  if (!name || !phone || !email || !address1 || !city || !postcode || !cart.length) {
+    checkoutStatus.textContent = 'Please complete your name, phone, email, address and cart.';
+    checkoutStatus.className = 'small text-danger mt-2';
+    return;
+  }
+
+  if (whatsappOptIn && !whatsappPhone) {
+    checkoutStatus.textContent = 'Please enter a valid phone number for WhatsApp updates.';
     checkoutStatus.className = 'small text-danger mt-2';
     return;
   }
@@ -1298,18 +1275,18 @@ const email = document.getElementById('email').value.trim();
     renderOrderSummary(total);
 
     const details = {
-  name,
-  phone,
-  email,
-  address1,
-  address2,
-  city,
-  postcode,
-  ref,
-  telegramToken,
-  whatsappOptIn,
-  whatsappPhone
-};
+      name,
+      phone,
+      email,
+      address1,
+      address2,
+      city,
+      postcode,
+      ref,
+      telegramToken,
+      whatsappOptIn,
+      whatsappPhone
+    };
 
     await logReferralEventIfAny(ref, email, totalBeforeCredit);
     await saveOrderToSupabase(details);
@@ -1382,7 +1359,6 @@ function backToShop() {
 }
 
 (async function initCheckout() {
-
   cart = getCartFromUrlOrStorage();
 
   if (!cart.length) {
@@ -1406,9 +1382,7 @@ function backToShop() {
   await syncCartPricesFromSupabase();
 
   renderOrderSummary();
-
 })();
-
 </script>
 
 </body>
