@@ -109,6 +109,35 @@
     padding: 18px;
   }
 
+  .telegram-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 18px;
+    padding: 18px;
+  }
+
+  .telegram-box h5 {
+    color: #1e3a8a;
+  }
+
+  .telegram-box p,
+  .telegram-box small {
+    color: #475569;
+  }
+
+  .telegram-btn {
+    background: #229ed9;
+    border-color: #229ed9;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .telegram-btn:hover {
+    background: #168ac2;
+    border-color: #168ac2;
+    color: #ffffff;
+  }
+
   .delivery-options{
     display:grid;
     gap:10px;
@@ -338,6 +367,28 @@
           Payment details copied.
         </div>
 
+        <div class="telegram-box mb-3">
+          <h5 class="fw-bold mb-2">Get Telegram order updates</h5>
+
+          <p class="mb-3">
+            Connect Telegram to receive updates when your order is paid, packed or shipped.
+          </p>
+
+          <a
+            id="telegram-connect-link"
+            href="#"
+            target="_blank"
+            rel="noopener"
+            class="btn telegram-btn w-100 rounded-pill"
+          >
+            Connect Telegram updates
+          </a>
+
+          <small class="d-block mt-2 text-center">
+            We’ll only message you about this order.
+          </small>
+        </div>
+
         <div class="alert alert-info border-0 rounded-4 mb-0">
           <strong>We’ve also emailed these payment details to you.</strong><br>
 
@@ -380,12 +431,13 @@
 emailjs.init('uZOuTrBdIAc6AmKjo');
 
   const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
   });
 
+const TELEGRAM_BOT_USERNAME = "LuminaUpdatesBot";
 
 let cart = [];
 let total = 0;
@@ -576,6 +628,65 @@ function saveCartToStorage() {
   try {
     localStorage.setItem('cart', JSON.stringify(cart));
   } catch (e) {}
+}
+
+function generateTelegramToken(orderReference) {
+  let randomPart = '';
+
+  try {
+    randomPart = crypto.randomUUID().replaceAll('-', '').slice(0, 24);
+  } catch (e) {
+    randomPart = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  }
+
+  return `${orderReference}_${randomPart}`;
+}
+
+function buildTelegramConnectUrl(token) {
+  const username = String(TELEGRAM_BOT_USERNAME || '').replace('@', '').trim();
+
+  if (!username || username === 'LuminaUpdatesBot') {
+    return '#';
+  }
+
+  return `https://t.me/${username}?start=${encodeURIComponent(token)}`;
+}
+
+function updateTelegramConnectButton(token) {
+  const link = document.getElementById('telegram-connect-link');
+  if (!link) return;
+
+  const url = buildTelegramConnectUrl(token);
+
+  link.href = url;
+
+  if (url === '#') {
+    link.classList.add('disabled');
+    link.setAttribute('aria-disabled', 'true');
+    link.textContent = 'Telegram bot not configured yet';
+  } else {
+    link.classList.remove('disabled');
+    link.removeAttribute('aria-disabled');
+    link.textContent = 'Connect Telegram updates';
+  }
+}
+
+async function saveTelegramNotificationLink(details, telegramToken) {
+  if (!telegramToken) return;
+
+  const { error } = await supabaseClient
+    .from('customer_notification_links')
+    .insert({
+      order_reference: details.ref,
+      customer_email: details.email,
+      customer_name: details.name,
+      telegram_link_token: telegramToken,
+      telegram_connected: false
+    });
+
+  if (error) {
+    console.error('Error saving Telegram notification link:', error);
+  }
 }
 
 function setSemaForm(index, value){
@@ -992,6 +1103,7 @@ async function saveOrderToSupabase(details) {
     orderDetails.meta.delivery_method = deliveryMethod;
     orderDetails.meta.delivery_label = getDeliveryLabel();
     orderDetails.meta.delivery_price = getDeliveryCost();
+    orderDetails.meta.telegram_link_token = details.telegramToken || null;
 
     const { error: insertError } = await supabaseClient
       .from('Orders')
@@ -1108,6 +1220,7 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const city = document.getElementById('city').value.trim();
   const postcode = document.getElementById('postcode').value.trim();
   const ref = 'LW' + Date.now().toString().slice(-6);
+  const telegramToken = generateTelegramToken(ref);
 
   if (!email || !cart.length) {
     checkoutStatus.textContent = 'Please ensure your cart and email are valid.';
@@ -1148,11 +1261,13 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       address2,
       city,
       postcode,
-      ref
+      ref,
+      telegramToken
     };
 
     await logReferralEventIfAny(ref, email, totalBeforeCredit);
     await saveOrderToSupabase(details);
+    await saveTelegramNotificationLink(details, telegramToken);
     await deductStock(cart);
 
     const emailResults = await Promise.allSettled([
@@ -1182,6 +1297,8 @@ document.getElementById('addressForm').onsubmit = async function(e) {
     document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
     document.getElementById('payment-total-copy').textContent = `£${Number(total || 0).toFixed(2)}`;
     document.getElementById('order-ref').textContent = ref;
+
+    updateTelegramConnectButton(telegramToken);
 
     new bootstrap.Modal(document.getElementById('paymentModal')).show();
 
