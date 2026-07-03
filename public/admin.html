@@ -1028,6 +1028,22 @@ async function sendDigitalGuideById(orderId) {
       return String(c.email || order.customer_email || order.email || "").trim().toLowerCase();
     }
 
+    function telegramStatusBadge(order) {
+  const ref = String(order?.reference || order?.id || "").trim();
+
+  if (!ref) {
+    return `<span class="badge text-bg-secondary">Telegram: Unknown</span>`;
+  }
+
+  const tg = order?.telegram_status || null;
+
+  if (tg?.connected) {
+    return `<span class="badge text-bg-info">Telegram: Connected ✅</span>`;
+  }
+
+  return `<span class="badge text-bg-light border text-muted">Telegram: Not connected</span>`;
+}
+
     function getItemFormatValue(item = {}) {
       return String(
         item?.format ||
@@ -1897,6 +1913,43 @@ async function sendTelegramOrderUpdate(order, status, trackingNumber = "") {
       document.getElementById("select-all").checked = false;
       loadOrders();
     }
+
+    async function addTelegramStatusToOrders(orderList = []) {
+  try {
+    const refs = orderList
+      .map(o => String(o.reference || "").trim())
+      .filter(Boolean);
+
+    if (!refs.length) return orderList;
+
+    const { data, error } = await supabaseClient
+      .from("customer_notification_links")
+      .select("order_reference, telegram_connected, telegram_chat_id")
+      .in("order_reference", refs);
+
+    if (error) {
+      console.warn("Could not load Telegram statuses:", error);
+      return orderList;
+    }
+
+    const tgMap = new Map();
+
+    (data || []).forEach(row => {
+      tgMap.set(row.order_reference, {
+        connected: !!row.telegram_connected && !!row.telegram_chat_id
+      });
+    });
+
+    return orderList.map(order => ({
+      ...order,
+      telegram_status: tgMap.get(order.reference) || { connected: false }
+    }));
+
+  } catch (err) {
+    console.warn("Telegram status check failed:", err);
+    return orderList;
+  }
+}
 
     function applyClientFilters(){
   renderOrdersFromCache();
@@ -3087,6 +3140,7 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
               </div>
               <div class="text-end">
                 ${badge(order.status)}
+<div class="mt-1">${telegramStatusBadge(order)}</div>
                 <div class="fw-bold mt-1">£${total}</div>
               </div>
             </div>
@@ -3257,9 +3311,10 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
                   onchange="toggleSelectOne('${order.id}', this.checked)">
                 <div class="flex-grow-1 min-w-0">
                   <div class="d-flex flex-wrap align-items-center gap-2">
-                    <strong>${escapeHtml(ref)}</strong>
-                    ${badge(status)}
-                  </div>
+  <strong>${escapeHtml(ref)}</strong>
+  ${badge(status)}
+  ${telegramStatusBadge(order)}
+</div>
                   <div class="small text-muted mt-1">${escapeHtml(created)}</div>
                   <div class="mt-1">
                     <a href="#" class="text-decoration-none" onclick="openCustomerView('${escapeHtml(email)}'); return false;">
@@ -3485,7 +3540,9 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
         return;
       }
 
-      for (const o of orders) ordersCache[o.id] = o;
+      const ordersWithTelegram = await addTelegramStatusToOrders(orders || []);
+
+for (const o of ordersWithTelegram) ordersCache[o.id] = o;
 
       renderKpis();
       renderQuickStats();
@@ -3757,6 +3814,7 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
     window.toggleOrderExpanded = toggleOrderExpanded;
     window.sendDigitalGuideById = sendDigitalGuideById;
     window.sendTelegramOrderUpdate = sendTelegramOrderUpdate;
+    window.telegramStatusBadge = telegramStatusBadge;
 
     // go
     initAdminView();
