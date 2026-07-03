@@ -3163,9 +3163,12 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
           <div class="text-end">
             ${badge(order.status)}
 
-            <div class="mt-1">
-              ${telegramStatusBadge(order)}
-            </div>
+            <<div class="d-flex flex-wrap align-items-center gap-2">
+  <strong>${escapeHtml(ref)}</strong>
+  ${badge(status)}
+  ${telegramStatusBadge(order)}
+  ${whatsappStatusBadge(order)}
+</div>
 
             <div class="mt-1">
               ${whatsappStatusBadge(order)}
