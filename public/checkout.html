@@ -199,8 +199,15 @@
             <div class="row g-3">
 
               <div class="col-md-6">
-                <input type="text" class="form-control" id="fullName" placeholder="Full name" required>
-              </div>
+  <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
+
+  <div class="form-check mt-2">
+    <input class="form-check-input" type="checkbox" id="whatsappOptIn">
+    <label class="form-check-label small text-muted" for="whatsappOptIn">
+      Send me WhatsApp updates about this order
+    </label>
+  </div>
+</div>
 
               <div class="col-md-6">
                 <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
@@ -630,6 +637,25 @@ function saveCartToStorage() {
   } catch (e) {}
 }
 
+function cleanWhatsAppPhone(phone) {
+  let p = String(phone || "").trim();
+
+  // Remove spaces, brackets, hyphens etc.
+  p = p.replace(/[^\d+]/g, "");
+
+  // Convert UK numbers like 07123... to +447123...
+  if (p.startsWith("07")) {
+    p = "+44" + p.slice(1);
+  }
+
+  // Convert 447123... to +447123...
+  if (p.startsWith("44") && !p.startsWith("+44")) {
+    p = "+" + p;
+  }
+
+  return p;
+}
+  
 function generateTelegramToken(orderReference) {
   let randomPart = '';
 
@@ -693,6 +719,7 @@ async function saveTelegramNotificationLink(details, telegramToken) {
     console.warn('Telegram notification link unexpected error:', err);
   }
 }
+  
 
 function setSemaForm(index, value){
 
@@ -1075,14 +1102,16 @@ async function saveOrderToSupabase(details) {
 
     const orderDetails = {
       customer: {
-        name: details.name,
-        email: details.email,
-        phone: details.phone,
-        address1: details.address1,
-        address2: details.address2,
-        city: details.city,
-        postcode: details.postcode
-      },
+  name: details.name,
+  email: details.email,
+  phone: details.phone,
+  whatsapp_opt_in: !!details.whatsappOptIn,
+  whatsapp_phone: details.whatsappPhone || "",
+  address1: details.address1,
+  address2: details.address2,
+  city: details.city,
+  postcode: details.postcode
+},
       delivery: {
         method: deliveryMethod,
         label: getDeliveryLabel(),
@@ -1109,7 +1138,10 @@ async function saveOrderToSupabase(details) {
     orderDetails.meta.delivery_label = getDeliveryLabel();
     orderDetails.meta.delivery_price = getDeliveryCost();
     orderDetails.meta.telegram_link_token = details.telegramToken || null;
-
+orderDetails.meta.whatsapp_opt_in = !!details.whatsappOptIn;
+orderDetails.meta.whatsapp_phone = details.whatsappPhone || "";
+orderDetails.meta.whatsapp_opt_in_at = details.whatsappOptIn ? new Date().toISOString() : null;
+    
     const { error: insertError } = await supabaseClient
       .from('Orders')
       .insert({
@@ -1227,8 +1259,10 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const btn = this.querySelector('button[type="submit"]');
 
   const name = document.getElementById('fullName').value.trim() || 'Customer';
-  const phone = document.getElementById('phone').value.trim();
-  const email = document.getElementById('email').value.trim();
+const phone = document.getElementById('phone').value.trim();
+const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
+const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
+const email = document.getElementById('email').value.trim();
   const address1 = document.getElementById('address1').value.trim();
   const address2 = document.getElementById('address2').value.trim();
   const city = document.getElementById('city').value.trim();
@@ -1268,16 +1302,18 @@ document.getElementById('addressForm').onsubmit = async function(e) {
     renderOrderSummary(total);
 
     const details = {
-      name,
-      phone,
-      email,
-      address1,
-      address2,
-      city,
-      postcode,
-      ref,
-      telegramToken
-    };
+  name,
+  phone,
+  email,
+  address1,
+  address2,
+  city,
+  postcode,
+  ref,
+  telegramToken,
+  whatsappOptIn,
+  whatsappPhone
+};
 
     await logReferralEventIfAny(ref, email, totalBeforeCredit);
     await saveOrderToSupabase(details);
