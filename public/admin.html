@@ -1496,7 +1496,62 @@ Once payment is received, we’ll get your order moved along.
 Thanks,
 Lumina Weight`;
     }
+// ────────────────────────────────────────────────
+// TELEGRAM ORDER UPDATES
+// ────────────────────────────────────────────────
+async function sendTelegramOrderUpdate(order, status, trackingNumber = "") {
+  try {
+    if (!order) return false;
 
+    const orderReference = order.reference || order.id;
+
+    if (!orderReference) {
+      console.warn("Telegram update skipped: no order reference.");
+      return false;
+    }
+
+    const res = await fetch(
+      `${SUPABASE_URL}/functions/v1/send-telegram-order-update`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          order_reference: orderReference,
+          status: status,
+          tracking_number: trackingNumber || ""
+        })
+      }
+    );
+
+    const text = await res.text();
+
+    if (!res.ok) {
+      console.warn("Telegram update failed:", text);
+      return false;
+    }
+
+    console.log("Telegram update result:", text);
+
+    if (text.includes("Telegram update sent")) {
+      showToast("Telegram update sent ✅", "success");
+      return true;
+    }
+
+    if (text.includes("No Telegram connection")) {
+      console.log("No Telegram connected for this order.");
+      return false;
+    }
+
+    return true;
+
+  } catch (err) {
+    console.error("Telegram update error:", err);
+    return false;
+  }
+}
     // ────────────────────────────────────────────────
     // ✅ Customer view (Nice-to-have #2)
     // ────────────────────────────────────────────────
@@ -2104,6 +2159,67 @@ Lumina Weight`;
       applyClientFilters();
     }
 
+    function statusSelectHtml(order) {
+  const current = String(order.status || "Pending");
+
+  const statuses = [
+    "Pending",
+    "Paid",
+    "Packed",
+    "Shipped",
+    "Cancelled"
+  ];
+
+  return `
+    <div class="items-box" style="margin-top:8px;">
+      <strong>🔄 Change order status</strong>
+      <div class="d-flex gap-2 flex-wrap">
+        <select id="status-${order.id}" class="form-select form-select-sm small-input">
+          ${statuses.map(s => `
+            <option value="${escapeHtml(s)}" ${current === s ? "selected" : ""}>
+              ${escapeHtml(s)}
+            </option>
+          `).join("")}
+        </select>
+
+        <button
+          class="btn btn-sm btn-outline-primary"
+          onclick="changeStatusFromSelect('${order.id}')"
+        >
+          Update status
+        </button>
+      </div>
+
+      <div class="small text-muted mt-2">
+        Use this if an order was marked incorrectly.
+      </div>
+    </div>
+  `;
+}
+
+async function changeStatusFromSelect(orderId) {
+  const select = document.getElementById(`status-${orderId}`);
+  const newStatus = String(select?.value || "").trim();
+
+  if (!newStatus) {
+    alert("Choose a status first.");
+    return;
+  }
+
+  const order = ordersCache[orderId];
+  const currentStatus = String(order?.status || "Pending");
+
+  if (newStatus === currentStatus) {
+    showToast("Status is already set to that.", "warning");
+    return;
+  }
+
+  const ok = confirm(`Change order ${order?.reference || orderId} from ${currentStatus} to ${newStatus}?`);
+  if (!ok) return;
+
+  await updateStatus(orderId, newStatus);
+}
+
     // ────────────────────────────────────────────────
     // STATUS / ACTIONS
     // ────────────────────────────────────────────────
@@ -2129,7 +2245,14 @@ Lumina Weight`;
       }
 
       ordersCache[id].status = value;
-      ordersCache[id].details = updatedDetails;
+ordersCache[id].details = updatedDetails;
+
+const notifyTelegram = confirm(`Send Telegram update for status "${value}"?`);
+
+if (notifyTelegram) {
+  const tracking = String(ordersCache[id]?.details?.meta?.tracking_number || "").trim();
+  await sendTelegramOrderUpdate(ordersCache[id], value, tracking);
+}
 
       // ✅ If admin manually sets to Paid, award credit too
       if(String(value || "").toLowerCase() === "paid"){
@@ -2269,10 +2392,13 @@ Lumina Weight`;
         }
 
         ordersCache[orderId].status = "Packed";
-        ordersCache[orderId].details = updatedDetails;
+ordersCache[orderId].details = updatedDetails;
 
-        showToast("Marked packed ✅", "success");
-        loadOrders();
+// Telegram update
+await sendTelegramOrderUpdate(ordersCache[orderId], "Packed", "");
+
+showToast("Marked packed ✅", "success");
+loadOrders();
       }catch(e){
         console.error("markPackedById failed", e);
         alert("Packed update failed — check console.");
@@ -2468,10 +2594,13 @@ Lumina Weight`;
         if (error) { console.error(error); alert("Status update failed — check Supabase policies."); return; }
 
         ordersCache[orderId].status = "Shipped";
-        ordersCache[orderId].details = updatedDetails;
+ordersCache[orderId].details = updatedDetails;
 
-        showToast("Shipped ✅", "success");
-        loadOrders();
+// Telegram update
+await sendTelegramOrderUpdate(ordersCache[orderId], "Shipped", trackingClean);
+
+showToast("Shipped ✅", "success");
+loadOrders();
       } catch (e) {
         console.error("Shipped flow failed", e);
         alert("Shipped flow failed — check console.");
@@ -2639,9 +2768,12 @@ Lumina Weight`;
         }
 
         ordersCache[orderId].status = "Paid";
-        ordersCache[orderId].details = updatedDetails;
+ordersCache[orderId].details = updatedDetails;
 
-        // award credit (idempotent)
+// Telegram update
+await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
+
+// award credit (idempotent)
         try{
           await awardCreditForPaidOrder(orderId);
           const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
@@ -3203,6 +3335,8 @@ Lumina Weight`;
                       </div>
                     </div>
 
+                    ${statusSelectHtml(order)}
+
                     <div class="items-box" style="margin-top:8px;">
                       <strong>📝 Admin notes</strong>
                       <textarea id="note-${order.id}" class="form-control note-area"
@@ -3602,6 +3736,7 @@ Lumina Weight`;
     window.saveTrackingFromInput = saveTrackingFromInput;
 
     window.updateStatus = updateStatus;
+    window.changeStatusFromSelect = changeStatusFromSelect;
 
     window.sendShippedEmailById = sendShippedEmailById;
     window.sendPayBefore3pmById = sendPayBefore3pmById;
@@ -3621,6 +3756,7 @@ Lumina Weight`;
     window.setAdminView = setAdminView;
     window.toggleOrderExpanded = toggleOrderExpanded;
     window.sendDigitalGuideById = sendDigitalGuideById;
+    window.sendTelegramOrderUpdate = sendTelegramOrderUpdate;
 
     // go
     initAdminView();
