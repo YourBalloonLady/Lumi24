@@ -1265,11 +1265,19 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       telegramToken
     };
 
-    await logReferralEventIfAny(ref, email, totalBeforeCredit);
-    await saveOrderToSupabase(details);
-    await saveTelegramNotificationLink(details, telegramToken);
-    await deductStock(cart);
+    try {
+  await logReferralEventIfAny(ref, email, totalBeforeCredit);
+} catch (refErr) {
+  console.warn('Referral logging failed, continuing checkout:', refErr);
+}
 
+await saveOrderToSupabase(details);
+
+try {
+  await deductStock(cart);
+} catch (stockErr) {
+  console.warn('Stock deduction failed, continuing checkout:', stockErr);
+}
     const emailResults = await Promise.allSettled([
       sendAdminEmail(details),
       sendCustomerEmail(details)
@@ -1315,9 +1323,17 @@ document.getElementById('addressForm').onsubmit = async function(e) {
     }
 
   } catch (err) {
-    console.error('Checkout flow error', err);
-    checkoutStatus.textContent = 'There was a problem handling your order. Please try again.';
-    checkoutStatus.className = 'small text-danger mt-2';
+  console.error('Checkout flow error', err);
+
+  const realMessage =
+    err?.message ||
+    err?.details ||
+    err?.hint ||
+    JSON.stringify(err);
+
+  checkoutStatus.textContent = `Checkout error: ${realMessage}`;
+  checkoutStatus.className = 'small text-danger mt-2';
+}
   } finally {
     btn.disabled = false;
     btn.textContent = 'Confirm order → Payment details';
