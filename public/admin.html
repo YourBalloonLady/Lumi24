@@ -3136,80 +3136,79 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
     }
 
     function renderPackingCards(orderIds){
-      if(!Array.isArray(orderIds) || !orderIds.length){
-        ordersEl.innerHTML = `<div class="alert alert-light border text-muted">No orders to show.</div>`;
-        return;
-      }
+  if(!Array.isArray(orderIds) || !orderIds.length){
+    ordersEl.innerHTML = `<div class="alert alert-light border text-muted">No orders to show.</div>`;
+    return;
+  }
 
-      ordersEl.innerHTML = orderIds.map(id => {
-        const order = ordersCache[id];
-        if(!order) return "";
+  ordersEl.innerHTML = orderIds.map(id => {
+    const order = ordersCache[id];
+    if(!order) return "";
 
-        const c = getCustomer(order);
-        const ref = order.reference || (order.id ? order.id.slice(0, 8) : "No ref");
-        const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
-        const total = Number(order.total_amount || 0).toFixed(2);
-        const items = buildItemsText(order);
-        const address = buildAddressText(order) || "No address recorded.";
-return `
-  <div class="packing-card">
-    <div class="packing-head">
-      <div>
-        <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
-        <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
-      </div>
+    const c = getCustomer(order);
+    const ref = order.reference || (order.id ? order.id.slice(0, 8) : "No ref");
+    const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
+    const total = Number(order.total_amount || 0).toFixed(2);
+    const items = buildItemsText(order);
+    const address = buildAddressText(order) || "No address recorded.";
 
-      <div class="text-end">
-        ${badge(order.status)}
-
-        <div class="mt-1">
-          ${telegramStatusBadge(order)}
-        </div>
-
-        <div class="mt-1">
-          ${whatsappStatusBadge(order)}
-        </div>
-
-        <div class="fw-bold mt-1">£${total}</div>
-      </div>
-    </div>
-`;
-
-            
-
-            <div class="packing-items">
-              <strong>Items</strong>
-              ${escapeHtml(items)}
-            </div>
-
-            <div class="packing-address">
-              <strong>Address</strong>
-              ${escapeHtml(address)}
-              ${c.phone ? `\n📞 ${escapeHtml(c.phone)}` : ""}
-            </div>
-
-            <div class="packing-actions">
-              <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
-<button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
-<button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
-<button class="btn btn-outline-success btn-sm" onclick="sendDigitalGuideById('${order.id}')">📄 Guide</button>
-<button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
-            </div>
-
-            <div id="packing-more-${order.id}" style="display:none; margin-top:10px;">
-              ${buildItemsHtml(order)}
-              ${buildAddressHtml(order)}
-              <div class="mini-actions">
-                <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy Address</button>
-                <button class="btn btn-sm btn-outline-dark" onclick="openCustomerView('${escapeHtml(getOrderEmail(order))}')">👤 Customer</button>
-                <button class="btn btn-sm btn-outline-success" onclick="markPaidAndSendById('${order.id}')">💷 Mark Paid</button>
-                <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
-              </div>
-            </div>
+    return `
+      <div class="packing-card">
+        <div class="packing-head">
+          <div>
+            <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
+            <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
           </div>
-        `;
-      }).join("");
-    }
+
+          <div class="text-end">
+            ${badge(order.status)}
+
+            <div class="mt-1">
+              ${telegramStatusBadge(order)}
+            </div>
+
+            <div class="mt-1">
+              ${whatsappStatusBadge(order)}
+            </div>
+
+            <div class="fw-bold mt-1">£${total}</div>
+          </div>
+        </div>
+
+        <div class="packing-items">
+          <strong>Items</strong>
+          ${escapeHtml(items)}
+        </div>
+
+        <div class="packing-address">
+          <strong>Address</strong>
+          ${escapeHtml(address)}
+          ${c.phone ? `\n📞 ${escapeHtml(c.phone)}` : ""}
+        </div>
+
+        <div class="packing-actions">
+          <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
+          <button class="btn btn-secondary btn-sm" onclick="markPackedById('${order.id}')">✅ Packed</button>
+          <button class="btn btn-primary btn-sm" onclick="sendShippedEmailById('${order.id}')">📦 Shipped</button>
+          <button class="btn btn-outline-success btn-sm" onclick="sendDigitalGuideById('${order.id}')">📄 Guide</button>
+          <button class="btn btn-outline-dark btn-sm" onclick="toggleOrderExpanded('${order.id}')">More</button>
+        </div>
+
+        <div id="packing-more-${order.id}" style="display:none; margin-top:10px;">
+          ${buildItemsHtml(order)}
+          ${buildAddressHtml(order)}
+
+          <div class="mini-actions">
+            <button class="btn btn-sm btn-outline-dark" onclick="copyAddressById('${order.id}')">📋 Copy Address</button>
+            <button class="btn btn-sm btn-outline-dark" onclick="openCustomerView('${escapeHtml(getOrderEmail(order))}')">👤 Customer</button>
+            <button class="btn btn-sm btn-outline-success" onclick="markPaidAndSendById('${order.id}')">💷 Mark Paid</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="cancelAndRestockById('${order.id}')">↩️ Cancel + Restock</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
     
     function renderOrdersFromCache(){
       const orders = Object.values(ordersCache || {}).sort((a,b)=> new Date(b.created_at) - new Date(a.created_at));
