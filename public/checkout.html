@@ -204,6 +204,13 @@
 
               <div class="col-md-6">
                 <input type="tel" class="form-control" id="phone" placeholder="Phone number" required>
+
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="whatsappOptIn">
+                  <label class="form-check-label small text-muted" for="whatsappOptIn">
+                    Send me WhatsApp updates about this order
+                  </label>
+                </div>
               </div>
 
               <div class="col-12">
@@ -430,7 +437,7 @@
 emailjs.init('uZOuTrBdIAc6AmKjo');
 
 const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: {
@@ -619,6 +626,22 @@ function saveCartToStorage() {
   try {
     localStorage.setItem('cart', JSON.stringify(cart));
   } catch (e) {}
+}
+
+function cleanWhatsAppPhone(phone) {
+  let p = String(phone || "").trim();
+
+  p = p.replace(/[^\d+]/g, "");
+
+  if (p.startsWith("07")) {
+    p = "+44" + p.slice(1);
+  }
+
+  if (p.startsWith("44") && !p.startsWith("+44")) {
+    p = "+" + p;
+  }
+
+  return p;
 }
 
 function generateTelegramToken(orderReference) {
@@ -1047,6 +1070,8 @@ async function saveOrderToSupabase(details) {
         name: details.name,
         email: details.email,
         phone: details.phone,
+        whatsapp_opt_in: !!details.whatsappOptIn,
+        whatsapp_phone: details.whatsappPhone || "",
         address1: details.address1,
         address2: details.address2,
         city: details.city,
@@ -1075,7 +1100,10 @@ async function saveOrderToSupabase(details) {
         delivery_method: deliveryMethod,
         delivery_label: getDeliveryLabel(),
         delivery_price: getDeliveryCost(),
-        telegram_link_token: details.telegramToken || null
+        telegram_link_token: details.telegramToken || null,
+        whatsapp_opt_in: !!details.whatsappOptIn,
+        whatsapp_phone: details.whatsappPhone || "",
+        whatsapp_opt_in_at: details.whatsappOptIn ? new Date().toISOString() : null
       }
     };
 
@@ -1199,6 +1227,8 @@ document.getElementById('addressForm').onsubmit = async function(e) {
 
   const name = document.getElementById('fullName').value.trim() || 'Customer';
   const phone = document.getElementById('phone').value.trim();
+  const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
+  const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
   const email = document.getElementById('email').value.trim();
   const address1 = document.getElementById('address1').value.trim();
   const address2 = document.getElementById('address2').value.trim();
@@ -1209,6 +1239,12 @@ document.getElementById('addressForm').onsubmit = async function(e) {
 
   if (!name || !phone || !email || !address1 || !city || !postcode || !cart.length) {
     checkoutStatus.textContent = 'Please complete your name, phone, email, address and cart.';
+    checkoutStatus.className = 'small text-danger mt-2';
+    return;
+  }
+
+  if (whatsappOptIn && !whatsappPhone) {
+    checkoutStatus.textContent = 'Please enter a valid phone number for WhatsApp updates.';
     checkoutStatus.className = 'small text-danger mt-2';
     return;
   }
@@ -1247,7 +1283,9 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       city,
       postcode,
       ref,
-      telegramToken
+      telegramToken,
+      whatsappOptIn,
+      whatsappPhone
     };
 
     await logReferralEventIfAny(ref, email, totalBeforeCredit);
