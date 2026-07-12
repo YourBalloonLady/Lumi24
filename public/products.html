@@ -1263,7 +1263,7 @@
         return { key: 'cognitive', label: 'Cognitive Research', class: 'cat-cognitive', icon: 'fa-solid fa-brain' };
       }
 
-      if (haystack.includes('nad') || haystack.includes('nad+') || haystack.includes('ss-31') || haystack.includes('epithalon') || haystack.includes('mots-c') || haystack.includes('mots c') || haystack.includes('mots')) {
+      if (haystack.includes('nad') || haystack.includes('nad+') || haystack.includes('ss-31') || haystack.includes('slu-pp-332') || haystack.includes('epithalon') || haystack.includes('mots-c') || haystack.includes('mots c') || haystack.includes('mots')) {
         return { key: 'cellular-energy', label: 'Cellular Energy', class: 'cat-energy', icon: 'fa-solid fa-bolt' };
       }
 
@@ -1274,6 +1274,7 @@
       if (
         
         haystack.includes('cjc') ||
+        haystack.includes('slu-pp-332') ||
         haystack.includes('tesamorelin') ||
         haystack.includes('tesa') ||
         haystack.includes('bpc stack') ||
