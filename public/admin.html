@@ -369,7 +369,67 @@
     grid-template-columns:repeat(5, 1fr);
   }
 }
+/* ────────────────────────────────────────────────
+   INVENTORY
+   ──────────────────────────────────────────────── */
 
+.inventory-table {
+  min-width: 760px;
+}
+
+.inventory-table th {
+  color: #475569;
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.inventory-product-name {
+  color: #0f172a;
+  font-size: .92rem;
+  font-weight: 800;
+}
+
+.inventory-product-meta {
+  margin-top: 3px;
+  color: #64748b;
+  font-size: .76rem;
+}
+
+.inventory-stock-input {
+  max-width: 110px;
+  min-height: 42px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.inventory-save-button {
+  min-width: 118px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.inventory-row-low {
+  background: #fffaf0;
+}
+
+.inventory-row-out {
+  background: #fff5f5;
+}
+
+.inventory-unsaved {
+  border-color: #f59e0b !important;
+  background: #fffbeb !important;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, .12);
+}
+
+@media (max-width: 767.98px) {
+  #inventory-section {
+    padding: 14px;
+  }
+}
   
 
 </style>
@@ -405,6 +465,7 @@
       <a href="index.html#home" class="d-block mb-2">Store Home</a>
       <a href="analytics.html" class="d-block mb-2">Analytics</a>
       <a href="products.html" class="d-block mb-2">Products</a>
+      <a href="#inventory-section" class="d-block mb-2">Inventory</a>
       <a href="account.html" class="d-block mb-2">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
     </div>
@@ -417,6 +478,7 @@
       <a href="index.html#home">Store Home</a>
       <a href="analytics.html">Analytics</a>
       <a href="products.html">Products</a>
+      <a href="#inventory-section">Inventory</a>
       <a href="account.html">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
       <hr style="border-color:rgba(255,255,255,.12);">
@@ -537,7 +599,148 @@
   <div id="orders-list" class="mt-3"></div>
 </div>
 
-        
+    <!-- INVENTORY -->
+<div
+  class="section-card mb-4"
+  id="inventory-section"
+>
+  <div
+    class="d-flex justify-content-between align-items-start flex-wrap gap-3"
+  >
+    <div>
+      <h3 class="mb-1">
+        Inventory
+      </h3>
+
+      <p class="text-muted mb-0">
+        Stock shown here is pulled directly from Supabase.
+        Changes are saved to the Products table.
+      </p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <span
+        class="badge rounded-pill text-bg-dark px-3 py-2"
+        id="inventory-total-badge"
+      >
+        0 products
+      </span>
+
+      <span
+        class="badge rounded-pill text-bg-warning px-3 py-2"
+        id="inventory-low-badge"
+      >
+        0 low stock
+      </span>
+
+      <span
+        class="badge rounded-pill text-bg-danger px-3 py-2"
+        id="inventory-out-badge"
+      >
+        0 out of stock
+      </span>
+    </div>
+  </div>
+
+  <div class="row g-2 mt-3">
+    <div class="col-lg-6">
+      <div class="input-group">
+        <span class="input-group-text">
+          🔎
+        </span>
+
+        <input
+          type="search"
+          class="form-control"
+          id="inventory-search"
+          placeholder="Search product name..."
+        >
+
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          id="inventory-search-clear"
+        >
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <select
+        class="form-select"
+        id="inventory-filter"
+      >
+        <option value="all">
+          All products
+        </option>
+
+        <option value="low">
+          Low stock
+        </option>
+
+        <option value="out">
+          Out of stock
+        </option>
+
+        <option value="available">
+          In stock
+        </option>
+      </select>
+    </div>
+
+    <div class="col-lg-3">
+      <button
+        type="button"
+        class="btn btn-dark w-100"
+        id="inventory-refresh-button"
+      >
+        🔄 Refresh inventory
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="alert alert-light border mt-3 mb-0"
+    id="inventory-status"
+  >
+    Loading inventory…
+  </div>
+
+  <div
+    class="table-responsive mt-3"
+  >
+    <table
+      class="table align-middle inventory-table"
+    >
+      <thead>
+        <tr>
+          <th>
+            Product
+          </th>
+
+          <th style="width:130px;">
+            Price
+          </th>
+
+          <th style="width:150px;">
+            Current stock
+          </th>
+
+          <th style="width:140px;">
+            Status
+          </th>
+
+          <th style="width:150px;">
+            Action
+          </th>
+        </tr>
+      </thead>
+
+      <tbody id="inventory-list"></tbody>
+    </table>
+  </div>
+</div>    
 
         <!-- REVIEWS -->
         <div class="section-card">
@@ -909,9 +1112,38 @@ async function sendDigitalGuideById(orderId) {
     const quickStatsEl  = document.getElementById("quick-stats");
     const searchInput   = document.getElementById("order-search");
     const pageIndicator = document.getElementById("page-indicator");
+    const inventoryListEl =
+  document.getElementById("inventory-list");
+
+const inventoryStatusEl =
+  document.getElementById("inventory-status");
+
+const inventorySearchInput =
+  document.getElementById("inventory-search");
+
+const inventoryFilterSelect =
+  document.getElementById("inventory-filter");
+
+const inventoryRefreshButton =
+  document.getElementById("inventory-refresh-button");
+
+const inventorySearchClearButton =
+  document.getElementById("inventory-search-clear");
+
+const inventoryTotalBadge =
+  document.getElementById("inventory-total-badge");
+
+const inventoryLowBadge =
+  document.getElementById("inventory-low-badge");
+
+const inventoryOutBadge =
+  document.getElementById("inventory-out-badge");
 
     // Cache orders so buttons can reference them
     const ordersCache = {};
+    const productsCache = {};
+
+const LOW_STOCK_THRESHOLD = 5;
 
     // paging + filtering state
     let PAGE_SIZE = 25;
@@ -2984,8 +3216,14 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
           return;
         }
 
-        alert("Order cancelled + stock restored + email sent ✅");
-        loadOrders();
+        alert(
+  "Order cancelled + stock restored + email sent ✅"
+);
+
+await Promise.all([
+  loadOrders(),
+  loadInventory()
+]);
 
       }catch(e){
         console.error("Cancel+Restock failed", e);
@@ -3634,6 +3872,592 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
     }
 
     // ────────────────────────────────────────────────
+// INVENTORY
+// ────────────────────────────────────────────────
+
+function getProductStock(product) {
+  const value =
+    Number(product?.stock || 0);
+
+  return Number.isFinite(value)
+    ? Math.max(0, Math.floor(value))
+    : 0;
+}
+
+function getProductPrice(product) {
+  const possiblePrices = [
+    product?.price,
+    product?.sale_price,
+    product?.price_vial,
+    product?.base_price
+  ];
+
+  const found =
+    possiblePrices.find((value) => {
+      return (
+        value !== null &&
+        value !== undefined &&
+        value !== "" &&
+        Number.isFinite(Number(value))
+      );
+    });
+
+  return found !== undefined
+    ? Number(found)
+    : null;
+}
+
+function getProductStrength(product) {
+  return String(
+    product?.strength ||
+    product?.mg ||
+    product?.size ||
+    product?.variant ||
+    ""
+  ).trim();
+}
+
+function inventoryStatusBadge(product) {
+  const stock =
+    getProductStock(product);
+
+  if (stock <= 0) {
+    return `
+      <span class="badge text-bg-danger">
+        Out of stock
+      </span>
+    `;
+  }
+
+  if (stock <= LOW_STOCK_THRESHOLD) {
+    return `
+      <span class="badge text-bg-warning">
+        Low stock
+      </span>
+    `;
+  }
+
+  return `
+    <span class="badge text-bg-success">
+      In stock
+    </span>
+  `;
+}
+
+function getFilteredProducts() {
+  const query =
+    String(
+      inventorySearchInput?.value ||
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  const filter =
+    inventoryFilterSelect?.value ||
+    "all";
+
+  let products =
+    Object.values(
+      productsCache
+    );
+
+  if (query) {
+    products =
+      products.filter((product) => {
+        const searchable = [
+          product.name,
+          product.strength,
+          product.category,
+          product.format,
+          product.id
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return searchable.includes(
+          query
+        );
+      });
+  }
+
+  if (filter === "out") {
+    products =
+      products.filter((product) => {
+        return getProductStock(product) <= 0;
+      });
+  }
+
+  if (filter === "low") {
+    products =
+      products.filter((product) => {
+        const stock =
+          getProductStock(product);
+
+        return (
+          stock > 0 &&
+          stock <= LOW_STOCK_THRESHOLD
+        );
+      });
+  }
+
+  if (filter === "available") {
+    products =
+      products.filter((product) => {
+        return getProductStock(product) > 0;
+      });
+  }
+
+  products.sort((a, b) => {
+    const stockDifference =
+      getProductStock(a) -
+      getProductStock(b);
+
+    if (stockDifference !== 0) {
+      return stockDifference;
+    }
+
+    return String(a.name || "")
+      .localeCompare(
+        String(b.name || "")
+      );
+  });
+
+  return products;
+}
+
+function renderInventoryStats() {
+  const products =
+    Object.values(
+      productsCache
+    );
+
+  const lowStockCount =
+    products.filter((product) => {
+      const stock =
+        getProductStock(product);
+
+      return (
+        stock > 0 &&
+        stock <= LOW_STOCK_THRESHOLD
+      );
+    }).length;
+
+  const outOfStockCount =
+    products.filter((product) => {
+      return getProductStock(product) <= 0;
+    }).length;
+
+  if (inventoryTotalBadge) {
+    inventoryTotalBadge.textContent =
+      `${products.length} product${
+        products.length === 1
+          ? ""
+          : "s"
+      }`;
+  }
+
+  if (inventoryLowBadge) {
+    inventoryLowBadge.textContent =
+      `${lowStockCount} low stock`;
+  }
+
+  if (inventoryOutBadge) {
+    inventoryOutBadge.textContent =
+      `${outOfStockCount} out of stock`;
+  }
+}
+
+function renderInventory() {
+  if (!inventoryListEl) {
+    return;
+  }
+
+  const products =
+    getFilteredProducts();
+
+  renderInventoryStats();
+
+  if (!products.length) {
+    inventoryListEl.innerHTML = `
+      <tr>
+        <td
+          colspan="5"
+          class="text-center text-muted py-5"
+        >
+          No matching products found.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  inventoryListEl.innerHTML =
+    products
+      .map((product) => {
+        const stock =
+          getProductStock(product);
+
+        const price =
+          getProductPrice(product);
+
+        const strength =
+          getProductStrength(product);
+
+        const rowClass =
+          stock <= 0
+            ? "inventory-row-out"
+            : stock <= LOW_STOCK_THRESHOLD
+              ? "inventory-row-low"
+              : "";
+
+        return `
+          <tr class="${rowClass}">
+
+            <td>
+
+              <div class="inventory-product-name">
+                ${escapeHtml(
+                  product.name ||
+                  "Unnamed product"
+                )}
+              </div>
+
+              <div class="inventory-product-meta">
+
+                ${
+                  strength
+                    ? escapeHtml(strength)
+                    : "No strength recorded"
+                }
+
+                ${
+                  product.category
+                    ? ` • ${escapeHtml(product.category)}`
+                    : ""
+                }
+
+              </div>
+
+            </td>
+
+            <td>
+
+              ${
+                price === null
+                  ? `<span class="text-muted">—</span>`
+                  : `<strong>£${price.toFixed(2)}</strong>`
+              }
+
+            </td>
+
+            <td>
+
+              <input
+                type="number"
+                class="form-control inventory-stock-input"
+                id="inventory-stock-${escapeHtml(product.id)}"
+                value="${stock}"
+                min="0"
+                step="1"
+                data-original-stock="${stock}"
+                oninput="handleInventoryStockInput('${escapeHtml(product.id)}')"
+              >
+
+            </td>
+
+            <td>
+              ${inventoryStatusBadge(product)}
+            </td>
+
+            <td>
+
+              <button
+                type="button"
+                class="btn btn-dark btn-sm inventory-save-button"
+                id="inventory-save-${escapeHtml(product.id)}"
+                onclick="saveInventoryStock('${escapeHtml(product.id)}')"
+              >
+                Save stock
+              </button>
+
+            </td>
+
+          </tr>
+        `;
+      })
+      .join("");
+}
+
+async function loadInventory(
+  showBusyOverlay = false
+) {
+  if (!inventoryStatusEl) {
+    return;
+  }
+
+  inventoryStatusEl.className =
+    "alert alert-light border mt-3 mb-0";
+
+  inventoryStatusEl.textContent =
+    "Loading inventory…";
+
+  if (inventoryRefreshButton) {
+    inventoryRefreshButton.disabled =
+      true;
+
+    inventoryRefreshButton.innerHTML = `
+      <span
+        class="spinner-border spinner-border-sm me-1"
+        aria-hidden="true"
+      ></span>
+      Refreshing
+    `;
+  }
+
+  if (showBusyOverlay) {
+    setBusy(
+      true,
+      "Loading inventory…",
+      "Reading Products from Supabase"
+    );
+  }
+
+  try {
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("Products")
+      .select("*")
+      .order(
+        "name",
+        {
+          ascending: true
+        }
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    for (
+      const key of Object.keys(
+        productsCache
+      )
+    ) {
+      delete productsCache[key];
+    }
+
+    for (
+      const product of data || []
+    ) {
+      productsCache[product.id] =
+        product;
+    }
+
+    inventoryStatusEl.className =
+      "alert alert-success border mt-3 mb-0";
+
+    inventoryStatusEl.textContent =
+      `${Object.keys(productsCache).length} products loaded from Supabase.`;
+
+    renderInventory();
+  } catch (error) {
+    console.error(
+      "Inventory load failed:",
+      error
+    );
+
+    inventoryStatusEl.className =
+      "alert alert-danger border mt-3 mb-0";
+
+    inventoryStatusEl.textContent =
+      error?.message ||
+      "Inventory could not be loaded.";
+
+    if (inventoryListEl) {
+      inventoryListEl.innerHTML = `
+        <tr>
+          <td
+            colspan="5"
+            class="text-center text-danger py-5"
+          >
+            Inventory could not be loaded.
+          </td>
+        </tr>
+      `;
+    }
+  } finally {
+    if (inventoryRefreshButton) {
+      inventoryRefreshButton.disabled =
+        false;
+
+      inventoryRefreshButton.innerHTML =
+        "🔄 Refresh inventory";
+    }
+
+    if (showBusyOverlay) {
+      setBusy(false);
+    }
+  }
+}
+
+function handleInventoryStockInput(
+  productId
+) {
+  const input =
+    document.getElementById(
+      `inventory-stock-${productId}`
+    );
+
+  const button =
+    document.getElementById(
+      `inventory-save-${productId}`
+    );
+
+  if (!input || !button) {
+    return;
+  }
+
+  const originalStock =
+    Number(
+      input.dataset.originalStock ||
+      0
+    );
+
+  const currentStock =
+    Number(input.value);
+
+  const hasChanged =
+    currentStock !==
+    originalStock;
+
+  input.classList.toggle(
+    "inventory-unsaved",
+    hasChanged
+  );
+
+  button.classList.toggle(
+    "btn-warning",
+    hasChanged
+  );
+
+  button.classList.toggle(
+    "btn-dark",
+    !hasChanged
+  );
+
+  button.textContent =
+    hasChanged
+      ? "Save change"
+      : "Save stock";
+}
+
+async function saveInventoryStock(
+  productId
+) {
+  const product =
+    productsCache[productId];
+
+  const input =
+    document.getElementById(
+      `inventory-stock-${productId}`
+    );
+
+  const button =
+    document.getElementById(
+      `inventory-save-${productId}`
+    );
+
+  if (
+    !product ||
+    !input ||
+    !button
+  ) {
+    return;
+  }
+
+  const newStock =
+    Number(input.value);
+
+  if (
+    !Number.isInteger(newStock) ||
+    newStock < 0
+  ) {
+    alert(
+      "Stock must be a whole number of zero or more."
+    );
+
+    input.focus();
+
+    return;
+  }
+
+  button.disabled =
+    true;
+
+  button.innerHTML = `
+    <span
+      class="spinner-border spinner-border-sm me-1"
+      aria-hidden="true"
+    ></span>
+    Saving
+  `;
+
+  try {
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("Products")
+      .update({
+        stock:
+          newStock
+      })
+      .eq(
+        "id",
+        productId
+      )
+      .select()
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    productsCache[productId] =
+      data;
+
+    showToast(
+      `${product.name} stock updated to ${newStock} ✅`,
+      "success"
+    );
+
+    renderInventory();
+  } catch (error) {
+    console.error(
+      "Inventory update failed:",
+      error
+    );
+
+    showToast(
+      error?.message ||
+      "Stock update failed.",
+      "danger"
+    );
+
+    button.disabled =
+      false;
+
+    button.textContent =
+      "Save stock";
+  }
+}
+
+    // ────────────────────────────────────────────────
     // REVIEWS
     // ────────────────────────────────────────────────
     async function loadPendingReviews() {
@@ -3721,8 +4545,11 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
       statusEl.textContent = "Admin verified ✅";
       await cacheAdminEmail();
       await refreshStatusCounts();
-      await loadOrders();
-      await loadPendingReviews();
+      await Promise.all([
+  loadOrders(),
+  loadPendingReviews(),
+  loadInventory()
+]);
     }
 
     async function doLogout() {
@@ -3791,6 +4618,46 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
     });
     resetInactivityTimer();
 
+    if (inventorySearchInput) {
+  inventorySearchInput.addEventListener(
+    "input",
+    renderInventory
+  );
+}
+
+if (inventoryFilterSelect) {
+  inventoryFilterSelect.addEventListener(
+    "change",
+    renderInventory
+  );
+}
+
+if (inventoryRefreshButton) {
+  inventoryRefreshButton.addEventListener(
+    "click",
+    () => {
+      loadInventory(true);
+    }
+  );
+}
+
+if (inventorySearchClearButton) {
+  inventorySearchClearButton.addEventListener(
+    "click",
+    () => {
+      inventorySearchInput.value =
+        "";
+
+      inventoryFilterSelect.value =
+        "all";
+
+      renderInventory();
+
+      inventorySearchInput.focus();
+    }
+  );
+}
+
     // ────────────────────────────────────────────────
     // EXPOSE (so onclick works)
     // ────────────────────────────────────────────────
@@ -3850,6 +4717,11 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
     window.sendTelegramOrderUpdate = sendTelegramOrderUpdate;
     window.telegramStatusBadge = telegramStatusBadge;
     window.whatsappStatusBadge = whatsappStatusBadge;
+    window.handleInventoryStockInput =
+  handleInventoryStockInput;
+
+window.saveInventoryStock =
+  saveInventoryStock;
 
     // go
     initAdminView();
