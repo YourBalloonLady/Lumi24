@@ -449,6 +449,245 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 
 const TELEGRAM_BOT_USERNAME = "LuminaUpdatesBot";
 
+  // ---------- SHOPPING CART TRACKING ----------
+const CART_TRACKING_KEY = 'lumina_cart_tracking_id';
+
+function createCartTrackingToken() {
+  if (
+    window.crypto &&
+    typeof window.crypto.randomUUID === 'function'
+  ) {
+    return window.crypto.randomUUID();
+  }
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    /[xy]/g,
+    character => {
+      const randomNumber = Math.random() * 16 | 0;
+      const value =
+        character === 'x'
+          ? randomNumber
+          : (randomNumber & 0x3) | 0x8;
+
+      return value.toString(16);
+    }
+  );
+}
+
+function getLuminaCartToken() {
+  let cartToken = localStorage.getItem(CART_TRACKING_KEY);
+
+  if (!cartToken) {
+    cartToken = createCartTrackingToken();
+    localStorage.setItem(CART_TRACKING_KEY, cartToken);
+  }
+
+  return cartToken;
+}
+
+let cartTrackingTimer = null;
+
+function scheduleCheckoutCartTracking() {
+  clearTimeout(cartTrackingTimer);
+
+  cartTrackingTimer = setTimeout(() => {
+    saveCheckoutCartToSupabase();
+  }, 700);
+}
+
+  let customerTrackingTimer = null;
+
+function scheduleCustomerTracking() {
+  clearTimeout(customerTrackingTimer);
+
+  customerTrackingTimer = setTimeout(() => {
+    updateTrackedCustomerDetails();
+  }, 900);
+}
+
+async function updateTrackedCustomerDetails() {
+  try {
+    const customerName =
+      document.getElementById('fullName')?.value.trim() || '';
+
+    const customerEmail =
+      document.getElementById('email')?.value.trim() || '';
+
+    const customerPhone =
+      document.getElementById('phone')?.value.trim() || '';
+
+    if (
+      !customerName &&
+      !customerEmail &&
+      !customerPhone
+    ) {
+      return;
+    }
+
+    const { error } = await supabaseClient.rpc(
+      'update_cart_customer',
+      {
+        p_cart_token: getLuminaCartToken(),
+        p_customer_name: customerName,
+        p_customer_email: customerEmail,
+        p_customer_phone: customerPhone
+      }
+    );
+
+    if (error) {
+      console.error(
+        'Customer checkout tracking failed:',
+        error
+      );
+    }
+  } catch (error) {
+    console.error(
+      'Customer tracking error:',
+      error
+    );
+  }
+}
+
+function setupCustomerTracking() {
+  [
+    'fullName',
+    'email',
+    'phone'
+  ].forEach(inputId => {
+    const input = document.getElementById(inputId);
+
+    if (input) {
+      input.addEventListener(
+        'input',
+        scheduleCustomerTracking
+      );
+    }
+  });
+}
+
+  async function markTrackedCartCompleted(orderReference) {
+  try {
+    const cartToken = localStorage.getItem(
+      CART_TRACKING_KEY
+    );
+
+    if (!cartToken) {
+      return;
+    }
+
+    const { error } = await supabaseClient.rpc(
+      'complete_shopping_cart',
+      {
+        p_cart_token: cartToken,
+        p_order_reference: orderReference
+      }
+    );
+
+    if (error) {
+      console.error(
+        'Could not mark tracked basket as completed:',
+        error
+      );
+
+      return;
+    }
+
+    localStorage.removeItem(CART_TRACKING_KEY);
+
+  } catch (error) {
+    console.error(
+      'Completed basket tracking error:',
+      error
+    );
+  }
+}
+
+async function saveCheckoutCartToSupabase() {
+  try {
+    if (!Array.isArray(cart) || cart.length === 0) {
+      return;
+    }
+
+    const trackingItems = cart.map(item => ({
+      id: String(item.id ?? ''),
+      name: String(item.name ?? 'Product'),
+      price: Number(item.price ?? 0),
+      quantity: Number(item.qty ?? 1),
+      image: item.image ? String(item.image) : null,
+      variant: item.variant ? String(item.variant) : null,
+      variantLabel: item.variant
+        ? getVariantLabel(item.variant)
+        : null,
+      penColour: item.penColour
+        ? String(item.penColour)
+        : null,
+      strength: item.strength
+        ? String(item.strength)
+        : null,
+      groupLabel: item.groupLabel
+        ? String(item.groupLabel)
+        : null,
+      penHeads: item.pen_heads
+        ? String(item.pen_heads)
+        : null,
+      syringes: item.syringes
+        ? String(item.syringes)
+        : null,
+      semaglutideForm: item.sema_form
+        ? String(item.sema_form)
+        : null
+    }));
+
+    const subtotal = trackingItems.reduce(
+      (sum, item) =>
+        sum +
+        Number(item.price || 0) *
+        Number(item.quantity || 0),
+      0
+    );
+
+    const itemCount = trackingItems.reduce(
+      (sum, item) =>
+        sum + Number(item.quantity || 0),
+      0
+    );
+
+    const currentDeliveryCost = getDeliveryCost();
+    const discount = Number(discountApplied || 0);
+
+    const basketTotal = Math.max(
+      subtotal - discount + currentDeliveryCost,
+      0
+    );
+
+    const { error } = await supabaseClient.rpc(
+      'save_shopping_cart',
+      {
+        p_cart_token: getLuminaCartToken(),
+        p_items: trackingItems,
+        p_subtotal: subtotal,
+        p_discount: discount,
+        p_delivery_cost: currentDeliveryCost,
+        p_total: basketTotal,
+        p_item_count: itemCount,
+        p_current_page: window.location.pathname
+      }
+    );
+
+    if (error) {
+      console.error(
+        'Checkout basket tracking failed:',
+        error
+      );
+    }
+  } catch (error) {
+    console.error(
+      'Checkout basket tracking error:',
+      error
+    );
+  }
+}
+
 let cart = [];
 let total = 0;
 let discountApplied = 0;
@@ -471,6 +710,7 @@ function setDeliveryOption(value){
 
   updateDeliverySelectedUI();
   renderOrderSummary();
+  scheduleCheckoutCartTracking();
 }
 
 function getDeliveryCost() {
@@ -721,8 +961,9 @@ function setSemaForm(index, value){
     cart[index].pen_heads = "";
   }
 
-  saveCartToStorage();
+    saveCartToStorage();
   renderOrderSummary();
+  scheduleCheckoutCartTracking();
 }
 
 function setAccessory(index, field, value) {
@@ -738,8 +979,9 @@ function setAccessory(index, field, value) {
     cart[index].syringes = v;
   }
 
-  saveCartToStorage();
+    saveCartToStorage();
   renderOrderSummary();
+  scheduleCheckoutCartTracking();
 }
 
 function validateAccessories() {
@@ -1289,9 +1531,16 @@ document.getElementById('addressForm').onsubmit = async function(e) {
     };
 
     await logReferralEventIfAny(ref, email, totalBeforeCredit);
-    await saveOrderToSupabase(details);
-    await saveTelegramNotificationLink(details, telegramToken);
-    await deductStock(cart);
+await saveOrderToSupabase(details);
+
+/*
+  The order now definitely exists, so mark its tracked
+  shopping basket as successfully completed.
+*/
+await markTrackedCartCompleted(ref);
+
+await saveTelegramNotificationLink(details, telegramToken);
+await deductStock(cart);
 
     const emailResults = await Promise.allSettled([
       sendAdminEmail(details),
@@ -1382,6 +1631,17 @@ function backToShop() {
   await syncCartPricesFromSupabase();
 
   renderOrderSummary();
+
+  /*
+    Connect the form inputs to customer tracking.
+  */
+  setupCustomerTracking();
+
+  /*
+    Save the basket again as a checkout basket,
+    including current prices and delivery.
+  */
+  scheduleCheckoutCartTracking();
 })();
 </script>
 
