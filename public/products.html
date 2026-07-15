@@ -1053,19 +1053,169 @@
 
   <script>
     // ---------- CART ----------
-    let cart = [];
-    const savedCart = localStorage.getItem('cart');
-    if (savedCart) {
-      try {
-        cart = JSON.parse(savedCart);
-      } catch (e) {
-        cart = [];
-      }
+let cart = [];
+
+const savedCart = localStorage.getItem('cart');
+
+if (savedCart) {
+  try {
+    cart = JSON.parse(savedCart);
+
+    if (!Array.isArray(cart)) {
+      cart = [];
+    }
+  } catch (e) {
+    console.error('Could not read saved cart:', e);
+    cart = [];
+  }
+}
+
+// ---------- BASKET TRACKING ----------
+const CART_TRACKING_KEY = 'lumina_cart_tracking_id';
+
+function createCartTrackingToken() {
+  if (
+    window.crypto &&
+    typeof window.crypto.randomUUID === 'function'
+  ) {
+    return window.crypto.randomUUID();
+  }
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
+    /[xy]/g,
+    function (character) {
+      const randomNumber = Math.random() * 16 | 0;
+      const value =
+        character === 'x'
+          ? randomNumber
+          : (randomNumber & 0x3) | 0x8;
+
+      return value.toString(16);
+    }
+  );
+}
+
+function getLuminaCartToken() {
+  let cartToken = localStorage.getItem(
+    CART_TRACKING_KEY
+  );
+
+  if (!cartToken) {
+    cartToken = createCartTrackingToken();
+
+    localStorage.setItem(
+      CART_TRACKING_KEY,
+      cartToken
+    );
+  }
+
+  return cartToken;
+}
+
+let cartTrackingTimer = null;
+
+function scheduleCartTracking() {
+  clearTimeout(cartTrackingTimer);
+
+  cartTrackingTimer = setTimeout(() => {
+    saveCurrentCartToSupabase();
+  }, 700);
+}
+
+async function saveCurrentCartToSupabase() {
+  try {
+    if (!Array.isArray(cart) || cart.length === 0) {
+      return;
     }
 
-    function saveCart() {
-      localStorage.setItem('cart', JSON.stringify(cart));
+    const trackingItems = cart.map(item => ({
+      id: String(item.id ?? ''),
+      name: String(item.name ?? 'Product'),
+      price: Number(item.price ?? 0),
+      quantity: Number(item.qty ?? 1),
+      image: item.image
+        ? String(item.image)
+        : null,
+      variant: item.variant
+        ? String(item.variant)
+        : null,
+      penColour: item.penColour
+        ? String(item.penColour)
+        : null,
+      strength: item.strength
+        ? String(item.strength)
+        : null,
+      groupLabel: item.groupLabel
+        ? String(item.groupLabel)
+        : null
+    }));
+
+    const subtotal = trackingItems.reduce(
+      (sum, item) => {
+        return (
+          sum +
+          Number(item.price || 0) *
+          Number(item.quantity || 0)
+        );
+      },
+      0
+    );
+
+    const itemCount = trackingItems.reduce(
+      (sum, item) => {
+        return sum + Number(item.quantity || 0);
+      },
+      0
+    );
+
+    /*
+      Products page does not yet calculate delivery
+      or discounts, so these remain zero here.
+      Checkout can update the final figures later.
+    */
+    const discount = 0;
+    const deliveryCost = 0;
+    const total = Math.max(
+      subtotal - discount + deliveryCost,
+      0
+    );
+
+    const { error } = await supabaseClient.rpc(
+      'save_shopping_cart',
+      {
+        p_cart_token: getLuminaCartToken(),
+        p_items: trackingItems,
+        p_subtotal: subtotal,
+        p_discount: discount,
+        p_delivery_cost: deliveryCost,
+        p_total: total,
+        p_item_count: itemCount,
+        p_current_page: window.location.pathname
+      }
+    );
+
+    if (error) {
+      console.error(
+        'Basket tracking failed:',
+        error
+      );
     }
+  } catch (error) {
+    console.error(
+      'Basket tracking error:',
+      error
+    );
+  }
+}
+
+function saveCart() {
+  localStorage.setItem(
+    'cart',
+    JSON.stringify(cart)
+  );
+
+  scheduleCartTracking();
+}
 
     function getVariantLabel(variant) {
       return variant === 'cartridge-only' ? 'Cartridge Only' : 'Full Kit (Pen + Cartridge)';
@@ -1102,6 +1252,9 @@
     }
 
     updateCart();
+    if (cart.length > 0) {
+  scheduleCartTracking();
+}
 
     function updateQty(i, delta) {
       if (!cart[i]) return;
