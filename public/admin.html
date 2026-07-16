@@ -430,6 +430,213 @@
     padding: 14px;
   }
 }
+
+    /* ────────────────────────────────────────────────
+   BASKET INTELLIGENCE
+   ──────────────────────────────────────────────── */
+
+.basket-kpi-grid {
+  display: grid;
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(175px, 1fr)
+    );
+  gap: 12px;
+}
+
+.basket-kpi-card {
+  background: #0f172a;
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  min-height: 112px;
+}
+
+.basket-kpi-card.live {
+  background:
+    linear-gradient(
+      135deg,
+      #15803d,
+      #22c55e
+    );
+}
+
+.basket-kpi-card.checkout {
+  background:
+    linear-gradient(
+      135deg,
+      #1d4ed8,
+      #3b82f6
+    );
+}
+
+.basket-kpi-card.abandoned {
+  background:
+    linear-gradient(
+      135deg,
+      #b45309,
+      #f59e0b
+    );
+}
+
+.basket-kpi-card.completed {
+  background:
+    linear-gradient(
+      135deg,
+      #6d28d9,
+      #8b5cf6
+    );
+}
+
+.basket-kpi-label {
+  font-size: .8rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  opacity: .84;
+}
+
+.basket-kpi-value {
+  font-size: 1.75rem;
+  font-weight: 900;
+  line-height: 1.1;
+  margin-top: 8px;
+}
+
+.basket-kpi-meta {
+  margin-top: 6px;
+  font-size: .8rem;
+  opacity: .82;
+}
+
+.basket-panel {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.tracked-basket-card {
+  background: #ffffff;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.tracked-basket-card:last-child {
+  margin-bottom: 0;
+}
+
+.tracked-basket-card.live {
+  border-left: 5px solid #22c55e;
+}
+
+.tracked-basket-card.checkout {
+  border-left: 5px solid #3b82f6;
+}
+
+.tracked-basket-card.abandoned {
+  border-left: 5px solid #f59e0b;
+}
+
+.tracked-basket-card.completed {
+  border-left: 5px solid #8b5cf6;
+}
+
+.basket-customer-name {
+  color: #0f172a;
+  font-weight: 900;
+}
+
+.basket-last-active {
+  color: #64748b;
+  font-size: .8rem;
+}
+
+.basket-item-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: .87rem;
+}
+
+.basket-item-line:last-child {
+  border-bottom: 0;
+}
+
+.analytics-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.analytics-stat-row:last-child {
+  border-bottom: 0;
+}
+
+.analytics-stat-row span {
+  color: #64748b;
+}
+
+.analytics-stat-row strong {
+  color: #0f172a;
+  text-align: right;
+}
+
+.analytics-ranking-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.analytics-ranking-row:last-child {
+  border-bottom: 0;
+}
+
+.analytics-ranking-name {
+  color: #0f172a;
+  font-size: .9rem;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.analytics-ranking-meta {
+  color: #64748b;
+  font-size: .76rem;
+  margin-top: 2px;
+}
+
+.analytics-ranking-value {
+  font-weight: 900;
+  color: #0f172a;
+  text-align: right;
+}
+
+@media (max-width: 767.98px) {
+  .basket-kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .basket-kpi-card {
+    min-height: 100px;
+    padding: 13px;
+  }
+
+  .basket-kpi-value {
+    font-size: 1.4rem;
+  }
+}
   
 
 </style>
@@ -465,6 +672,7 @@
       <a href="index.html#home" class="d-block mb-2">Store Home</a>
       <a href="analytics.html" class="d-block mb-2">Analytics</a>
       <a href="products.html" class="d-block mb-2">Products</a>
+      <a href="#basket-intelligence-section" class="d-block mb-2">Basket Intelligence</a>
       <a href="#inventory-section" class="d-block mb-2">Inventory</a>
       <a href="account.html" class="d-block mb-2">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
@@ -478,6 +686,7 @@
       <a href="index.html#home">Store Home</a>
       <a href="analytics.html">Analytics</a>
       <a href="products.html">Products</a>
+      <a href="#basket-intelligence-section">Basket Intelligence</a>
       <a href="#inventory-section">Inventory</a>
       <a href="account.html">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
@@ -597,6 +806,172 @@
   <p id="admin-status" class="text-muted mt-3">Checking access…</p>
   <div id="admin-warning"></div>
   <div id="orders-list" class="mt-3"></div>
+</div>
+
+
+        <!-- BASKET INTELLIGENCE -->
+<div
+  class="section-card mb-4 admin-only"
+  id="basket-intelligence-section"
+>
+  <div
+    class="d-flex justify-content-between align-items-start flex-wrap gap-3"
+  >
+    <div>
+      <h3 class="mb-1">
+        Basket Intelligence
+      </h3>
+
+      <p class="text-muted mb-0">
+        Live shopping baskets, abandoned checkouts and historical order analytics.
+      </p>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+      <button
+        type="button"
+        class="btn btn-dark"
+        onclick="refreshBasketIntelligence(true)"
+      >
+        🔄 Refresh
+      </button>
+
+      <select
+        id="basket-status-filter"
+        class="form-select"
+        style="width:auto;"
+        onchange="renderBasketIntelligence()"
+      >
+        <option value="all">
+          All baskets
+        </option>
+
+        <option value="live">
+          Live now
+        </option>
+
+        <option value="checkout">
+          At checkout
+        </option>
+
+        <option value="abandoned">
+          Abandoned
+        </option>
+
+        <option value="completed">
+          Completed
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div
+    id="basket-dashboard-status"
+    class="alert alert-light border mt-3 mb-0"
+  >
+    Loading basket data…
+  </div>
+
+  <div
+    class="basket-kpi-grid mt-3"
+    id="basket-kpi-grid"
+  ></div>
+
+  <div class="row g-3 mt-1">
+
+    <div class="col-xl-8">
+      <div class="basket-panel h-100">
+
+        <div
+          class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3"
+        >
+          <div>
+            <h5 class="fw-bold mb-1">
+              Live and abandoned baskets
+            </h5>
+
+            <div
+              class="small text-muted"
+              id="basket-results-count"
+            ></div>
+          </div>
+
+          <input
+            type="search"
+            class="form-control"
+            id="basket-search"
+            placeholder="Search customer, email, phone or product..."
+            style="max-width:340px;"
+            oninput="renderBasketIntelligence()"
+          >
+        </div>
+
+        <div id="basket-list"></div>
+
+      </div>
+    </div>
+
+    <div class="col-xl-4">
+      <div class="basket-panel h-100">
+
+        <h5 class="fw-bold mb-3">
+          Historical order analytics
+        </h5>
+
+        <div id="historical-analytics"></div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row g-3 mt-1">
+
+    <div class="col-lg-6">
+      <div class="basket-panel h-100">
+        <h5 class="fw-bold mb-3">
+          Most abandoned products
+        </h5>
+
+        <div id="abandoned-products-list"></div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="basket-panel h-100">
+        <h5 class="fw-bold mb-3">
+          Best-selling products
+        </h5>
+
+        <div id="historic-products-list"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row g-3 mt-1">
+
+    <div class="col-lg-6">
+      <div class="basket-panel h-100">
+        <h5 class="fw-bold mb-3">
+          Biggest customers
+        </h5>
+
+        <div id="historic-customers-list"></div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="basket-panel h-100">
+        <h5 class="fw-bold mb-3">
+          Products commonly bought together
+        </h5>
+
+        <div id="historic-product-pairs-list"></div>
+      </div>
+    </div>
+
+  </div>
 </div>
 
     <!-- INVENTORY -->
@@ -1144,6 +1519,59 @@ const inventoryOutBadge =
     const productsCache = {};
 
 const LOW_STOCK_THRESHOLD = 5;
+
+    // ────────────────────────────────────────────────
+// BASKET INTELLIGENCE STATE
+// ────────────────────────────────────────────────
+
+const basketDashboardStatusEl =
+  document.getElementById(
+    "basket-dashboard-status"
+  );
+
+const basketKpiGridEl =
+  document.getElementById(
+    "basket-kpi-grid"
+  );
+
+const basketListEl =
+  document.getElementById(
+    "basket-list"
+  );
+
+const basketResultsCountEl =
+  document.getElementById(
+    "basket-results-count"
+  );
+
+const historicalAnalyticsEl =
+  document.getElementById(
+    "historical-analytics"
+  );
+
+const abandonedProductsListEl =
+  document.getElementById(
+    "abandoned-products-list"
+  );
+
+const historicProductsListEl =
+  document.getElementById(
+    "historic-products-list"
+  );
+
+const historicCustomersListEl =
+  document.getElementById(
+    "historic-customers-list"
+  );
+
+const historicProductPairsListEl =
+  document.getElementById(
+    "historic-product-pairs-list"
+  );
+
+let basketIntelligenceCache = [];
+let historicalOrdersCache = [];
+let basketRefreshTimer = null;
 
     // paging + filtering state
     let PAGE_SIZE = 25;
@@ -3219,11 +3647,14 @@ await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
         alert(
   "Order cancelled + stock restored + email sent ✅"
 );
-
 await Promise.all([
   loadOrders(),
-  loadInventory()
+  loadPendingReviews(),
+  loadInventory(),
+  refreshBasketIntelligence()
 ]);
+
+startBasketAutoRefresh();
 
       }catch(e){
         console.error("Cancel+Restock failed", e);
@@ -3397,23 +3828,19 @@ await Promise.all([
             <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
             <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
           </div>
+<div class="text-end">
+  <div
+    class="d-flex flex-wrap justify-content-end align-items-center gap-2"
+  >
+    ${badge(order.status)}
+    ${telegramStatusBadge(order)}
+    ${whatsappStatusBadge(order)}
+  </div>
 
-          <div class="text-end">
-            ${badge(order.status)}
-
-            <<div class="d-flex flex-wrap align-items-center gap-2">
-  <strong>${escapeHtml(ref)}</strong>
-  ${badge(status)}
-  ${telegramStatusBadge(order)}
-  ${whatsappStatusBadge(order)}
+  <div class="fw-bold mt-2">
+    £${total}
+  </div>
 </div>
-
-            <div class="mt-1">
-              ${whatsappStatusBadge(order)}
-            </div>
-
-            <div class="fw-bold mt-1">£${total}</div>
-          </div>
         </div>
 
         <div class="packing-items">
@@ -3870,6 +4297,1365 @@ for (const o of ordersWithTelegram) ordersCache[o.id] = o;
         setBusy(false);
       }
     }
+
+
+    // ────────────────────────────────────────────────
+// BASKET INTELLIGENCE
+// ────────────────────────────────────────────────
+
+function getBasketItems(basket) {
+  return Array.isArray(basket?.items)
+    ? basket.items
+    : [];
+}
+
+function getBasketItemQuantity(item) {
+  return Number(
+    item?.quantity ??
+    item?.qty ??
+    0
+  );
+}
+
+function getBasketItemPrice(item) {
+  return Number(item?.price || 0);
+}
+
+function getBasketCustomerName(basket) {
+  return String(
+    basket?.customer_name ||
+    ""
+  ).trim();
+}
+
+function getBasketCustomerEmail(basket) {
+  return String(
+    basket?.customer_email ||
+    ""
+  ).trim();
+}
+
+function getBasketCustomerPhone(basket) {
+  return String(
+    basket?.customer_phone ||
+    ""
+  ).trim();
+}
+
+function getBasketActivityDate(basket) {
+  const raw =
+    basket?.last_activity_at ||
+    basket?.updated_at ||
+    basket?.created_at;
+
+  if (!raw) {
+    return null;
+  }
+
+  const date = new Date(raw);
+
+  return Number.isNaN(date.getTime())
+    ? null
+    : date;
+}
+
+function minutesSince(date) {
+  if (!date) {
+    return Infinity;
+  }
+
+  return Math.max(
+    0,
+    Math.floor(
+      (Date.now() - date.getTime()) /
+      60000
+    )
+  );
+}
+
+function formatBasketActivity(basket) {
+  const date =
+    getBasketActivityDate(basket);
+
+  if (!date) {
+    return "Unknown";
+  }
+
+  const mins =
+    minutesSince(date);
+
+  if (mins < 1) {
+    return "Active now";
+  }
+
+  if (mins === 1) {
+    return "1 minute ago";
+  }
+
+  if (mins < 60) {
+    return `${mins} minutes ago`;
+  }
+
+  const hours =
+    Math.floor(mins / 60);
+
+  if (hours === 1) {
+    return "1 hour ago";
+  }
+
+  if (hours < 24) {
+    return `${hours} hours ago`;
+  }
+
+  return date.toLocaleString();
+}
+
+function getBasketDisplayStatus(basket) {
+  const rawStatus =
+    String(
+      basket?.status ||
+      "active"
+    )
+      .trim()
+      .toLowerCase();
+
+  if (rawStatus === "completed") {
+    return "completed";
+  }
+
+  if (rawStatus === "abandoned") {
+    return "abandoned";
+  }
+
+  const mins =
+    minutesSince(
+      getBasketActivityDate(basket)
+    );
+
+  if (mins > 30) {
+    return "abandoned";
+  }
+
+  if (rawStatus === "checkout") {
+    return "checkout";
+  }
+
+  return "live";
+}
+
+function basketStatusBadge(basket) {
+  const status =
+    getBasketDisplayStatus(basket);
+
+  if (status === "live") {
+    return `
+      <span class="badge text-bg-success">
+        Live now
+      </span>
+    `;
+  }
+
+  if (status === "checkout") {
+    return `
+      <span class="badge text-bg-primary">
+        At checkout
+      </span>
+    `;
+  }
+
+  if (status === "completed") {
+    return `
+      <span class="badge text-bg-purple"
+        style="background:#7c3aed;color:#fff;">
+        Completed
+      </span>
+    `;
+  }
+
+  return `
+    <span class="badge text-bg-warning">
+      Abandoned
+    </span>
+  `;
+}
+
+function getBasketTotal(basket) {
+  const recorded =
+    Number(basket?.total);
+
+  if (
+    Number.isFinite(recorded) &&
+    recorded >= 0
+  ) {
+    return recorded;
+  }
+
+  return getBasketItems(basket)
+    .reduce((sum, item) => {
+      return (
+        sum +
+        getBasketItemPrice(item) *
+        getBasketItemQuantity(item)
+      );
+    }, 0);
+}
+
+function getBasketItemCount(basket) {
+  const recorded =
+    Number(basket?.item_count);
+
+  if (
+    Number.isFinite(recorded) &&
+    recorded >= 0
+  ) {
+    return recorded;
+  }
+
+  return getBasketItems(basket)
+    .reduce((sum, item) => {
+      return (
+        sum +
+        getBasketItemQuantity(item)
+      );
+    }, 0);
+}
+
+function renderBasketItemLines(basket) {
+  const items =
+    getBasketItems(basket);
+
+  if (!items.length) {
+    return `
+      <div class="small text-muted">
+        No basket items recorded.
+      </div>
+    `;
+  }
+
+  return items
+    .map((item) => {
+      const qty =
+        getBasketItemQuantity(item);
+
+      const price =
+        getBasketItemPrice(item);
+
+      const name =
+        String(
+          item?.name ||
+          "Unnamed product"
+        );
+
+      const variant =
+        String(
+          item?.variantLabel ||
+          item?.variant ||
+          ""
+        ).trim();
+
+      const colour =
+        String(
+          item?.penColour ||
+          ""
+        ).trim();
+
+      const extras = [
+        variant,
+        colour
+          ? `Colour: ${colour}`
+          : ""
+      ]
+        .filter(Boolean)
+        .join(" • ");
+
+      return `
+        <div class="basket-item-line">
+          <div>
+            <strong>
+              ${escapeHtml(qty)} ×
+              ${escapeHtml(name)}
+            </strong>
+
+            ${
+              extras
+                ? `
+                  <div class="small text-muted">
+                    ${escapeHtml(extras)}
+                  </div>
+                `
+                : ""
+            }
+          </div>
+
+          <div class="fw-bold">
+            £${(
+              price *
+              qty
+            ).toFixed(2)}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+}
+
+function getFilteredBasketRecords() {
+  const filter =
+    document.getElementById(
+      "basket-status-filter"
+    )?.value || "all";
+
+  const search =
+    String(
+      document.getElementById(
+        "basket-search"
+      )?.value || ""
+    )
+      .trim()
+      .toLowerCase();
+
+  let baskets =
+    [...basketIntelligenceCache];
+
+  if (filter !== "all") {
+    baskets =
+      baskets.filter((basket) => {
+        return (
+          getBasketDisplayStatus(basket) ===
+          filter
+        );
+      });
+  }
+
+  if (search) {
+    baskets =
+      baskets.filter((basket) => {
+        const itemsText =
+          getBasketItems(basket)
+            .map((item) => {
+              return [
+                item?.name,
+                item?.variant,
+                item?.variantLabel,
+                item?.penColour,
+                item?.strength
+              ]
+                .filter(Boolean)
+                .join(" ");
+            })
+            .join(" ");
+
+        const haystack = [
+          basket?.customer_name,
+          basket?.customer_email,
+          basket?.customer_phone,
+          basket?.order_reference,
+          basket?.current_page,
+          itemsText
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return haystack.includes(search);
+      });
+  }
+
+  baskets.sort((a, b) => {
+    const aDate =
+      getBasketActivityDate(a);
+
+    const bDate =
+      getBasketActivityDate(b);
+
+    return (
+      (bDate?.getTime() || 0) -
+      (aDate?.getTime() || 0)
+    );
+  });
+
+  return baskets;
+}
+
+function renderBasketKpis() {
+  if (!basketKpiGridEl) {
+    return;
+  }
+
+  const baskets =
+    basketIntelligenceCache;
+
+  const live =
+    baskets.filter((basket) => {
+      return (
+        getBasketDisplayStatus(basket) ===
+        "live"
+      );
+    });
+
+  const checkout =
+    baskets.filter((basket) => {
+      return (
+        getBasketDisplayStatus(basket) ===
+        "checkout"
+      );
+    });
+
+  const abandoned =
+    baskets.filter((basket) => {
+      return (
+        getBasketDisplayStatus(basket) ===
+        "abandoned"
+      );
+    });
+
+  const completed =
+    baskets.filter((basket) => {
+      return (
+        getBasketDisplayStatus(basket) ===
+        "completed"
+      );
+    });
+
+  const identified =
+    baskets.filter((basket) => {
+      return (
+        getBasketCustomerName(basket) ||
+        getBasketCustomerEmail(basket) ||
+        getBasketCustomerPhone(basket)
+      );
+    });
+
+  const liveValue =
+    [...live, ...checkout]
+      .reduce((sum, basket) => {
+        return (
+          sum +
+          getBasketTotal(basket)
+        );
+      }, 0);
+
+  const abandonedValue =
+    abandoned.reduce((sum, basket) => {
+      return (
+        sum +
+        getBasketTotal(basket)
+      );
+    }, 0);
+
+  const conversionBase =
+    abandoned.length +
+    completed.length;
+
+  const conversionRate =
+    conversionBase > 0
+      ? (
+          completed.length /
+          conversionBase
+        ) * 100
+      : 0;
+
+  basketKpiGridEl.innerHTML = `
+    <div class="basket-kpi-card live">
+      <div class="basket-kpi-label">
+        Live baskets
+      </div>
+
+      <div class="basket-kpi-value">
+        ${live.length}
+      </div>
+
+      <div class="basket-kpi-meta">
+        £${liveValue.toFixed(2)} live/checkout value
+      </div>
+    </div>
+
+    <div class="basket-kpi-card checkout">
+      <div class="basket-kpi-label">
+        At checkout
+      </div>
+
+      <div class="basket-kpi-value">
+        ${checkout.length}
+      </div>
+
+      <div class="basket-kpi-meta">
+        Customer details may be available
+      </div>
+    </div>
+
+    <div class="basket-kpi-card abandoned">
+      <div class="basket-kpi-label">
+        Abandoned
+      </div>
+
+      <div class="basket-kpi-value">
+        ${abandoned.length}
+      </div>
+
+      <div class="basket-kpi-meta">
+        £${abandonedValue.toFixed(2)} potential value
+      </div>
+    </div>
+
+    <div class="basket-kpi-card completed">
+      <div class="basket-kpi-label">
+        Converted
+      </div>
+
+      <div class="basket-kpi-value">
+        ${completed.length}
+      </div>
+
+      <div class="basket-kpi-meta">
+        ${conversionRate.toFixed(1)}% basket conversion
+      </div>
+    </div>
+
+    <div class="basket-kpi-card">
+      <div class="basket-kpi-label">
+        Identified
+      </div>
+
+      <div class="basket-kpi-value">
+        ${identified.length}
+      </div>
+
+      <div class="basket-kpi-meta">
+        Name, email or phone recorded
+      </div>
+    </div>
+  `;
+}
+
+function renderBasketCards() {
+  if (!basketListEl) {
+    return;
+  }
+
+  const baskets =
+    getFilteredBasketRecords();
+
+  if (basketResultsCountEl) {
+    basketResultsCountEl.textContent =
+      `${baskets.length} of ${basketIntelligenceCache.length} baskets shown`;
+  }
+
+  if (!baskets.length) {
+    basketListEl.innerHTML = `
+      <div class="alert alert-light border mb-0">
+        No matching baskets found.
+      </div>
+    `;
+
+    return;
+  }
+
+  basketListEl.innerHTML =
+    baskets
+      .map((basket) => {
+        const status =
+          getBasketDisplayStatus(basket);
+
+        const name =
+          getBasketCustomerName(basket);
+
+        const email =
+          getBasketCustomerEmail(basket);
+
+        const phone =
+          getBasketCustomerPhone(basket);
+
+        const displayName =
+          name ||
+          email ||
+          phone ||
+          "Anonymous shopper";
+
+        const orderReference =
+          String(
+            basket?.order_reference ||
+            ""
+          ).trim();
+
+        return `
+          <div class="tracked-basket-card ${status}">
+
+            <div
+              class="d-flex justify-content-between align-items-start gap-3 flex-wrap"
+            >
+              <div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                  <div class="basket-customer-name">
+                    ${escapeHtml(displayName)}
+                  </div>
+
+                  ${basketStatusBadge(basket)}
+                </div>
+
+                <div class="basket-last-active mt-1">
+                  ${escapeHtml(formatBasketActivity(basket))}
+                  ${
+                    basket?.current_page
+                      ? ` • ${escapeHtml(basket.current_page)}`
+                      : ""
+                  }
+                </div>
+
+                ${
+                  email && displayName !== email
+                    ? `
+                      <div class="small text-muted mt-1">
+                        ${escapeHtml(email)}
+                      </div>
+                    `
+                    : ""
+                }
+
+                ${
+                  phone && displayName !== phone
+                    ? `
+                      <div class="small text-muted">
+                        ${escapeHtml(phone)}
+                      </div>
+                    `
+                    : ""
+                }
+
+                ${
+                  orderReference
+                    ? `
+                      <div class="small mt-1">
+                        Order:
+                        <strong>
+                          ${escapeHtml(orderReference)}
+                        </strong>
+                      </div>
+                    `
+                    : ""
+                }
+              </div>
+
+              <div class="text-end">
+                <div class="fw-bold fs-5">
+                  £${getBasketTotal(basket).toFixed(2)}
+                </div>
+
+                <div class="small text-muted">
+                  ${getBasketItemCount(basket)} item(s)
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              ${renderBasketItemLines(basket)}
+            </div>
+
+          </div>
+        `;
+      })
+      .join("");
+}
+
+function countAbandonedProducts() {
+  const productMap =
+    new Map();
+
+  basketIntelligenceCache
+    .filter((basket) => {
+      return (
+        getBasketDisplayStatus(basket) ===
+        "abandoned"
+      );
+    })
+    .forEach((basket) => {
+      getBasketItems(basket)
+        .forEach((item) => {
+          const name =
+            String(
+              item?.name ||
+              "Unnamed product"
+            ).trim();
+
+          const qty =
+            getBasketItemQuantity(item);
+
+          const value =
+            qty *
+            getBasketItemPrice(item);
+
+          const current =
+            productMap.get(name) || {
+              name,
+              quantity: 0,
+              baskets: 0,
+              value: 0
+            };
+
+          current.quantity += qty;
+          current.baskets += 1;
+          current.value += value;
+
+          productMap.set(
+            name,
+            current
+          );
+        });
+    });
+
+  return Array.from(
+    productMap.values()
+  )
+    .sort((a, b) => {
+      return (
+        b.quantity -
+        a.quantity
+      );
+    })
+    .slice(0, 10);
+}
+
+function getHistoricalOrderItems(order) {
+  return Array.isArray(
+    order?.details?.items
+  )
+    ? order.details.items
+    : [];
+}
+
+function getHistoricalOrderEmail(order) {
+  const customer =
+    order?.details?.customer || {};
+
+  return String(
+    customer.email ||
+    order?.customer_email ||
+    order?.email ||
+    ""
+  )
+    .trim()
+    .toLowerCase();
+}
+
+function getHistoricalOrderName(order) {
+  const customer =
+    order?.details?.customer || {};
+
+  return String(
+    customer.name ||
+    order?.customer_name ||
+    order?.name ||
+    "Customer"
+  ).trim();
+}
+
+function isRevenueOrder(order) {
+  const status =
+    String(
+      order?.status ||
+      ""
+    )
+      .trim()
+      .toLowerCase();
+
+  return (
+    status !== "cancelled"
+  );
+}
+
+function calculateHistoricalAnalytics() {
+  const orders =
+    historicalOrdersCache;
+
+  const revenueOrders =
+    orders.filter(isRevenueOrder);
+
+  const totalRevenue =
+    revenueOrders.reduce(
+      (sum, order) => {
+        return (
+          sum +
+          Number(
+            order?.total_amount ||
+            0
+          )
+        );
+      },
+      0
+    );
+
+  const averageOrder =
+    revenueOrders.length
+      ? totalRevenue /
+        revenueOrders.length
+      : 0;
+
+  const customerMap =
+    new Map();
+
+  const productMap =
+    new Map();
+
+  const pairMap =
+    new Map();
+
+  revenueOrders.forEach((order) => {
+    const email =
+      getHistoricalOrderEmail(order);
+
+    const name =
+      getHistoricalOrderName(order);
+
+    const orderTotal =
+      Number(
+        order?.total_amount ||
+        0
+      );
+
+    if (email) {
+      const customer =
+        customerMap.get(email) || {
+          email,
+          name,
+          orders: 0,
+          spent: 0
+        };
+
+      customer.orders += 1;
+      customer.spent += orderTotal;
+
+      if (
+        name &&
+        name !== "Customer"
+      ) {
+        customer.name = name;
+      }
+
+      customerMap.set(
+        email,
+        customer
+      );
+    }
+
+    const uniqueProducts =
+      new Set();
+
+    getHistoricalOrderItems(order)
+      .forEach((item) => {
+        const productName =
+          String(
+            item?.name ||
+            "Unnamed product"
+          ).trim();
+
+        const qty =
+          Number(
+            item?.qty ??
+            item?.quantity ??
+            0
+          );
+
+        const lineTotal =
+          Number(
+            item?.line_total ??
+            (
+              Number(
+                item?.price_each ||
+                item?.price ||
+                0
+              ) * qty
+            )
+          );
+
+        const product =
+          productMap.get(productName) || {
+            name: productName,
+            quantity: 0,
+            revenue: 0,
+            orders: 0
+          };
+
+        product.quantity += qty;
+        product.revenue += lineTotal;
+        product.orders += 1;
+
+        productMap.set(
+          productName,
+          product
+        );
+
+        uniqueProducts.add(
+          productName
+        );
+      });
+
+    const names =
+      Array.from(uniqueProducts)
+        .sort();
+
+    for (
+      let first = 0;
+      first < names.length;
+      first++
+    ) {
+      for (
+        let second = first + 1;
+        second < names.length;
+        second++
+      ) {
+        const pairKey =
+          `${names[first]}|||${names[second]}`;
+
+        pairMap.set(
+          pairKey,
+          (
+            pairMap.get(pairKey) ||
+            0
+          ) + 1
+        );
+      }
+    }
+  });
+
+  const customers =
+    Array.from(
+      customerMap.values()
+    );
+
+  const repeatCustomers =
+    customers.filter((customer) => {
+      return customer.orders > 1;
+    });
+
+  const biggestCustomers =
+    customers
+      .sort((a, b) => {
+        return (
+          b.spent -
+          a.spent
+        );
+      })
+      .slice(0, 10);
+
+  const bestProducts =
+    Array.from(
+      productMap.values()
+    )
+      .sort((a, b) => {
+        return (
+          b.quantity -
+          a.quantity
+        );
+      })
+      .slice(0, 10);
+
+  const productPairs =
+    Array.from(
+      pairMap.entries()
+    )
+      .map(([key, count]) => {
+        const [first, second] =
+          key.split("|||");
+
+        return {
+          first,
+          second,
+          count
+        };
+      })
+      .sort((a, b) => {
+        return (
+          b.count -
+          a.count
+        );
+      })
+      .slice(0, 10);
+
+  return {
+    totalOrders: orders.length,
+    revenueOrders:
+      revenueOrders.length,
+    totalRevenue,
+    averageOrder,
+    uniqueCustomers:
+      customers.length,
+    repeatCustomers:
+      repeatCustomers.length,
+    repeatCustomerRate:
+      customers.length
+        ? (
+            repeatCustomers.length /
+            customers.length
+          ) * 100
+        : 0,
+    biggestCustomers,
+    bestProducts,
+    productPairs
+  };
+}
+
+function renderHistoricalAnalytics() {
+  const analytics =
+    calculateHistoricalAnalytics();
+
+  if (historicalAnalyticsEl) {
+    historicalAnalyticsEl.innerHTML = `
+      <div class="analytics-stat-row">
+        <span>Total historical orders</span>
+        <strong>${analytics.totalOrders}</strong>
+      </div>
+
+      <div class="analytics-stat-row">
+        <span>Non-cancelled orders</span>
+        <strong>${analytics.revenueOrders}</strong>
+      </div>
+
+      <div class="analytics-stat-row">
+        <span>Historical order value</span>
+        <strong>£${analytics.totalRevenue.toFixed(2)}</strong>
+      </div>
+
+      <div class="analytics-stat-row">
+        <span>Average order value</span>
+        <strong>£${analytics.averageOrder.toFixed(2)}</strong>
+      </div>
+
+      <div class="analytics-stat-row">
+        <span>Unique customers</span>
+        <strong>${analytics.uniqueCustomers}</strong>
+      </div>
+
+      <div class="analytics-stat-row">
+        <span>Repeat customers</span>
+        <strong>
+          ${analytics.repeatCustomers}
+          (${analytics.repeatCustomerRate.toFixed(1)}%)
+        </strong>
+      </div>
+    `;
+  }
+
+  if (historicProductsListEl) {
+    historicProductsListEl.innerHTML =
+      analytics.bestProducts.length
+        ? analytics.bestProducts
+            .map((product) => {
+              return `
+                <div class="analytics-ranking-row">
+                  <div>
+                    <div class="analytics-ranking-name">
+                      ${escapeHtml(product.name)}
+                    </div>
+
+                    <div class="analytics-ranking-meta">
+                      ${product.orders} order line(s) •
+                      £${product.revenue.toFixed(2)}
+                    </div>
+                  </div>
+
+                  <div class="analytics-ranking-value">
+                    ${product.quantity}
+                  </div>
+                </div>
+              `;
+            })
+            .join("")
+        : `
+          <div class="text-muted">
+            No product data found.
+          </div>
+        `;
+  }
+
+  if (historicCustomersListEl) {
+    historicCustomersListEl.innerHTML =
+      analytics.biggestCustomers.length
+        ? analytics.biggestCustomers
+            .map((customer) => {
+              return `
+                <div class="analytics-ranking-row">
+                  <div>
+                    <div class="analytics-ranking-name">
+                      ${escapeHtml(customer.name)}
+                    </div>
+
+                    <div class="analytics-ranking-meta">
+                      ${escapeHtml(customer.email)}
+                      • ${customer.orders} order(s)
+                    </div>
+                  </div>
+
+                  <div class="analytics-ranking-value">
+                    £${customer.spent.toFixed(2)}
+                  </div>
+                </div>
+              `;
+            })
+            .join("")
+        : `
+          <div class="text-muted">
+            No identified customers found.
+          </div>
+        `;
+  }
+
+  if (historicProductPairsListEl) {
+    historicProductPairsListEl.innerHTML =
+      analytics.productPairs.length
+        ? analytics.productPairs
+            .map((pair) => {
+              return `
+                <div class="analytics-ranking-row">
+                  <div>
+                    <div class="analytics-ranking-name">
+                      ${escapeHtml(pair.first)}
+                    </div>
+
+                    <div class="analytics-ranking-meta">
+                      with ${escapeHtml(pair.second)}
+                    </div>
+                  </div>
+
+                  <div class="analytics-ranking-value">
+                    ${pair.count}×
+                  </div>
+                </div>
+              `;
+            })
+            .join("")
+        : `
+          <div class="text-muted">
+            Not enough multi-product orders yet.
+          </div>
+        `;
+  }
+}
+
+function renderAbandonedProducts() {
+  if (!abandonedProductsListEl) {
+    return;
+  }
+
+  const products =
+    countAbandonedProducts();
+
+  abandonedProductsListEl.innerHTML =
+    products.length
+      ? products
+          .map((product) => {
+            return `
+              <div class="analytics-ranking-row">
+                <div>
+                  <div class="analytics-ranking-name">
+                    ${escapeHtml(product.name)}
+                  </div>
+
+                  <div class="analytics-ranking-meta">
+                    In ${product.baskets} abandoned basket(s)
+                    • £${product.value.toFixed(2)}
+                  </div>
+                </div>
+
+                <div class="analytics-ranking-value">
+                  ${product.quantity}
+                </div>
+              </div>
+            `;
+          })
+          .join("")
+      : `
+        <div class="text-muted">
+          No abandoned product data yet.
+        </div>
+      `;
+}
+
+function renderBasketIntelligence() {
+  renderBasketKpis();
+  renderBasketCards();
+  renderAbandonedProducts();
+  renderHistoricalAnalytics();
+}
+
+async function markStaleBasketsAbandoned() {
+  try {
+    const {
+      error
+    } = await supabaseClient.rpc(
+      "mark_abandoned_shopping_carts"
+    );
+
+    if (error) {
+      console.warn(
+        "Could not mark stale baskets:",
+        error
+      );
+    }
+  } catch (error) {
+    console.warn(
+      "Stale basket update failed:",
+      error
+    );
+  }
+}
+
+async function loadAllHistoricalOrdersForAnalytics() {
+  const allOrders = [];
+
+  let page = 0;
+  const chunkSize = 500;
+
+  while (true) {
+    const from =
+      page * chunkSize;
+
+    const to =
+      from +
+      chunkSize -
+      1;
+
+    const {
+      data,
+      error
+    } = await supabaseClient
+      .from("Orders")
+      .select(
+        "id, created_at, status, total_amount, reference, customer_email, email, customer_name, name, details"
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      )
+      .range(
+        from,
+        to
+      );
+
+    if (error) {
+      throw error;
+    }
+
+    if (
+      !data ||
+      !data.length
+    ) {
+      break;
+    }
+
+    allOrders.push(...data);
+
+    if (
+      data.length <
+      chunkSize
+    ) {
+      break;
+    }
+
+    page++;
+  }
+
+  historicalOrdersCache =
+    allOrders;
+}
+
+async function refreshBasketIntelligence(
+  showBusyOverlay = false
+) {
+  if (!basketDashboardStatusEl) {
+    return;
+  }
+
+  basketDashboardStatusEl.className =
+    "alert alert-light border mt-3 mb-0";
+
+  basketDashboardStatusEl.textContent =
+    "Loading basket and historical order data…";
+
+  if (showBusyOverlay) {
+    setBusy(
+      true,
+      "Refreshing baskets…",
+      "Loading basket and order analytics"
+    );
+  }
+
+  try {
+    await markStaleBasketsAbandoned();
+
+    const [
+      basketResult
+    ] = await Promise.all([
+      supabaseClient
+        .from("shopping_carts")
+        .select(
+          "id, cart_token, customer_name, customer_email, customer_phone, items, subtotal, discount, delivery_cost, total, item_count, status, current_page, order_reference, created_at, updated_at, last_activity_at, checkout_started_at, completed_at"
+        )
+        .order(
+          "last_activity_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(500),
+
+      loadAllHistoricalOrdersForAnalytics()
+    ]);
+
+    if (basketResult.error) {
+      throw basketResult.error;
+    }
+
+    basketIntelligenceCache =
+      basketResult.data || [];
+
+    basketDashboardStatusEl.className =
+      "alert alert-success border mt-3 mb-0";
+
+    basketDashboardStatusEl.textContent =
+      `${basketIntelligenceCache.length} tracked baskets and ${historicalOrdersCache.length} historical orders loaded.`;
+
+    renderBasketIntelligence();
+
+  } catch (error) {
+    console.error(
+      "Basket intelligence load failed:",
+      error
+    );
+
+    basketDashboardStatusEl.className =
+      "alert alert-danger border mt-3 mb-0";
+
+    basketDashboardStatusEl.textContent =
+      error?.message ||
+      "Basket intelligence could not be loaded.";
+  } finally {
+    if (showBusyOverlay) {
+      setBusy(false);
+    }
+  }
+}
+
+function startBasketAutoRefresh() {
+  if (basketRefreshTimer) {
+    clearInterval(
+      basketRefreshTimer
+    );
+  }
+
+  basketRefreshTimer =
+    setInterval(() => {
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+        refreshBasketIntelligence(
+          false
+        );
+      }
+    }, 60000);
+}
 
     // ────────────────────────────────────────────────
 // INVENTORY
@@ -4722,6 +6508,13 @@ if (inventorySearchClearButton) {
 
 window.saveInventoryStock =
   saveInventoryStock;
+    window.refreshBasketIntelligence =
+
+  refreshBasketIntelligence;
+
+window.renderBasketIntelligence =
+
+  renderBasketIntelligence;
 
     // go
     initAdminView();
