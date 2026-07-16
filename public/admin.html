@@ -5520,8 +5520,8 @@ async function loadAllHistoricalOrdersForAnalytics() {
     } = await supabaseClient
       .from("Orders")
       .select(
-        "id, created_at, status, total_amount, reference, customer_email, email, customer_name, name, details"
-      )
+  "id, created_at, status, total_amount, reference, details"
+)
       .order(
         "created_at",
         {
