@@ -1306,6 +1306,15 @@ function saveCart() {
       return String(value || '').toLowerCase();
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
     function getMgValue(name) {
       const text = String(name || '').toLowerCase();
       const mgIndex = text.indexOf('mg');
@@ -1642,7 +1651,7 @@ function saveCart() {
             <span class="pill-label pill-popular">Choose Strength</span>
 
             <div class="product-image-wrap">
-              <img src="${imgSrc(group.image)}" class="w-100" alt="${group.name}">
+              <img src="${imgSrc(group.image)}" class="w-100" alt="${escapeHtml(group.name)}">
             </div>
 
             <div class="product-body d-flex flex-column h-100">
@@ -1653,7 +1662,7 @@ function saveCart() {
                   </span>
                 </div>
 
-                <div class="product-name">${group.name}</div>
+                <div class="product-name">${escapeHtml(group.name)}</div>
 
                 <div class="quick-specs">
                   <span>Research Use</span>
@@ -1662,7 +1671,7 @@ function saveCart() {
                 </div>
 
                 <div class="text-muted" style="font-size:0.85rem;">
-                  Available strengths: ${strengthLabels.join(' • ')}.
+                  Available strengths: ${strengthLabels.map(escapeHtml).join(' • ')}.
                 </div>
               </div>
 
@@ -1705,7 +1714,7 @@ function saveCart() {
             ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
 
             <div class="product-image-wrap">
-              <img src="${imgSrc(p.image)}" class="w-100" alt="${p.name}">
+              <img src="${imgSrc(p.image)}" class="w-100" alt="${escapeHtml(p.name)}">
             </div>
 
             <div class="product-body d-flex flex-column h-100">
@@ -1716,7 +1725,7 @@ function saveCart() {
                   </span>
                 </div>
 
-                <div class="product-name">${p.name}</div>
+                <div class="product-name">${escapeHtml(p.name)}</div>
 
                 <div class="quick-specs">
                   <span>Research Use</span>
@@ -1725,7 +1734,7 @@ function saveCart() {
                 </div>
 
                 <div class="text-muted" style="font-size:0.85rem;">
-                  ${baseDesc + extraInfo}
+                  ${escapeHtml(baseDesc + extraInfo)}
                 </div>
               </div>
 
@@ -1865,14 +1874,14 @@ function saveCart() {
       document.getElementById('modalTitle').textContent = group.name;
       document.getElementById('modalName').textContent = group.name;
       document.getElementById('modalMedia').innerHTML = `
-        <img id="modalImg" src="${imgSrc(group.image)}" class="img-fluid" style="max-height: 320px;" alt="${group.name}">
+        <img id="modalImg" src="${imgSrc(group.image)}" class="img-fluid" style="max-height: 320px;" alt="${escapeHtml(group.name)}">
       `;
 
       const options = group.products.map(p => {
         const mg = getMgValue(p.name);
         const stock = Number(p.stock || 0);
         const label = `${mg ? `${mg}mg` : p.name} - £${Number(p.price || 0).toFixed(2)}${stock <= 0 ? ' - Out of stock' : stock <= 5 ? ` - ${stock} left` : ''}`;
-        return `<option value="${p.id}" ${String(p.id) === String(firstAvailable.id) ? 'selected' : ''} ${stock <= 0 ? 'disabled' : ''}>${label}</option>`;
+        return `<option value="${escapeHtml(p.id)}" ${String(p.id) === String(firstAvailable.id) ? 'selected' : ''} ${stock <= 0 ? 'disabled' : ''}>${escapeHtml(label)}</option>`;
       }).join('');
 
       const bundleOptions = parseBundleOptions(firstAvailable.bundle_options);
@@ -1902,7 +1911,7 @@ function saveCart() {
           <div class="product-variant-selection text-start">
             <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
             <select id="modalPenColourSelect" class="form-select">
-              ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+              ${bundleOptions.penColours.map(colour => `<option value="${escapeHtml(colour)}">${escapeHtml(colour)}</option>`).join('')}
             </select>
           </div>
         `;
@@ -1998,7 +2007,7 @@ function saveCart() {
       createProductModalShell();
 
       document.getElementById('modalMedia').innerHTML = `
-        <img id="modalImg" src="${imgSrc(p.image)}" class="img-fluid" style="max-height: 320px;" alt="${p.name}">
+        <img id="modalImg" src="${imgSrc(p.image)}" class="img-fluid" style="max-height: 320px;" alt="${escapeHtml(p.name)}">
       `;
 
       document.getElementById('modalTitle').textContent = p.name;
@@ -2020,7 +2029,7 @@ function saveCart() {
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
       document.getElementById('modalDescription').innerHTML = `
-        <p>${p.description || 'Research material supplied for laboratory environments.'}</p>
+        <p>${escapeHtml(p.description || 'Research material supplied for laboratory environments.')}</p>
         <p><strong>Accessories, where applicable, are supplied for laboratory handling and measurement only.</strong></p>
         <p class="mb-1"><em>Supplied strictly for laboratory research purposes only.</em></p>
         <p class="mb-1"><em>Not for human consumption or medical use.</em></p>
@@ -2049,7 +2058,7 @@ function saveCart() {
           <div class="product-variant-selection text-start">
             <label for="modalPenColourSelect" class="form-label fw-semibold mb-2">Choose Pen Colour:</label>
             <select id="modalPenColourSelect" class="form-select">
-              ${bundleOptions.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+              ${bundleOptions.penColours.map(colour => `<option value="${escapeHtml(colour)}">${escapeHtml(colour)}</option>`).join('')}
             </select>
           </div>
         `;
