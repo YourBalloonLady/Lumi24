@@ -1,7 +1,16 @@
 (function () {
   window.dataLayer = window.dataLayer || [];
   window.luminaTrack = window.luminaTrack || function (eventName, detail) {
-    const event = { event: eventName, ...(detail || {}) };
+    const standardEvents = {
+      product_view: 'view_item',
+      product_detail_view: 'view_item',
+      product_group_view: 'view_item_list',
+      bundle_view: 'view_item',
+      checkout_begin_click: 'begin_checkout',
+      checkout_started: 'begin_checkout',
+      order_created: 'purchase'
+    };
+    const event = { event: standardEvents[eventName] || eventName, original_event: eventName, ...(detail || {}) };
     window.dataLayer.push(event);
     window.dispatchEvent(new CustomEvent('lumina:analytics', { detail: event }));
   };
@@ -37,9 +46,12 @@
   const style = document.createElement('style');
   style.textContent = `
     #lumina-quick-nav{position:fixed;left:18px;bottom:18px;z-index:2147483000;font-family:Inter,system-ui,-apple-system,sans-serif}
+    #lumina-skip-link{position:fixed;left:12px;top:12px;z-index:2147483647;padding:11px 16px;border-radius:10px;background:#111827;color:#fff!important;font-weight:800;text-decoration:none;transform:translateY(-160%)}
+    #lumina-skip-link:focus{transform:translateY(0);outline:3px solid #4ade80;outline-offset:2px}
     #lumina-quick-nav.lumina-admin-nav{left:auto;right:18px;bottom:72px}
     #lumina-nav-toggle{display:flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:12px 17px;background:#111827;color:#fff;font-weight:800;box-shadow:0 12px 34px rgba(15,23,42,.28);cursor:pointer}
     #lumina-nav-toggle:hover{background:#000;transform:translateY(-1px)}
+    #lumina-nav-toggle:focus-visible,#lumina-nav-panel a:focus-visible{outline:3px solid #4ade80;outline-offset:3px}
     #lumina-nav-panel{position:absolute;left:0;bottom:56px;width:min(290px,calc(100vw - 36px));padding:10px;background:#fff;border:1px solid #e5e7eb;border-radius:18px;box-shadow:0 18px 50px rgba(15,23,42,.24)}
     .lumina-admin-nav #lumina-nav-panel{left:auto;right:0}
     #lumina-nav-panel[hidden]{display:none}
@@ -50,8 +62,20 @@
     #lumina-nav-panel a span{opacity:.65}
     @media(max-width:600px){#lumina-quick-nav{left:12px;bottom:12px}#lumina-quick-nav.lumina-admin-nav{left:auto;right:12px;bottom:64px}#lumina-nav-toggle{padding:11px 15px}}
     @media print{#lumina-quick-nav{display:none!important}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   `;
   document.head.appendChild(style);
+
+  const main = document.querySelector('main') || document.querySelector('[role="main"]');
+  if (main) {
+    if (!main.id) main.id = 'main-content';
+    if (!main.hasAttribute('tabindex')) main.setAttribute('tabindex', '-1');
+    const skip = document.createElement('a');
+    skip.id = 'lumina-skip-link';
+    skip.href = `#${main.id}`;
+    skip.textContent = 'Skip to main content';
+    document.body.prepend(skip);
+  }
 
   const root = document.createElement('div');
   root.id = 'lumina-quick-nav';
@@ -61,6 +85,7 @@
   button.type = 'button';
   button.setAttribute('aria-expanded', 'false');
   button.setAttribute('aria-controls', 'lumina-nav-panel');
+  button.setAttribute('aria-label', 'Open site navigation');
   button.innerHTML = '<span aria-hidden="true">☰</span> Menu';
 
   const panel = document.createElement('nav');
@@ -86,6 +111,7 @@
   function setOpen(open) {
     panel.hidden = !open;
     button.setAttribute('aria-expanded', String(open));
+    button.setAttribute('aria-label', open ? 'Close site navigation' : 'Open site navigation');
   }
 
   button.addEventListener('click', () => setOpen(panel.hidden));
