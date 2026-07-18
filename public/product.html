@@ -65,7 +65,7 @@
     const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let product=null;
     const id=new URLSearchParams(location.search).get('id');
     const imageUrl=image=>image?`/${String(image).split('/').map(encodeURIComponent).join('/')}`:'';
-    const fallbackImage=item=>{const name=String(item?.name||'').toLowerCase();if(name.includes('tirzepatide')&&name.includes('60')&&name.includes('vial'))return '/Tirz%2060%20vial.png';if(name.includes('tirzepatide')&&name.includes('60')&&name.includes('pen'))return '/tirz%2060%20pen.png';return '/Lumina%20Logo.png'};
+    const fallbackImage=item=>{const name=String(item?.name||'').toLowerCase();if(name.includes('tirzepatide')&&name.includes('60')&&name.includes('vial'))return '/Tirz%2060%20vial.png';if(name.includes('tirzepatide')&&name.includes('60')&&name.includes('pen'))return '/tirz%2060%20pen.png';return '/Lumina-logo.png'};
     const resolvedImage=item=>{const name=String(item?.name||'').toLowerCase();return name.includes('tirzepatide')&&name.includes('60')?fallbackImage(item):imageUrl(item?.image)};
     const isPen=item=>String(item?.name||'').toLowerCase().includes('pen')&&!String(item?.name||'').toLowerCase().includes('pen head');
     const variantPrice=()=>Math.max(0,Number(product?.price||0)-($('variant').value==='cartridge-only'?10:0));
