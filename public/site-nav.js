@@ -29,6 +29,7 @@
         ['calculator.html', 'Calculator'],
         ['reviews.html', 'Reviews'],
         ['faq.html', 'FAQ'],
+        ['contact.html', 'Contact'],
         ['account.html', 'My Account']
       ];
 
