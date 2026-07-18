@@ -1,4 +1,11 @@
 (function () {
+  window.dataLayer = window.dataLayer || [];
+  window.luminaTrack = window.luminaTrack || function (eventName, detail) {
+    const event = { event: eventName, ...(detail || {}) };
+    window.dataLayer.push(event);
+    window.dispatchEvent(new CustomEvent('lumina:analytics', { detail: event }));
+  };
+
   if (document.getElementById('lumina-quick-nav')) return;
 
   const page = window.location.pathname.split('/').pop() || 'index.html';
@@ -52,7 +59,7 @@
   button.type = 'button';
   button.setAttribute('aria-expanded', 'false');
   button.setAttribute('aria-controls', 'lumina-nav-panel');
-  button.innerHTML = '<span aria-hidden="true">☰</span> Navigate';
+  button.innerHTML = '<span aria-hidden="true">☰</span> Menu';
 
   const panel = document.createElement('nav');
   panel.id = 'lumina-nav-panel';
@@ -88,6 +95,10 @@
       setOpen(false);
       button.focus();
     }
+  });
+  document.addEventListener('click', event => {
+    const tracked = event.target.closest('[data-track]');
+    if (tracked) window.luminaTrack(tracked.dataset.track, { page: page });
   });
 
   root.append(panel, button);
