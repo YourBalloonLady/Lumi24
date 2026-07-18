@@ -484,6 +484,9 @@
         const contents = parseBundleContents(bundle.bundle_contents);
         const tag = getBundleTag(bundle);
         const stockNum = Number(bundle.stock ?? 0);
+        const price = Number(bundle.price || 0);
+        const compareAt = Number(bundle.compare_at_price || 0);
+        const saving = compareAt > price ? compareAt - price : 0;
         const stockLabel = stockNum === 0 ? '<strong>Out of stock</strong>' :
                           stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` :
                           `<strong>In stock</strong> • ${stockNum} available`;
@@ -494,7 +497,7 @@
             <div class="product-card" onclick="openBundleModal(${i})">
               <div class="bundle-media-wrap">
                 <span class="pill-label ${tag.className}">${tag.text}</span>
-                <img src="${imgSrc(bundle.image)}" class="w-100 p-4" alt="${escapeHtml(bundle.name)}">
+                <img src="${imgSrc(bundle.image)}" class="w-100 p-4" alt="${escapeHtml(bundle.name)}" loading="lazy" decoding="async" width="520" height="520">
               </div>
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
@@ -512,9 +515,10 @@
                 </div>
                 <div class="mt-3">
                   <div class="product-price">
-                    £${Number(bundle.price || 0).toFixed(2)}
-                    ${bundle.compare_at_price ? `<span class="sale-old">£${Number(bundle.compare_at_price).toFixed(2)}</span>` : ''}
+                    £${price.toFixed(2)}
+                    ${saving ? `<span class="sale-old">£${compareAt.toFixed(2)}</span>` : ''}
                   </div>
+                  ${saving ? `<div class="badge text-bg-success mb-2">Save £${saving.toFixed(2)}</div>` : ''}
                   <p class="stock ${stockClass} mt-2">${stockLabel}</p>
                   <button class="btn btn-success btn-bundle mt-auto" onclick="event.stopPropagation(); openBundleModal(${i})">
                     View Bundle
@@ -548,7 +552,35 @@
       }
       allBundles = (data || []).filter(row => String(row.type || '').toLowerCase() === 'bundle');
       filteredBundles = [...allBundles];
+      updateBundleStructuredData(allBundles);
       renderBundles();
+    }
+
+    function updateBundleStructuredData(bundles) {
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: bundles.map((bundle, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Product',
+            name: bundle.name,
+            image: new URL(imgSrc(bundle.image), window.location.href).href,
+            description: bundle.description || 'Grouped laboratory research bundle.',
+            offers: {
+              '@type': 'Offer',
+              priceCurrency: 'GBP',
+              price: Number(bundle.price || 0).toFixed(2),
+              availability: Number(bundle.stock || 0) > 0 ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+              url: window.location.href
+            }
+          }
+        }))
+      });
+      document.head.appendChild(script);
     }
 
     function ensureBundleModal() {
@@ -608,6 +640,7 @@
       if (!bundle) return;
 
       const modalEl = ensureBundleModal();
+      window.luminaTrack?.('bundle_view', { product_id: bundle.id, product_name: bundle.name, value: Number(bundle.price || 0) });
       const contents = parseBundleContents(bundle.bundle_contents);
       const options = parseBundleOptions(bundle.bundle_options);
       const stockNum = Number(bundle.stock ?? 0);
@@ -669,6 +702,7 @@
           qty: 1,
           pen_colour: selectedColour || null
         };
+        window.luminaTrack?.('add_to_cart', { product_id: bundle.id, product_name: bundle.name, quantity: 1, value: Number(bundle.price || 0), item_type: 'bundle' });
 
         const cartArray = [cartItem];
         const encodedCart = encodeURIComponent(JSON.stringify(cartArray));
