@@ -251,6 +251,11 @@
       cursor: not-allowed;
     }
 
+    .catalogue-skeleton{min-height:390px;border-radius:24px;background:#fff;padding:16px;box-shadow:0 18px 40px rgba(15,23,42,.06)}
+    .skeleton-block{background:linear-gradient(90deg,#eef2f7 25%,#f8fafc 50%,#eef2f7 75%);background-size:200% 100%;animation:skeleton-wave 1.25s infinite;border-radius:14px}
+    .skeleton-image{height:210px}.skeleton-line{height:14px;margin-top:14px}.skeleton-line.short{width:58%}.skeleton-button{height:42px;margin-top:24px;border-radius:999px}
+    @keyframes skeleton-wave{to{background-position:-200% 0}}
+
     .product-image-wrap {
       margin: 12px 12px 0;
       border-radius: 20px;
@@ -1742,6 +1747,7 @@ function saveCart() {
                 >
                   ${stockNum > 0 ? 'View options' : 'Sold out'}
                 </button>
+                <a href="product.html?id=${encodeURIComponent(p.id)}" class="btn btn-link text-success fw-semibold w-100 mt-2" onclick="event.stopPropagation()">Full product details →</a>
               </div>
             </div>
           </div>
@@ -1763,7 +1769,27 @@ function saveCart() {
 
     async function loadProductsFromDb() {
       const statusEl = document.getElementById('all-products-status');
-      statusEl.textContent = 'Loading products…';
+      const listEl = document.getElementById('all-products-list');
+      const cacheKey = 'lumina_catalogue_cache_v1';
+      let usedCache = false;
+
+      try {
+        const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+        if (cached?.savedAt && Array.isArray(cached.rows) && Date.now() - cached.savedAt < 10 * 60 * 1000) {
+          applyProductRows(cached.rows);
+          usedCache = true;
+          statusEl.textContent = 'Showing saved catalogue while live stock refreshes…';
+        }
+      } catch (error) {
+        console.warn('Catalogue cache could not be read', error);
+      }
+
+      if (!usedCache) {
+        statusEl.textContent = 'Loading products and live stock…';
+        listEl.innerHTML = Array.from({ length: 8 }, () => `
+          <div class="col-md-6 col-lg-3"><div class="catalogue-skeleton" aria-hidden="true"><div class="skeleton-block skeleton-image"></div><div class="skeleton-block skeleton-line short"></div><div class="skeleton-block skeleton-line"></div><div class="skeleton-block skeleton-button"></div></div></div>
+        `).join('');
+      }
 
       const { data, error } = await supabaseClient
         .from('Products')
@@ -1771,11 +1797,24 @@ function saveCart() {
 
       if (error) {
         console.error('Error loading products', error);
-        statusEl.textContent = 'Could not load products.';
+        statusEl.textContent = usedCache
+          ? 'Live stock could not be refreshed. Showing the most recently saved catalogue.'
+          : 'Products could not be loaded. Check your connection and refresh the page.';
         return;
       }
 
-      products = (data || [])
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ savedAt: Date.now(), rows: data || [] }));
+      } catch (error) {
+        console.warn('Catalogue cache could not be saved', error);
+      }
+
+      applyProductRows(data || []);
+      statusEl.textContent = '';
+    }
+
+    function applyProductRows(rows) {
+      products = rows
         .map(row => ({
           id: row.id,
           name: row.name,
@@ -1828,7 +1867,7 @@ function saveCart() {
               availability: Number(product.stock || 0) > 0
                 ? 'https://schema.org/InStock'
                 : 'https://schema.org/OutOfStock',
-              url: window.location.href
+              url: new URL(`product.html?id=${encodeURIComponent(product.id)}`, window.location.href).href
             }
           }
         }))
@@ -1866,6 +1905,7 @@ function saveCart() {
                 <p class="product-price fs-1 justify-content-center" id="modalPrice"></p>
                 <p class="stock text-success mb-2" id="modalStock"></p>
                 <div id="modalDescription" class="text-start small text-muted mb-3"></div>
+                <a id="modalDetailLink" class="btn btn-sm btn-outline-success mb-3" href="#">Open full product page</a>
                 <div id="modalVariantWrap" class="mb-3"></div>
                 <div class="d-flex justify-content-center align-items-center gap-3 my-3">
                   <button class="btn btn-outline-secondary qty-btn" onclick="changeQty(-1)">–</button>
@@ -2022,6 +2062,7 @@ function saveCart() {
         img.src = imgSrc(selectedProduct.image);
         img.alt = selectedProduct.name;
       }
+      document.getElementById('modalDetailLink').href = `product.html?id=${encodeURIComponent(selectedProduct.id)}`;
     }
 
     function openModal(i) {
@@ -2040,6 +2081,7 @@ function saveCart() {
 
       document.getElementById('modalTitle').textContent = p.name;
       document.getElementById('modalName').textContent = p.name;
+      document.getElementById('modalDetailLink').href = `product.html?id=${encodeURIComponent(p.id)}`;
 
       const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
       const modalPrice = initialVariant ? Number(getVariantPrice(p, initialVariant)) : Number(p.price || 0);
