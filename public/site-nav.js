@@ -33,7 +33,6 @@
     : [
         ['index.html', 'Home'],
         ['products.html', 'Products'],
-        ['product-bundles.html', 'Bundles'],
         ['peptides.html', 'Research Guides'],
         ['calculator.html', 'Calculator'],
         ['reviews.html', 'Reviews'],
