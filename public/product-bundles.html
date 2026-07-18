@@ -288,6 +288,10 @@
       font-weight: 800;
       margin-bottom: 10px;
     }
+
+    .bundle-skeleton{min-height:430px;border-radius:24px;background:#fff;padding:16px;box-shadow:0 18px 40px rgba(15,23,42,.06)}
+    .bundle-skeleton-block{background:linear-gradient(90deg,#eef2f7 25%,#f8fafc 50%,#eef2f7 75%);background-size:200% 100%;animation:bundle-skeleton-wave 1.25s infinite;border-radius:14px}
+    @keyframes bundle-skeleton-wave{to{background-position:-200% 0}}
     .bundle-includes-card ul {
       list-style: none;
       padding: 0;
@@ -543,14 +547,38 @@
 
     async function loadBundlesFromDb() {
       const statusEl = document.getElementById('bundles-status');
-      statusEl.textContent = 'Loading bundles…';
+      const listEl = document.getElementById('bundle-list');
+      const cacheKey = 'lumina_bundle_cache_v1';
+      let usedCache = false;
+      try {
+        const cached = JSON.parse(localStorage.getItem(cacheKey) || 'null');
+        if (cached?.savedAt && Array.isArray(cached.rows) && Date.now() - cached.savedAt < 10 * 60 * 1000) {
+          applyBundleRows(cached.rows);
+          usedCache = true;
+        }
+      } catch (error) {
+        console.warn('Bundle cache could not be read', error);
+      }
+      if (!usedCache) {
+        statusEl.textContent = 'Loading bundles and live stock…';
+        listEl.innerHTML = Array.from({ length: 3 }, () => `<div class="col-md-6 col-xl-4"><div class="bundle-skeleton" aria-hidden="true"><div class="bundle-skeleton-block" style="height:230px"></div><div class="bundle-skeleton-block mt-3" style="height:16px;width:62%"></div><div class="bundle-skeleton-block mt-3" style="height:14px"></div><div class="bundle-skeleton-block mt-4" style="height:44px;border-radius:999px"></div></div></div>`).join('');
+      }
       const { data, error } = await supabaseClient.from('Products').select('*').order('name', { ascending: true });
       if (error) {
         console.error('Error loading bundles:', error);
-        statusEl.textContent = `Could not load bundles: ${error.message}`;
+        statusEl.textContent = usedCache ? 'Live bundle stock could not be refreshed. Showing saved results.' : 'Bundles could not be loaded. Check your connection and refresh the page.';
         return;
       }
-      allBundles = (data || []).filter(row => String(row.type || '').toLowerCase() === 'bundle');
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify({ savedAt: Date.now(), rows: data || [] }));
+      } catch (error) {
+        console.warn('Bundle cache could not be saved', error);
+      }
+      applyBundleRows(data || []);
+    }
+
+    function applyBundleRows(rows) {
+      allBundles = rows.filter(row => String(row.type || '').toLowerCase() === 'bundle');
       filteredBundles = [...allBundles];
       updateBundleStructuredData(allBundles);
       renderBundles();
