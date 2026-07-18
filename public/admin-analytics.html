@@ -1,1 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin Analytics | Lumina</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body{background:#f4f6f8;color:#111827;font-family:Inter,system-ui,sans-serif}
+    .topbar{background:#111827;color:#fff;padding:14px 0}
+    .topbar a{color:#d1d5db;text-decoration:none}.topbar a:hover{color:#fff}
+    .panel{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+    .kpi{border-radius:16px;padding:18px;color:#fff}.kpi strong{display:block;font-size:1.8rem}.kpi small{opacity:.85}
+    .kpi.live{background:#15803d}.kpi.checkout{background:#2563eb}.kpi.abandoned{background:#d97706}.kpi.completed{background:#7c3aed}
+    .basket{border:1px solid #e5e7eb;border-left:5px solid #64748b;border-radius:14px;padding:15px;margin-bottom:12px}
+    .basket.live{border-left-color:#22c55e}.basket.checkout{border-left-color:#3b82f6}.basket.abandoned{border-left-color:#f59e0b}.basket.completed{border-left-color:#8b5cf6}
+    .rank-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #e5e7eb}.rank-row:last-child{border-bottom:0}
+    .stock-low{background:#fffbeb}.stock-out{background:#fef2f2}.stock-input{max-width:100px}
+    .review{border:1px solid #e5e7eb;border-radius:14px;padding:15px;margin-bottom:12px}
+    .section-anchor{scroll-margin-top:20px}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:520px){.kpi-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+      <strong>🌙 Lumina Admin Analytics</strong>
+      <nav class="d-flex gap-3 flex-wrap">
+        <a href="admin.html">Orders</a>
+        <a href="#baskets">Baskets</a>
+        <a href="#inventory">Inventory</a>
+        <a href="#reviews">Reviews</a>
+        <a href="analytics.html">Sales Analytics</a>
+        <a href="index.html">Store</a>
+        <button id="logout" class="btn btn-sm btn-outline-light">Logout</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container py-4">
+    <div id="access-status" class="alert alert-light border">Checking administrator access…</div>
+
+    <div id="dashboard" hidden>
+      <section id="baskets" class="panel section-anchor mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div><h2 class="h4 mb-1">Basket Intelligence</h2><p class="text-muted mb-0">Live, checkout, abandoned and completed shopping baskets.</p></div>
+          <button id="refresh" class="btn btn-dark">Refresh dashboard</button>
+        </div>
+        <div id="basket-status" class="small text-muted mt-3">Loading baskets…</div>
+        <div id="kpis" class="kpi-grid mt-3"></div>
+        <div class="row g-3 mt-1">
+          <div class="col-xl-8">
+            <div class="d-flex gap-2 flex-wrap my-3">
+              <input id="basket-search" type="search" class="form-control" style="max-width:360px" placeholder="Search customer, email, phone or product">
+              <select id="basket-filter" class="form-select" style="max-width:190px">
+                <option value="all">All baskets</option><option value="live">Live</option><option value="checkout">Checkout</option><option value="abandoned">Abandoned</option><option value="completed">Completed</option>
+              </select>
+            </div>
+            <div id="basket-list"></div>
+          </div>
+          <div class="col-xl-4"><div class="panel h-100"><h3 class="h6">Historical overview</h3><div id="history-summary"></div></div></div>
+        </div>
+        <div class="row g-3 mt-1">
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Most abandoned products</h3><div id="abandoned-products"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Best-selling products</h3><div id="best-products"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Biggest customers</h3><div id="best-customers"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Products bought together</h3><div id="product-pairs"></div></div></div>
+        </div>
+      </section>
+
+      <section id="inventory" class="panel section-anchor mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div><h2 class="h4 mb-1">Inventory</h2><p class="text-muted mb-0">Current Supabase stock with inline updates.</p></div>
+          <div id="inventory-badges" class="d-flex gap-2 flex-wrap"></div>
+        </div>
+        <div class="d-flex gap-2 flex-wrap my-3">
+          <input id="inventory-search" type="search" class="form-control" style="max-width:360px" placeholder="Search product">
+          <select id="inventory-filter" class="form-select" style="max-width:190px"><option value="all">All products</option><option value="low">Low stock</option><option value="out">Out of stock</option><option value="available">In stock</option></select>
+        </div>
+        <div id="inventory-status" class="small text-muted mb-2"></div>
+        <div class="table-responsive"><table class="table align-middle"><thead><tr><th>Product</th><th>Price</th><th>Stock</th><th>Status</th><th></th></tr></thead><tbody id="inventory-list"></tbody></table></div>
+      </section>
+
+      <section id="reviews" class="panel section-anchor">
+        <h2 class="h4 mb-1">Pending Reviews</h2>
+        <p id="reviews-status" class="text-muted">Loading reviews…</p>
+        <div id="reviews-list"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL='https://qketnqhfjfxbqiuqevnh.supabase.co';
+    const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys';
+    const ADMIN_EMAIL='luminaweight@gmail.com';
+    const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+    let baskets=[],orders=[],products=[],reviews=[];
+    const $=id=>document.getElementById(id);
+    const esc=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+    const money=value=>`£${Number(value||0).toFixed(2)}`;
+    const itemsOf=record=>Array.isArray(record?.items)?record.items:Array.isArray(record?.details?.items)?record.details.items:[];
+    const itemName=item=>String(item?.name||item?.product_name||'Product');
+    const itemQty=item=>Math.max(1,Number(item?.qty??item?.quantity??1)||1);
+
+    function rank(target,rows,empty='No data yet.'){
+      $(target).innerHTML=rows.length?rows.map(row=>`<div class="rank-row"><span>${esc(row.label)}</span><strong>${esc(row.value)}</strong></div>`).join(''):`<p class="text-muted mb-0">${esc(empty)}</p>`;
+    }
+
+    function renderBaskets(){
+      const filter=$('basket-filter').value;
+      const search=$('basket-search').value.trim().toLowerCase();
+      const counts={live:0,checkout:0,abandoned:0,completed:0};
+      baskets.forEach(b=>{if(counts[b.status]!==undefined)counts[b.status]++});
+      $('kpis').innerHTML=['live','checkout','abandoned','completed'].map(key=>`<div class="kpi ${key}"><small>${key[0].toUpperCase()+key.slice(1)}</small><strong>${counts[key]}</strong><small>tracked baskets</small></div>`).join('');
+      const shown=baskets.filter(b=>{
+        if(filter!=='all'&&b.status!==filter)return false;
+        const text=[b.customer_name,b.customer_email,b.customer_phone,...itemsOf(b).map(itemName)].join(' ').toLowerCase();
+        return !search||text.includes(search);
+      });
+      $('basket-list').innerHTML=shown.length?shown.map(b=>`<article class="basket ${esc(b.status)}"><div class="d-flex justify-content-between gap-3 flex-wrap"><div><strong>${esc(b.customer_name||'Anonymous visitor')}</strong><div class="small text-muted">${esc(b.customer_email||'')} ${esc(b.customer_phone||'')}</div></div><div class="text-end"><span class="badge text-bg-secondary">${esc(b.status||'unknown')}</span><div class="fw-bold mt-1">${money(b.total)}</div></div></div><div class="small mt-2">${itemsOf(b).map(i=>`${itemQty(i)} × ${esc(itemName(i))}`).join('<br>')||'No items recorded'}</div><div class="small text-muted mt-2">Last active: ${esc(b.last_activity_at?new Date(b.last_activity_at).toLocaleString():'Unknown')}</div></article>`).join(''):'<p class="text-muted">No matching baskets.</p>';
+    }
+
+    function renderHistory(){
+      const paid=orders.filter(o=>['Paid','Packed','Shipped'].includes(o.status));
+      const revenue=paid.reduce((sum,o)=>sum+Number(o.total_amount||0),0);
+      rank('history-summary',[{label:'All orders',value:orders.length},{label:'Paid/fulfilled',value:paid.length},{label:'Recorded revenue',value:money(revenue)},{label:'Average paid order',value:money(paid.length?revenue/paid.length:0)}]);
+      const productTotals=new Map(),customerTotals=new Map(),pairs=new Map(),abandoned=new Map();
+      paid.forEach(order=>{
+        const names=[];
+        itemsOf(order).forEach(item=>{const name=itemName(item),qty=itemQty(item);names.push(name);productTotals.set(name,(productTotals.get(name)||0)+qty)});
+        const customer=order.details?.customer||{};const email=String(customer.email||order.customer_email||'Unknown').toLowerCase();customerTotals.set(email,(customerTotals.get(email)||0)+Number(order.total_amount||0));
+        [...new Set(names)].sort().forEach((a,i,array)=>array.slice(i+1).forEach(b=>{const key=`${a} + ${b}`;pairs.set(key,(pairs.get(key)||0)+1)}));
+      });
+      baskets.filter(b=>b.status==='abandoned').forEach(b=>itemsOf(b).forEach(item=>{const name=itemName(item);abandoned.set(name,(abandoned.get(name)||0)+itemQty(item))}));
+      const top=(map,format=value=>value)=>[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([label,value])=>({label,value:format(value)}));
+      rank('abandoned-products',top(abandoned));rank('best-products',top(productTotals));rank('best-customers',top(customerTotals,money));rank('product-pairs',top(pairs,value=>`${value} orders`));
+    }
+
+    function renderInventory(){
+      const search=$('inventory-search').value.trim().toLowerCase(),filter=$('inventory-filter').value;
+      const low=products.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=5).length,out=products.filter(p=>Number(p.stock||0)<=0).length;
+      $('inventory-badges').innerHTML=`<span class="badge text-bg-dark">${products.length} products</span><span class="badge text-bg-warning">${low} low</span><span class="badge text-bg-danger">${out} out</span>`;
+      const shown=products.filter(p=>{const stock=Number(p.stock||0);if(search&&!String(p.name||'').toLowerCase().includes(search))return false;if(filter==='low'&&!(stock>0&&stock<=5))return false;if(filter==='out'&&stock>0)return false;if(filter==='available'&&stock<=0)return false;return true});
+      $('inventory-list').innerHTML=shown.map(p=>{const stock=Number(p.stock||0),state=stock<=0?'Out of stock':stock<=5?'Low stock':'In stock';return `<tr class="${stock<=0?'stock-out':stock<=5?'stock-low':''}"><td><strong>${esc(p.name)}</strong></td><td>${money(p.price)}</td><td><input class="form-control form-control-sm stock-input" id="stock-${esc(p.id)}" type="number" min="0" step="1" value="${stock}"></td><td>${state}</td><td><button class="btn btn-sm btn-dark" data-save-stock="${esc(p.id)}">Save</button></td></tr>`}).join('');
+    }
+
+    async function saveStock(id,button){
+      const input=$(`stock-${id}`),stock=Number(input?.value);if(!Number.isInteger(stock)||stock<0)return alert('Stock must be a whole number of zero or more.');
+      button.disabled=true;const {data,error}=await db.from('Products').update({stock}).eq('id',id).select().single();button.disabled=false;if(error)return alert(`Stock update failed: ${error.message}`);
+      products=products.map(p=>p.id===id?data:p);renderInventory();
+    }
+
+    function renderReviews(){
+      $('reviews-status').textContent=`${reviews.length} pending review${reviews.length===1?'':'s'}.`;
+      $('reviews-list').innerHTML=reviews.length?reviews.map(r=>`<article class="review"><div class="d-flex justify-content-between gap-3 flex-wrap"><div><strong>${esc(r.name||'Anonymous')}</strong><div class="text-warning">${'★'.repeat(Math.max(0,Math.min(5,Number(r.rating)||0)))}</div><p class="mb-1">${esc(r.review_text||'')}</p><small class="text-muted">${esc(r.created_at?new Date(r.created_at).toLocaleString():'')}</small></div><div><button class="btn btn-sm btn-success me-1" data-review-action="publish" data-id="${esc(r.id)}">Publish</button><button class="btn btn-sm btn-outline-danger" data-review-action="delete" data-id="${esc(r.id)}">Delete</button></div></div></article>`).join(''):'<p class="text-muted">No pending reviews.</p>';
+    }
+
+    async function reviewAction(action,id){
+      if(action==='delete'&&!confirm('Delete this review permanently?'))return;
+      const query=action==='publish'?db.from('Reviews').update({approved:true}).eq('id',id):db.from('Reviews').delete().eq('id',id);const {error}=await query;if(error)return alert(error.message);reviews=reviews.filter(r=>r.id!==id);renderReviews();
+    }
+
+    async function loadDashboard(){
+      $('refresh').disabled=true;$('basket-status').textContent='Loading operational data…';
+      const [basketResult,orderResult,productResult,reviewResult]=await Promise.all([
+        db.from('shopping_carts').select('id,customer_name,customer_email,customer_phone,items,total,status,current_page,order_reference,last_activity_at').order('last_activity_at',{ascending:false}).limit(500),
+        db.from('Orders').select('id,total_amount,status,details,created_at').order('created_at',{ascending:false}).limit(5000),
+        db.from('Products').select('id,name,price,stock,type').order('name'),
+        db.from('Reviews').select('id,name,rating,review_text,created_at').eq('approved',false).order('created_at',{ascending:false})
+      ]);
+      const failure=[basketResult,orderResult,productResult,reviewResult].find(result=>result.error);if(failure){$('basket-status').textContent=`Could not load dashboard: ${failure.error.message}`;$('refresh').disabled=false;return}
+      baskets=basketResult.data||[];orders=orderResult.data||[];products=productResult.data||[];reviews=reviewResult.data||[];
+      $('basket-status').textContent=`${baskets.length} baskets and ${orders.length} historical orders loaded.`;renderBaskets();renderHistory();renderInventory();renderReviews();$('refresh').disabled=false;
+    }
+
+    async function init(){
+      const {data,error}=await db.auth.getSession();const user=data?.session?.user;if(error||!user){location.href='index.html';return}if(String(user.email||'').toLowerCase()!==ADMIN_EMAIL){$('access-status').className='alert alert-danger';$('access-status').textContent='Access denied.';return}
+      $('access-status').className='alert alert-success';$('access-status').textContent='Administrator verified.';$('dashboard').hidden=false;await loadDashboard();
+    }
+
+    $('refresh').addEventListener('click',loadDashboard);$('basket-search').addEventListener('input',renderBaskets);$('basket-filter').addEventListener('change',renderBaskets);$('inventory-search').addEventListener('input',renderInventory);$('inventory-filter').addEventListener('change',renderInventory);
+    $('inventory-list').addEventListener('click',event=>{const button=event.target.closest('[data-save-stock]');if(button)saveStock(button.dataset.saveStock,button)});
+    $('reviews-list').addEventListener('click',event=>{const button=event.target.closest('[data-review-action]');if(button)reviewAction(button.dataset.reviewAction,button.dataset.id)});
+    $('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='index.html'});
+    init();
+  </script>
+</body>
+</html>
 
