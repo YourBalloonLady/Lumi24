@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Admin | Lumina Weight</title>
+  <title>Admin | Lumina</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -65,6 +65,12 @@
     display:block;
     margin-bottom:6px;
   }
+  .format-badge{display:inline-block;min-width:74px;margin-right:8px;padding:4px 9px;border-radius:999px;text-align:center;font-size:.76rem;font-weight:900;letter-spacing:.06em;vertical-align:middle}
+  .format-vial{background:#dbeafe;color:#1e3a8a;border:2px solid #3b82f6}
+  .format-pen{background:#fef3c7;color:#78350f;border:2px solid #f59e0b}
+  .format-cartridge{background:#ede9fe;color:#4c1d95;border:2px solid #8b5cf6}
+  .format-other{background:#e5e7eb;color:#374151;border:2px solid #9ca3af}
+  .fulfilment-line{padding:7px 0;border-bottom:1px solid #e5e7eb}.fulfilment-line:last-child{border-bottom:0}
 
   .muted-line{ color:#64748b; font-size:.85rem; }
 
@@ -1401,7 +1407,7 @@ ${guideLines}
 Please keep this email so you can refer back to your guide when needed.
 
 Thanks,
-Lumina Weight`;
+Lumina`;
 }
 
 function sendDigitalGuideEmail(order, guides) {
@@ -1824,6 +1830,18 @@ let basketRefreshTimer = null;
       return rawName;
     }
 
+    function getItemFormatLabel(item = {}) {
+      if (isCartridgeOnly(item)) return { label: "CARTRIDGE", className: "format-cartridge" };
+      if (isVialItem(item)) return { label: "VIAL", className: "format-vial" };
+      if (isFullKitPen(item)) return { label: "PEN", className: "format-pen" };
+      return { label: "CHECK", className: "format-other" };
+    }
+
+    function formatBadgeHtml(item = {}) {
+      const format = getItemFormatLabel(item);
+      return `<span class="format-badge ${format.className}">${format.label}</span>`;
+    }
+
     /* =====================================================
        REFERRAL HELPERS  (ADD THEM RIGHT HERE)
     ===================================================== */
@@ -2052,7 +2070,7 @@ let basketRefreshTimer = null;
       return items.map((i) => {
         const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
         const displayName = getDisplayItemName(i);
-        return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
+        return `[${getItemFormatLabel(i).label}] ${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
       }).join("\n");
     }
 
@@ -2062,13 +2080,18 @@ let basketRefreshTimer = null;
         return `<div class="items-box"><strong>Items</strong><div class="muted-line">No items recorded.</div></div>`;
       }
 
-      const lines = items.map((i) => {
+      const lines = buildFulfilmentLinesHtml(order);
+
+      return `<div class="items-box"><strong>Items</strong>${lines}</div>`;
+    }
+
+    function buildFulfilmentLinesHtml(order) {
+      const items = order?.details?.items || [];
+      return items.map((i) => {
         const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
         const displayName = getDisplayItemName(i);
-        return `${i.qty} × ${displayName}${extrasLabel(i)} — £${lineTotal.toFixed(2)}`;
-      }).join("\n");
-
-      return `<div class="items-box"><strong>Items</strong>${escapeHtml(lines)}</div>`;
+        return `<div class="fulfilment-line">${formatBadgeHtml(i)}<strong style="display:inline;color:#0f172a">${escapeHtml(i.qty)} × ${escapeHtml(displayName)}${escapeHtml(extrasLabel(i))}</strong> — £${lineTotal.toFixed(2)}</div>`;
+      }).join("");
     }
 
     
@@ -2150,7 +2173,7 @@ let basketRefreshTimer = null;
       const items = buildItemsText(order);
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
       const tracking = String(order.details?.meta?.tracking_number || "").trim() || "Not provided";
-      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}\n\nThanks,\nLumina Weight`;
+      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}\n\nThanks,\nLumina`;
     }
 
     async function copyOrderForText(orderId){
@@ -2197,13 +2220,13 @@ let basketRefreshTimer = null;
       const customer = order.details?.customer || {};
       const ref = order.reference || order.id;
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
-      return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}\n\nThanks,\nLumina Weight`;
+      return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}\n\nThanks,\nLumina`;
     }
 
     function buildCancelledEmailText(order){
       const customer = order.details?.customer || {};
       const ref = order.reference || order.id;
-      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina Weight`;
+      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina`;
     }
 
     function buildPaymentEmailText(order){
@@ -2226,7 +2249,7 @@ Total: ${total}
 Once payment is received, we’ll get your order moved along.
 
 Thanks,
-Lumina Weight`;
+Lumina`;
     }
 // ────────────────────────────────────────────────
 // TELEGRAM ORDER UPDATES
@@ -3067,7 +3090,7 @@ if (notifyTelegram) {
         const lineTotal = Number(i.line_total || (i.price_each || 0) * i.qty);
         return `
           <tr>
-            <td style="padding:8px; border-bottom:1px solid #ddd;">${escapeHtml(i.qty)} × ${escapeHtml(i.name)}${escapeHtml(extrasLabel(i))}</td>
+            <td style="padding:8px; border-bottom:1px solid #ddd;">${formatBadgeHtml(i)} ${escapeHtml(i.qty)} × ${escapeHtml(getDisplayItemName(i))}${escapeHtml(extrasLabel(i))}</td>
             <td style="padding:8px; border-bottom:1px solid #ddd; text-align:right;">£${lineTotal.toFixed(2)}</td>
           </tr>
         `;
@@ -3089,11 +3112,12 @@ if (notifyTelegram) {
           table{ width:100%; border-collapse:collapse; margin-top:16px; }
           .right{ text-align:right; }
           .big{ font-size:18px; font-weight:800; }
+          .format-badge{display:inline-block;min-width:82px;margin-right:8px;padding:5px 9px;border-radius:999px;text-align:center;font-size:12px;font-weight:900;letter-spacing:.06em}.format-vial{background:#dbeafe;color:#1e3a8a;border:2px solid #3b82f6}.format-pen{background:#fef3c7;color:#78350f;border:2px solid #f59e0b}.format-cartridge{background:#ede9fe;color:#4c1d95;border:2px solid #8b5cf6}.format-other{background:#e5e7eb;color:#374151;border:2px solid #9ca3af}
           @media print{ button{ display:none; } body{ padding:0; } }
         </style></head><body>
           <div class="top">
             <div class="box" style="flex:1;">
-              <h1>Lumina Weight — Packing Slip</h1>
+              <h1>Lumina — Packing Slip</h1>
               <div><strong>Order Ref:</strong> ${escapeHtml(ref)}</div>
               <div><strong>Date:</strong> ${escapeHtml(created)}</div>
               <div><strong>Status:</strong> ${escapeHtml(status)}</div>
@@ -3395,7 +3419,7 @@ loadOrders();
           const ok = confirm("EmailJS failed. Open a mailto draft instead?");
           if(ok){
             openMailto(toEmail, `Reminder: pay before 3PM for next day delivery (${order.reference || order.id})`,
-              `Hi ${customer.name || "there"},\n\nJust a quick reminder: if payment is made before 3PM, we can dispatch for next day delivery.\n\nOrder: ${order.reference || order.id}\nTotal: £${Number(order.total_amount || 0).toFixed(2)}\n\nThanks,\nLumina Weight`
+              `Hi ${customer.name || "there"},\n\nJust a quick reminder: if payment is made before 3PM, we can dispatch for next day delivery.\n\nOrder: ${order.reference || order.id}\nTotal: £${Number(order.total_amount || 0).toFixed(2)}\n\nThanks,\nLumina`
             );
           }
         }
@@ -3854,6 +3878,7 @@ startBasketAutoRefresh();
     const created = order.created_at ? new Date(order.created_at).toLocaleString() : "";
     const total = Number(order.total_amount || 0).toFixed(2);
     const items = buildItemsText(order);
+    const itemsHtml = buildFulfilmentLinesHtml(order);
     const address = buildAddressText(order) || "No address recorded.";
 
     return `
@@ -3880,7 +3905,7 @@ startBasketAutoRefresh();
 
         <div class="packing-items">
           <strong>Items</strong>
-          ${escapeHtml(items)}
+          ${itemsHtml || escapeHtml(items)}
         </div>
 
         <div class="packing-address">
@@ -4024,9 +4049,6 @@ startBasketAutoRefresh();
         const isShipped = statusLower === "shipped";
 
         const tracking = String(order.details?.meta?.tracking_number || "").trim();
-        const payref   = String(order.details?.meta?.payment_reference || "").trim();
-        const note     = String(order.details?.meta?.admin_note || "").trim();
-
         const isSelected = selectedIds.has(order.id);
 
         const addrWarnings = validateAddress(order);
@@ -4115,30 +4137,7 @@ startBasketAutoRefresh();
                     ${buildAddressHtml(order)}
                     ${buildItemsHtml(order)}
 
-                    <div class="items-box" style="margin-top:8px;">
-                      <strong>💷 Payment reference (internal)</strong>
-                      <div class="d-flex gap-2 flex-wrap">
-                        <input id="payref-${order.id}" class="form-control form-control-sm small-input"
-                          placeholder="e.g. LW1234 / bank ref" value="${escapeHtml(payref)}">
-                        <button class="btn btn-sm btn-outline-success" onclick="savePaymentRef('${order.id}')">Save</button>
-                      </div>
-                    </div>
-
                     ${statusSelectHtml(order)}
-
-                    <div class="items-box" style="margin-top:8px;">
-                      <strong>📝 Admin notes</strong>
-                      <textarea id="note-${order.id}" class="form-control note-area"
-                        placeholder="Internal notes only…">${escapeHtml(note)}</textarea>
-                      <div class="d-flex justify-content-end mt-2">
-                        <button class="btn btn-sm btn-outline-dark" onclick="saveAdminNote('${order.id}')">Save note</button>
-                      </div>
-                    </div>
-
-                    <div class="items-box" style="margin-top:8px;">
-                      <strong>🕒 Timeline</strong>
-                      ${historyHtml(order)}
-                    </div>
 
                     <div class="mobile-secondary-actions mt-3">
                       <button class="btn btn-outline-dark btn-sm" onclick="copyAddressById('${order.id}')">📋 Copy address</button>
