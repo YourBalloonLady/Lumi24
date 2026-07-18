@@ -1355,6 +1355,7 @@ function renderProducts() {
               >
                 ${stock > 0 ? "View options" : "Sold out"}
               </button>
+              <a href="product.html?id=${encodeURIComponent(p.id)}" class="btn btn-link text-success fw-semibold mt-2" onclick="event.stopPropagation()">Full details →</a>
             </div>
           </div>
         </div>
