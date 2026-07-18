@@ -1,2823 +1,735 @@
+
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Analytics | Lumina Weight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="icon" type="image/png" sizes="32x32" href="/Favicon.png?v=4">
-  <link rel="icon" type="image/png" sizes="16x16" href="/Favicon.png?v=4">
-  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
+  <title>BPC-157 & TB-500 Research Guide | Lumina</title>
+  <meta name="description" content="Educational BPC-157 and TB-500 research guide covering tissue repair research, tendon and ligament discussions, thymosin beta-4 pathways, recovery themes, evidence quality, FAQs and research-only context." />
+  <meta name="robots" content="index, follow">
+
+  <meta property="og:title" content="BPC-157 & TB-500 Research Guide | Lumina" />
+  <meta property="og:description" content="A research-only educational guide to BPC-157 and TB-500, including repair research, tissue signalling, tendon and ligament discussions, limitations and FAQs." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://luminaweight.co.uk/bpc-157-tb500.html" />
+
+  <link rel="canonical" href="https://luminaweight.co.uk/bpc-157-tb500.html">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
   <style>
-    body{
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-      background:#f3f4f6;
-      color:#0f172a;
+    :root {
+      --lumina-green: #22c55e;
+      --lumina-green-dark: #16a34a;
+      --lumina-green-soft: #dcfce7;
+      --lumina-blue-soft: #eff6ff;
+      --lumina-blue: #1d4ed8;
+      --lumina-bg: #f8fafc;
+      --lumina-card: #ffffff;
+      --lumina-text: #0f172a;
+      --lumina-muted: #64748b;
+      --lumina-border: #e2e8f0;
+      --lumina-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
+      --lumina-radius: 24px;
     }
-    #trust-bar{
-      background:linear-gradient(90deg,#22c55e,#16a34a);
-      color:#fff;
-      font-size:.85rem;
-      font-weight:600;
-      padding:6px 0;
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--lumina-bg);
+      color: var(--lumina-text);
+      line-height: 1.68;
     }
-    #trust-bar span{white-space:nowrap;}
-    .admin-shell{display:flex;min-height:100vh;}
-    .admin-sidebar{
-      width:260px;
-      background:#020617;
-      color:#e5e7eb;
-      position:sticky;
-      top:0;
-      height:100vh;
-      padding:16px;
-      display:none;
+
+    a { text-decoration: none; color: inherit; }
+
+    .navbar {
+      backdrop-filter: blur(12px);
+      background: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
     }
-    .admin-sidebar a{
-      color:#e5e7eb;
-      text-decoration:none;
-      display:block;
-      padding:10px 12px;
-      border-radius:12px;
-      margin-bottom:6px;
+
+    .navbar-brand {
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: 1.35rem;
     }
-    .admin-sidebar a:hover,.admin-sidebar a.active{background:rgba(255,255,255,.1);color:#fff;}
-    .admin-main{flex:1;width:100%;}
-    @media(min-width:992px){.admin-sidebar{display:block;}}
-    .mobile-topbar{
-      background:#020617;
-      color:#fff;
-      padding:10px 12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
+
+    .brand-dot { color: var(--lumina-green); }
+
+    .nav-link {
+      color: #475569;
+      font-weight: 650;
+      font-size: 0.95rem;
     }
-    @media(min-width:992px){.mobile-topbar{display:none;}}
-    .section-card{
-      background:#fff;
-      border-radius:16px;
-      padding:16px;
-      box-shadow:0 10px 25px rgba(0,0,0,.08);
-      margin-bottom:24px;
+
+    .nav-link:hover,
+    .nav-link.active { color: var(--lumina-text); }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 86px 0 54px;
+      background:
+        radial-gradient(circle at top right, rgba(29, 78, 216, 0.12), transparent 30%),
+        radial-gradient(circle at top left, rgba(34, 197, 94, 0.11), transparent 26%),
+        linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
     }
-    .kpi-grid,.analytics-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: var(--lumina-blue-soft);
+      color: var(--lumina-blue);
+      font-weight: 850;
+      font-size: 0.92rem;
+      margin-bottom: 18px;
     }
-    @media(min-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(min-width:992px){.kpi-grid,.analytics-grid{grid-template-columns:repeat(4,1fr);}}
-    .analytics-card{
-      background:#f8fafc;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:16px;
-      padding:14px;
-      min-height:112px;
+
+    .hero h1 {
+      font-size: clamp(2.1rem, 4vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.055em;
+      font-weight: 900;
+      margin-bottom: 18px;
+      max-width: 980px;
     }
-    .analytics-label{
-      font-size:.78rem;
-      color:#64748b;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      font-weight:800;
+
+    .hero .lead {
+      color: var(--lumina-muted);
+      font-size: 1.08rem;
+      max-width: 850px;
+      margin-bottom: 26px;
     }
-    .analytics-value{
-      font-size:1.5rem;
-      color:#0f172a;
-      font-weight:900;
-      margin-top:4px;
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
     }
-    .analytics-note{font-size:.85rem;color:#64748b;margin-top:4px;}
-    .insight-list{display:grid;gap:8px;}
-    .insight-row{
-      background:#f8fafc;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:12px;
-      padding:10px 12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
+
+    .btn-lumina {
+      background: var(--lumina-green);
+      color: #fff;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
+      box-shadow: 0 12px 24px rgba(34, 197, 94, 0.2);
     }
-    .insight-row strong{color:#0f172a;}
-    .insight-row small{color:#64748b;display:block;margin-top:2px;}
-    .restock-high{border-left:5px solid #dc2626;}
-    .restock-med{border-left:5px solid #f59e0b;}
-    .restock-low{border-left:5px solid #22c55e;}
-    .heatmap-table{width:100%;border-collapse:separate;border-spacing:4px;font-size:.78rem;}
-    .heatmap-table th{color:#64748b;font-weight:700;text-align:center;white-space:nowrap;}
-    .heatmap-table td{background:#eef2ff;border-radius:8px;padding:6px;text-align:center;min-width:34px;color:#0f172a;font-weight:800;}
-    .heat-0{opacity:.25}.heat-1{opacity:.45}.heat-2{opacity:.65}.heat-3{opacity:.82}.heat-4{opacity:1}
-    #busyOverlay{
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:99999;
-      background:rgba(15,23,42,.35);
-      align-items:center;
-      justify-content:center;
+
+    .btn-lumina:hover { background: var(--lumina-green-dark); color: #fff; }
+
+    .btn-soft {
+      background: #fff;
+      color: var(--lumina-text);
+      border: 1px solid var(--lumina-border);
+      padding: 13px 20px;
+      border-radius: 15px;
+      font-weight: 850;
     }
-    #busyOverlay .box{
-      background:#fff;
-      border-radius:16px;
-      padding:16px 18px;
-      box-shadow:0 18px 50px rgba(0,0,0,.25);
-      display:flex;
-      gap:12px;
-      align-items:center;
+
+    .btn-soft:hover { background: #f8fafc; border-color: #cbd5e1; }
+
+    .quick-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 14px;
+      margin-top: 10px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 5px;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-card span {
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .section { padding: 42px 0; }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 330px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .article-card,
+    .side-card,
+    .disclaimer-card {
+      background: var(--lumina-card);
+      border: 1px solid var(--lumina-border);
+      border-radius: var(--lumina-radius);
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .article-card { padding: 30px; }
+
+    .article-card h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.05rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      margin: 34px 0 12px;
+    }
+
+    .article-card h2:first-child { margin-top: 0; }
+
+    .article-card h3 {
+      font-size: 1.15rem;
+      font-weight: 850;
+      margin: 24px 0 10px;
+    }
+
+    .article-card p,
+    .article-card li {
+      color: var(--lumina-muted);
+      font-size: 1rem;
+    }
+
+    .article-card strong { color: var(--lumina-text); }
+
+    .highlight-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .highlight-box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.92rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #334155;
+    }
+
+    .research-list {
+      display: grid;
+      gap: 12px;
+      padding: 0;
+      margin: 18px 0 0;
+      list-style: none;
+    }
+
+    .research-list li {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .side-stack {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .side-card { padding: 20px; }
+
+    .side-card h3 {
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .side-card ul {
+      padding-left: 18px;
+      margin-bottom: 0;
+      color: var(--lumina-muted);
+      font-size: 0.93rem;
+    }
+
+    .side-card li { margin-bottom: 8px; }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill {
+      display: inline-flex;
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .toc a {
+      display: block;
+      color: #475569;
+      font-weight: 700;
+      padding: 7px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .toc a:hover { color: var(--lumina-green-dark); }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      margin-top: 16px;
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 14px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+      color: var(--lumina-muted);
+    }
+
+    .compare-table th {
+      background: #f8fafc;
+      color: #334155;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .compare-table tr:last-child td { border-bottom: none; }
+
+    .accordion-item {
+      border: 1px solid var(--lumina-border);
+      border-radius: 18px !important;
+      overflow: hidden;
+      margin-bottom: 14px;
+      box-shadow: var(--lumina-shadow);
+    }
+
+    .accordion-button {
+      font-weight: 850;
+      padding: 18px 20px;
+      background: #fff;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      background: #fff;
+      color: var(--lumina-green-dark);
+    }
+
+    .accordion-body {
+      color: var(--lumina-muted);
+      padding: 0 20px 20px;
+    }
+
+    .disclaimer-card {
+      padding: 26px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .disclaimer-card h2 {
+      font-size: 1.25rem;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-card p { color: var(--lumina-muted); }
+    .disclaimer-card p:last-child { margin-bottom: 0; }
+
+    .footer {
+      padding: 34px 0 56px;
+      color: var(--lumina-muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 991.98px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .side-stack { position: static; }
+      .hero { padding: 70px 0 46px; }
+      .article-card { padding: 22px; }
     }
   </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "BPC-157 & TB-500 Research Guide",
+    "description": "Educational research-only guide to BPC-157 and TB-500, tissue repair research, tendon and ligament discussions, thymosin beta-4 pathways and evidence limitations.",
+    "author": {
+      "@type": "Organization",
+      "name": "Lumina"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Lumina",
+      "url": "https://luminaweight.co.uk"
+    },
+    "mainEntityOfPage": "https://luminaweight.co.uk/bpc-157-tb500.html"
+  }
+  </script>
 </head>
 <body>
-  <div id="trust-bar">
-    <div class="container d-flex justify-content-center gap-4 flex-wrap">
-      <span>📊 Lumina Analytics</span>
-      <span>📦 Stock Planning</span>
-      <span>👥 Customer Reorder Signals</span>
+  <nav class="navbar navbar-expand-lg sticky-top">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">Lumina<span class="brand-dot">.</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
+          <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
+          <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
+  </nav>
 
-  <div class="mobile-topbar">
-    <div class="fw-bold">🌙 Lumina Analytics</div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">Menu</button>
-      <button id="logout-btn" class="btn btn-sm btn-outline-light">Logout</button>
-    </div>
-  </div>
-
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">Lumina Admin</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-      <a href="admin.html" class="d-block mb-2">Orders</a>
-      <a href="analytics.html" class="d-block mb-2 fw-bold">Analytics</a>
-      <a href="products.html" class="d-block mb-2">Products</a>
-      <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
-      <button id="logout-btn-mobile-menu" class="btn btn-sm btn-outline-dark mt-2">Logout</button>
-    </div>
-  </div>
-
-  <div class="admin-shell">
-    <aside class="admin-sidebar">
-      <div class="fw-bold mb-3">🌙 Lumina Admin</div>
-      <a href="admin.html">Orders</a>
-      <a href="analytics.html" class="active">Analytics</a>
-      <a href="products.html">Products</a>
-      <a href="reviews.html">Customer Feedback</a>
-      <a href="index.html#home">Store Home</a>
-      <hr style="border-color:rgba(255,255,255,.12);">
-      <button id="logout-btn-desktop" class="btn btn-sm btn-outline-light w-100">Logout</button>
-    </aside>
-
-    <main class="admin-main">
-      <div class="container mt-4">
-        <div class="section-card">
-          <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-            <div>
-              <h3 class="mb-1">Analytics Dashboard</h3>
-              <p class="text-muted mb-0 small">This page is only for data, stock planning, reorder patterns, and customer insight.</p>
-            </div>
-            <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-dark btn-sm" onclick="loadAllOrders()">Refresh analytics</button>
-              <button class="btn btn-outline-success btn-sm" onclick="exportProductVelocityCsv()">Export velocity CSV</button>
-            </div>
-          </div>
-          <p id="analytics-status" class="text-muted mt-3 mb-0">Checking access…</p>
-          <div id="admin-warning" class="mt-3"></div>
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge"><i class="fa-solid fa-screwdriver-wrench"></i> Repair research guide</div>
+      <h1>BPC-157 & TB-500 Research Guide: tissue signalling, repair pathways and recovery research.</h1>
+      <p class="lead">
+        BPC-157 and TB-500 are two of the most discussed compounds in repair-focused peptide research. This guide explains why they are often grouped together, what each one is usually associated with, and why evidence quality matters when reading online claims.
+      </p>
+      <div class="hero-actions">
+        <a href="products.html" class="btn btn-lumina">View research catalogue</a>
+        <a href="peptides.html" class="btn btn-soft">Back to peptide library</a>
+      </div>
+      <div class="quick-stats">
+        <div class="stat-card">
+          <strong>Primary interest</strong>
+          <span>Tissue repair, tendon, ligament and recovery-related research.</span>
         </div>
-
-        <div class="kpi-grid mb-4">
-          <div class="analytics-card"><div class="analytics-label">Revenue 7 days</div><div class="analytics-value" id="rev7">—</div><div class="analytics-note" id="rev7Note">Paid/packed/shipped only</div></div>
-          <div class="analytics-card"><div class="analytics-label">Revenue 30 days</div><div class="analytics-value" id="rev30">—</div><div class="analytics-note" id="rev30Note">Paid/packed/shipped only</div></div>
-          <div class="analytics-card"><div class="analytics-label">Orders 30 days</div><div class="analytics-value" id="orders30">—</div><div class="analytics-note">All statuses</div></div>
-          <div class="analytics-card"><div class="analytics-label">Avg order value</div><div class="analytics-value" id="analyticsAov">—</div><div class="analytics-note" id="analyticsAovNote">Paid/packed/shipped orders</div></div>
+        <div class="stat-card">
+          <strong>Blend logic</strong>
+          <span>BPC-157 and TB-500 are often discussed together because they sit in similar repair-focused conversations.</span>
         </div>
-
-        <div class="analytics-grid mb-4">
-          <div class="analytics-card"><div class="analytics-label">Best order day</div><div class="analytics-value" id="analyticsBestDay">—</div><div class="analytics-note" id="analyticsBestDayNote">Based on all loaded orders</div></div>
-          <div class="analytics-card"><div class="analytics-label">Best order time</div><div class="analytics-value" id="analyticsBestHour">—</div><div class="analytics-note" id="analyticsBestHourNote">Most common hour</div></div>
-          <div class="analytics-card"><div class="analytics-label">Repeat customers</div><div class="analytics-value" id="analyticsRepeatRate">—</div><div class="analytics-note" id="analyticsRepeatNote">Customer retention signal</div></div>
-          <div class="analytics-card"><div class="analytics-label">Unique customers</div><div class="analytics-value" id="uniqueCustomers">—</div><div class="analytics-note">By email address</div></div>
+        <div class="stat-card">
+          <strong>Evidence note</strong>
+          <span>Popular online, but many claims rely on early, animal or anecdotal evidence.</span>
         </div>
-
-        <div class="row g-3">
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Revenue - last 30 days</div><canvas id="chartRevenue"></canvas></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Orders - last 30 days</div><canvas id="chartOrders"></canvas></div></div>
-          <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products</div><canvas id="chartTopProducts"></canvas></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Restock radar</div><span class="badge text-bg-light">Velocity</span></div><div id="restockRadar" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Frequently bought together</div><span class="badge text-bg-light">Pairs</span></div><div id="boughtTogether" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Customers</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Order heatmap</div><div id="orderHeatmap" class="table-responsive"></div></div></div>
+        <div class="stat-card">
+          <strong>Content type</strong>
+          <span>Educational research information only. No human-use guidance.</span>
         </div>
       </div>
-    </main>
-  </div>
-
-  <div id="busyOverlay">
-    <div class="box">
-      <div class="spinner-border" role="status"></div>
-      <div><div class="fw-bold" id="busyTitle">Working…</div><div class="text-muted small" id="busyMeta">Please wait</div></div>
     </div>
-  </div>
+  </header>
+
+  <main class="section">
+    <div class="container">
+      <div class="content-grid">
+        <article class="article-card">
+          <section id="overview">
+            <h2>What are BPC-157 and TB-500?</h2>
+            <p>
+              <strong>BPC-157</strong> is a synthetic peptide often discussed in relation to soft-tissue repair, tendon research, gut-related studies and recovery-focused mechanisms. The name BPC stands for “Body Protection Compound,” which is why it is frequently positioned in repair conversations.
+            </p>
+            <p>
+              <strong>TB-500</strong> is a synthetic peptide associated with thymosin beta-4 research. It is commonly discussed in relation to tissue repair, mobility, inflammation-related pathways and actin regulation, although the online claims around it can be much stronger than the available evidence.
+            </p>
+
+            <div class="highlight-box">
+              <strong>Simple summary</strong>
+              <p class="mb-0">BPC-157 and TB-500 are usually discussed as repair-focused research compounds. They are not fat-loss peptides, stimulants or proven medical treatments.</p>
+            </div>
+          </section>
+
+          <section id="why-combined">
+            <h2>Why are they often combined in research discussions?</h2>
+            <p>
+              BPC-157 and TB-500 are often grouped together because they are both discussed around repair, recovery and tissue signalling. In simple terms, BPC-157 is usually associated with localised repair and gut/tendon-style research themes, while TB-500 is often discussed more broadly around tissue remodelling, mobility and thymosin-related pathways.
+            </p>
+            <p>
+              That does not mean they do the same thing. It means they are often placed in the same research category because the conversations around them overlap.
+            </p>
+
+            <ul class="research-list">
+              <li><strong>BPC-157:</strong> Commonly discussed around tendon, ligament, gut and soft-tissue repair research.</li>
+              <li><strong>TB-500:</strong> Commonly discussed around thymosin beta-4, actin regulation, mobility and tissue-remodelling research.</li>
+              <li><strong>Blend interest:</strong> Often described as a “repair stack” because the two compounds are discussed around complementary research themes.</li>
+              <li><strong>Evidence caution:</strong> The popularity of the blend online is much higher than the quality of human evidence available.</li>
+            </ul>
+          </section>
+
+          <section id="research-focus">
+            <h2>Main research focus areas</h2>
+            <h3>1. Tendon and ligament research</h3>
+            <p>
+              BPC-157 and TB-500 are frequently discussed in relation to tendon and ligament repair research. This is one of the reasons the combination has become popular in sports, gym and injury-recovery communities. However, online popularity should not be mistaken for proven clinical effect.
+            </p>
+
+            <h3>2. Soft-tissue and wound-healing discussions</h3>
+            <p>
+              Both compounds are often mentioned in broader soft-tissue and wound-healing research conversations. BPC-157 is commonly linked to protective and repair-related mechanisms, while TB-500 is often connected to tissue remodelling and cell migration themes.
+            </p>
+
+            <h3>3. Gut and gastrointestinal research</h3>
+            <p>
+              BPC-157 is especially well known in gut-related research discussions. It is often talked about in relation to gastrointestinal lining, protective signalling and inflammatory stress models. This is a major reason it has a different research profile from TB-500.
+            </p>
+
+            <h3>4. Mobility and recovery interest</h3>
+            <p>
+              TB-500 is often discussed around mobility and recovery because of its connection to thymosin beta-4 research. This area includes interest in tissue remodelling, actin dynamics and cell movement.
+            </p>
+          </section>
+
+          <section id="mechanisms">
+            <h2>Mechanism overview</h2>
+            <p>
+              The exact mechanisms discussed around BPC-157 and TB-500 are complex and still debated. For a simple research-library summary, the most useful distinction is that BPC-157 is often framed around protective and localised repair signalling, while TB-500 is usually connected to thymosin beta-4-related pathways and tissue remodelling.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Common mechanism discussion</th>
+                  <th>Research themes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>BPC-157</strong></td>
+                  <td>Protective peptide signalling, tissue repair pathways, angiogenesis-related discussion</td>
+                  <td>Tendon, ligament, gut, soft tissue</td>
+                </tr>
+                <tr>
+                  <td><strong>TB-500</strong></td>
+                  <td>Thymosin beta-4-related pathways, actin regulation, cell migration themes</td>
+                  <td>Mobility, remodelling, recovery, tissue response</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="evidence">
+            <h2>How strong is the evidence?</h2>
+            <p>
+              This is where the honest answer matters. BPC-157 and TB-500 are extremely popular online, but the strength of human clinical evidence is not as strong as the claims often suggest. Much of the discussion comes from animal research, preclinical work, mechanistic theory and user anecdote.
+            </p>
+            <div class="highlight-box">
+              <strong>Balanced view</strong>
+              <p class="mb-0">BPC-157 and TB-500 are interesting repair-research compounds, but they should not be presented as proven cures for injury, tendon problems or pain.</p>
+            </div>
+            <p>
+              A good research summary should separate what is genuinely interesting from what is simply repeated online. “Popular” does not always mean “well proven.”
+            </p>
+          </section>
+
+          <section id="comparison">
+            <h2>How this blend compares with other research compounds</h2>
+            <p>
+              The BPC-157 and TB-500 blend belongs firmly in the repair and tissue-research category. It is very different from metabolic compounds like Tirzepatide or Retatrutide, and also different from cellular-energy compounds like NAD+, MOTS-C or SS-31.
+            </p>
+
+            <table class="compare-table">
+              <thead>
+                <tr>
+                  <th>Compound</th>
+                  <th>Main research theme</th>
+                  <th>Typical discussion area</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>BPC-157 & TB-500</strong></td>
+                  <td>Repair and recovery research</td>
+                  <td>Tendon, ligament, soft tissue, mobility</td>
+                </tr>
+                <tr>
+                  <td><strong>CJC-1295 + Ipamorelin</strong></td>
+                  <td>Growth hormone signalling</td>
+                  <td>Recovery, body composition, sleep-related discussions</td>
+                </tr>
+                <tr>
+                  <td><strong>GHK-Cu</strong></td>
+                  <td>Cosmetic and skin research</td>
+                  <td>Skin, hair, collagen, tissue signalling</td>
+                </tr>
+                <tr>
+                  <td><strong>SS-31</strong></td>
+                  <td>Mitochondrial research</td>
+                  <td>Cellular energy, oxidative stress, mitochondrial resilience</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+
+          <section id="limitations">
+            <h2>Important limitations and caution</h2>
+            <p>
+              Repair-focused peptides are some of the most exaggerated compounds online. It is common to see bold claims around injury healing, pain relief, tendon repair and recovery speed. Those claims should be treated cautiously unless supported by strong evidence.
+            </p>
+            <ul>
+              <li>Much of the evidence discussed online is preclinical or anecdotal.</li>
+              <li>Human outcomes cannot be assumed from animal or mechanistic research.</li>
+              <li>Injuries and tissue damage require proper medical assessment.</li>
+              <li>This guide does not provide dosing, administration or treatment guidance.</li>
+            </ul>
+          </section>
+
+          <section id="faq">
+            <h2>BPC-157 & TB-500 FAQ</h2>
+            <div class="accordion" id="bpcTbFaq">
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqOneHeading">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="true" aria-controls="faqOne">
+                    Are BPC-157 and TB-500 the same thing?
+                  </button>
+                </h3>
+                <div id="faqOne" class="accordion-collapse collapse show" aria-labelledby="faqOneHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    No. They are different compounds. BPC-157 is commonly discussed around protective and repair-related peptide signalling, while TB-500 is associated with thymosin beta-4-related research themes.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqTwoHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                    Why is this combination sometimes called a repair stack?
+                  </button>
+                </h3>
+                <div id="faqTwo" class="accordion-collapse collapse" aria-labelledby="faqTwoHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    It is called a repair stack because both compounds are commonly discussed in relation to recovery and tissue repair research. The phrase is popular online, but it should not be treated as proof of medical effect.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqThreeHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                    Is the evidence strong in humans?
+                  </button>
+                </h3>
+                <div id="faqThree" class="accordion-collapse collapse" aria-labelledby="faqThreeHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    The online interest is strong, but the quality of human evidence is limited compared with the claims often made. Much of the discussion relies on preclinical research and anecdotal reports.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faqFourHeading">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqFour" aria-expanded="false" aria-controls="faqFour">
+                    Does this guide explain how to use BPC-157 or TB-500?
+                  </button>
+                </h3>
+                <div id="faqFour" class="accordion-collapse collapse" aria-labelledby="faqFourHeading" data-bs-parent="#bpcTbFaq">
+                  <div class="accordion-body">
+                    No. This guide is for research information only. It does not provide dosing, administration instructions, treatment advice or human-use recommendations.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </article>
+
+        <aside class="side-stack">
+          <div class="side-card toc">
+            <h3>On this page</h3>
+            <a href="#overview">What are they?</a>
+            <a href="#why-combined">Why combined?</a>
+            <a href="#research-focus">Research focus</a>
+            <a href="#mechanisms">Mechanism overview</a>
+            <a href="#evidence">Evidence quality</a>
+            <a href="#comparison">Comparison</a>
+            <a href="#limitations">Limitations</a>
+            <a href="#faq">FAQ</a>
+          </div>
+
+          <div class="side-card">
+            <h3>Research category</h3>
+            <div class="tag-row">
+              <span class="pill">Repair research</span>
+              <span class="pill">Tissue signalling</span>
+              <span class="pill">Tendon interest</span>
+              <span class="pill">Recovery discussions</span>
+            </div>
+          </div>
+
+          <div class="side-card">
+            <h3>Key takeaways</h3>
+            <ul>
+              <li>BPC-157 and TB-500 are different compounds.</li>
+              <li>They are grouped together because both sit in repair-focused research discussions.</li>
+              <li>Claims online can be much stronger than the available human evidence.</li>
+              <li>This page is educational and research-only.</li>
+            </ul>
+          </div>
+
+          <div class="side-card">
+            <h3>Related guides</h3>
+            <ul>
+              <li><a href="cjc-1295-ipamorelin.html">CJC-1295 + Ipamorelin Guide</a></li>
+              <li><a href="ghk-cu.html">GHK-Cu Research Guide</a></li>
+              <li><a href="ss-31.html">SS-31 Research Guide</a></li>
+              <li><a href="peptides.html">Back to Library</a></li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <section class="section pt-0">
+    <div class="container">
+      <div class="disclaimer-card">
+        <h2>Research disclaimer</h2>
+        <p>
+          This guide is provided for educational and research discussion purposes only. It is not medical advice and should not be interpreted as diagnosis, treatment guidance, dosing guidance, administration guidance or a recommendation for human use.
+        </p>
+        <p>
+          Peptides and related research compounds may have limited human data, mixed evidence quality and varying regulatory status. Readers should review primary scientific literature and speak to a qualified professional for medical concerns.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <div>© 2026 Lumina. Educational peptide research content.</div>
+      <div>Research information only • Not medical guidance</div>
+    </div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <script>
-const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
-    const ADMIN_EMAIL = "luminaweight@gmail.com";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-const EXCLUDED_EMAILS = [
-  "luminaweight@gmail.com"
-];
-
-let ordersCache = [];
-let productsCache = [];
-
-let chartRevenue;
-let chartOrders;
-let chartTopProducts;
-
-let analyticsDays = 60;
-
-const statusEl = document.getElementById("analytics-status");
-const warningEl = document.getElementById("admin-warning");
-
-function setBusy(on,title="Working…",meta="Please wait"){
-  document.getElementById("busyTitle").textContent = title;
-  document.getElementById("busyMeta").textContent = meta;
-  document.getElementById("busyOverlay").style.display =
-    on ? "flex" : "none";
-}
-
-function escapeHtml(str){
-  return String(str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function setText(id,val){
-  const el = document.getElementById(id);
-  if(el) el.textContent = val;
-}
-
-function isPaidLikeStatus(status=""){
-  const s = String(status).toLowerCase();
-
-  return (
-    s === "paid" ||
-    s === "packed" ||
-    s === "shipped"
-  );
-}
-
-function isRevenueOrder(order){
-  return isPaidLikeStatus(order?.status || "");
-}
-
-function getCustomer(order){
-  return order?.details?.customer || {};
-}
-
-function getOrderEmail(order){
-  const c = getCustomer(order);
-
-  return String(
-    c.email ||
-    order.customer_email ||
-    order.email ||
-    ""
-  ).trim().toLowerCase();
-}
-
-function isRealCustomerOrder(order){
-  const email = getOrderEmail(order);
-
-  if(!email) return false;
-
-  return !EXCLUDED_EMAILS.includes(email);
-}
-
-function getOrderDate(order){
-  const d = order?.created_at
-    ? new Date(order.created_at)
-    : null;
-
-  return d && !isNaN(d)
-    ? d
-    : null;
-}
-
-function yyyyMmDd(d){
-  const x = new Date(d);
-
-  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`;
-}
-
-function buildLastNDays(n){
-  const out = [];
-  const now = new Date();
-
-  for(let i=n-1;i>=0;i--){
-    const d = new Date(now);
-
-    d.setDate(now.getDate() - i);
-    d.setHours(0,0,0,0);
-
-    out.push(yyyyMmDd(d));
-  }
-
-  return out;
-}
-
-function daysBetween(a,b){
-  const ms = 1000 * 60 * 60 * 24;
-
-  return Math.max(
-    1,
-    Math.ceil((b-a)/ms)
-  );
-}
-
-function normaliseProductName(name=""){
-  return String(name || "Unknown")
-    .replace(/\s+/g," ")
-    .replace(/\s+\((cartridge only|full kit)\)$/i,"")
-    .trim() || "Unknown";
-}
-
-function getItemFormatValue(item={}){
-  return String(
-    item?.format ||
-    item?.variant ||
-    item?.selected_format ||
-    item?.option ||
-    item?.type ||
-    ""
-  ).trim().toLowerCase();
-}
-
-function isCartridgeOnly(item={}){
-  const f = getItemFormatValue(item);
-  const n = String(item?.name || "").toLowerCase();
-
-  return (
-    f.includes("cartridge") ||
-    f === "cartridge-only" ||
-    f === "cartridge only" ||
-    n.includes("cartridge only")
-  );
-}
-
-function isFullKitPen(item={}){
-  const f = getItemFormatValue(item);
-  const n = String(item?.name || "").toLowerCase();
-
-  if(isCartridgeOnly(item)) return false;
-
-  return (
-    f.includes("full-kit") ||
-    f.includes("full kit") ||
-    f.includes("pen") ||
-    n.includes("pen")
-  );
-}
-
-function getDisplayItemName(item={}){
-  const raw = String(item?.name || "Unnamed item").trim();
-  const f = getItemFormatValue(item);
-
-  if(
-    isCartridgeOnly(item) &&
-    !raw.toLowerCase().includes("cartridge")
-  ){
-    return `${raw} (Cartridge Only)`;
-  }
-
-  if(
-    isFullKitPen(item) &&
-    f &&
-    f.includes("full") &&
-    !raw.toLowerCase().includes("full kit")
-  ){
-    return `${raw} (Full Kit)`;
-  }
-
-  return raw;
-}
-
-function buildItemsText(order){
-  const items = order?.details?.items || [];
-
-  if(!items.length){
-    return "Items not recorded.";
-  }
-
-  return items
-    .map(i => `${i.qty} × ${getDisplayItemName(i)}`)
-    .join("\n");
-}
-
-async function init(){
-
-  statusEl.textContent = "Checking access…";
-
-  const { data:sessionData, error } =
-    await supabaseClient.auth.getSession();
-
-  if(error || !sessionData?.session?.user){
-    window.location.href = "index.html";
-    return;
-  }
-
-  const user = sessionData.session.user;
-
-  if(
-    (user.email || "").toLowerCase() !==
-    ADMIN_EMAIL.toLowerCase()
-  ){
-    warningEl.innerHTML =
-      `<div class="alert alert-danger">Access denied.</div>`;
-
-    statusEl.textContent = "Not authorised";
-
-    return;
-  }
-
-  statusEl.textContent = "Admin verified ✅";
-
-  await loadAllOrders();
-}
-
-async function loadAllOrders(){
-
-  setBusy(
-    true,
-    "Loading analytics…",
-    `Loading last ${analyticsDays} days`
-  );
-
-  try{
-
-    const since = new Date();
-
-    since.setDate(
-      since.getDate() - analyticsDays
-    );
-
-    const { data:orders, error } =
-      await supabaseClient
-        .from("Orders")
-        .select("*")
-        .gte(
-          "created_at",
-          since.toISOString()
-        )
-        .order("created_at",{ ascending:false });
-
-    if(error) throw error;
-
-    const { data:products } =
-      await supabaseClient
-        .from("Products")
-        .select("*");
-
-    ordersCache = orders || [];
-    productsCache = products || [];
-
-    statusEl.textContent =
-      `${ordersCache.length} orders loaded`;
-
-    renderAllAnalytics();
-
-  }catch(e){
-
-    console.error(e);
-
-    statusEl.textContent =
-      "Could not load analytics.";
-
-    alert(
-      "Analytics failed to load — check console."
-    );
-
-  }finally{
-    setBusy(false);
-  }
-}
-
-function getValidOrders(){
-
-  return ordersCache.filter(
-    o =>
-      isRevenueOrder(o) &&
-      isRealCustomerOrder(o)
-  );
-}
-
-function renderAllAnalytics(){
-
-  const validOrders = getValidOrders();
-
-  renderKpis(validOrders);
-
-  renderCharts(validOrders);
-
-  renderAnalyticsSummary(validOrders);
-
-  renderRestockRadar(validOrders);
-
-  renderBoughtTogether(validOrders);
-
-  renderReorderWatchlist(validOrders);
-
-  renderOrderHeatmap(validOrders);
-
-  renderCriticalStock();
-}
-
-function renderKpis(orders){
-
-  const now = new Date();
-
-  const weekAgo = new Date(now);
-  weekAgo.setDate(now.getDate()-7);
-
-  const monthAgo = new Date(now);
-  monthAgo.setDate(now.getDate()-30);
-
-  let rev7 = 0;
-  let rev30 = 0;
-  let orders30 = 0;
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(d && d >= monthAgo){
-      orders30++;
-    }
-
-    const amt = Number(o.total_amount || 0);
-
-    if(d && d >= weekAgo){
-      rev7 += amt;
-    }
-
-    if(d && d >= monthAgo){
-      rev30 += amt;
-    }
-  }
-
-  const aov = orders.length
-    ? rev30 / orders30
-    : 0;
-
-  setText("rev7",`£${rev7.toFixed(2)}`);
-  setText("rev30",`£${rev30.toFixed(2)}`);
-  setText("orders30",orders30);
-  setText("analyticsAov",`£${aov.toFixed(2)}`);
-}
-
-    function renderAnalyticsSummary(orders){
-
-  const dayNames = [
-    "Sunday","Monday","Tuesday",
-    "Wednesday","Thursday",
-    "Friday","Saturday"
-  ];
-
-  const dayCounts = new Map(
-    dayNames.map(d => [d,0])
-  );
-
-  const hourCounts = new Map();
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(!d) continue;
-
-    const day = dayNames[d.getDay()];
-    const hr = d.getHours();
-
-    dayCounts.set(
-      day,
-      (dayCounts.get(day)||0)+1
-    );
-
-    hourCounts.set(
-      hr,
-      (hourCounts.get(hr)||0)+1
-    );
-  }
-
-  const bestDay =
-    [...dayCounts.entries()]
-      .sort((a,b)=>b[1]-a[1])[0] || ["—",0];
-
-  const bestHour =
-    [...hourCounts.entries()]
-      .sort((a,b)=>b[1]-a[1])[0] || [null,0];
-
-  const customerCounts = new Map();
-
-  for(const o of orders){
-
-    const email = getOrderEmail(o);
-
-    if(!email) continue;
-
-    customerCounts.set(
-      email,
-      (customerCounts.get(email)||0)+1
-    );
-  }
-
-  const customerTotal = customerCounts.size;
-
-  const repeatCustomers =
-    [...customerCounts.values()]
-      .filter(n => n > 1)
-      .length;
-
-  const repeatRate = customerTotal
-    ? Math.round(
-        (repeatCustomers/customerTotal)*100
-      )
-    : 0;
-
-  setText(
-    "analyticsBestDay",
-    bestDay[1] ? bestDay[0] : "—"
-  );
-
-  setText(
-    "analyticsBestDayNote",
-    bestDay[1]
-      ? `${bestDay[1]} order(s)`
-      : "No data"
-  );
-
-  if(bestHour[0] !== null){
-
-    const end =
-      (Number(bestHour[0])+1)%24;
-
-    setText(
-      "analyticsBestHour",
-      `${String(bestHour[0]).padStart(2,"0")}:00`
-    );
-
-    setText(
-      "analyticsBestHourNote",
-      `${bestHour[1]} order(s), ${String(bestHour[0]).padStart(2,"0")}:00–${String(end).padStart(2,"0")}:00`
-    );
-
-  }else{
-    setText("analyticsBestHour","—");
-  }
-
-  setText(
-    "analyticsRepeatRate",
-    `${repeatRate}%`
-  );
-
-  setText(
-    "analyticsRepeatNote",
-    `${repeatCustomers} repeat buyer(s)`
-  );
-
-  setText(
-    "uniqueCustomers",
-    customerTotal
-  );
-}
-
-function renderCharts(orders){
-
-  if(!window.Chart) return;
-
-  const days = buildLastNDays(30);
-
-  const revByDay =
-    Object.fromEntries(days.map(d=>[d,0]));
-
-  const cntByDay =
-    Object.fromEntries(days.map(d=>[d,0]));
-
-  const prodCount = new Map();
-
-  for(const o of orders){
-
-    const day =
-      o.created_at
-        ? yyyyMmDd(o.created_at)
-        : null;
-
-    if(day && revByDay[day] !== undefined){
-
-      revByDay[day] +=
-        Number(o.total_amount || 0);
-
-      cntByDay[day] += 1;
-    }
-
-    for(const it of (o.details?.items || [])){
-
-      const key =
-        normaliseProductName(
-          getDisplayItemName(it)
-        );
-
-      prodCount.set(
-        key,
-        (prodCount.get(key)||0)+
-        Number(it?.qty || 1)
-      );
-    }
-  }
-
-  const revenueData =
-    days.map(d => Number(revByDay[d]||0));
-
-  const ordersData =
-    days.map(d => Number(cntByDay[d]||0));
-
-  const top =
-    [...prodCount.entries()]
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,12);
-
-  if(chartRevenue) chartRevenue.destroy();
-
-  chartRevenue = new Chart(
-    document.getElementById("chartRevenue"),
-    {
-      type:"line",
-      data:{
-        labels:days,
-        datasets:[{
-          label:"£ Revenue",
-          data:revenueData
-        }]
-      }
-    }
-  );
-
-  if(chartOrders) chartOrders.destroy();
-
-  chartOrders = new Chart(
-    document.getElementById("chartOrders"),
-    {
-      type:"bar",
-      data:{
-        labels:days,
-        datasets:[{
-          label:"Orders",
-          data:ordersData
-        }]
-      }
-    }
-  );
-
-  if(chartTopProducts) chartTopProducts.destroy();
-
-  chartTopProducts = new Chart(
-    document.getElementById("chartTopProducts"),
-    {
-      type:"bar",
-      data:{
-        labels:top.map(x=>x[0]),
-        datasets:[{
-          label:"Qty",
-          data:top.map(x=>x[1])
-        }]
-      },
-      options:{
-        indexAxis:"y"
-      }
-    }
-  );
-}
-
-function getVelocityRows(){
-
-  const now = new Date();
-
-  const last30 = new Date(now);
-
-  last30.setDate(now.getDate()-30);
-
-  const productMap = new Map();
-
-  for(const o of getValidOrders()){
-
-    const d = getOrderDate(o);
-
-    if(!d || d < last30) continue;
-
-    for(const item of (o.details?.items || [])){
-
-      const name =
-        normaliseProductName(
-          getDisplayItemName(item)
-        );
-
-      const qty =
-        Number(item?.qty || 1);
-
-      const line =
-        Number(
-          item?.line_total ||
-          (item?.price_each||0)*qty ||
-          0
-        );
-
-      const rec =
-        productMap.get(name) || {
-          qty:0,
-          revenue:0,
-          orders:0
-        };
-
-      rec.qty += qty;
-      rec.revenue += line;
-      rec.orders += 1;
-
-      productMap.set(name,rec);
-    }
-  }
-
-  return [...productMap.entries()]
-    .map(([name,rec])=>{
-
-      const perWeek =
-        rec.qty / 30 * 7;
-
-      const product =
-        productsCache.find(
-          p =>
-            normaliseProductName(p.name)
-            === name
-        );
-
-      const stock =
-        Number(
-          product?.stock ||
-          product?.quantity ||
-          0
-        );
-
-      const weeksLeft =
-        perWeek > 0
-          ? stock / perWeek
-          : 999;
-
-      let priority = "LOW";
-
-      if(
-        stock <= 3 ||
-        weeksLeft <= 1
-      ){
-        priority = "HIGH";
-      }else if(
-        stock <= 8 ||
-        weeksLeft <= 3
-      ){
-        priority = "MED";
-      }
-
-      return {
-        name,
-        stock,
-        weeksLeft,
-        ...rec,
-        perWeek,
-        priority
-      };
-
-    })
-    .sort((a,b)=>b.perWeek-a.perWeek);
-}
-
-function renderRestockRadar(){
-
-  const el =
-    document.getElementById(
-      "restockRadar"
-    );
-
-  const rows =
-    getVelocityRows().slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No product data.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>{
-
-    const cls =
-      r.priority==="HIGH"
-        ? "restock-high"
-        : r.priority==="MED"
-        ? "restock-med"
-        : "restock-low";
-
-    return `
-      <div class="insight-row ${cls}">
-        <div>
-          <strong>${escapeHtml(r.name)}</strong>
-
-          <small>
-            ${r.qty} sold •
-            ${r.stock} left •
-            ~${r.weeksLeft.toFixed(1)} week(s)
-          </small>
-        </div>
-
-        <div class="text-end">
-          <span class="badge ${
-            r.priority==="HIGH"
-              ? "text-bg-danger"
-              : r.priority==="MED"
-              ? "text-bg-warning"
-              : "text-bg-success"
-          }">
-            ${r.priority}
-          </span>
-
-          <small>
-            ${r.perWeek.toFixed(1)}/week
-          </small>
-        </div>
-      </div>
-    `;
-
-  }).join("");
-}
-
-function renderCriticalStock(){
-
-  if(
-    document.getElementById("criticalStock")
-  ) return;
-
-  const container =
-    document.querySelector(".analytics-grid");
-
-  if(!container) return;
-
-  const critical =
-    productsCache
-      .filter(
-        p =>
-          Number(
-            p.stock ||
-            p.quantity ||
-            0
-          ) <= 5
-      )
-      .sort(
-        (a,b)=>
-          Number(a.stock||a.quantity||0)
-          -
-          Number(b.stock||b.quantity||0)
-      )
-      .slice(0,8);
-
-  const div =
-    document.createElement("div");
-
-  div.className = "analytics-card";
-
-  div.id = "criticalStock";
-
-  div.innerHTML = `
-    <div class="analytics-label">
-      Critical Stock
-    </div>
-
-    ${
-      critical.length
-        ? critical.map(p=>`
-          <div class="d-flex justify-content-between small border-bottom py-1">
-            <span>${escapeHtml(p.name)}</span>
-            <strong>${Number(p.stock||p.quantity||0)}</strong>
-          </div>
-        `).join("")
-        : `<div class="small text-muted mt-2">No critical stock.</div>`
-    }
-  `;
-
-  container.appendChild(div);
-}
-
-function renderBoughtTogether(orders){
-
-  const el =
-    document.getElementById(
-      "boughtTogether"
-    );
-
-  const pairMap = new Map();
-
-  for(const o of orders){
-
-    const names =
-      [...new Set(
-        (o.details?.items || [])
-          .map(i =>
-            normaliseProductName(
-              getDisplayItemName(i)
-            )
-          )
-          .filter(Boolean)
-      )].sort();
-
-    for(let i=0;i<names.length;i++){
-
-      for(let j=i+1;j<names.length;j++){
-
-        const key =
-          `${names[i]}|||${names[j]}`;
-
-        pairMap.set(
-          key,
-          (pairMap.get(key)||0)+1
-        );
-      }
-    }
-  }
-
-  const rows =
-    [...pairMap.entries()]
-      .map(([key,count])=>({
-        names:key.split("|||"),
-        count
-      }))
-      .sort((a,b)=>b.count-a.count)
-      .slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No bundle data yet.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>`
-    <div class="insight-row">
-      <div>
-        <strong>${escapeHtml(r.names[0])}</strong>
-
-        <small>
-          Often with ${escapeHtml(r.names[1])}
-        </small>
-      </div>
-
-      <div class="text-end">
-        <span class="badge text-bg-dark">
-          ${r.count}x
-        </span>
-      </div>
-    </div>
-  `).join("");
-}
-
-    function renderReorderWatchlist(orders){
-
-  const el =
-    document.getElementById("reorderWatchlist");
-
-  const byEmail = new Map();
-  const now = new Date();
-
-  for(const o of orders){
-
-    const email = getOrderEmail(o);
-    const d = getOrderDate(o);
-
-    if(!email || !d) continue;
-
-    const c = getCustomer(o);
-
-    const rec =
-      byEmail.get(email) || {
-        email,
-        name:c.name || "",
-        orders:[]
-      };
-
-    rec.orders.push(o);
-
-    if(c.name && !rec.name){
-      rec.name = c.name;
-    }
-
-    byEmail.set(email,rec);
-  }
-
-  const rows =
-    [...byEmail.values()]
-      .map(cust=>{
-
-        const sorted =
-          cust.orders.sort(
-            (a,b)=>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          );
-
-        const last = sorted[0];
-        const lastDate = getOrderDate(last);
-        const daysSince = daysBetween(lastDate,now);
-
-        const items =
-          buildItemsText(last)
-            .split("\n")
-            .slice(0,2)
-            .join(" • ");
-
-        let cycle = 35;
-
-        if(sorted.length >= 2){
-
-          const intervals = [];
-
-          for(let i=0;i<sorted.length-1;i++){
-
-            const a = getOrderDate(sorted[i]);
-            const b = getOrderDate(sorted[i+1]);
-
-            if(a && b){
-              intervals.push(
-                Math.abs(daysBetween(b,a))
-              );
-            }
-          }
-
-          if(intervals.length){
-
-            cycle = Math.round(
-              intervals.reduce((s,n)=>s+n,0)
-              / intervals.length
-            );
-
-            cycle =
-              Math.min(
-                Math.max(cycle,21),
-                60
-              );
-          }
-        }
-
-        const dueIn = cycle - daysSince;
-
-        return {
-          ...cust,
-          last,
-          daysSince,
-          cycle,
-          dueIn,
-          items
-        };
-      })
-      .filter(r => r.daysSince >= 21)
-      .sort((a,b)=>a.dueIn-b.dueIn)
-      .slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No obvious reorder customers yet.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>{
-
-    const urgent = r.dueIn <= 0;
-
-    return `
-      <div class="insight-row ${urgent ? "restock-high" : "restock-med"}">
-        <div>
-          <strong>${escapeHtml(r.name || r.email)}</strong>
-
-          <small>
-            ${escapeHtml(r.email)} •
-            last ordered ${r.daysSince} day(s) ago
-          </small>
-
-          <small>
-            ${escapeHtml(r.items)}
-          </small>
-        </div>
-
-        <div class="text-end">
-          <span class="badge ${urgent ? "text-bg-danger" : "text-bg-warning"}">
-            ${urgent ? "Due now" : `Due ${r.dueIn}d`}
-          </span>
-
-          <small>
-            cycle ~${r.cycle}d
-          </small>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function renderOrderHeatmap(orders){
-
-  const el =
-    document.getElementById("orderHeatmap");
-
-  const dayNames =
-    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
-  const hourBands = [
-    [0,5,"00–05"],
-    [6,8,"06–08"],
-    [9,11,"09–11"],
-    [12,14,"12–14"],
-    [15,17,"15–17"],
-    [18,20,"18–20"],
-    [21,23,"21–23"]
-  ];
-
-  const matrix =
-    dayNames.map(
-      () => hourBands.map(()=>0)
-    );
-
-  let max = 0;
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(!d) continue;
-
-    const day = d.getDay();
-    const hour = d.getHours();
-
-    const idx =
-      hourBands.findIndex(
-        ([a,b]) => hour >= a && hour <= b
-      );
-
-    if(idx >= 0){
-      matrix[day][idx] += 1;
-      max = Math.max(max,matrix[day][idx]);
-    }
-  }
-
-  const heatClass = n => {
-
-    if(!n || !max) return "heat-0";
-
-    const p = n / max;
-
-    if(p >= .8) return "heat-4";
-    if(p >= .55) return "heat-3";
-    if(p >= .3) return "heat-2";
-
-    return "heat-1";
-  };
-
-  el.innerHTML = `
-    <table class="heatmap-table">
-      <thead>
-        <tr>
-          <th></th>
-          ${hourBands.map(h=>`
-            <th>${h[2]}</th>
-          `).join("")}
-        </tr>
-      </thead>
-
-      <tbody>
-        ${dayNames.map((day,dIdx)=>`
-          <tr>
-            <th>${day}</th>
-
-            ${hourBands.map((h,hIdx)=>{
-              const n = matrix[dIdx][hIdx];
-
-              return `
-                <td
-                  class="${heatClass(n)}"
-                  title="${day} ${h[2]}: ${n} order(s)"
-                >
-                  ${n}
-                </td>
-              `;
-            }).join("")}
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-}
-
-function exportProductVelocityCsv(){
-
-  const rows = getVelocityRows();
-
-  const header = [
-    "Product",
-    "Current Stock",
-    "Qty Sold 30d",
-    "Revenue 30d",
-    "Units Per Week",
-    "Weeks Left",
-    "Priority"
-  ];
-
-  const csv = [
-    header,
-    ...rows.map(r=>[
-      r.name,
-      r.stock,
-      r.qty,
-      r.revenue.toFixed(2),
-      r.perWeek.toFixed(2),
-      r.weeksLeft.toFixed(2),
-      r.priority
-    ])
-  ]
-    .map(row =>
-      row.map(v =>
-        `"${String(v ?? "").replaceAll('"','""')}"`
-      ).join(",")
-    )
-    .join("\n");
-
-  const blob =
-    new Blob(
-      [csv],
-      {type:"text/csv;charset=utf-8;"}
-    );
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-
-  a.href = url;
-
-  a.download =
-    `lumina_product_velocity_${new Date().toISOString().slice(0,10)}.csv`;
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
-}
-
-async function doLogout(){
-
-  try{
-    await supabaseClient.auth.signOut();
-  }finally{
-    window.location.href = "index.html";
-  }
-}
-
-[
-  "logout-btn",
-  "logout-btn-desktop",
-  "logout-btn-mobile-menu"
-].forEach(id=>{
-
-  const b = document.getElementById(id);
-
-  if(b){
-    b.addEventListener("click",doLogout);
-  }
-});
-
-window.loadAllOrders = loadAllOrders;
-window.exportProductVelocityCsv = exportProductVelocityCsv;
-
-init();
-  </script>
   <script src="/site-nav.js"></script>
-</body>
-</html>
-    }
-    .admin-sidebar a{
-      color:#e5e7eb;
-      text-decoration:none;
-      display:block;
-      padding:10px 12px;
-      border-radius:12px;
-      margin-bottom:6px;
-    }
-    .admin-sidebar a:hover,.admin-sidebar a.active{background:rgba(255,255,255,.1);color:#fff;}
-    .admin-main{flex:1;width:100%;}
-    @media(min-width:992px){.admin-sidebar{display:block;}}
-    .mobile-topbar{
-      background:#020617;
-      color:#fff;
-      padding:10px 12px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    @media(min-width:992px){.mobile-topbar{display:none;}}
-    .section-card{
-      background:#fff;
-      border-radius:16px;
-      padding:16px;
-      box-shadow:0 10px 25px rgba(0,0,0,.08);
-      margin-bottom:24px;
-    }
-    .kpi-grid,.analytics-grid{
-      display:grid;
-      grid-template-columns:1fr;
-      gap:12px;
-    }
-    @media(min-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
-    @media(min-width:992px){.kpi-grid,.analytics-grid{grid-template-columns:repeat(4,1fr);}}
-    .analytics-card{
-      background:#f8fafc;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:16px;
-      padding:14px;
-      min-height:112px;
-    }
-    .analytics-label{
-      font-size:.78rem;
-      color:#64748b;
-      text-transform:uppercase;
-      letter-spacing:.04em;
-      font-weight:800;
-    }
-    .analytics-value{
-      font-size:1.5rem;
-      color:#0f172a;
-      font-weight:900;
-      margin-top:4px;
-    }
-    .analytics-note{font-size:.85rem;color:#64748b;margin-top:4px;}
-    .insight-list{display:grid;gap:8px;}
-    .insight-row{
-      background:#f8fafc;
-      border:1px solid rgba(15,23,42,.08);
-      border-radius:12px;
-      padding:10px 12px;
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      align-items:flex-start;
-    }
-    .insight-row strong{color:#0f172a;}
-    .insight-row small{color:#64748b;display:block;margin-top:2px;}
-    .restock-high{border-left:5px solid #dc2626;}
-    .restock-med{border-left:5px solid #f59e0b;}
-    .restock-low{border-left:5px solid #22c55e;}
-    .heatmap-table{width:100%;border-collapse:separate;border-spacing:4px;font-size:.78rem;}
-    .heatmap-table th{color:#64748b;font-weight:700;text-align:center;white-space:nowrap;}
-    .heatmap-table td{background:#eef2ff;border-radius:8px;padding:6px;text-align:center;min-width:34px;color:#0f172a;font-weight:800;}
-    .heat-0{opacity:.25}.heat-1{opacity:.45}.heat-2{opacity:.65}.heat-3{opacity:.82}.heat-4{opacity:1}
-    #busyOverlay{
-      display:none;
-      position:fixed;
-      inset:0;
-      z-index:99999;
-      background:rgba(15,23,42,.35);
-      align-items:center;
-      justify-content:center;
-    }
-    #busyOverlay .box{
-      background:#fff;
-      border-radius:16px;
-      padding:16px 18px;
-      box-shadow:0 18px 50px rgba(0,0,0,.25);
-      display:flex;
-      gap:12px;
-      align-items:center;
-    }
-  </style>
-</head>
-<body>
-  <div id="trust-bar">
-    <div class="container d-flex justify-content-center gap-4 flex-wrap">
-      <span>📊 Lumina Analytics</span>
-      <span>📦 Stock Planning</span>
-      <span>👥 Customer Reorder Signals</span>
-    </div>
-  </div>
-
-  <div class="mobile-topbar">
-    <div class="fw-bold">🌙 Lumina Analytics</div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-light" data-bs-toggle="offcanvas" data-bs-target="#sideMenu">Menu</button>
-      <button id="logout-btn" class="btn btn-sm btn-outline-light">Logout</button>
-    </div>
-  </div>
-
-  <div class="offcanvas offcanvas-start" tabindex="-1" id="sideMenu">
-    <div class="offcanvas-header">
-      <h5 class="offcanvas-title">Lumina Admin</h5>
-      <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
-    </div>
-    <div class="offcanvas-body">
-      <a href="admin.html" class="d-block mb-2">Orders</a>
-      <a href="analytics.html" class="d-block mb-2 fw-bold">Analytics</a>
-      <a href="products.html" class="d-block mb-2">Products</a>
-      <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
-      <button id="logout-btn-mobile-menu" class="btn btn-sm btn-outline-dark mt-2">Logout</button>
-    </div>
-  </div>
-
-  <div class="admin-shell">
-    <aside class="admin-sidebar">
-      <div class="fw-bold mb-3">🌙 Lumina Admin</div>
-      <a href="admin.html">Orders</a>
-      <a href="analytics.html" class="active">Analytics</a>
-      <a href="products.html">Products</a>
-      <a href="reviews.html">Customer Feedback</a>
-      <a href="index.html#home">Store Home</a>
-      <hr style="border-color:rgba(255,255,255,.12);">
-      <button id="logout-btn-desktop" class="btn btn-sm btn-outline-light w-100">Logout</button>
-    </aside>
-
-    <main class="admin-main">
-      <div class="container mt-4">
-        <div class="section-card">
-          <div class="d-flex justify-content-between align-items-center gap-2 flex-wrap">
-            <div>
-              <h3 class="mb-1">Analytics Dashboard</h3>
-              <p class="text-muted mb-0 small">This page is only for data, stock planning, reorder patterns, and customer insight.</p>
-            </div>
-            <div class="d-flex gap-2 flex-wrap">
-              <button class="btn btn-dark btn-sm" onclick="loadAllOrders()">Refresh analytics</button>
-              <button class="btn btn-outline-success btn-sm" onclick="exportProductVelocityCsv()">Export velocity CSV</button>
-            </div>
-          </div>
-          <p id="analytics-status" class="text-muted mt-3 mb-0">Checking access…</p>
-          <div id="admin-warning" class="mt-3"></div>
-        </div>
-
-        <div class="kpi-grid mb-4">
-          <div class="analytics-card"><div class="analytics-label">Revenue 7 days</div><div class="analytics-value" id="rev7">—</div><div class="analytics-note" id="rev7Note">Paid/packed/shipped only</div></div>
-          <div class="analytics-card"><div class="analytics-label">Revenue 30 days</div><div class="analytics-value" id="rev30">—</div><div class="analytics-note" id="rev30Note">Paid/packed/shipped only</div></div>
-          <div class="analytics-card"><div class="analytics-label">Orders 30 days</div><div class="analytics-value" id="orders30">—</div><div class="analytics-note">All statuses</div></div>
-          <div class="analytics-card"><div class="analytics-label">Avg order value</div><div class="analytics-value" id="analyticsAov">—</div><div class="analytics-note" id="analyticsAovNote">Paid/packed/shipped orders</div></div>
-        </div>
-
-        <div class="analytics-grid mb-4">
-          <div class="analytics-card"><div class="analytics-label">Best order day</div><div class="analytics-value" id="analyticsBestDay">—</div><div class="analytics-note" id="analyticsBestDayNote">Based on all loaded orders</div></div>
-          <div class="analytics-card"><div class="analytics-label">Best order time</div><div class="analytics-value" id="analyticsBestHour">—</div><div class="analytics-note" id="analyticsBestHourNote">Most common hour</div></div>
-          <div class="analytics-card"><div class="analytics-label">Repeat customers</div><div class="analytics-value" id="analyticsRepeatRate">—</div><div class="analytics-note" id="analyticsRepeatNote">Customer retention signal</div></div>
-          <div class="analytics-card"><div class="analytics-label">Unique customers</div><div class="analytics-value" id="uniqueCustomers">—</div><div class="analytics-note">By email address</div></div>
-        </div>
-
-        <div class="row g-3">
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Revenue - last 30 days</div><canvas id="chartRevenue"></canvas></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Orders - last 30 days</div><canvas id="chartOrders"></canvas></div></div>
-          <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products</div><canvas id="chartTopProducts"></canvas></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Restock radar</div><span class="badge text-bg-light">Velocity</span></div><div id="restockRadar" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Frequently bought together</div><span class="badge text-bg-light">Pairs</span></div><div id="boughtTogether" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Customers</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Order heatmap</div><div id="orderHeatmap" class="table-responsive"></div></div></div>
-        </div>
-      </div>
-    </main>
-  </div>
-
-  <div id="busyOverlay">
-    <div class="box">
-      <div class="spinner-border" role="status"></div>
-      <div><div class="fw-bold" id="busyTitle">Working…</div><div class="text-muted small" id="busyMeta">Please wait</div></div>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-
-  <script>
-const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
-    const ADMIN_EMAIL = "luminaweight@gmail.com";
-
-const supabaseClient = supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
-
-const EXCLUDED_EMAILS = [
-  "luminaweight@gmail.com"
-];
-
-let ordersCache = [];
-let productsCache = [];
-
-let chartRevenue;
-let chartOrders;
-let chartTopProducts;
-
-let analyticsDays = 60;
-
-const statusEl = document.getElementById("analytics-status");
-const warningEl = document.getElementById("admin-warning");
-
-function setBusy(on,title="Working…",meta="Please wait"){
-  document.getElementById("busyTitle").textContent = title;
-  document.getElementById("busyMeta").textContent = meta;
-  document.getElementById("busyOverlay").style.display =
-    on ? "flex" : "none";
-}
-
-function escapeHtml(str){
-  return String(str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
-
-function setText(id,val){
-  const el = document.getElementById(id);
-  if(el) el.textContent = val;
-}
-
-function isPaidLikeStatus(status=""){
-  const s = String(status).toLowerCase();
-
-  return (
-    s === "paid" ||
-    s === "packed" ||
-    s === "shipped"
-  );
-}
-
-function isRevenueOrder(order){
-  return isPaidLikeStatus(order?.status || "");
-}
-
-function getCustomer(order){
-  return order?.details?.customer || {};
-}
-
-function getOrderEmail(order){
-  const c = getCustomer(order);
-
-  return String(
-    c.email ||
-    order.customer_email ||
-    order.email ||
-    ""
-  ).trim().toLowerCase();
-}
-
-function isRealCustomerOrder(order){
-  const email = getOrderEmail(order);
-
-  if(!email) return false;
-
-  return !EXCLUDED_EMAILS.includes(email);
-}
-
-function getOrderDate(order){
-  const d = order?.created_at
-    ? new Date(order.created_at)
-    : null;
-
-  return d && !isNaN(d)
-    ? d
-    : null;
-}
-
-function yyyyMmDd(d){
-  const x = new Date(d);
-
-  return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,"0")}-${String(x.getDate()).padStart(2,"0")}`;
-}
-
-function buildLastNDays(n){
-  const out = [];
-  const now = new Date();
-
-  for(let i=n-1;i>=0;i--){
-    const d = new Date(now);
-
-    d.setDate(now.getDate() - i);
-    d.setHours(0,0,0,0);
-
-    out.push(yyyyMmDd(d));
-  }
-
-  return out;
-}
-
-function daysBetween(a,b){
-  const ms = 1000 * 60 * 60 * 24;
-
-  return Math.max(
-    1,
-    Math.ceil((b-a)/ms)
-  );
-}
-
-function normaliseProductName(name=""){
-  return String(name || "Unknown")
-    .replace(/\s+/g," ")
-    .replace(/\s+\((cartridge only|full kit)\)$/i,"")
-    .trim() || "Unknown";
-}
-
-function getItemFormatValue(item={}){
-  return String(
-    item?.format ||
-    item?.variant ||
-    item?.selected_format ||
-    item?.option ||
-    item?.type ||
-    ""
-  ).trim().toLowerCase();
-}
-
-function isCartridgeOnly(item={}){
-  const f = getItemFormatValue(item);
-  const n = String(item?.name || "").toLowerCase();
-
-  return (
-    f.includes("cartridge") ||
-    f === "cartridge-only" ||
-    f === "cartridge only" ||
-    n.includes("cartridge only")
-  );
-}
-
-function isFullKitPen(item={}){
-  const f = getItemFormatValue(item);
-  const n = String(item?.name || "").toLowerCase();
-
-  if(isCartridgeOnly(item)) return false;
-
-  return (
-    f.includes("full-kit") ||
-    f.includes("full kit") ||
-    f.includes("pen") ||
-    n.includes("pen")
-  );
-}
-
-function getDisplayItemName(item={}){
-  const raw = String(item?.name || "Unnamed item").trim();
-  const f = getItemFormatValue(item);
-
-  if(
-    isCartridgeOnly(item) &&
-    !raw.toLowerCase().includes("cartridge")
-  ){
-    return `${raw} (Cartridge Only)`;
-  }
-
-  if(
-    isFullKitPen(item) &&
-    f &&
-    f.includes("full") &&
-    !raw.toLowerCase().includes("full kit")
-  ){
-    return `${raw} (Full Kit)`;
-  }
-
-  return raw;
-}
-
-function buildItemsText(order){
-  const items = order?.details?.items || [];
-
-  if(!items.length){
-    return "Items not recorded.";
-  }
-
-  return items
-    .map(i => `${i.qty} × ${getDisplayItemName(i)}`)
-    .join("\n");
-}
-
-async function init(){
-
-  statusEl.textContent = "Checking access…";
-
-  const { data:sessionData, error } =
-    await supabaseClient.auth.getSession();
-
-  if(error || !sessionData?.session?.user){
-    window.location.href = "index.html";
-    return;
-  }
-
-  const user = sessionData.session.user;
-
-  if(
-    (user.email || "").toLowerCase() !==
-    ADMIN_EMAIL.toLowerCase()
-  ){
-    warningEl.innerHTML =
-      `<div class="alert alert-danger">Access denied.</div>`;
-
-    statusEl.textContent = "Not authorised";
-
-    return;
-  }
-
-  statusEl.textContent = "Admin verified ✅";
-
-  await loadAllOrders();
-}
-
-async function loadAllOrders(){
-
-  setBusy(
-    true,
-    "Loading analytics…",
-    `Loading last ${analyticsDays} days`
-  );
-
-  try{
-
-    const since = new Date();
-
-    since.setDate(
-      since.getDate() - analyticsDays
-    );
-
-    const { data:orders, error } =
-      await supabaseClient
-        .from("Orders")
-        .select("*")
-        .gte(
-          "created_at",
-          since.toISOString()
-        )
-        .order("created_at",{ ascending:false });
-
-    if(error) throw error;
-
-    const { data:products } =
-      await supabaseClient
-        .from("Products")
-        .select("*");
-
-    ordersCache = orders || [];
-    productsCache = products || [];
-
-    statusEl.textContent =
-      `${ordersCache.length} orders loaded`;
-
-    renderAllAnalytics();
-
-  }catch(e){
-
-    console.error(e);
-
-    statusEl.textContent =
-      "Could not load analytics.";
-
-    alert(
-      "Analytics failed to load — check console."
-    );
-
-  }finally{
-    setBusy(false);
-  }
-}
-
-function getValidOrders(){
-
-  return ordersCache.filter(
-    o =>
-      isRevenueOrder(o) &&
-      isRealCustomerOrder(o)
-  );
-}
-
-function renderAllAnalytics(){
-
-  const validOrders = getValidOrders();
-
-  renderKpis(validOrders);
-
-  renderCharts(validOrders);
-
-  renderAnalyticsSummary(validOrders);
-
-  renderRestockRadar(validOrders);
-
-  renderBoughtTogether(validOrders);
-
-  renderReorderWatchlist(validOrders);
-
-  renderOrderHeatmap(validOrders);
-
-  renderCriticalStock();
-}
-
-function renderKpis(orders){
-
-  const now = new Date();
-
-  const weekAgo = new Date(now);
-  weekAgo.setDate(now.getDate()-7);
-
-  const monthAgo = new Date(now);
-  monthAgo.setDate(now.getDate()-30);
-
-  let rev7 = 0;
-  let rev30 = 0;
-  let orders30 = 0;
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(d && d >= monthAgo){
-      orders30++;
-    }
-
-    const amt = Number(o.total_amount || 0);
-
-    if(d && d >= weekAgo){
-      rev7 += amt;
-    }
-
-    if(d && d >= monthAgo){
-      rev30 += amt;
-    }
-  }
-
-  const aov = orders.length
-    ? rev30 / orders30
-    : 0;
-
-  setText("rev7",`£${rev7.toFixed(2)}`);
-  setText("rev30",`£${rev30.toFixed(2)}`);
-  setText("orders30",orders30);
-  setText("analyticsAov",`£${aov.toFixed(2)}`);
-}
-
-    function renderAnalyticsSummary(orders){
-
-  const dayNames = [
-    "Sunday","Monday","Tuesday",
-    "Wednesday","Thursday",
-    "Friday","Saturday"
-  ];
-
-  const dayCounts = new Map(
-    dayNames.map(d => [d,0])
-  );
-
-  const hourCounts = new Map();
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(!d) continue;
-
-    const day = dayNames[d.getDay()];
-    const hr = d.getHours();
-
-    dayCounts.set(
-      day,
-      (dayCounts.get(day)||0)+1
-    );
-
-    hourCounts.set(
-      hr,
-      (hourCounts.get(hr)||0)+1
-    );
-  }
-
-  const bestDay =
-    [...dayCounts.entries()]
-      .sort((a,b)=>b[1]-a[1])[0] || ["—",0];
-
-  const bestHour =
-    [...hourCounts.entries()]
-      .sort((a,b)=>b[1]-a[1])[0] || [null,0];
-
-  const customerCounts = new Map();
-
-  for(const o of orders){
-
-    const email = getOrderEmail(o);
-
-    if(!email) continue;
-
-    customerCounts.set(
-      email,
-      (customerCounts.get(email)||0)+1
-    );
-  }
-
-  const customerTotal = customerCounts.size;
-
-  const repeatCustomers =
-    [...customerCounts.values()]
-      .filter(n => n > 1)
-      .length;
-
-  const repeatRate = customerTotal
-    ? Math.round(
-        (repeatCustomers/customerTotal)*100
-      )
-    : 0;
-
-  setText(
-    "analyticsBestDay",
-    bestDay[1] ? bestDay[0] : "—"
-  );
-
-  setText(
-    "analyticsBestDayNote",
-    bestDay[1]
-      ? `${bestDay[1]} order(s)`
-      : "No data"
-  );
-
-  if(bestHour[0] !== null){
-
-    const end =
-      (Number(bestHour[0])+1)%24;
-
-    setText(
-      "analyticsBestHour",
-      `${String(bestHour[0]).padStart(2,"0")}:00`
-    );
-
-    setText(
-      "analyticsBestHourNote",
-      `${bestHour[1]} order(s), ${String(bestHour[0]).padStart(2,"0")}:00–${String(end).padStart(2,"0")}:00`
-    );
-
-  }else{
-    setText("analyticsBestHour","—");
-  }
-
-  setText(
-    "analyticsRepeatRate",
-    `${repeatRate}%`
-  );
-
-  setText(
-    "analyticsRepeatNote",
-    `${repeatCustomers} repeat buyer(s)`
-  );
-
-  setText(
-    "uniqueCustomers",
-    customerTotal
-  );
-}
-
-function renderCharts(orders){
-
-  if(!window.Chart) return;
-
-  const days = buildLastNDays(30);
-
-  const revByDay =
-    Object.fromEntries(days.map(d=>[d,0]));
-
-  const cntByDay =
-    Object.fromEntries(days.map(d=>[d,0]));
-
-  const prodCount = new Map();
-
-  for(const o of orders){
-
-    const day =
-      o.created_at
-        ? yyyyMmDd(o.created_at)
-        : null;
-
-    if(day && revByDay[day] !== undefined){
-
-      revByDay[day] +=
-        Number(o.total_amount || 0);
-
-      cntByDay[day] += 1;
-    }
-
-    for(const it of (o.details?.items || [])){
-
-      const key =
-        normaliseProductName(
-          getDisplayItemName(it)
-        );
-
-      prodCount.set(
-        key,
-        (prodCount.get(key)||0)+
-        Number(it?.qty || 1)
-      );
-    }
-  }
-
-  const revenueData =
-    days.map(d => Number(revByDay[d]||0));
-
-  const ordersData =
-    days.map(d => Number(cntByDay[d]||0));
-
-  const top =
-    [...prodCount.entries()]
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,12);
-
-  if(chartRevenue) chartRevenue.destroy();
-
-  chartRevenue = new Chart(
-    document.getElementById("chartRevenue"),
-    {
-      type:"line",
-      data:{
-        labels:days,
-        datasets:[{
-          label:"£ Revenue",
-          data:revenueData
-        }]
-      }
-    }
-  );
-
-  if(chartOrders) chartOrders.destroy();
-
-  chartOrders = new Chart(
-    document.getElementById("chartOrders"),
-    {
-      type:"bar",
-      data:{
-        labels:days,
-        datasets:[{
-          label:"Orders",
-          data:ordersData
-        }]
-      }
-    }
-  );
-
-  if(chartTopProducts) chartTopProducts.destroy();
-
-  chartTopProducts = new Chart(
-    document.getElementById("chartTopProducts"),
-    {
-      type:"bar",
-      data:{
-        labels:top.map(x=>x[0]),
-        datasets:[{
-          label:"Qty",
-          data:top.map(x=>x[1])
-        }]
-      },
-      options:{
-        indexAxis:"y"
-      }
-    }
-  );
-}
-
-function getVelocityRows(){
-
-  const now = new Date();
-
-  const last30 = new Date(now);
-
-  last30.setDate(now.getDate()-30);
-
-  const productMap = new Map();
-
-  for(const o of getValidOrders()){
-
-    const d = getOrderDate(o);
-
-    if(!d || d < last30) continue;
-
-    for(const item of (o.details?.items || [])){
-
-      const name =
-        normaliseProductName(
-          getDisplayItemName(item)
-        );
-
-      const qty =
-        Number(item?.qty || 1);
-
-      const line =
-        Number(
-          item?.line_total ||
-          (item?.price_each||0)*qty ||
-          0
-        );
-
-      const rec =
-        productMap.get(name) || {
-          qty:0,
-          revenue:0,
-          orders:0
-        };
-
-      rec.qty += qty;
-      rec.revenue += line;
-      rec.orders += 1;
-
-      productMap.set(name,rec);
-    }
-  }
-
-  return [...productMap.entries()]
-    .map(([name,rec])=>{
-
-      const perWeek =
-        rec.qty / 30 * 7;
-
-      const product =
-        productsCache.find(
-          p =>
-            normaliseProductName(p.name)
-            === name
-        );
-
-      const stock =
-        Number(
-          product?.stock ||
-          product?.quantity ||
-          0
-        );
-
-      const weeksLeft =
-        perWeek > 0
-          ? stock / perWeek
-          : 999;
-
-      let priority = "LOW";
-
-      if(
-        stock <= 3 ||
-        weeksLeft <= 1
-      ){
-        priority = "HIGH";
-      }else if(
-        stock <= 8 ||
-        weeksLeft <= 3
-      ){
-        priority = "MED";
-      }
-
-      return {
-        name,
-        stock,
-        weeksLeft,
-        ...rec,
-        perWeek,
-        priority
-      };
-
-    })
-    .sort((a,b)=>b.perWeek-a.perWeek);
-}
-
-function renderRestockRadar(){
-
-  const el =
-    document.getElementById(
-      "restockRadar"
-    );
-
-  const rows =
-    getVelocityRows().slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No product data.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>{
-
-    const cls =
-      r.priority==="HIGH"
-        ? "restock-high"
-        : r.priority==="MED"
-        ? "restock-med"
-        : "restock-low";
-
-    return `
-      <div class="insight-row ${cls}">
-        <div>
-          <strong>${escapeHtml(r.name)}</strong>
-
-          <small>
-            ${r.qty} sold •
-            ${r.stock} left •
-            ~${r.weeksLeft.toFixed(1)} week(s)
-          </small>
-        </div>
-
-        <div class="text-end">
-          <span class="badge ${
-            r.priority==="HIGH"
-              ? "text-bg-danger"
-              : r.priority==="MED"
-              ? "text-bg-warning"
-              : "text-bg-success"
-          }">
-            ${r.priority}
-          </span>
-
-          <small>
-            ${r.perWeek.toFixed(1)}/week
-          </small>
-        </div>
-      </div>
-    `;
-
-  }).join("");
-}
-
-function renderCriticalStock(){
-
-  if(
-    document.getElementById("criticalStock")
-  ) return;
-
-  const container =
-    document.querySelector(".analytics-grid");
-
-  if(!container) return;
-
-  const critical =
-    productsCache
-      .filter(
-        p =>
-          Number(
-            p.stock ||
-            p.quantity ||
-            0
-          ) <= 5
-      )
-      .sort(
-        (a,b)=>
-          Number(a.stock||a.quantity||0)
-          -
-          Number(b.stock||b.quantity||0)
-      )
-      .slice(0,8);
-
-  const div =
-    document.createElement("div");
-
-  div.className = "analytics-card";
-
-  div.id = "criticalStock";
-
-  div.innerHTML = `
-    <div class="analytics-label">
-      Critical Stock
-    </div>
-
-    ${
-      critical.length
-        ? critical.map(p=>`
-          <div class="d-flex justify-content-between small border-bottom py-1">
-            <span>${escapeHtml(p.name)}</span>
-            <strong>${Number(p.stock||p.quantity||0)}</strong>
-          </div>
-        `).join("")
-        : `<div class="small text-muted mt-2">No critical stock.</div>`
-    }
-  `;
-
-  container.appendChild(div);
-}
-
-function renderBoughtTogether(orders){
-
-  const el =
-    document.getElementById(
-      "boughtTogether"
-    );
-
-  const pairMap = new Map();
-
-  for(const o of orders){
-
-    const names =
-      [...new Set(
-        (o.details?.items || [])
-          .map(i =>
-            normaliseProductName(
-              getDisplayItemName(i)
-            )
-          )
-          .filter(Boolean)
-      )].sort();
-
-    for(let i=0;i<names.length;i++){
-
-      for(let j=i+1;j<names.length;j++){
-
-        const key =
-          `${names[i]}|||${names[j]}`;
-
-        pairMap.set(
-          key,
-          (pairMap.get(key)||0)+1
-        );
-      }
-    }
-  }
-
-  const rows =
-    [...pairMap.entries()]
-      .map(([key,count])=>({
-        names:key.split("|||"),
-        count
-      }))
-      .sort((a,b)=>b.count-a.count)
-      .slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No bundle data yet.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>`
-    <div class="insight-row">
-      <div>
-        <strong>${escapeHtml(r.names[0])}</strong>
-
-        <small>
-          Often with ${escapeHtml(r.names[1])}
-        </small>
-      </div>
-
-      <div class="text-end">
-        <span class="badge text-bg-dark">
-          ${r.count}x
-        </span>
-      </div>
-    </div>
-  `).join("");
-}
-
-    function renderReorderWatchlist(orders){
-
-  const el =
-    document.getElementById("reorderWatchlist");
-
-  const byEmail = new Map();
-  const now = new Date();
-
-  for(const o of orders){
-
-    const email = getOrderEmail(o);
-    const d = getOrderDate(o);
-
-    if(!email || !d) continue;
-
-    const c = getCustomer(o);
-
-    const rec =
-      byEmail.get(email) || {
-        email,
-        name:c.name || "",
-        orders:[]
-      };
-
-    rec.orders.push(o);
-
-    if(c.name && !rec.name){
-      rec.name = c.name;
-    }
-
-    byEmail.set(email,rec);
-  }
-
-  const rows =
-    [...byEmail.values()]
-      .map(cust=>{
-
-        const sorted =
-          cust.orders.sort(
-            (a,b)=>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          );
-
-        const last = sorted[0];
-        const lastDate = getOrderDate(last);
-        const daysSince = daysBetween(lastDate,now);
-
-        const items =
-          buildItemsText(last)
-            .split("\n")
-            .slice(0,2)
-            .join(" • ");
-
-        let cycle = 35;
-
-        if(sorted.length >= 2){
-
-          const intervals = [];
-
-          for(let i=0;i<sorted.length-1;i++){
-
-            const a = getOrderDate(sorted[i]);
-            const b = getOrderDate(sorted[i+1]);
-
-            if(a && b){
-              intervals.push(
-                Math.abs(daysBetween(b,a))
-              );
-            }
-          }
-
-          if(intervals.length){
-
-            cycle = Math.round(
-              intervals.reduce((s,n)=>s+n,0)
-              / intervals.length
-            );
-
-            cycle =
-              Math.min(
-                Math.max(cycle,21),
-                60
-              );
-          }
-        }
-
-        const dueIn = cycle - daysSince;
-
-        return {
-          ...cust,
-          last,
-          daysSince,
-          cycle,
-          dueIn,
-          items
-        };
-      })
-      .filter(r => r.daysSince >= 21)
-      .sort((a,b)=>a.dueIn-b.dueIn)
-      .slice(0,10);
-
-  if(!rows.length){
-
-    el.innerHTML =
-      `<div class="text-muted small">No obvious reorder customers yet.</div>`;
-
-    return;
-  }
-
-  el.innerHTML = rows.map(r=>{
-
-    const urgent = r.dueIn <= 0;
-
-    return `
-      <div class="insight-row ${urgent ? "restock-high" : "restock-med"}">
-        <div>
-          <strong>${escapeHtml(r.name || r.email)}</strong>
-
-          <small>
-            ${escapeHtml(r.email)} •
-            last ordered ${r.daysSince} day(s) ago
-          </small>
-
-          <small>
-            ${escapeHtml(r.items)}
-          </small>
-        </div>
-
-        <div class="text-end">
-          <span class="badge ${urgent ? "text-bg-danger" : "text-bg-warning"}">
-            ${urgent ? "Due now" : `Due ${r.dueIn}d`}
-          </span>
-
-          <small>
-            cycle ~${r.cycle}d
-          </small>
-        </div>
-      </div>
-    `;
-  }).join("");
-}
-
-function renderOrderHeatmap(orders){
-
-  const el =
-    document.getElementById("orderHeatmap");
-
-  const dayNames =
-    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-
-  const hourBands = [
-    [0,5,"00–05"],
-    [6,8,"06–08"],
-    [9,11,"09–11"],
-    [12,14,"12–14"],
-    [15,17,"15–17"],
-    [18,20,"18–20"],
-    [21,23,"21–23"]
-  ];
-
-  const matrix =
-    dayNames.map(
-      () => hourBands.map(()=>0)
-    );
-
-  let max = 0;
-
-  for(const o of orders){
-
-    const d = getOrderDate(o);
-
-    if(!d) continue;
-
-    const day = d.getDay();
-    const hour = d.getHours();
-
-    const idx =
-      hourBands.findIndex(
-        ([a,b]) => hour >= a && hour <= b
-      );
-
-    if(idx >= 0){
-      matrix[day][idx] += 1;
-      max = Math.max(max,matrix[day][idx]);
-    }
-  }
-
-  const heatClass = n => {
-
-    if(!n || !max) return "heat-0";
-
-    const p = n / max;
-
-    if(p >= .8) return "heat-4";
-    if(p >= .55) return "heat-3";
-    if(p >= .3) return "heat-2";
-
-    return "heat-1";
-  };
-
-  el.innerHTML = `
-    <table class="heatmap-table">
-      <thead>
-        <tr>
-          <th></th>
-          ${hourBands.map(h=>`
-            <th>${h[2]}</th>
-          `).join("")}
-        </tr>
-      </thead>
-
-      <tbody>
-        ${dayNames.map((day,dIdx)=>`
-          <tr>
-            <th>${day}</th>
-
-            ${hourBands.map((h,hIdx)=>{
-              const n = matrix[dIdx][hIdx];
-
-              return `
-                <td
-                  class="${heatClass(n)}"
-                  title="${day} ${h[2]}: ${n} order(s)"
-                >
-                  ${n}
-                </td>
-              `;
-            }).join("")}
-          </tr>
-        `).join("")}
-      </tbody>
-    </table>
-  `;
-}
-
-function exportProductVelocityCsv(){
-
-  const rows = getVelocityRows();
-
-  const header = [
-    "Product",
-    "Current Stock",
-    "Qty Sold 30d",
-    "Revenue 30d",
-    "Units Per Week",
-    "Weeks Left",
-    "Priority"
-  ];
-
-  const csv = [
-    header,
-    ...rows.map(r=>[
-      r.name,
-      r.stock,
-      r.qty,
-      r.revenue.toFixed(2),
-      r.perWeek.toFixed(2),
-      r.weeksLeft.toFixed(2),
-      r.priority
-    ])
-  ]
-    .map(row =>
-      row.map(v =>
-        `"${String(v ?? "").replaceAll('"','""')}"`
-      ).join(",")
-    )
-    .join("\n");
-
-  const blob =
-    new Blob(
-      [csv],
-      {type:"text/csv;charset=utf-8;"}
-    );
-
-  const url = URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-
-  a.href = url;
-
-  a.download =
-    `lumina_product_velocity_${new Date().toISOString().slice(0,10)}.csv`;
-
-  document.body.appendChild(a);
-
-  a.click();
-
-  a.remove();
-
-  URL.revokeObjectURL(url);
-}
-
-async function doLogout(){
-
-  try{
-    await supabaseClient.auth.signOut();
-  }finally{
-    window.location.href = "index.html";
-  }
-}
-
-[
-  "logout-btn",
-  "logout-btn-desktop",
-  "logout-btn-mobile-menu"
-].forEach(id=>{
-
-  const b = document.getElementById(id);
-
-  if(b){
-    b.addEventListener("click",doLogout);
-  }
-});
-
-window.loadAllOrders = loadAllOrders;
-window.exportProductVelocityCsv = exportProductVelocityCsv;
-
-init();
-  </script>
 </body>
 </html>
