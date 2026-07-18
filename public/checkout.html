@@ -449,6 +449,15 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
 
 const TELEGRAM_BOT_USERNAME = "LuminaUpdatesBot";
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
   // ---------- SHOPPING CART TRACKING ----------
 const CART_TRACKING_KEY = 'lumina_cart_tracking_id';
 
@@ -844,19 +853,19 @@ function isVialItem(itemOrName) {
 
 function extraLabel(item) {
   if (isPenItem(item) && item.pen_heads) {
-    return ` (Pen heads: ${
+    return ` (Pen heads: ${escapeHtml(
       item.pen_heads === 'none'
         ? 'None required'
         : item.pen_heads
-    })`;
+    )})`;
   }
 
   if (isVialItem(item) && item.syringes) {
-    return ` (Syringes: ${
+    return ` (Syringes: ${escapeHtml(
       item.syringes === 'none'
         ? 'None required'
         : item.syringes
-    })`;
+    )})`;
   }
 
   return '';
@@ -922,29 +931,6 @@ function updateTelegramConnectButton(token) {
     link.classList.remove('disabled');
     link.removeAttribute('aria-disabled');
     link.textContent = 'Connect Telegram updates';
-  }
-}
-
-async function saveTelegramNotificationLink(details, telegramToken) {
-  try {
-    if (!telegramToken) return;
-
-    const { error } = await supabaseClient
-      .from('customer_notification_links')
-      .insert({
-        order_reference: details.ref,
-        customer_email: details.email,
-        customer_name: details.name,
-        telegram_link_token: telegramToken,
-        telegram_connected: false
-      });
-
-    if (error) {
-      console.warn('Telegram notification link insert failed:', error);
-    }
-
-  } catch (err) {
-    console.warn('Telegram notification link unexpected error:', err);
   }
 }
 
@@ -1036,43 +1022,56 @@ async function syncCartPricesFromSupabase() {
       .map(i => i.id)
       .filter(Boolean);
 
-    if (!ids.length) return;
+    if (!ids.length) {
+      throw new Error('Cart does not contain valid product identifiers.');
+    }
 
     const { data, error } = await supabaseClient
       .from('Products')
-      .select('id, name, price')
+      .select('id, name, price, stock')
       .in('id', ids);
 
     if (error) {
-      console.error('Price sync failed:', error);
-      return;
+      throw new Error(`Unable to verify cart prices: ${error.message}`);
     }
 
     const map = new Map(
       (data || []).map(p => [p.id, p])
     );
 
-    cart = cart.map(item => {
+    cart = cart.flatMap(item => {
       const p = map.get(item.id);
 
-      if (!p) return item;
+      if (!p || Number(p.stock || 0) < 1) return [];
 
-      const variant = item.variant || null;
+      const variant = ['full-kit', 'cartridge-only'].includes(item.variant)
+        ? item.variant
+        : null;
+      const qty = Math.max(1, Math.min(
+        Math.trunc(Number(item.qty) || 1),
+        Math.trunc(Number(p.stock) || 0)
+      ));
 
-      return {
+      return [{
         ...item,
         name: p.name || item.name,
         variant: variant,
+        qty,
         price: variant
           ? getVariantPrice(p, variant)
           : Number(p.price || 0)
-      };
+      }];
     });
+
+    if (!cart.length) {
+      throw new Error('The products in this cart are no longer available.');
+    }
 
     saveCartToStorage();
 
   } catch (e) {
     console.error('Unexpected price sync error:', e);
+    throw e;
   }
 }
 
@@ -1209,7 +1208,7 @@ function renderOrderSummary(payableOverride = null) {
     <div class="py-2 border-bottom">
       <div class="d-flex justify-content-between">
         <span>
-          ${i.qty} × ${i.name}
+          ${Math.max(1, Math.trunc(Number(i.qty) || 1))} × ${escapeHtml(i.name)}
           ${getVariantDisplay(i)}
           ${extraLabel(i)}
         </span>
@@ -1303,131 +1302,42 @@ Payments are checked manually. If you pay late evening, overnight, or early morn
 }
 
 async function saveOrderToSupabase(details) {
-  try {
-    const { data, error } = await supabaseClient.auth.getUser();
-    const userId = (error || !data || !data.user) ? null : data.user.id;
+  const { data, error } = await supabaseClient.rpc('place_order', {
+    p_customer: {
+      name: details.name,
+      email: details.email,
+      phone: details.phone,
+      whatsapp_opt_in: !!details.whatsappOptIn,
+      whatsapp_phone: details.whatsappPhone || '',
+      address1: details.address1,
+      address2: details.address2,
+      city: details.city,
+      postcode: details.postcode
+    },
+    p_items: cart.map(item => ({
+      id: item.id,
+      qty: Math.max(1, Math.trunc(Number(item.qty) || 1)),
+      variant: item.variant || null,
+      pen_heads: item.pen_heads || '',
+      syringes: item.syringes || '',
+      sema_form: item.sema_form || '',
+      penColour: item.penColour || ''
+    })),
+    p_delivery_method: deliveryMethod,
+    p_referral_code: (localStorage.getItem('referral_code') || null),
+    p_telegram_token: details.telegramToken || null
+  });
 
-    const orderDetails = {
-      customer: {
-        name: details.name,
-        email: details.email,
-        phone: details.phone,
-        whatsapp_opt_in: !!details.whatsappOptIn,
-        whatsapp_phone: details.whatsappPhone || "",
-        address1: details.address1,
-        address2: details.address2,
-        city: details.city,
-        postcode: details.postcode
-      },
-      delivery: {
-        method: deliveryMethod,
-        label: getDeliveryLabel(),
-        price: getDeliveryCost()
-      },
-      items: cart.map(i => ({
-        id: i.id || null,
-        name: i.name,
-        variant: i.variant || 'full-kit',
-        variant_label: getVariantLabel(i.variant || 'full-kit'),
-        qty: i.qty,
-        price_each: Number(i.price || 0),
-        line_total: Number(i.price || 0) * Number(i.qty || 0),
-        pen_heads: i.pen_heads || "",
-        syringes: i.syringes || "",
-        sema_form: i.sema_form || ""
-      })),
-      reference: details.ref,
-      meta: {
-        referral_code: (localStorage.getItem('referral_code') || null),
-        delivery_method: deliveryMethod,
-        delivery_label: getDeliveryLabel(),
-        delivery_price: getDeliveryCost(),
-        telegram_link_token: details.telegramToken || null,
-        whatsapp_opt_in: !!details.whatsappOptIn,
-        whatsapp_phone: details.whatsappPhone || "",
-        whatsapp_opt_in_at: details.whatsappOptIn ? new Date().toISOString() : null
-      }
-    };
-
-    const { error: insertError } = await supabaseClient
-      .from('Orders')
-      .insert({
-        user_id: userId,
-        total_amount: Number(total || 0),
-        status: 'Pending',
-        reference: details.ref,
-        details: orderDetails,
-        referral_code: (localStorage.getItem('referral_code') || null)
-      });
-
-    if (insertError) {
-      console.error('Error saving order to Supabase:', insertError);
-      throw insertError;
-    }
-  } catch (err) {
-    console.error('Unexpected error saving order to Supabase:', err);
-    throw err;
+  if (error) {
+    console.error('Secure checkout failed:', error);
+    throw new Error(error.message || 'The order could not be created.');
   }
-}
 
-async function logReferralEventIfAny(orderRef, buyerEmail, orderTotalBeforeCredit) {
-  try {
-    const code = (localStorage.getItem('referral_code') || '').trim().toUpperCase();
-    if (!code) return;
-
-    const { error } = await supabaseClient
-      .from('ReferralEvents')
-      .insert({
-        referral_code: code,
-        referred_email: String(buyerEmail || '').toLowerCase(),
-        order_reference: orderRef,
-        order_total: Number(orderTotalBeforeCredit || 0),
-        credit_amount: 10,
-        status: 'pending'
-      });
-
-    if (error) {
-      console.warn('Referral event insert failed:', error);
-    }
-
-  } catch (err) {
-    console.warn('Referral event unexpected error:', err);
+  if (!data?.reference || !Array.isArray(data.items)) {
+    throw new Error('The order service returned an invalid response.');
   }
-}
 
-async function deductStock(cartItems) {
-  try {
-    const ids = cartItems.map(i => i.id).filter(Boolean);
-    if (!ids.length) return;
-
-    const { data: products, error: fetchError } = await supabaseClient
-      .from('Products')
-      .select('id, stock')
-      .in('id', ids);
-
-    if (fetchError) {
-      console.error('Error fetching products:', fetchError);
-      return;
-    }
-
-    for (const cartItem of cartItems) {
-      const product = (products || []).find(p => p.id === cartItem.id);
-      if (!product) continue;
-
-      const newStock = Math.max(0, (product.stock || 0) - Number(cartItem.qty || 0));
-
-      const { error: updateError } = await supabaseClient
-        .from('Products')
-        .update({ stock: newStock })
-        .eq('id', product.id);
-
-      if (updateError) {
-        console.error(`Error updating stock for ${cartItem.name}:`, updateError);
-      }
-    }
-  } catch (err) {
-    console.error('Unexpected error deducting stock:', err);
-  }
+  return data;
 }
 
 function sendAdminEmail(details) {
@@ -1530,17 +1440,21 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       whatsappPhone
     };
 
-    await logReferralEventIfAny(ref, email, totalBeforeCredit);
-await saveOrderToSupabase(details);
+    const orderResult = await saveOrderToSupabase(details);
+    details.ref = orderResult.reference;
+    total = Number(orderResult.total_amount || 0);
+    cart = orderResult.items.map(item => ({
+      ...item,
+      qty: Number(item.qty || 1),
+      price: Number(item.price_each || 0)
+    }));
+    renderOrderSummary(total);
 
 /*
   The order now definitely exists, so mark its tracked
   shopping basket as successfully completed.
 */
-await markTrackedCartCompleted(ref);
-
-await saveTelegramNotificationLink(details, telegramToken);
-await deductStock(cart);
+await markTrackedCartCompleted(details.ref);
 
     const emailResults = await Promise.allSettled([
       sendAdminEmail(details),
@@ -1552,7 +1466,7 @@ await deductStock(cart);
     document.getElementById('payment-summary').innerHTML = cart.map(i => `
       <div class="d-flex justify-content-between">
         <span>
-          ${i.qty} × ${i.name}
+          ${Math.max(1, Math.trunc(Number(i.qty) || 1))} × ${escapeHtml(i.name)}
           ${getVariantDisplay(i)}
           ${extraLabel(i)}
         </span>
@@ -1568,7 +1482,7 @@ await deductStock(cart);
     document.getElementById('customerName').textContent = name;
     document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
     document.getElementById('payment-total-copy').textContent = `£${Number(total || 0).toFixed(2)}`;
-    document.getElementById('order-ref').textContent = ref;
+    document.getElementById('order-ref').textContent = details.ref;
 
     updateTelegramConnectButton(telegramToken);
 
@@ -1628,7 +1542,14 @@ function backToShop() {
 
   saveCartToStorage();
 
-  await syncCartPricesFromSupabase();
+  try {
+    await syncCartPricesFromSupabase();
+  } catch (error) {
+    checkoutStatus.textContent = error?.message || 'Unable to verify this cart. Please return to the shop and try again.';
+    checkoutStatus.className = 'small text-danger mt-2';
+    document.querySelector('#addressForm button[type="submit"]')?.setAttribute('disabled', 'disabled');
+    return;
+  }
 
   renderOrderSummary();
 
