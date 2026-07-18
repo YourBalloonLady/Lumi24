@@ -622,6 +622,20 @@
   text-align: right;
 }
 
+body.orders-mode #basket-intelligence-section,
+body.orders-mode #inventory-section,
+body.orders-mode #reviews-section {
+  display: none !important;
+}
+
+body.operations-mode #order-management-section {
+  display: none !important;
+}
+
+body.orders-mode #operations-page-header {
+  display: none !important;
+}
+
 @media (max-width: 767.98px) {
   .basket-kpi-grid {
     grid-template-columns:
@@ -643,6 +657,13 @@
 </head>
 
 <body>
+  <script>
+    document.body.classList.add(
+      new URLSearchParams(window.location.search).get('view') === 'operations'
+        ? 'operations-mode'
+        : 'orders-mode'
+    );
+  </script>
   <!-- TRUST BAR -->
   <div id="trust-bar">
     <div class="container d-flex justify-content-center gap-4 flex-wrap">
@@ -670,10 +691,10 @@
     </div>
     <div class="offcanvas-body">
       <a href="index.html#home" class="d-block mb-2">Store Home</a>
-      <a href="analytics.html" class="d-block mb-2">Analytics</a>
+      <a href="admin.html" class="d-block mb-2">Orders</a>
+      <a href="admin-analytics.html" class="d-block mb-2">Admin Analytics</a>
+      <a href="analytics.html" class="d-block mb-2">Sales Analytics</a>
       <a href="products.html" class="d-block mb-2">Products</a>
-      <a href="#basket-intelligence-section" class="d-block mb-2">Basket Intelligence</a>
-      <a href="#inventory-section" class="d-block mb-2">Inventory</a>
       <a href="account.html" class="d-block mb-2">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
     </div>
@@ -684,10 +705,10 @@
     <aside class="admin-sidebar">
       <div class="fw-bold mb-3">🌙 Lumina Admin</div>
       <a href="index.html#home">Store Home</a>
-      <a href="analytics.html">Analytics</a>
+      <a href="admin.html">Orders</a>
+      <a href="admin-analytics.html">Admin Analytics</a>
+      <a href="analytics.html">Sales Analytics</a>
       <a href="products.html">Products</a>
-      <a href="#basket-intelligence-section">Basket Intelligence</a>
-      <a href="#inventory-section">Inventory</a>
       <a href="account.html">My Account</a>
       <a href="reviews.html" class="d-block mb-2">Customer Feedback</a>
       <hr style="border-color:rgba(255,255,255,.12);">
@@ -697,8 +718,18 @@
     <main class="admin-main">
       <!-- CONTENT -->
       <div class="container mt-4">
+        <div class="section-card mb-4" id="operations-page-header">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+            <div>
+              <h2 class="mb-1">Admin Analytics</h2>
+              <p class="text-muted mb-0">Basket intelligence, inventory management and review moderation.</p>
+            </div>
+            <a class="btn btn-outline-dark" href="admin.html">Back to Orders</a>
+          </div>
+          <div id="operations-access-status" class="small text-muted mt-3">Checking access…</div>
+        </div>
         <!-- ORDERS -->
-        <div class="section-card mb-4">
+        <div class="section-card mb-4" id="order-management-section">
   <div class="d-flex justify-content-between flex-wrap align-items-center gap-2">
     <h3 class="mb-0">Orders</h3>
     <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
@@ -1118,7 +1149,7 @@
 </div>    
 
         <!-- REVIEWS -->
-        <div class="section-card">
+        <div class="section-card" id="reviews-section">
           <h3>Pending Reviews</h3>
           <p class="text-muted" id="reviews-status">Loading pending reviews…</p>
           <div id="reviews-list" class="mt-3"></div>
@@ -1168,6 +1199,9 @@
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
     const ADMIN_EMAIL = "luminaweight@gmail.com";
+    const ADMIN_PAGE_MODE = new URLSearchParams(window.location.search).get("view") === "operations"
+      ? "operations"
+      : "orders";
 
       // ────────────────────────────────────────────────
     // REFERRALS CONFIG
@@ -1477,6 +1511,7 @@ async function sendDigitalGuideById(orderId) {
     // ELEMENTS
     // ────────────────────────────────────────────────
     const statusEl      = document.getElementById("admin-status");
+    const operationsAccessStatus = document.getElementById("operations-access-status");
     const ordersEl      = document.getElementById("orders-list");
     const warningEl     = document.getElementById("admin-warning");
     const logoutBtn     = document.getElementById("logout-btn");
@@ -6313,6 +6348,7 @@ async function saveInventoryStock(
     // ────────────────────────────────────────────────
     async function init() {
       statusEl.textContent = "Checking access…";
+      operationsAccessStatus.textContent = "Checking access…";
 
       const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
       if (sessionError || !sessionData?.session?.user) {
@@ -6324,18 +6360,30 @@ async function saveInventoryStock(
       if ((user.email || "").toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
         warningEl.innerHTML = `<div class="alert alert-danger">Access denied.</div>`;
         statusEl.textContent = "Not authorised";
+        operationsAccessStatus.textContent = "Access denied.";
+        operationsAccessStatus.className = "alert alert-danger mt-3 mb-0";
         reviewsStatus.textContent = "Not authorised";
         return;
       }
 
       statusEl.textContent = "Admin verified ✅";
+      operationsAccessStatus.textContent = "Admin verified. Loading operational data…";
       await cacheAdminEmail();
+
+      if (ADMIN_PAGE_MODE === "operations") {
+        await Promise.all([
+          loadPendingReviews(),
+          loadInventory(),
+          refreshBasketIntelligence()
+        ]);
+        startBasketAutoRefresh();
+        operationsAccessStatus.textContent = "Operational data loaded.";
+        operationsAccessStatus.className = "small text-success mt-3";
+        return;
+      }
+
       await refreshStatusCounts();
-      await Promise.all([
-  loadOrders(),
-  loadPendingReviews(),
-  loadInventory()
-]);
+      await loadOrders();
     }
 
     async function doLogout() {
@@ -6517,7 +6565,7 @@ window.renderBasketIntelligence =
   renderBasketIntelligence;
 
     // go
-    initAdminView();
+    if (ADMIN_PAGE_MODE === "orders") initAdminView();
     init();
   </script>
 </body>
