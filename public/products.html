@@ -1651,7 +1651,7 @@ function saveCart() {
             <span class="pill-label pill-popular">Choose Strength</span>
 
             <div class="product-image-wrap">
-              <img src="${imgSrc(group.image)}" class="w-100" alt="${escapeHtml(group.name)}">
+              <img src="${imgSrc(group.image)}" class="w-100" alt="${escapeHtml(group.name)}" loading="lazy" decoding="async" width="420" height="420">
             </div>
 
             <div class="product-body d-flex flex-column h-100">
@@ -1700,8 +1700,6 @@ function saveCart() {
       const realIndex = products.findIndex(item => item.id === p.id);
       const badge = computeBadge(p);
       const category = getResearchCategory(p);
-      const baseDesc = p.description || 'Research material supplied for laboratory environments.';
-      const extraInfo = ' Accessories, where applicable, are supplied for laboratory handling and measurement.';
       const unitSuffix = '/unit';
       const stockNum = Number(p.stock ?? 0);
       const stockLabel = stockNum === 0 ? '<strong>Out of stock</strong>' : stockNum <= 5 ? `<strong>Low stock</strong> • ${stockNum} left` : `<strong>In stock</strong> • ${stockNum} available`;
@@ -1714,7 +1712,7 @@ function saveCart() {
             ${badge ? `<span class="pill-label ${badge.class}">${badge.text}</span>` : ''}
 
             <div class="product-image-wrap">
-              <img src="${imgSrc(p.image)}" class="w-100" alt="${escapeHtml(p.name)}">
+              <img src="${imgSrc(p.image)}" class="w-100" alt="${escapeHtml(p.name)}" loading="lazy" decoding="async" width="420" height="420">
             </div>
 
             <div class="product-body d-flex flex-column h-100">
@@ -1728,13 +1726,8 @@ function saveCart() {
                 <div class="product-name">${escapeHtml(p.name)}</div>
 
                 <div class="quick-specs">
-                  <span>Research Use</span>
                   ${mgValue ? `<span>${mgValue}mg</span>` : ''}
                   <span>${getFormatLabel(p)}</span>
-                </div>
-
-                <div class="text-muted" style="font-size:0.85rem;">
-                  ${escapeHtml(baseDesc + extraInfo)}
                 </div>
               </div>
 
@@ -1747,7 +1740,7 @@ function saveCart() {
                   ${stockNum === 0 ? 'disabled' : ''}
                   onclick="event.stopPropagation(); openModal(${realIndex})"
                 >
-                  ${stockNum > 0 ? 'Add to cart' : 'Sold out'}
+                  ${stockNum > 0 ? 'View options' : 'Sold out'}
                 </button>
               </div>
             </div>
@@ -1805,7 +1798,41 @@ function saveCart() {
         });
 
       displayItems = makeGroupedDisplayItems(products);
+      updateProductStructuredData(products);
       renderProducts();
+    }
+
+    function updateProductStructuredData(items) {
+      let script = document.getElementById('catalogue-product-schema');
+      if (!script) {
+        script = document.createElement('script');
+        script.id = 'catalogue-product-schema';
+        script.type = 'application/ld+json';
+        document.head.appendChild(script);
+      }
+      script.textContent = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        itemListElement: items.map((product, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          item: {
+            '@type': 'Product',
+            name: product.name,
+            image: new URL(imgSrc(product.image), window.location.href).href,
+            description: product.description || 'Laboratory research material supplied from the UK.',
+            offers: {
+              '@type': 'Offer',
+              priceCurrency: 'GBP',
+              price: Number(product.price || 0).toFixed(2),
+              availability: Number(product.stock || 0) > 0
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+              url: window.location.href
+            }
+          }
+        }))
+      });
     }
 
     function parseBundleOptions(raw) {
@@ -1959,6 +1986,7 @@ function saveCart() {
       };
 
       new bootstrap.Modal(document.getElementById('productModal')).show();
+      window.luminaTrack?.('product_group_view', { group_name: group.name, product_count: group.products.length });
     }
 
     function updateGroupedModalSelection() {
@@ -2094,6 +2122,7 @@ function saveCart() {
       };
 
       new bootstrap.Modal(document.getElementById('productModal')).show();
+      window.luminaTrack?.('product_view', { product_id: p.id, product_name: p.name, value: Number(p.price || 0) });
     }
 
     function updateModalVariant() {
@@ -2148,6 +2177,7 @@ function saveCart() {
       updateCart();
       saveCart();
       toggleCart(true);
+      window.luminaTrack?.('add_to_cart', { product_id: product.id, product_name: product.name, quantity: qty, value: price * qty });
     }
 
     function setupCatalogueControls() {
