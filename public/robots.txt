@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-analytics.html
+Disallow: /analytics.html
+Disallow: /account.html
+Disallow: /checkout.html
+Disallow: /success.html
+Disallow: /forgot-password.html
+Disallow: /reset-password.html
+
+Sitemap: https://www.lumi24.org/sitemap.xml
