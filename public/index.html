@@ -12,6 +12,22 @@
 <meta property="og:description" content="UK supplier of research materials. Laboratory research use only • Not for human consumption • Discreet UK dispatch.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.lumi24.org/">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "OnlineStore",
+  "name": "Lumina",
+  "url": "https://www.lumi24.org/",
+  "logo": "https://www.lumi24.org/Lumina%20Logo.png",
+  "email": "luminaweight@gmail.com",
+  "areaServed": "GB",
+  "hasMerchantReturnPolicy": {
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "GB",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+  }
+}
+</script>
 
 <!-- FAVICON / TAB ICON -->
 <link rel="icon" href="/favicon.ico?v=4">
@@ -119,9 +135,21 @@
   }
 
   .hero {
-    background: radial-gradient(circle at top left, var(--lw-mint-soft), #e0f2fe 40%, var(--lw-purple-soft) 100%);
+    position: relative;
+    overflow: hidden;
+    background: radial-gradient(circle at 15% 20%, rgba(34,197,94,.2), transparent 34%), linear-gradient(135deg, #f0fdf4 0%, #ecfeff 45%, #f5f3ff 100%);
     padding: 110px 0 70px;
   }
+
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(320px,.92fr);gap:54px;align-items:center;text-align:left}
+  .hero-copy .hero-subtitle{margin-left:0;max-width:680px}
+  .hero-copy .hero-cta,.hero-copy .hero-trust{justify-content:flex-start}
+  .hero-visual{position:relative;min-height:440px;display:grid;place-items:center}
+  .hero-orb{position:absolute;inset:6% 3%;border-radius:50%;background:linear-gradient(145deg,rgba(255,255,255,.92),rgba(220,252,231,.72));box-shadow:0 30px 80px rgba(15,118,110,.16);border:1px solid rgba(255,255,255,.9)}
+  .hero-product-image{position:relative;z-index:1;width:min(100%,480px);max-height:390px;object-fit:contain;filter:drop-shadow(0 28px 30px rgba(15,23,42,.22))}
+  .hero-float-card{position:absolute;z-index:2;background:rgba(255,255,255,.94);border:1px solid rgba(148,163,184,.2);border-radius:16px;padding:12px 15px;box-shadow:0 16px 34px rgba(15,23,42,.12);font-size:.84rem;font-weight:750}
+  .hero-float-card.top{right:0;top:12%}.hero-float-card.bottom{left:0;bottom:12%}
+  .hero-disclaimer{font-size:.82rem;color:#64748b;margin-top:16px;max-width:660px}
 
   .hero-eyebrow {
     display: inline-flex;
@@ -213,6 +241,8 @@
     background: #ffffff;
     color: var(--lw-dark);
   }
+
+  @media(max-width:991.98px){.hero-grid{grid-template-columns:1fr;text-align:center}.hero-copy .hero-subtitle{margin-left:auto}.hero-copy .hero-cta,.hero-copy .hero-trust{justify-content:center}.hero-visual{min-height:330px}.hero-product-image{max-height:300px}}
 
   .section-eyebrow {
     text-transform: uppercase;
@@ -571,7 +601,7 @@
 
 <div id="trust-bar">
   <div class="container">
-    <span>📦 500+ Orders Fulfilled</span>
+    <span>📦 450+ Orders Fulfilled</span>
     <span>👥 200+ UK Customers</span>
     <span>🚚 Same Working Day Dispatch Before 3PM Where Possible</span>
     <span>📦 Discreet Packaging</span>
@@ -719,40 +749,30 @@
 </div>
 
 <!-- HERO -->
-<section id="home" class="hero text-center">
+<section id="home" class="hero">
   <div class="container">
-    <div class="hero-eyebrow">
-      <i class="fa-solid fa-flask"></i>
-      UK Research Supply • Laboratory Use Only
-    </div>
-
-    <h1 class="hero-title">
-      UK Research Materials,<br>
-      <span class="highlight">Built Around Clarity</span>
-    </h1>
-
-    <p class="hero-subtitle">
-      Lumina supplies research materials from within the UK with discreet packaging, clear product information,
-      and straightforward ordering — without hype-heavy claims or personal-use guidance.
-      All materials are supplied strictly for <strong>laboratory research purposes only</strong> and are
-      <strong>not for human consumption, medical use, or personal use</strong>.
-    </p>
-
-    <div class="hero-cta">
-      <a href="products.html" class="btn btn-primary-lw btn-lg">
-        Shop Research Materials <i class="fa-solid fa-arrow-right ms-1"></i>
-      </a>
-
-      <a href="peptides.html" class="btn btn-ghost btn-lg">
-        Explore Research Library
-      </a>
-    </div>
-
-    <div class="hero-trust">
-      <div class="hero-chip"><i class="fa-solid fa-truck-fast text-success"></i> UK Dispatch</div>
-      <div class="hero-chip"><i class="fa-solid fa-box text-success"></i> Discreet Packaging</div>
-      <div class="hero-chip"><i class="fa-solid fa-book-open text-success"></i> Research Library</div>
-      <div class="hero-chip"><i class="fa-solid fa-headset text-success"></i> Responsive Support</div>
+    <div class="hero-grid">
+      <div class="hero-copy">
+        <div class="hero-eyebrow"><i class="fa-solid fa-flask"></i> UK Research Supply • Laboratory Use Only</div>
+        <h1 class="hero-title">Research supply made<br><span class="highlight">clearer, faster and simpler.</span></h1>
+        <p class="hero-subtitle">Explore a carefully organised UK catalogue with transparent pricing, live stock, discreet dispatch and straightforward product information.</p>
+        <div class="hero-cta">
+          <a href="products.html" class="btn btn-primary-lw btn-lg" data-track="hero_shop">Shop Research Materials <i class="fa-solid fa-arrow-right ms-1"></i></a>
+          <a href="product-bundles.html" class="btn btn-ghost btn-lg" data-track="hero_bundles">Explore Bundles</a>
+        </div>
+        <div class="hero-trust">
+          <div class="hero-chip"><i class="fa-solid fa-truck-fast text-success"></i> UK Dispatch</div>
+          <div class="hero-chip"><i class="fa-solid fa-box text-success"></i> Discreet Packaging</div>
+          <div class="hero-chip"><i class="fa-solid fa-headset text-success"></i> Responsive Support</div>
+        </div>
+        <p class="hero-disclaimer">Supplied strictly for laboratory research purposes only. Not for human consumption, medical use or personal use.</p>
+      </div>
+      <div class="hero-visual" aria-label="Lumina research bundle">
+        <div class="hero-orb"></div>
+        <img class="hero-product-image" src="/hero-research.jpg" alt="Lumina research materials bundle" width="600" height="900" fetchpriority="high" decoding="async">
+        <div class="hero-float-card top"><i class="fa-solid fa-circle-check text-success me-1"></i> Live stock visibility</div>
+        <div class="hero-float-card bottom"><i class="fa-solid fa-truck-fast text-success me-1"></i> UK tracked dispatch</div>
+      </div>
     </div>
   </div>
 </section>
@@ -765,7 +785,7 @@
         <div class="col-md-4">
           <div class="proof-stat">
             <div class="proof-icon"><i class="fa-solid fa-box-open"></i></div>
-            <div class="proof-number">500+</div>
+            <div class="proof-number">450+</div>
             <div class="proof-label">Orders fulfilled</div>
           </div>
         </div>
@@ -994,12 +1014,13 @@
                 <i class="fa-solid fa-star"></i>
                 <i class="fa-solid fa-star"></i>
               </div>
-              <strong>Service-led feedback</strong>
+              <strong id="featured-review-title">Verified service feedback</strong>
             </div>
 
-            <p class="text-muted mb-3">
+            <p class="text-muted mb-2" id="featured-review-text">
               See what customers mention about ordering, communication, discreet packaging and UK dispatch.
             </p>
+            <small class="text-muted d-block mb-3" id="featured-review-meta"></small>
 
             <a href="reviews.html" class="btn btn-primary-lw w-100">
               Read Customer Feedback <i class="fa-solid fa-arrow-right ms-1"></i>
@@ -1218,6 +1239,10 @@ function imgSrc(image) {
     .join("/");
 }
 
+function escapeHtml(value) {
+  return String(value ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
+}
+
 const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -1304,7 +1329,7 @@ function renderProducts() {
           <div class="position-relative h-100 product-card ${stock === 0 ? "out-of-stock" : ""}" onclick="${stock > 0 ? "openModal(" + i + ")" : ""}">
             ${p.badge ? `<span class="pill-label ${p.badgeClass || ""}">${p.badge}</span>` : ""}
 
-            <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${p.name || "Research material"}" loading="lazy">
+            <img src="${imgSrc(p.image)}" class="w-100 p-4" alt="${escapeHtml(p.name || "Research material")}" loading="lazy" decoding="async" width="420" height="420">
 
             <div class="product-body d-flex flex-column">
               <div class="text-start">
@@ -1312,11 +1337,7 @@ function renderProducts() {
                   ${productLabel(p)}
                 </div>
 
-                <div class="product-name">${p.name || "Research Material"}</div>
-
-                <div class="text-muted" style="font-size:0.85rem;">
-                  Research material supplied strictly for laboratory research use only.
-                </div>
+                <div class="product-name">${escapeHtml(p.name || "Research Material")}</div>
               </div>
 
               <div class="d-flex justify-content-between align-items-center mt-2">
@@ -1332,7 +1353,7 @@ function renderProducts() {
                 ${stock === 0 ? "disabled" : ""}
                 onclick="event.stopPropagation(); openModal(${i})"
               >
-                ${stock > 0 ? "Add to cart" : "Sold out"}
+                ${stock > 0 ? "View options" : "Sold out"}
               </button>
             </div>
           </div>
@@ -1372,6 +1393,25 @@ async function loadFeaturedProducts() {
 }
 
 loadFeaturedProducts();
+
+async function loadFeaturedReview() {
+  const { data, error } = await supabaseClient
+    .from('Reviews')
+    .select('name, rating, review_text, created_at')
+    .eq('approved', true)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error || !data) return;
+  document.getElementById('featured-review-title').textContent = `${data.name || 'Verified customer'} • ${Math.max(1, Math.min(5, Number(data.rating) || 5))}/5`;
+  document.getElementById('featured-review-text').textContent = data.review_text || 'Positive feedback about the Lumina ordering experience.';
+  document.getElementById('featured-review-meta').textContent = data.created_at
+    ? `Verified service review • ${new Date(data.created_at).toLocaleDateString('en-GB', { month: 'short', year: 'numeric' })}`
+    : 'Verified service review';
+}
+
+loadFeaturedReview();
 
 function changeQty(delta) {
   const input = document.getElementById("modalQty");
@@ -1428,6 +1468,7 @@ function openModal(i) {
   };
 
   new bootstrap.Modal(document.getElementById("productModal")).show();
+  window.luminaTrack?.('product_view', { product_id: currentProduct.id, product_name: currentProduct.name, value: price });
 }
 
 function addToCart(product, qty) {
@@ -1458,6 +1499,7 @@ function addToCart(product, qty) {
   updateCart();
   saveCart();
   toggleCart(true);
+  window.luminaTrack?.('add_to_cart', { product_id: product.id, product_name: product.name, quantity: qty, value: Number(product.price || 0) * qty });
 }
 
 function updateQty(i, delta) {
@@ -1506,7 +1548,7 @@ function updateCart() {
     itemsEl.innerHTML = cart.map((item, i) => `
       <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
         <div class="flex-grow-1">
-          <strong>${item.name}</strong><br>
+          <strong>${escapeHtml(item.name)}</strong><br>
           <small>£${Number(item.price || 0).toFixed(2)} × ${Number(item.qty || 0)}</small>
         </div>
 
@@ -1531,6 +1573,7 @@ function toggleCart(force) {
 
   sb.classList.toggle("open", open);
   ov.classList.toggle("show", open);
+  if (open) window.luminaTrack?.('cart_open', { item_count: cart.reduce((sum,item)=>sum+Number(item.qty||0),0) });
 }
 
 function goToCheckout() {
@@ -1540,6 +1583,7 @@ function goToCheckout() {
   }
 
   const cartData = encodeURIComponent(JSON.stringify(cart));
+  window.luminaTrack?.('checkout_begin_click', { item_count: cart.reduce((sum,item)=>sum+Number(item.qty||0),0) });
   window.location.href = `checkout.html?cart=${cartData}`;
 }
 
@@ -1706,7 +1750,6 @@ supabaseClient.auth.onAuthStateChange(() => {
   updateAccountUI();
 });
 </script>
-
   <script src="/site-nav.js"></script>
 </body>
 </html>
