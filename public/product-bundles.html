@@ -447,6 +447,15 @@
       }
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
     function getBundleTag(bundle) {
       const name = String(bundle.name || '').toLowerCase();
       if (name.includes('ultimate') || name.includes('advanced')) {
@@ -485,20 +494,20 @@
             <div class="product-card" onclick="openBundleModal(${i})">
               <div class="bundle-media-wrap">
                 <span class="pill-label ${tag.className}">${tag.text}</span>
-                <img src="${imgSrc(bundle.image)}" class="w-100 p-4" alt="${bundle.name}">
+                <img src="${imgSrc(bundle.image)}" class="w-100 p-4" alt="${escapeHtml(bundle.name)}">
               </div>
               <div class="product-body d-flex flex-column h-100">
                 <div class="text-start">
                   <div class="text-uppercase text-xs text-muted" style="font-size: .75rem;">Bundle</div>
-                  <div class="product-name">${bundle.name}</div>
+                  <div class="product-name">${escapeHtml(bundle.name)}</div>
                   <div class="text-muted" style="font-size:0.85rem;">
-                    ${bundle.description || 'Grouped research bundle supplied for laboratory environments.'}
+                    ${escapeHtml(bundle.description || 'Grouped research bundle supplied for laboratory environments.')}
                   </div>
                 </div>
                 <div class="bundle-includes-preview">
                   <strong>Included</strong>
                   <ul>
-                    ${contents.length ? contents.slice(0, 3).map(item => `<li>${item.qty || 1} × ${item.name || ''}</li>`).join('') : '<li>Bundle contents not listed.</li>'}
+                    ${contents.length ? contents.slice(0, 3).map(item => `<li>${Number(item.qty) || 1} × ${escapeHtml(item.name)}</li>`).join('') : '<li>Bundle contents not listed.</li>'}
                   </ul>
                 </div>
                 <div class="mt-3">
@@ -626,7 +635,7 @@
           : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
       document.getElementById('bundleModalContents').innerHTML = contents.length
-        ? contents.map(item => `<li>${item.qty || 1} × ${item.name || ''}</li>`).join('')
+        ? contents.map(item => `<li>${Number(item.qty) || 1} × ${escapeHtml(item.name)}</li>`).join('')
         : '<li>Bundle contents not listed.</li>';
 
       // Pen Colour Dropdown
@@ -638,7 +647,7 @@
           <div class="mb-2">
             <label class="form-label fw-semibold">Pen Colour</label>
             <select class="form-select" id="penColourSelect">
-              ${options.penColours.map(colour => `<option value="${colour}">${colour}</option>`).join('')}
+              ${options.penColours.map(colour => `<option value="${escapeHtml(colour)}">${escapeHtml(colour)}</option>`).join('')}
             </select>
           </div>
         `;
