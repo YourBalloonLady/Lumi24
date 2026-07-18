@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="index,follow">
+  <title>Research Material | Lumina</title>
+  <meta name="description" content="View Lumina research material details, live UK stock and current pricing.">
+  <link rel="icon" href="/favicon.ico?v=4">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    :root{--ink:#0f172a;--muted:#64748b;--green:#22c55e}
+    body{margin:0;background:#f3f4f6;color:var(--ink);font-family:Inter,system-ui,sans-serif}
+    .topbar{background:linear-gradient(90deg,#22c55e,#15803d);color:#fff;padding:8px 15px;text-align:center;font-size:.84rem;font-weight:700}
+    .site-header{background:#fff;border-bottom:1px solid #e5e7eb}.site-header a{color:var(--ink);text-decoration:none}
+    .product-shell{background:#fff;border:1px solid #e5e7eb;border-radius:28px;box-shadow:0 24px 60px rgba(15,23,42,.08);overflow:hidden}
+    .media-panel{min-height:520px;background:linear-gradient(145deg,#f8fafc,#ecfdf5);display:grid;place-items:center;padding:42px}
+    .media-panel img{width:100%;max-width:500px;max-height:470px;object-fit:contain;filter:drop-shadow(0 24px 26px rgba(15,23,42,.18))}
+    .details-panel{padding:clamp(28px,5vw,58px)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.09em;color:#15803d;font-size:.76rem;font-weight:850}
+    h1{font-weight:850;letter-spacing:-.04em}.price{font-size:2.2rem;font-weight:900}.stock{font-weight:750}
+    .detail-pills{display:flex;gap:8px;flex-wrap:wrap}.detail-pills span{padding:7px 11px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:999px;font-size:.78rem;font-weight:700;color:#475569}
+    .qty{max-width:100px}.buy-button{border-radius:999px;font-weight:800;padding:13px 24px}
+    .trust-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.trust-item{padding:10px 12px;background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;font-size:.8rem;font-weight:650;color:#475569}
+    .content-card{background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:24px;height:100%}
+    .loading{min-height:520px;display:grid;place-items:center}
+    @media(max-width:767px){.media-panel{min-height:340px;padding:25px}.media-panel img{max-height:300px}.trust-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="topbar">UK dispatch • Discreet packaging • Laboratory research supply only</div>
+  <header class="site-header py-3"><div class="container d-flex justify-content-between align-items-center"><a href="/index.html" class="fw-bold fs-5">🌙 Lumina</a><div class="d-flex gap-3"><a href="/products.html">Products</a><a href="/product-bundles.html">Bundles</a><a href="/account.html">Account</a></div></div></header>
+
+  <main class="container py-5">
+    <div id="status" class="loading"><div class="text-center"><div class="spinner-border text-success" role="status"></div><p class="text-muted mt-3">Loading live product details…</p></div></div>
+    <div id="product-content" hidden>
+      <nav class="small text-muted mb-3"><a href="/products.html" class="text-success">Products</a> / <span id="breadcrumb-name"></span></nav>
+      <article class="product-shell"><div class="row g-0"><div class="col-lg-6"><div class="media-panel"><img id="product-image" alt="" width="600" height="600" decoding="async"></div></div><div class="col-lg-6"><div class="details-panel">
+        <div class="eyebrow" id="product-type">Research material</div><h1 id="product-name" class="mt-2"></h1>
+        <div class="d-flex align-items-baseline gap-3 flex-wrap mt-3"><div class="price" id="product-price"></div><div class="stock" id="product-stock"></div></div>
+        <div class="detail-pills my-3"><span>UK dispatch</span><span>Discreet packaging</span><span>Live stock</span></div>
+        <p class="text-muted" id="product-description"></p>
+        <div id="variant-wrap" class="mb-3" hidden><label class="form-label fw-semibold" for="variant">Format</label><select id="variant" class="form-select"><option value="full-kit">Full Kit (Pen + Cartridge)</option><option value="cartridge-only">Cartridge Only — save £10</option></select></div>
+        <div class="d-flex gap-3 align-items-center mt-4"><input id="quantity" class="form-control qty" type="number" min="1" value="1"><button id="add-button" class="btn btn-success btn-lg buy-button flex-grow-1">Add to cart</button></div>
+        <a id="checkout-button" class="btn btn-outline-dark w-100 mt-2 buy-button" href="#" hidden>Continue to checkout</a>
+        <div class="trust-grid mt-4"><div class="trust-item">✓ Secure order processing</div><div class="trust-item">✓ Tracked delivery available</div><div class="trust-item">✓ Responsive order support</div><div class="trust-item">✓ Research supply only</div></div>
+        <p class="small text-muted mt-4 mb-0"><strong>Laboratory research use only.</strong> Not for human consumption, medical use or personal use. No dosage or administration guidance is provided.</p>
+      </div></div></div></article>
+      <div class="row g-3 mt-3"><div class="col-lg-7"><section class="content-card"><h2 class="h5">Product information</h2><p id="long-description" class="text-muted mb-0"></p></section></div><div class="col-lg-5"><section class="content-card"><h2 class="h5">Delivery and support</h2><p class="text-muted">Orders are dispatched from within the UK in discreet packaging. Delivery timing depends on cleared payment, working days and courier availability.</p><a href="/shipping.html" class="text-success fw-semibold">Read shipping information →</a></section></div></div>
+    </div>
+  </main>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL='https://qketnqhfjfxbqiuqevnh.supabase.co';
+    const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys';
+    const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let product=null;
+    const id=new URLSearchParams(location.search).get('id');
+    const imageUrl=image=>image?`/${String(image).split('/').map(encodeURIComponent).join('/')}`:'';
+    const isPen=item=>String(item?.name||'').toLowerCase().includes('pen')&&!String(item?.name||'').toLowerCase().includes('pen head');
+    const variantPrice=()=>Math.max(0,Number(product?.price||0)-($('variant').value==='cartridge-only'?10:0));
+    const $=name=>document.getElementById(name);
+
+    function updatePrice(){ $('product-price').textContent=`£${variantPrice().toFixed(2)}`; }
+    function cartItem(){return {id:product.id,name:product.name,price:variantPrice(),qty:Math.max(1,Math.min(Number(product.stock||0),Math.trunc(Number($('quantity').value)||1))),image:product.image||'',variant:isPen(product)?$('variant').value:''}}
+    function saveCart(){const item=cartItem();let cart=[];try{cart=JSON.parse(localStorage.getItem('cart')||'[]');if(!Array.isArray(cart))cart=[]}catch{}const existing=cart.find(entry=>entry.id===item.id&&(entry.variant||'')===(item.variant||''));if(existing)existing.qty=Math.min(Number(product.stock||0),Number(existing.qty||0)+item.qty);else cart.push(item);localStorage.setItem('cart',JSON.stringify(cart));$('checkout-button').href=`/checkout.html?cart=${encodeURIComponent(JSON.stringify(cart))}`;$('checkout-button').hidden=false;window.luminaTrack?.('add_to_cart',{product_id:product.id,product_name:product.name,quantity:item.qty,value:item.price*item.qty});$('add-button').textContent='Added to cart ✓';setTimeout(()=>$('add-button').textContent='Add to cart',1200)}
+
+    function structuredData(){const script=document.createElement('script');script.type='application/ld+json';script.textContent=JSON.stringify({'@context':'https://schema.org','@type':'Product',name:product.name,image:new URL(imageUrl(product.image),location.href).href,description:product.description||'Laboratory research material.',offers:{'@type':'Offer',priceCurrency:'GBP',price:Number(product.price||0).toFixed(2),availability:Number(product.stock||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',url:location.href}});document.head.appendChild(script)}
+    async function init(){if(!id){$('status').innerHTML='<div class="alert alert-warning">No product was selected. <a href="/products.html">Return to Products</a>.</div>';return}const {data,error}=await db.from('Products').select('id,name,price,compare_at_price,image,stock,description,type,bundle_options').eq('id',id).maybeSingle();if(error||!data){$('status').innerHTML='<div class="alert alert-danger">This product could not be loaded. <a href="/products.html">Return to Products</a>.</div>';return}product=data;document.title=`${product.name} | Lumina`;$('breadcrumb-name').textContent=product.name;$('product-name').textContent=product.name;$('product-type').textContent=product.type||'Research material';$('product-image').src=imageUrl(product.image);$('product-image').alt=product.name;$('product-description').textContent=product.description||'Laboratory research material supplied from the UK.';$('long-description').textContent=product.description||'Further product information is available from Lumina support.';$('product-stock').textContent=Number(product.stock||0)>0?`${product.stock} in stock`:'Out of stock';$('product-stock').className=`stock ${Number(product.stock||0)>0?'text-success':'text-danger'}`;$('quantity').max=Number(product.stock||0);$('add-button').disabled=Number(product.stock||0)<=0;$('variant-wrap').hidden=!isPen(product);updatePrice();structuredData();$('status').hidden=true;$('product-content').hidden=false;window.luminaTrack?.('product_detail_view',{product_id:product.id,product_name:product.name,value:Number(product.price||0)})}
+    $('variant').addEventListener('change',updatePrice);$('add-button').addEventListener('click',saveCart);init();
+  </script>
+  <script src="/site-nav.js"></script>
+</body>
+</html>
