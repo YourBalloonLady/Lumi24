@@ -211,11 +211,16 @@
             <div class="row g-3">
 
               <div class="col-md-6">
-                <label class="form-label small fw-semibold" for="fullName">Full name</label>
-                <input type="text" class="form-control" id="fullName" placeholder="Full name" autocomplete="name" required>
+                <label class="form-label small fw-semibold" for="firstName">First name</label>
+                <input type="text" class="form-control" id="firstName" placeholder="First name" autocomplete="given-name" required>
               </div>
 
               <div class="col-md-6">
+                <label class="form-label small fw-semibold" for="lastName">Last name</label>
+                <input type="text" class="form-control" id="lastName" placeholder="Last name" autocomplete="family-name" required>
+              </div>
+
+              <div class="col-12">
                 <label class="form-label small fw-semibold" for="phone">Phone number</label>
                 <input type="tel" class="form-control" id="phone" placeholder="Phone number" autocomplete="tel" required>
 
@@ -302,6 +307,21 @@
             <div class="d-flex justify-content-between fs-4 fw-bold mt-3">
               <span>Total:</span>
               <span id="final-total">£0.00</span>
+            </div>
+
+            <div class="border rounded-3 p-3 mt-4 bg-light">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="addressConfirmed" required>
+                <label class="form-check-label small" for="addressConfirmed">
+                  I have checked that my full name and delivery address are complete and correct. I understand that changes may not be possible after dispatch and delivery issues caused by incorrect details will be handled under Lumina’s published policies and applicable statutory rights.
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="termsAccepted" required>
+                <label class="form-check-label small" for="termsAccepted">
+                  I confirm that I am purchasing these products strictly for laboratory research purposes only. They will not be used for human or veterinary use, consumption, treatment, diagnosis or personal use. I accept the <a href="/terms.html" target="_blank" rel="noopener">Terms &amp; Conditions</a> and <a href="/disclaimer.html" target="_blank" rel="noopener">Research Use Disclaimer</a>.
+                </label>
+              </div>
             </div>
 
             <button type="submit" class="btn btn-success btn-lg w-100 mt-4 rounded-pill">
@@ -542,8 +562,10 @@ function scheduleCustomerTracking() {
 
 async function updateTrackedCustomerDetails() {
   try {
-    const customerName =
-      document.getElementById('fullName')?.value.trim() || '';
+    const customerName = [
+      document.getElementById('firstName')?.value.trim(),
+      document.getElementById('lastName')?.value.trim()
+    ].filter(Boolean).join(' ');
 
     const customerEmail =
       document.getElementById('email')?.value.trim() || '';
@@ -585,7 +607,8 @@ async function updateTrackedCustomerDetails() {
 
 function setupCustomerTracking() {
   [
-    'fullName',
+    'firstName',
+    'lastName',
     'email',
     'phone'
   ].forEach(inputId => {
@@ -1403,7 +1426,9 @@ document.getElementById('addressForm').onsubmit = async function(e) {
 
   const btn = this.querySelector('button[type="submit"]');
 
-  const name = document.getElementById('fullName').value.trim() || 'Customer';
+  const firstName = document.getElementById('firstName').value.trim();
+  const lastName = document.getElementById('lastName').value.trim();
+  const name = `${firstName} ${lastName}`.trim();
   const phone = document.getElementById('phone').value.trim();
   const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
   const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
@@ -1412,11 +1437,19 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const address2 = document.getElementById('address2').value.trim();
   const city = document.getElementById('city').value.trim();
   const postcode = document.getElementById('postcode').value.trim().toUpperCase();
+  const addressConfirmed = document.getElementById('addressConfirmed')?.checked || false;
+  const termsAccepted = document.getElementById('termsAccepted')?.checked || false;
   const ref = 'LW' + Date.now().toString().slice(-6);
   const telegramToken = generateTelegramToken(ref);
 
-  if (!name || !phone || !email || !address1 || !city || !postcode || !cart.length) {
-    checkoutStatus.textContent = 'Please complete your name, phone, email, address and cart.';
+  if (!firstName || !lastName || !phone || !email || !address1 || !city || !postcode || !cart.length) {
+    checkoutStatus.textContent = 'Please provide your first and last name, phone, email, full address and cart.';
+    checkoutStatus.className = 'small text-danger mt-2';
+    return;
+  }
+
+  if (!addressConfirmed || !termsAccepted) {
+    checkoutStatus.textContent = 'Please confirm your address and accept the research-only declaration, Terms and Disclaimer.';
     checkoutStatus.className = 'small text-danger mt-2';
     return;
   }
