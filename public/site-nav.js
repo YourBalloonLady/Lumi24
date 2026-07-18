@@ -29,6 +29,7 @@
         ['calculator.html', 'Calculator'],
         ['reviews.html', 'Reviews'],
         ['faq.html', 'FAQ'],
+        ['about.html', 'About Lumina'],
         ['contact.html', 'Contact'],
         ['account.html', 'My Account']
       ];
