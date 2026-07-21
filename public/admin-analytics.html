@@ -201,7 +201,7 @@
       $('refresh').disabled=true;$('basket-status').textContent='Loading operational data…';
       const thirtyDaysAgo=new Date(Date.now()-30*86400000).toISOString();
       const [basketResult,orderResult,productResult,reviewResult,visitResult]=await Promise.all([
-        db.from('shopping_carts').select('id,customer_name,customer_email,customer_phone,items,total,status,current_page,order_reference,last_activity_at').order('last_activity_at',{ascending:false}).limit(500),
+        db.from('shopping_carts').select('id,customer_name,customer_email,customer_phone,items,total,status,current_page,order_reference,last_activity_at,recovery_email_consent,recovery_email_status,recovery_email_sent_at').order('last_activity_at',{ascending:false}).limit(500),
         db.from('Orders').select('id,total_amount,status,details,created_at').order('created_at',{ascending:false}).limit(5000),
         db.from('Products').select('id,name,price,stock,type').order('name'),
         db.from('Reviews').select('id,name,rating,review_text,created_at').eq('approved',false).order('created_at',{ascending:false}),
