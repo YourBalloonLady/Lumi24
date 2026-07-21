@@ -1,4 +1,62 @@
 (function () {
+  const ANALYTICS_ENDPOINT = 'https://qketnqhfjfxbqiuqevnh.supabase.co/rest/v1/rpc/track_site_event';
+  const ANALYTICS_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys';
+
+  function newSessionId() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, character => {
+      const random = crypto.getRandomValues(new Uint8Array(1))[0] & 15;
+      const value = character === 'x' ? random : (random & 3) | 8;
+      return value.toString(16);
+    });
+  }
+
+  function analyticsSessionId() {
+    try {
+      const key = 'lumina_analytics_session';
+      let id = sessionStorage.getItem(key);
+      if (!id) {
+        id = newSessionId();
+        sessionStorage.setItem(key, id);
+      }
+      return id;
+    } catch (_) {
+      return newSessionId();
+    }
+  }
+
+  function referrerHost() {
+    if (!document.referrer) return '';
+    try {
+      const host = new URL(document.referrer).hostname;
+      return host === window.location.hostname ? '' : host.slice(0, 253);
+    } catch (_) {
+      return '';
+    }
+  }
+
+  const analyticsSession = analyticsSessionId();
+  function recordSiteEvent(eventName, detail) {
+    if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
+    if (/^\/(admin(?:-analytics)?|analytics)\.html$/.test(window.location.pathname)) return;
+    fetch(ANALYTICS_ENDPOINT, {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        apikey: ANALYTICS_KEY,
+        Authorization: `Bearer ${ANALYTICS_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        p_session_id: analyticsSession,
+        p_event_name: String(eventName || '').slice(0, 64),
+        p_page_path: window.location.pathname.slice(0, 300),
+        p_referrer_host: referrerHost(),
+        p_event_data: detail && typeof detail === 'object' ? detail : {}
+      })
+    }).catch(() => {});
+  }
+
   window.dataLayer = window.dataLayer || [];
   window.luminaTrack = window.luminaTrack || function (eventName, detail) {
     const standardEvents = {
@@ -13,7 +71,10 @@
     const event = { event: standardEvents[eventName] || eventName, original_event: eventName, ...(detail || {}) };
     window.dataLayer.push(event);
     window.dispatchEvent(new CustomEvent('lumina:analytics', { detail: event }));
+    recordSiteEvent(event.original_event, detail);
   };
+
+  recordSiteEvent('page_view');
 
   if (document.getElementById('lumina-quick-nav')) return;
 
