@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/png" href="/lumina-favicon.png?v=1">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Checkout - Lumina</title>
@@ -237,6 +238,12 @@
               <div class="col-12">
                 <label class="form-label small fw-semibold" for="email">Email address</label>
                 <input type="email" class="form-control" id="email" placeholder="Email address" autocomplete="email" required>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="checkoutReminderOptIn">
+                  <label class="form-check-label small text-muted" for="checkoutReminderOptIn">
+                    Email me one reminder if I leave this checkout unfinished for more than one hour
+                  </label>
+                </div>
               </div>
 
               <div class="col-12">
@@ -623,6 +630,25 @@ function setupCustomerTracking() {
       );
     }
   });
+
+  document.getElementById('checkoutReminderOptIn')?.addEventListener(
+    'change',
+    updateRecoveryEmailConsent
+  );
+}
+
+async function updateRecoveryEmailConsent(event) {
+  try {
+    await saveCheckoutCartToSupabase();
+    const { error } = await supabaseClient.rpc('set_cart_recovery_consent', {
+      p_cart_token: getLuminaCartToken(),
+      p_consent: !!event.target.checked
+    });
+    if (error) throw error;
+  } catch (error) {
+    console.error('Could not save checkout reminder preference:', error);
+    event.target.checked = false;
+  }
 }
 
   async function markTrackedCartCompleted(orderReference) {
@@ -1185,6 +1211,37 @@ function getCartFromUrlOrStorage() {
   return [];
 }
 
+async function getRecoveredCartFromLink() {
+  const params = new URLSearchParams(window.location.search);
+  const recoveryToken = params.get('recover');
+  if (!recoveryToken) return null;
+
+  try {
+    const { data, error } = await supabaseClient.rpc('recover_shopping_cart', {
+      p_cart_token: recoveryToken
+    });
+    if (error) throw error;
+    if (!data || !Array.isArray(data.items) || !data.items.length) return null;
+
+    const recovered = data.items.map(item => ({
+      ...item,
+      qty: Number(item.quantity ?? item.qty ?? 1),
+      pen_heads: item.penHeads ?? item.pen_heads ?? '',
+      syringes: item.syringes ?? '',
+      sema_form: item.semaglutideForm ?? item.sema_form ?? ''
+    }));
+    localStorage.setItem(CART_TRACKING_KEY, recoveryToken);
+    localStorage.setItem('cart', JSON.stringify(recovered));
+    if (Number(data.delivery_cost || 0) > 0) setDeliveryOption('signed');
+    history.replaceState({}, document.title, window.location.pathname);
+    return { items: recovered, consent: !!data.recovery_email_consent };
+  } catch (error) {
+    console.error('Could not recover checkout:', error);
+    history.replaceState({}, document.title, window.location.pathname);
+    return null;
+  }
+}
+
 function accessoryDropdownHTML(item, index) {
   const n = String(item?.name || '').toLowerCase();
   const sema = isSemaglutide(n);
@@ -1585,7 +1642,8 @@ function backToShop() {
 }
 
 (async function initCheckout() {
-  cart = getCartFromUrlOrStorage();
+  const recoveredCart = await getRecoveredCartFromLink();
+  cart = recoveredCart?.items || getCartFromUrlOrStorage();
   window.addEventListener('DOMContentLoaded', () => {
     window.luminaTrack?.('checkout_started', { item_count: Array.isArray(cart) ? cart.reduce((sum,item)=>sum+Number(item.qty||0),0) : 0 });
   }, { once: true });
@@ -1623,6 +1681,10 @@ function backToShop() {
     Connect the form inputs to customer tracking.
   */
   setupCustomerTracking();
+  if (recoveredCart?.consent) {
+    const reminder = document.getElementById('checkoutReminderOptIn');
+    if (reminder) reminder.checked = true;
+  }
 
   /*
     Save the basket again as a checkout basket,
