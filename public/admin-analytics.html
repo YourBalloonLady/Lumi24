@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/png" href="/lumina-favicon.png?v=1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
@@ -71,6 +72,18 @@
         </div>
       </section>
 
+      <section id="visits" class="panel section-anchor mb-4">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+          <div><h2 class="h4 mb-1">Site Visits</h2><p class="text-muted mb-0">Cookie-free page views and browser-tab sessions from the last 30 days.</p></div>
+        </div>
+        <div id="visit-status" class="small text-muted mt-3">Loading visits…</div>
+        <div id="visit-kpis" class="kpi-grid mt-3"></div>
+        <div class="row g-3 mt-1">
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Most visited pages</h3><div id="top-pages"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Top referrers</h3><div id="top-referrers"></div></div></div>
+        </div>
+      </section>
+
       <section id="inventory" class="panel section-anchor mb-4">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
           <div><h2 class="h4 mb-1">Inventory</h2><p class="text-muted mb-0">Current Supabase stock with inline updates.</p></div>
@@ -98,7 +111,7 @@
     const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys';
     const ADMIN_EMAIL='luminaweight@gmail.com';
     const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-    let baskets=[],orders=[],products=[],reviews=[];
+    let baskets=[],orders=[],products=[],reviews=[],siteEvents=[];
     const $=id=>document.getElementById(id);
     const esc=value=>String(value??'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'",'&#039;');
     const money=value=>`£${Number(value||0).toFixed(2)}`;
@@ -140,6 +153,26 @@
       rank('abandoned-products',top(abandoned));rank('best-products',top(productTotals));rank('best-customers',top(customerTotals,money));rank('product-pairs',top(pairs,value=>`${value} orders`));
     }
 
+    function renderVisits(){
+      const pageViews=siteEvents.filter(event=>event.event_name==='page_view');
+      const now=Date.now();
+      const since=days=>pageViews.filter(event=>new Date(event.occurred_at).getTime()>=now-(days*86400000));
+      const unique=events=>new Set(events.map(event=>event.session_id)).size;
+      const today=since(1),week=since(7),month=since(30);
+      $('visit-kpis').innerHTML=[
+        ['live','Today',today.length,`${unique(today)} sessions`],
+        ['checkout','7 days',week.length,`${unique(week)} sessions`],
+        ['completed','30 days',month.length,`${unique(month)} sessions`],
+        ['abandoned','Events',siteEvents.length,'views + interactions']
+      ].map(([tone,label,value,note])=>`<div class="kpi ${tone}"><small>${label}</small><strong>${value}</strong><small>${note}</small></div>`).join('');
+
+      const counts=field=>pageViews.reduce((map,event)=>{const value=event[field]||'';if(value)map.set(value,(map.get(value)||0)+1);return map},new Map());
+      const top=map=>[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([label,value])=>({label,value}));
+      rank('top-pages',top(counts('page_path')),'No page views recorded yet.');
+      rank('top-referrers',top(counts('referrer_host')),'No external referrers recorded yet.');
+      $('visit-status').textContent=`${pageViews.length} page views across ${unique(pageViews)} sessions in the last 30 days.`;
+    }
+
     function renderInventory(){
       const search=$('inventory-search').value.trim().toLowerCase(),filter=$('inventory-filter').value;
       const low=products.filter(p=>Number(p.stock||0)>0&&Number(p.stock||0)<=5).length,out=products.filter(p=>Number(p.stock||0)<=0).length;
@@ -166,15 +199,17 @@
 
     async function loadDashboard(){
       $('refresh').disabled=true;$('basket-status').textContent='Loading operational data…';
-      const [basketResult,orderResult,productResult,reviewResult]=await Promise.all([
+      const thirtyDaysAgo=new Date(Date.now()-30*86400000).toISOString();
+      const [basketResult,orderResult,productResult,reviewResult,visitResult]=await Promise.all([
         db.from('shopping_carts').select('id,customer_name,customer_email,customer_phone,items,total,status,current_page,order_reference,last_activity_at').order('last_activity_at',{ascending:false}).limit(500),
         db.from('Orders').select('id,total_amount,status,details,created_at').order('created_at',{ascending:false}).limit(5000),
         db.from('Products').select('id,name,price,stock,type').order('name'),
-        db.from('Reviews').select('id,name,rating,review_text,created_at').eq('approved',false).order('created_at',{ascending:false})
+        db.from('Reviews').select('id,name,rating,review_text,created_at').eq('approved',false).order('created_at',{ascending:false}),
+        db.from('site_events').select('occurred_at,session_id,event_name,page_path,referrer_host').gte('occurred_at',thirtyDaysAgo).order('occurred_at',{ascending:false}).limit(50000)
       ]);
-      const failure=[basketResult,orderResult,productResult,reviewResult].find(result=>result.error);if(failure){$('basket-status').textContent=`Could not load dashboard: ${failure.error.message}`;$('refresh').disabled=false;return}
-      baskets=basketResult.data||[];orders=orderResult.data||[];products=productResult.data||[];reviews=reviewResult.data||[];
-      $('basket-status').textContent=`${baskets.length} baskets and ${orders.length} historical orders loaded.`;renderBaskets();renderHistory();renderInventory();renderReviews();$('refresh').disabled=false;
+      const failure=[basketResult,orderResult,productResult,reviewResult,visitResult].find(result=>result.error);if(failure){$('basket-status').textContent=`Could not load dashboard: ${failure.error.message}`;$('refresh').disabled=false;return}
+      baskets=basketResult.data||[];orders=orderResult.data||[];products=productResult.data||[];reviews=reviewResult.data||[];siteEvents=visitResult.data||[];
+      $('basket-status').textContent=`${baskets.length} baskets and ${orders.length} historical orders loaded.`;renderBaskets();renderHistory();renderVisits();renderInventory();renderReviews();$('refresh').disabled=false;
     }
 
     async function init(){
