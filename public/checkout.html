@@ -226,13 +226,6 @@
               <div class="col-12">
                 <label class="form-label small fw-semibold" for="phone">Phone number</label>
                 <input type="tel" class="form-control" id="phone" placeholder="Phone number" autocomplete="tel" required>
-
-                <div class="form-check mt-2">
-                  <input class="form-check-input" type="checkbox" id="whatsappOptIn">
-                  <label class="form-check-label small text-muted" for="whatsappOptIn">
-                    Send me WhatsApp updates about this order
-                  </label>
-                </div>
               </div>
 
               <div class="col-12">
@@ -977,22 +970,6 @@ function saveCartToStorage() {
   } catch (e) {}
 }
 
-function cleanWhatsAppPhone(phone) {
-  let p = String(phone || "").trim();
-
-  p = p.replace(/[^\d+]/g, "");
-
-  if (p.startsWith("07")) {
-    p = "+44" + p.slice(1);
-  }
-
-  if (p.startsWith("44") && !p.startsWith("+44")) {
-    p = "+" + p;
-  }
-
-  return p;
-}
-
 function generateTelegramToken(orderReference) {
   let randomPart = '';
 
@@ -1438,8 +1415,6 @@ async function saveOrderToSupabase(details) {
       name: details.name,
       email: details.email,
       phone: details.phone,
-      whatsapp_opt_in: !!details.whatsappOptIn,
-      whatsapp_phone: details.whatsappPhone || '',
       address1: details.address1,
       address2: details.address2,
       city: details.city,
@@ -1512,8 +1487,6 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const lastName = document.getElementById('lastName').value.trim();
   const name = `${firstName} ${lastName}`.trim();
   const phone = document.getElementById('phone').value.trim();
-  const whatsappOptIn = document.getElementById('whatsappOptIn')?.checked || false;
-  const whatsappPhone = whatsappOptIn ? cleanWhatsAppPhone(phone) : "";
   const email = document.getElementById('email').value.trim();
   const address1 = document.getElementById('address1').value.trim();
   const address2 = document.getElementById('address2').value.trim();
@@ -1532,12 +1505,6 @@ document.getElementById('addressForm').onsubmit = async function(e) {
 
   if (!addressConfirmed || !termsAccepted) {
     checkoutStatus.textContent = 'Please confirm your address and accept the research-only declaration, Terms and Disclaimer.';
-    checkoutStatus.className = 'small text-danger mt-2';
-    return;
-  }
-
-  if (whatsappOptIn && !whatsappPhone) {
-    checkoutStatus.textContent = 'Please enter a valid phone number for WhatsApp updates.';
     checkoutStatus.className = 'small text-danger mt-2';
     return;
   }
@@ -1577,9 +1544,7 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       city,
       postcode,
       ref,
-      telegramToken,
-      whatsappOptIn,
-      whatsappPhone
+      telegramToken
     };
 
     const orderResult = await saveOrderToSupabase(details);
