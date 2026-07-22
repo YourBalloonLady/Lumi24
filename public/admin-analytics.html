@@ -22,7 +22,39 @@
     .review{border:1px solid #e5e7eb;border-radius:14px;padding:15px;margin-bottom:12px}
     .section-anchor{scroll-margin-top:20px}
     @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:520px){.kpi-grid{grid-template-columns:1fr}}
+    @media(max-width:520px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:767.98px){
+      body{overflow-x:hidden}
+      .topbar{position:sticky;top:0;z-index:1035;padding:10px 0;box-shadow:0 6px 18px rgba(15,23,42,.2)}
+      .topbar>.container{display:block!important;padding-inline:12px}
+      .topbar strong{display:block;margin-bottom:8px}
+      .topbar nav{flex-wrap:nowrap!important;overflow-x:auto;padding-bottom:3px;scrollbar-width:none}
+      .topbar nav::-webkit-scrollbar{display:none}
+      .topbar nav a,.topbar nav button{flex:0 0 auto;min-height:42px;display:flex;align-items:center;padding-inline:10px;border:1px solid rgba(255,255,255,.14);border-radius:10px}
+      main.container{padding:12px 10px!important}
+      .panel{padding:13px;border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+      .panel .panel{padding:12px}
+      .kpi-grid{gap:8px}
+      .kpi{padding:13px;min-height:104px}
+      .kpi strong{font-size:1.45rem}
+      #refresh{width:100%;min-height:44px}
+      #basket-search,#basket-filter,#inventory-search,#inventory-filter{width:100%!important;max-width:none!important;min-height:44px;font-size:16px}
+      .basket{padding:12px}
+      .rank-row{align-items:flex-start;overflow-wrap:anywhere}
+      .review .btn{min-height:44px;margin-bottom:6px}
+      #inventory .table,#inventory .table tbody,#inventory .table tr,#inventory .table td{display:block;width:100%}
+      #inventory .table thead{display:none}
+      #inventory .table tr{margin-bottom:10px;padding:11px;border:1px solid #e2e8f0;border-radius:13px;background:#fff}
+      #inventory .table td{display:grid;grid-template-columns:90px minmax(0,1fr);align-items:center;gap:10px;padding:7px 0;border:0;text-align:right}
+      #inventory .table td::before{text-align:left;color:#64748b;font-size:.72rem;font-weight:800;text-transform:uppercase}
+      #inventory .table td:nth-child(1)::before{content:"Product"}
+      #inventory .table td:nth-child(2)::before{content:"Price"}
+      #inventory .table td:nth-child(3)::before{content:"Stock"}
+      #inventory .table td:nth-child(4)::before{content:"Status"}
+      #inventory .table td:nth-child(5)::before{content:"Update"}
+      .stock-input{width:100%;max-width:none;min-height:44px;text-align:center}
+      #inventory .table .btn{width:100%;min-height:44px}
+    }
   </style>
 </head>
 <body>
