@@ -655,6 +655,223 @@ body.orders-mode #operations-page-header {
   .basket-kpi-value {
     font-size: 1.4rem;
   }
+
+  body { overflow-x: hidden; }
+
+  #trust-bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  #trust-bar::-webkit-scrollbar,
+  .filter-row::-webkit-scrollbar,
+  .order-export-actions::-webkit-scrollbar,
+  .order-filter-options::-webkit-scrollbar { display: none; }
+
+  #trust-bar .container {
+    width: max-content;
+    max-width: none;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    padding-inline: 14px;
+  }
+
+  .mobile-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1035;
+    min-height: 56px;
+    box-shadow: 0 6px 18px rgba(2, 6, 23, .2);
+  }
+
+  .mobile-topbar .btn,
+  .offcanvas .btn,
+  .offcanvas a {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .admin-main > .container {
+    margin-top: 10px !important;
+    padding-inline: 10px;
+  }
+
+  .section-card,
+  .order-card,
+  .review-card,
+  .packing-card,
+  .basket-panel {
+    border-radius: 14px;
+    padding: 13px;
+    margin-bottom: 12px;
+    box-shadow: 0 5px 16px rgba(15, 23, 42, .07);
+  }
+
+  #order-management-section > .d-flex:first-child {
+    align-items: flex-start !important;
+  }
+
+  #kpi-bar,
+  #quick-stats {
+    width: 100%;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .kpi-pill { flex: 0 0 auto; }
+
+  .view-toggle-bar {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .view-toggle-bar .btn { min-height: 44px; }
+
+  .order-export-actions {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    padding-bottom: 7px;
+  }
+
+  .order-export-actions .btn {
+    flex: 0 0 auto;
+    min-height: 42px;
+  }
+
+  .sticky-admin-controls {
+    position: sticky;
+    top: 56px;
+    z-index: 1020;
+    margin-inline: -13px;
+    padding: 8px 13px;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, .07);
+  }
+
+  .controls-grid { gap: 4px; }
+
+  .input-group {
+    flex-wrap: nowrap;
+  }
+
+  #order-search {
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .input-group .btn { min-height: 44px; }
+
+  .filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin-inline: -13px;
+    padding: 2px 13px 7px;
+  }
+
+  .filter-row .btn {
+    flex: 0 0 auto;
+    min-height: 42px;
+  }
+
+  .order-filter-options {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    margin-inline: -13px;
+    padding: 3px 13px 7px;
+  }
+
+  .order-filter-options .form-check {
+    flex: 0 0 auto;
+    min-height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .bulk-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .bulk-bar > * { flex: 0 0 auto; }
+  .bulk-bar .btn { min-height: 42px; }
+
+  .mobile-primary-actions,
+  .mobile-secondary-actions,
+  .packing-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mobile-primary-actions .btn,
+  .mobile-secondary-actions .btn,
+  .packing-actions .btn,
+  .mini-actions .btn {
+    min-height: 44px;
+    white-space: normal;
+  }
+
+  .items-box,
+  .packing-items,
+  .packing-address {
+    overflow-wrap: anywhere;
+  }
+
+  .inventory-table,
+  .inventory-table tbody,
+  .inventory-table tr,
+  .inventory-table td {
+    display: block;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .inventory-table thead { display: none; }
+
+  .inventory-table tr {
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .inventory-table td {
+    display: grid;
+    grid-template-columns: minmax(92px, .7fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border: 0;
+    text-align: right;
+  }
+
+  .inventory-table td::before {
+    text-align: left;
+    color: #64748b;
+    font-size: .72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .inventory-table td:nth-child(1)::before { content: "Product"; }
+  .inventory-table td:nth-child(2)::before { content: "Price"; }
+  .inventory-table td:nth-child(3)::before { content: "Stock"; }
+  .inventory-table td:nth-child(4)::before { content: "Status"; }
+  .inventory-table td:nth-child(5)::before { content: "Update"; }
+
+  .inventory-stock-input,
+  .inventory-save-button {
+    width: 100%;
+    max-width: none;
+    min-height: 44px;
+  }
+
+  #backToTop {
+    right: 12px;
+    bottom: 12px;
+    min-height: 44px;
+  }
 }
   
 
@@ -749,7 +966,7 @@ body.orders-mode #operations-page-header {
 
  
 
-  <div class="d-flex gap-2 flex-wrap mt-3 admin-only">
+  <div class="d-flex gap-2 flex-wrap mt-3 admin-only order-export-actions">
     <button class="btn btn-sm btn-outline-success" onclick="exportOrdersCsv('all')">⬇️ Export ALL (CSV)</button>
     <button class="btn btn-sm btn-outline-primary" onclick="exportOrdersCsv('shipped')">⬇️ Export SHIPPED (CSV)</button>
     <button class="btn btn-sm btn-outline-dark" onclick="exportOrdersCsv('selected')">⬇️ Export SELECTED (CSV)</button>
@@ -779,7 +996,7 @@ body.orders-mode #operations-page-header {
           <button id="btnPackQueue" class="btn btn-sm btn-dark" onclick="togglePackQueue()">✅ Pack Queue</button>
         </div>
 
-        <div class="d-flex gap-3 flex-wrap mt-2">
+        <div class="d-flex gap-3 flex-wrap mt-2 order-filter-options">
           <div class="form-check">
             <input class="form-check-input" type="checkbox" id="flt-older24" onchange="applyClientFilters()">
             <label class="form-check-label" for="flt-older24">Unpaid &gt; 24h</label>
