@@ -1744,27 +1744,6 @@ let basketRefreshTimer = null;
   return `<span class="badge text-bg-light border text-muted">Telegram: Not connected</span>`;
 }
 
-    function whatsappStatusBadge(order) {
-  const c = order?.details?.customer || {};
-  const meta = order?.details?.meta || {};
-
-  const optedIn =
-    !!c.whatsapp_opt_in ||
-    !!meta.whatsapp_opt_in;
-
-  const phone =
-    c.whatsapp_phone ||
-    meta.whatsapp_phone ||
-    c.phone ||
-    "";
-
-  if (optedIn && phone) {
-    return `<span class="badge text-bg-success">WhatsApp: Opted in ✅</span>`;
-  }
-
-  return `<span class="badge text-bg-light border text-muted">WhatsApp: Not opted in</span>`;
-}
-
     function getItemFormatValue(item = {}) {
       return String(
         item?.format ||
@@ -3893,7 +3872,6 @@ startBasketAutoRefresh();
   >
     ${badge(order.status)}
     ${telegramStatusBadge(order)}
-    ${whatsappStatusBadge(order)}
   </div>
 
   <div class="fw-bold mt-2">
@@ -6556,7 +6534,6 @@ if (inventorySearchClearButton) {
     window.sendDigitalGuideById = sendDigitalGuideById;
     window.sendTelegramOrderUpdate = sendTelegramOrderUpdate;
     window.telegramStatusBadge = telegramStatusBadge;
-    window.whatsappStatusBadge = whatsappStatusBadge;
     window.handleInventoryStockInput =
   handleInventoryStockInput;
 
