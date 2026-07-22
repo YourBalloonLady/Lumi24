@@ -239,9 +239,9 @@
                 <label class="form-label small fw-semibold" for="email">Email address</label>
                 <input type="email" class="form-control" id="email" placeholder="Email address" autocomplete="email" required>
                 <div class="form-check mt-2">
-                  <input class="form-check-input" type="checkbox" id="checkoutReminderOptIn">
-                  <label class="form-check-label small text-muted" for="checkoutReminderOptIn">
-                    Email me one reminder if I leave this checkout unfinished for more than one hour
+                  <input class="form-check-input" type="checkbox" id="checkoutReminderOptOut">
+                  <label class="form-check-label small text-muted" for="checkoutReminderOptOut">
+                    We may email you one reminder if this checkout is left unfinished for more than one hour. Tick here if you do not want a checkout reminder.
                   </label>
                 </div>
               </div>
@@ -605,6 +605,11 @@ async function updateTrackedCustomerDetails() {
         'Customer checkout tracking failed:',
         error
       );
+    } else if (document.getElementById('checkoutReminderOptOut')?.checked) {
+      await supabaseClient.rpc('set_cart_recovery_consent', {
+        p_cart_token: getLuminaCartToken(),
+        p_consent: false
+      });
     }
   } catch (error) {
     console.error(
@@ -631,7 +636,11 @@ function setupCustomerTracking() {
     }
   });
 
-  document.getElementById('checkoutReminderOptIn')?.addEventListener(
+  const reminderOptOut = document.getElementById('checkoutReminderOptOut');
+  if (reminderOptOut) {
+    reminderOptOut.checked = localStorage.getItem('lumina_checkout_reminder_opt_out') === '1';
+  }
+  reminderOptOut?.addEventListener(
     'change',
     updateRecoveryEmailConsent
   );
@@ -639,16 +648,30 @@ function setupCustomerTracking() {
 
 async function updateRecoveryEmailConsent(event) {
   try {
+    localStorage.setItem(
+      'lumina_checkout_reminder_opt_out',
+      event.target.checked ? '1' : '0'
+    );
     await saveCheckoutCartToSupabase();
     const { error } = await supabaseClient.rpc('set_cart_recovery_consent', {
       p_cart_token: getLuminaCartToken(),
-      p_consent: !!event.target.checked
+      p_consent: !event.target.checked
     });
     if (error) throw error;
   } catch (error) {
     console.error('Could not save checkout reminder preference:', error);
-    event.target.checked = false;
+    event.target.checked = true;
   }
+}
+
+async function saveDefaultRecoveryEmailPreference() {
+  const optOut = document.getElementById('checkoutReminderOptOut')?.checked || false;
+  await saveCheckoutCartToSupabase();
+  const { error } = await supabaseClient.rpc('set_cart_recovery_consent', {
+    p_cart_token: getLuminaCartToken(),
+    p_consent: !optOut
+  });
+  if (error) console.error('Could not save checkout reminder preference:', error);
 }
 
   async function markTrackedCartCompleted(orderReference) {
@@ -1681,8 +1704,8 @@ function backToShop() {
     Connect the form inputs to customer tracking.
   */
   setupCustomerTracking();
-  if (recoveredCart?.consent) {
-    const reminder = document.getElementById('checkoutReminderOptIn');
+  if (recoveredCart && !recoveredCart.consent) {
+    const reminder = document.getElementById('checkoutReminderOptOut');
     if (reminder) reminder.checked = true;
   }
 
@@ -1691,6 +1714,7 @@ function backToShop() {
     including current prices and delivery.
   */
   scheduleCheckoutCartTracking();
+  saveDefaultRecoveryEmailPreference();
 })();
 </script>
   <script src="/site-nav.js"></script>
