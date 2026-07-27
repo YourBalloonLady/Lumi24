@@ -1573,6 +1573,16 @@ function normaliseGuideText(str = "") {
     .trim();
 }
 
+function extractGuideStrengths(guide) {
+  return Array.from(new Set(
+    (guide.match || [])
+      .map(term => normaliseGuideText(term))
+      .flatMap(term => [...term.matchAll(/\b(\d+)\s*mg\b/g)])
+      .map(match => Number(match[1]))
+      .filter(Number.isFinite)
+  ));
+}
+
 function getGuidesForOrder(order) {
   const items = Array.isArray(order?.details?.items) ? order.details.items : [];
 
@@ -1589,8 +1599,25 @@ function getGuidesForOrder(order) {
     }).join(" ")
   );
 
+  const haystackStrengths = new Set(
+    [...haystack.matchAll(/\b(\d+)\s*mg\b/g)].map(match => Number(match[1]))
+  );
+
   const matches = PROTOCOL_GUIDES.filter(guide => {
-    return guide.match.some(term => haystack.includes(normaliseGuideText(term)));
+    const guideTerms = (guide.match || []).map(term => normaliseGuideText(term));
+    const genericMatch = guideTerms.some(term => haystack.includes(term));
+    const guideStrengths = extractGuideStrengths(guide);
+    const strengthMatch = guideStrengths.some(strength => haystackStrengths.has(strength));
+
+    if (!guideStrengths.length) {
+      return genericMatch;
+    }
+
+    if (haystackStrengths.size === 0) {
+      return genericMatch;
+    }
+
+    return genericMatch && strengthMatch;
   });
 
   const seen = new Set();
