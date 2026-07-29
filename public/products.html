@@ -425,6 +425,98 @@
       background: #111827;
     }
 
+    .multibuy-banner {
+      position: relative;
+      max-width: 820px;
+      margin: 0 auto 1.75rem;
+      padding: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(21, 128, 61, .28);
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 0 0, rgba(74, 222, 128, .3), transparent 36%),
+        linear-gradient(135deg, #052e16 0%, #14532d 55%, #166534 100%);
+      box-shadow: 0 18px 38px rgba(20, 83, 45, .22);
+      color: #fff;
+    }
+
+    .multibuy-banner::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -55px;
+      bottom: -80px;
+      border: 28px solid rgba(255, 255, 255, .06);
+      border-radius: 50%;
+    }
+
+    .multibuy-kicker {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 12px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      background: #facc15;
+      color: #422006;
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .multibuy-offers {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .multibuy-offer {
+      padding: 13px 16px;
+      border: 1px solid rgba(255, 255, 255, .18);
+      border-radius: 15px;
+      background: rgba(255, 255, 255, .1);
+      text-align: left;
+      backdrop-filter: blur(6px);
+    }
+
+    .multibuy-name {
+      display: block;
+      color: #bbf7d0;
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .multibuy-price {
+      display: block;
+      margin-top: 2px;
+      font-size: clamp(1.25rem, 3vw, 1.7rem);
+      font-weight: 950;
+      letter-spacing: -.03em;
+      line-height: 1.1;
+    }
+
+    .multibuy-note {
+      position: relative;
+      z-index: 1;
+      margin: 12px 0 0;
+      color: #dcfce7;
+      font-size: .8rem;
+      font-weight: 650;
+    }
+
+    @media (max-width: 575px) {
+      .multibuy-banner { padding: 15px; border-radius: 18px; }
+      .multibuy-offers { grid-template-columns: 1fr; }
+    }
+
     .pill-restock {
       position: absolute;
       top: 16px;
@@ -879,10 +971,19 @@
         All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
       </p>
 
-      <div class="alert alert-success border-success mx-auto mb-4" style="max-width:760px;" role="status">
-        <strong>60mg multibuy offers:</strong>
-        Tirzepatide 3 for £400 • Retatrutide 3 for £490.
-        Offers apply automatically when three matching units are added.
+      <div class="multibuy-banner" role="status" aria-label="60mg multibuy offers">
+        <div class="multibuy-kicker"><i class="fa-solid fa-bolt"></i> Limited multibuy offer</div>
+        <div class="multibuy-offers">
+          <div class="multibuy-offer">
+            <span class="multibuy-name">Tirzepatide 60mg</span>
+            <span class="multibuy-price">Buy 3 for £400</span>
+          </div>
+          <div class="multibuy-offer">
+            <span class="multibuy-name">Retatrutide 60mg</span>
+            <span class="multibuy-price">Buy 3 for £490</span>
+          </div>
+        </div>
+        <p class="multibuy-note"><i class="fa-solid fa-circle-check me-1"></i> No code needed — the offer applies automatically when three matching units are added.</p>
       </div>
 
       <div class="category-strip">
