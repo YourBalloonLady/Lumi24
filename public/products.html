@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<link rel="icon" type="image/png" href="/lumina-favicon.png?v=1">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- FAVICON / TAB ICON -->
-  <link rel="icon" href="/favicon.ico?v=4">
-<link rel="icon" type="image/png" sizes="32x32" href="/lumina-favicon.png.png?v=4">
-<link rel="icon" type="image/png" sizes="16x16" href="/lumina-favicon.png?v=4">
-<link rel="apple-touch-icon" sizes="180x180" href="/lumina-favicon.png?v=4">
+  <link rel="apple-touch-icon" sizes="180x180" href="/Favicon.png?v=4">
 
   <!-- SEO (neutral / research supply language) -->
   <title>Research Materials Catalogue UK | Lumina</title>
@@ -881,6 +879,12 @@
         All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
       </p>
 
+      <div class="alert alert-success border-success mx-auto mb-4" style="max-width:760px;" role="status">
+        <strong>60mg multibuy offers:</strong>
+        Tirzepatide 3 for £400 • Retatrutide 3 for £490.
+        Offers apply automatically when three matching units are added.
+      </div>
+
       <div class="category-strip">
         <button class="category-chip active" data-category="all">All</button>
         <button class="category-chip" data-category="metabolic">Fat Loss Research</button>
@@ -1228,7 +1232,7 @@ function saveCart() {
 
     function updateCart() {
       const totalItems = cart.reduce((s, i) => s + (i.qty || 0), 0);
-      const total = cart.reduce((s, i) => s + (Number(i.price || 0) * (i.qty || 0)), 0);
+      const total = cart.reduce((s, i) => s + getPromotionalLineTotal(i), 0);
 
       document.getElementById('cart-count').textContent = totalItems;
       document.getElementById('cart-items-count').textContent = totalItems;
@@ -1245,6 +1249,7 @@ function saveCart() {
               ${item.variant ? `<small class="text-muted d-block">${getVariantLabel(item.variant)}</small>` : ''}
               ${item.penColour ? `<small class="text-muted d-block">Pen Colour: ${item.penColour}</small>` : ''}
               <small>£${Number(item.price || 0).toFixed(2)} × ${item.qty}</small>
+              ${getVolumeOffer(item) ? `<small class="d-block text-success fw-semibold">${Number(item.qty || 0) >= 3 ? `${getVolumeOffer(item).label} applied ✓` : `Add ${3 - Number(item.qty || 0)} more for ${getVolumeOffer(item).label.toLowerCase()}`}</small>` : ''}
             </div>
             <div class="d-flex align-items-center gap-2">
               <button class="btn btn-outline-secondary btn-sm" onclick="updateQty(${i}, -1)">–</button>
@@ -1309,6 +1314,22 @@ function saveCart() {
 
     function cleanText(value) {
       return String(value || '').toLowerCase();
+    }
+
+    function getVolumeOffer(item) {
+      const name = cleanText(item?.name);
+      if (!/(^|[^0-9])60\s*mg([^0-9]|$)/.test(name)) return null;
+      if (/(tirzepatide|tirz)/.test(name)) return { price: 400, label: '3 for £400' };
+      if (/(retatrutide|reta)/.test(name)) return { price: 490, label: '3 for £490' };
+      return null;
+    }
+
+    function getPromotionalLineTotal(item) {
+      const qty = Math.max(0, Number(item?.qty || 0));
+      const unitPrice = Number(item?.price || 0);
+      const offer = getVolumeOffer(item);
+      const sets = offer ? Math.floor(qty / 3) : 0;
+      return sets > 0 ? (sets * offer.price) + ((qty % 3) * unitPrice) : qty * unitPrice;
     }
 
     function escapeHtml(value) {
@@ -1377,6 +1398,10 @@ function saveCart() {
 
     function computeBadge(p) {
       const name = cleanText(p.name);
+
+      if (getVolumeOffer(p)) {
+        return { text: `BUY 3 × 60MG FOR £${getVolumeOffer(p).price}`, class: 'pill-popular' };
+      }
 
       if (name.includes('bpc-157') || name.includes('tb500') || name.includes('tb-500')) {
         return { text: 'Wolverine Stack', class: 'pill-wolverine' };
@@ -1649,11 +1674,13 @@ function saveCart() {
       const price = Number(group.price || 0);
       const stockLabel = stockNum === 0 ? '<strong>Out of stock</strong>' : `${inStockProducts.length} strength${inStockProducts.length === 1 ? '' : 's'} in stock`;
       const stockClass = stockNum === 0 ? 'text-danger' : 'text-success';
+      const groupOffers = group.products.map(getVolumeOffer).filter(Boolean);
+      const groupOffer = groupOffers[0] || null;
 
       return `
         <div class="col-md-3">
           <div class="position-relative h-100 product-card ${stockNum === 0 ? 'out-of-stock' : ''}" onclick="${stockNum > 0 ? `openGroupModal('${group.key}')` : ''}">
-            <span class="pill-label pill-popular">Choose Strength</span>
+            <span class="pill-label pill-popular">${groupOffer ? `BUY 3 × 60MG FOR £${groupOffer.price}` : 'Choose Strength'}</span>
 
             <div class="product-image-wrap">
               <img src="${imgSrc(group.image)}" class="w-100" alt="${escapeHtml(group.name)}" loading="lazy" decoding="async" width="420" height="420">
@@ -1678,6 +1705,7 @@ function saveCart() {
                 <div class="text-muted" style="font-size:0.85rem;">
                   Available strengths: ${strengthLabels.map(escapeHtml).join(' • ')}.
                 </div>
+                ${groupOffer ? `<div class="mt-2 text-success fw-bold">60mg special: ${groupOffer.label}</div>` : ''}
               </div>
 
               <div class="mt-3">
@@ -1903,6 +1931,7 @@ function saveCart() {
                 <div id="modalMedia" class="mb-4"></div>
                 <h3 id="modalName"></h3>
                 <p class="product-price fs-1 justify-content-center" id="modalPrice"></p>
+                <div id="modalOffer" class="alert alert-success py-2 fw-bold" hidden></div>
                 <p class="stock text-success mb-2" id="modalStock"></p>
                 <div id="modalDescription" class="text-start small text-muted mb-3"></div>
                 <a id="modalDetailLink" class="btn btn-sm btn-outline-success mb-3" href="#">Open full product page</a>
@@ -2041,6 +2070,7 @@ function saveCart() {
       const price = currentVariant ? Number(getVariantPrice(selectedProduct, currentVariant)) : Number(selectedProduct.price || 0);
       const compareAt = Number(selectedProduct.compare_at_price || 0);
       const stockNum = Number(selectedProduct.stock || 0);
+      const offer = getVolumeOffer(selectedProduct);
 
       document.getElementById('modalPrice').innerHTML = compareAt > price
         ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
@@ -2053,8 +2083,12 @@ function saveCart() {
             ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
+      const offerEl = document.getElementById('modalOffer');
+      offerEl.hidden = !offer;
+      offerEl.textContent = offer ? `Special offer: ${offer.label} — applied automatically at checkout.` : '';
+
       const qtyInput = document.getElementById('modalQty');
-      qtyInput.value = 1;
+      qtyInput.value = offer && stockNum >= 3 ? 3 : 1;
       qtyInput.max = stockNum;
 
       const img = document.getElementById('modalImg');
@@ -2086,6 +2120,7 @@ function saveCart() {
       const initialVariant = hasCartridgeOption(p) ? 'full-kit' : '';
       const modalPrice = initialVariant ? Number(getVariantPrice(p, initialVariant)) : Number(p.price || 0);
       const modalCompareAt = Number(p.compare_at_price || 0);
+      const offer = getVolumeOffer(p);
 
       document.getElementById('modalPrice').innerHTML = modalCompareAt > modalPrice
         ? `<span class="sale-old">£${modalCompareAt.toFixed(2)}</span> <span class="sale-new">£${modalPrice.toFixed(2)}</span>`
@@ -2097,6 +2132,10 @@ function saveCart() {
           : stockNum <= 5
             ? `<span class="text-warning fw-bold">Low stock • ${stockNum} left</span>`
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
+
+      const offerEl = document.getElementById('modalOffer');
+      offerEl.hidden = !offer;
+      offerEl.textContent = offer ? `Special offer: ${offer.label} — applied automatically at checkout.` : '';
 
       document.getElementById('modalDescription').innerHTML = `
         <p>${escapeHtml(p.description || 'Research material supplied for laboratory environments.')}</p>
@@ -2137,7 +2176,7 @@ function saveCart() {
       variantWrap.innerHTML = optionsHtml;
 
       const qtyInput = document.getElementById('modalQty');
-      qtyInput.value = 1;
+      qtyInput.value = offer && stockNum >= 3 ? 3 : 1;
       qtyInput.max = stockNum;
 
       document.getElementById('modalAddBtn').onclick = () => {
