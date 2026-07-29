@@ -1154,19 +1154,47 @@ async function syncCartPricesFromSupabase() {
 
 function calculateBundle(cart) {
   let baseTotal = 0;
+  let discount = 0;
+  const messages = [];
 
   cart.forEach(item => {
     const qty = Number(item.qty || 0);
     const line = Number(item.price || 0) * qty;
     baseTotal += line;
+    const offer = getVolumeOffer(item);
+    const sets = offer ? Math.floor(qty / 3) : 0;
+
+    if (sets > 0) {
+      const offerTotal = (sets * offer.price) + ((qty % 3) * Number(item.price || 0));
+      const lineDiscount = Math.max(0, line - offerTotal);
+      discount += lineDiscount;
+      messages.push(`${sets > 1 ? `${sets} × ` : ''}${offer.label}`);
+    }
   });
 
   return {
     baseTotal,
-    discount: 0,
-    finalTotal: baseTotal,
-    messages: []
+    discount,
+    finalTotal: baseTotal - discount,
+    messages
   };
+}
+
+function getVolumeOffer(item) {
+  const name = String(item?.name || '').toLowerCase();
+  const is60mg = /(^|[^0-9])60\s*mg([^0-9]|$)/.test(name);
+  if (!is60mg) return null;
+  if (/(tirzepatide|tirz)/.test(name)) return { price: 400, label: 'Tirzepatide 60mg — 3 for £400' };
+  if (/(retatrutide|reta)/.test(name)) return { price: 490, label: 'Retatrutide 60mg — 3 for £490' };
+  return null;
+}
+
+function getPromotionalLineTotal(item) {
+  const qty = Math.max(0, Number(item?.qty || 0));
+  const unitPrice = Number(item?.price || 0);
+  const offer = getVolumeOffer(item);
+  const sets = offer ? Math.floor(qty / 3) : 0;
+  return sets > 0 ? (sets * offer.price) + ((qty % 3) * unitPrice) : qty * unitPrice;
 }
 
 function getCartFromUrlOrStorage() {
@@ -1320,11 +1348,20 @@ function renderOrderSummary(payableOverride = null) {
           ${getVariantDisplay(i)}
           ${extraLabel(i)}
         </span>
-        <span>£${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}</span>
+        <span>£${getPromotionalLineTotal(i).toFixed(2)}</span>
       </div>
+      ${getVolumeOffer(i) ? `<div class="small text-success fw-semibold mt-1">${Number(i.qty || 0) >= 3 ? 'Offer applied ✓' : `Add ${3 - Number(i.qty || 0)} more to activate: ${getVolumeOffer(i).label}`}</div>` : ''}
       ${accessoryDropdownHTML(i, idx)}
     </div>
   `).join('') + `
+    ${bundle.discount > 0 ? `
+      <div class="py-2 border-bottom text-success">
+        <div class="d-flex justify-content-between">
+          <strong>Multibuy saving</strong>
+          <strong>−£${bundle.discount.toFixed(2)}</strong>
+        </div>
+      </div>
+    ` : ''}
     <div class="py-2 border-bottom mt-3">
       <div class="d-flex justify-content-between">
         <span>
@@ -1350,7 +1387,7 @@ function buildItemsText() {
   if (!cart.length) return 'No items (cart empty).';
 
   const itemLines = cart.map(i =>
-    `${i.qty} × ${i.name}${i.variant ? ` (${getVariantLabel(i.variant)})` : ''}${extraLabel(i)} — £${(Number(i.price || 0) * Number(i.qty || 0)).toFixed(2)}`
+    `${i.qty} × ${i.name}${i.variant ? ` (${getVariantLabel(i.variant)})` : ''}${extraLabel(i)} — £${getPromotionalLineTotal(i).toFixed(2)}${getVolumeOffer(i) && Number(i.qty || 0) >= 3 ? ' (multibuy offer applied)' : ''}`
   );
 
   itemLines.push(
