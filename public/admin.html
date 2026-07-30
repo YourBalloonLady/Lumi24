@@ -3448,7 +3448,8 @@ loadOrders();
         order_reference: ref,
         order_items: items,
         order_total: total,
-        tracking_number: tracking,
+        tracking_number: trackingUrl || tracking,
+        tracking_code: tracking,
         tracking_url: trackingUrl
       });
     }
