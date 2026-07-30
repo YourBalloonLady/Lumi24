@@ -355,6 +355,56 @@
     letter-spacing:.04em;
   }
 
+  .copy-fields{
+    display:grid;
+    gap:6px;
+    margin-top:8px;
+  }
+
+  .copy-field-row{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) auto;
+    gap:8px;
+    align-items:center;
+    padding:7px 9px;
+    background:#fff;
+    border:1px solid #e2e8f0;
+    border-radius:9px;
+    white-space:normal;
+  }
+
+  .copy-field-label{
+    display:block;
+    color:#64748b;
+    font-size:.68rem;
+    font-weight:800;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+  }
+
+  .copy-field-value{
+    color:#0f172a;
+    font-size:.88rem;
+    font-weight:650;
+    overflow-wrap:anywhere;
+  }
+
+  .copy-field-button{
+    min-width:34px;
+    min-height:32px;
+    padding:4px 8px;
+    border-radius:8px;
+    font-size:.8rem;
+    line-height:1;
+  }
+
+  .copy-address-actions{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    margin-top:9px;
+  }
+
   .packing-actions{
     display:grid;
     grid-template-columns:1fr;
@@ -2333,31 +2383,92 @@ let basketRefreshTimer = null;
   return parts.join("\n");
     }
 
+    function copyFieldRowHtml(orderId, field, label, value){
+      const clean = String(value || "").trim();
+      if(!clean) return "";
+
+      return `
+        <div class="copy-field-row">
+          <div>
+            <span class="copy-field-label">${escapeHtml(label)}</span>
+            <span class="copy-field-value">${escapeHtml(clean)}</span>
+          </div>
+          <button type="button" class="btn btn-outline-secondary copy-field-button"
+            title="Copy ${escapeHtml(label)}" aria-label="Copy ${escapeHtml(label)}"
+            onclick="copyOrderField('${orderId}', '${field}')">📋</button>
+        </div>
+      `;
+    }
+
+    async function copyOrderField(orderId, field){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const c = getCustomer(order);
+      const values = {
+        reference: order.reference || order.id || "",
+        name: c.name || order.customer_name || order.name || "",
+        address1: c.address1 || "",
+        address2: c.address2 || "",
+        city: c.city || "",
+        postcode: String(c.postcode || "").trim().toUpperCase(),
+        email: c.email || order.customer_email || order.email || "",
+        phone: c.phone || ""
+      };
+
+      const labels = {
+        reference: "Order reference",
+        name: "Name",
+        address1: "Address line 1",
+        address2: "Address line 2",
+        city: "Town / city",
+        postcode: "Postcode",
+        email: "Email",
+        phone: "Phone"
+      };
+
+      const value = String(values[field] || "").trim();
+      if(!value) return showToast("Nothing to copy", "warning");
+
+      try{
+        await navigator.clipboard.writeText(value);
+        showToast(`${labels[field] || "Information"} copied ✅`, "success");
+      }catch(e){
+        prompt("Copy this:", value);
+      }
+    }
+
+    window.copyOrderField = copyOrderField;
+
     function buildAddressHtml(order){
-  const c = getCustomer(order);
+      const c = getCustomer(order);
+      const orderId = order.id;
+      const postcode = String(c.postcode || "").trim().toUpperCase();
+      const email = c.email || order.customer_email || order.email || "";
+      const hasAny = c && (c.address1 || c.city || postcode || c.name || c.phone || c.address2 || email);
 
-  const postcode = String(c.postcode || "")
-    .trim()
-    .toUpperCase();
+      if(!hasAny){
+        return `<div class="items-box" style="margin-top:8px;"><strong>📍 Royal Mail details</strong><div class="muted-line">No customer information recorded.</div></div>`;
+      }
 
-  const hasAny = c && (c.address1 || c.city || postcode || c.name || c.phone || c.address2);
-
-  if(!hasAny){
-    return `<div class="items-box" style="margin-top:8px;"><strong>📍 Delivery address</strong><div class="muted-line">No address recorded.</div></div>`;
-  }
-
-  return `
-    <div class="items-box" style="margin-top:8px;">
-      <strong>📍 Delivery address</strong>
-      ${c.name ? `${escapeHtml(c.name)}\n` : ""}
-      ${c.address1 ? `${escapeHtml(c.address1)}\n` : ""}
-      ${c.address2 ? `${escapeHtml(c.address2)}\n` : ""}
-      ${c.city ? `${escapeHtml(c.city)}\n` : ""}
-      ${postcode ? `${escapeHtml(postcode)}\n` : ""}
-      ${c.phone ? `📞 ${escapeHtml(c.phone)}` : ""}
-    </div>
-  `;
-}
+      return `
+        <div class="items-box" style="margin-top:8px;">
+          <strong>📍 Royal Mail details</strong>
+          <div class="copy-fields">
+            ${copyFieldRowHtml(orderId, "name", "Name", c.name)}
+            ${copyFieldRowHtml(orderId, "address1", "Address line 1", c.address1)}
+            ${copyFieldRowHtml(orderId, "address2", "Address line 2", c.address2)}
+            ${copyFieldRowHtml(orderId, "city", "Town / city", c.city)}
+            ${copyFieldRowHtml(orderId, "postcode", "Postcode", postcode)}
+            ${copyFieldRowHtml(orderId, "email", "Email", email)}
+            ${copyFieldRowHtml(orderId, "phone", "Phone", c.phone)}
+          </div>
+          <div class="copy-address-actions">
+            <button type="button" class="btn btn-sm btn-dark" onclick="copyAddressById('${orderId}')">📋 Copy full address</button>
+          </div>
+        </div>
+      `;
+    }
 
     function validateAddress(order){
       const c = getCustomer(order);
@@ -4111,8 +4222,18 @@ startBasketAutoRefresh();
       <div class="packing-card">
         <div class="packing-head">
           <div>
-            <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
-            <div class="packing-ref">${escapeHtml(ref)} • ${escapeHtml(created)}</div>
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+              <div class="packing-name">${escapeHtml(c.name || "No name")}</div>
+              <button type="button" class="btn btn-outline-secondary copy-field-button"
+                title="Copy name" aria-label="Copy name"
+                onclick="copyOrderField('${order.id}', 'name')">📋</button>
+            </div>
+            <div class="packing-ref d-flex align-items-center gap-2 flex-wrap">
+              <span>${escapeHtml(ref)} • ${escapeHtml(created)}</span>
+              <button type="button" class="btn btn-outline-secondary copy-field-button"
+                title="Copy order reference" aria-label="Copy order reference"
+                onclick="copyOrderField('${order.id}', 'reference')">📋</button>
+            </div>
           </div>
 <div class="text-end">
   <div
@@ -4133,11 +4254,7 @@ startBasketAutoRefresh();
           ${itemsHtml || escapeHtml(items)}
         </div>
 
-        <div class="packing-address">
-          <strong>Address</strong>
-          ${escapeHtml(address)}
-          ${c.phone ? `\n📞 ${escapeHtml(c.phone)}` : ""}
-        </div>
+        ${buildAddressHtml(order)}
 
         <div class="packing-actions">
           <button class="btn btn-outline-dark btn-sm" onclick="copyOrderForText('${order.id}')">📱 Copy for Shell</button>
@@ -4293,6 +4410,9 @@ startBasketAutoRefresh();
                 <div class="flex-grow-1 min-w-0">
                   <div class="d-flex flex-wrap align-items-center gap-2">
   <strong>${escapeHtml(ref)}</strong>
+  <button type="button" class="btn btn-outline-secondary copy-field-button"
+    title="Copy order reference" aria-label="Copy order reference"
+    onclick="copyOrderField('${order.id}', 'reference')">📋</button>
   ${badge(status)}
   ${telegramStatusBadge(order)}
 </div>
