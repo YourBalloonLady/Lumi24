@@ -3438,13 +3438,18 @@ loadOrders();
         String(order.details?.meta?.tracking_number || "").trim() ||
         "Not provided";
 
+      const trackingUrl = tracking !== "Not provided"
+        ? `https://www.royalmail.com/track-your-item#/tracking-results/${encodeURIComponent(tracking)}`
+        : "";
+
       return emailjs.send("service_i5zi096", "template_shipped", {
         email: toEmail,
         customer_name: customerName,
         order_reference: ref,
         order_items: items,
         order_total: total,
-        tracking_number: tracking
+        tracking_number: tracking,
+        tracking_url: trackingUrl
       });
     }
 
