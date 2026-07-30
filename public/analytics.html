@@ -216,21 +216,28 @@
         <div class="kpi-grid mb-4">
           <div class="analytics-card"><div class="analytics-label">Revenue 7 days</div><div class="analytics-value" id="rev7">—</div><div class="analytics-note" id="rev7Note">Paid/packed/shipped only</div></div>
           <div class="analytics-card"><div class="analytics-label">Revenue 30 days</div><div class="analytics-value" id="rev30">—</div><div class="analytics-note" id="rev30Note">Paid/packed/shipped only</div></div>
-          <div class="analytics-card"><div class="analytics-label">Orders 30 days</div><div class="analytics-value" id="orders30">—</div><div class="analytics-note">All statuses</div></div>
+          <div class="analytics-card"><div class="analytics-label">Paid orders 30 days</div><div class="analytics-value" id="orders30">—</div><div class="analytics-note" id="orders30Note">Paid, packed or shipped</div></div>
           <div class="analytics-card"><div class="analytics-label">Avg order value</div><div class="analytics-value" id="analyticsAov">—</div><div class="analytics-note" id="analyticsAovNote">Paid/packed/shipped orders</div></div>
         </div>
 
         <div class="analytics-grid mb-4">
-          <div class="analytics-card"><div class="analytics-label">Best order day</div><div class="analytics-value" id="analyticsBestDay">—</div><div class="analytics-note" id="analyticsBestDayNote">Based on all loaded orders</div></div>
-          <div class="analytics-card"><div class="analytics-label">Best order time</div><div class="analytics-value" id="analyticsBestHour">—</div><div class="analytics-note" id="analyticsBestHourNote">Most common hour</div></div>
-          <div class="analytics-card"><div class="analytics-label">Repeat customers</div><div class="analytics-value" id="analyticsRepeatRate">—</div><div class="analytics-note" id="analyticsRepeatNote">Customer retention signal</div></div>
-          <div class="analytics-card"><div class="analytics-label">Unique customers</div><div class="analytics-value" id="uniqueCustomers">—</div><div class="analytics-note">By email address</div></div>
+          <div class="analytics-card"><div class="analytics-label">Best order day</div><div class="analytics-value" id="analyticsBestDay">—</div><div class="analytics-note" id="analyticsBestDayNote">Paid orders in loaded window</div></div>
+          <div class="analytics-card"><div class="analytics-label">Best order time</div><div class="analytics-value" id="analyticsBestHour">—</div><div class="analytics-note" id="analyticsBestHourNote">Paid orders in loaded window</div></div>
+          <div class="analytics-card"><div class="analytics-label">Repeat customers</div><div class="analytics-value" id="analyticsRepeatRate">—</div><div class="analytics-note" id="analyticsRepeatNote">Within loaded window</div></div>
+          <div class="analytics-card"><div class="analytics-label">Unique customers</div><div class="analytics-value" id="uniqueCustomers">—</div><div class="analytics-note" id="uniqueCustomersNote">By email address</div></div>
+        </div>
+
+        <div class="analytics-grid mb-4">
+          <div class="analytics-card"><div class="analytics-label">Units sold 30 days</div><div class="analytics-value" id="units30">—</div><div class="analytics-note">Paid, packed or shipped</div></div>
+          <div class="analytics-card"><div class="analytics-label">Pending payments</div><div class="analytics-value" id="pendingPayments">—</div><div class="analytics-note" id="pendingPaymentsNote">Orders awaiting payment</div></div>
+          <div class="analytics-card"><div class="analytics-label">Cancellation rate 30d</div><div class="analytics-value" id="cancelRate30">—</div><div class="analytics-note" id="cancelRate30Note">Of genuine customer orders</div></div>
+          <div class="analytics-card"><div class="analytics-label">Repeat revenue share</div><div class="analytics-value" id="repeatRevenueShare">—</div><div class="analytics-note" id="repeatRevenueNote">Loaded paid-order window</div></div>
         </div>
 
         <div class="row g-3">
           <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Revenue - last 30 days</div><canvas id="chartRevenue"></canvas></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Orders - last 30 days</div><canvas id="chartOrders"></canvas></div></div>
-          <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products</div><canvas id="chartTopProducts"></canvas></div></div>
+          <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products — last 30 days</div><canvas id="chartTopProducts"></canvas></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Restock radar</div><span class="badge text-bg-light">Velocity</span></div><div id="restockRadar" class="insight-list"></div></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Frequently bought together</div><span class="badge text-bg-light">Pairs</span></div><div id="boughtTogether" class="insight-list"></div></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Customers</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
@@ -272,7 +279,7 @@ let chartRevenue;
 let chartOrders;
 let chartTopProducts;
 
-let analyticsDays = 60;
+let analyticsDays = 365;
 
 const statusEl = document.getElementById("analytics-status");
 const warningEl = document.getElementById("admin-warning");
@@ -554,9 +561,12 @@ function getValidOrders(){
 
 function renderAllAnalytics(){
 
+  const realOrders = ordersCache.filter(isRealCustomerOrder);
   const validOrders = getValidOrders();
 
   renderKpis(validOrders);
+
+  renderOperationalKpis(realOrders, validOrders);
 
   renderCharts(validOrders);
 
@@ -571,6 +581,76 @@ function renderAllAnalytics(){
   renderOrderHeatmap(validOrders);
 
   renderCriticalStock();
+}
+
+function renderOperationalKpis(realOrders, paidOrders){
+
+  const now = new Date();
+  const monthAgo = new Date(now);
+  monthAgo.setDate(now.getDate()-30);
+
+  const real30 = realOrders.filter(o => {
+    const d = getOrderDate(o);
+    return d && d >= monthAgo;
+  });
+
+  const paid30 = paidOrders.filter(o => {
+    const d = getOrderDate(o);
+    return d && d >= monthAgo;
+  });
+
+  const units30 = paid30.reduce((sum,o) =>
+    sum + (o.details?.items || []).reduce((itemSum,item) =>
+      itemSum + Number(item?.qty || 1), 0
+    ), 0
+  );
+
+  const pending = realOrders.filter(o =>
+    String(o?.status || "").toLowerCase() === "pending"
+  );
+
+  const pendingValue = pending.reduce(
+    (sum,o) => sum + Number(o.total_amount || 0), 0
+  );
+
+  const cancelled30 = real30.filter(o =>
+    String(o?.status || "").toLowerCase() === "cancelled"
+  ).length;
+
+  const cancelRate = real30.length
+    ? (cancelled30 / real30.length) * 100
+    : 0;
+
+  const customerOrderCounts = new Map();
+  for(const o of paidOrders){
+    const email = getOrderEmail(o);
+    if(email){
+      customerOrderCounts.set(email,(customerOrderCounts.get(email)||0)+1);
+    }
+  }
+
+  const totalPaidRevenue = paidOrders.reduce(
+    (sum,o) => sum + Number(o.total_amount || 0), 0
+  );
+
+  const repeatRevenue = paidOrders.reduce((sum,o) => {
+    const email = getOrderEmail(o);
+    return sum + ((customerOrderCounts.get(email)||0) > 1
+      ? Number(o.total_amount || 0)
+      : 0);
+  },0);
+
+  const repeatShare = totalPaidRevenue
+    ? (repeatRevenue / totalPaidRevenue) * 100
+    : 0;
+
+  setText("units30",units30);
+  setText("pendingPayments",pending.length);
+  setText("pendingPaymentsNote",`£${pendingValue.toFixed(2)} awaiting payment`);
+  setText("cancelRate30",`${cancelRate.toFixed(1)}%`);
+  setText("cancelRate30Note",`${cancelled30} cancelled of ${real30.length} order(s)`);
+  setText("repeatRevenueShare",`${repeatShare.toFixed(1)}%`);
+  setText("repeatRevenueNote",`Across last ${analyticsDays} days of paid orders`);
 }
 
 function renderKpis(orders){
@@ -606,7 +686,7 @@ function renderKpis(orders){
     }
   }
 
-  const aov = orders.length
+  const aov = orders30
     ? rev30 / orders30
     : 0;
 
@@ -614,6 +694,10 @@ function renderKpis(orders){
   setText("rev30",`£${rev30.toFixed(2)}`);
   setText("orders30",orders30);
   setText("analyticsAov",`£${aov.toFixed(2)}`);
+  setText("rev7Note","Paid revenue in the last 7 days");
+  setText("rev30Note","Paid revenue in the last 30 days");
+  setText("orders30Note","Paid, packed or shipped orders");
+  setText("analyticsAovNote","Average paid order in the last 30 days");
 }
 
     function renderAnalyticsSummary(orders){
@@ -730,6 +814,11 @@ function renderKpis(orders){
     "uniqueCustomers",
     customerTotal
   );
+
+  setText(
+    "uniqueCustomersNote",
+    `Across last ${analyticsDays} days`
+  );
 }
 
 function renderCharts(orders){
@@ -759,20 +848,20 @@ function renderCharts(orders){
         Number(o.total_amount || 0);
 
       cntByDay[day] += 1;
-    }
 
-    for(const it of (o.details?.items || [])){
+      for(const it of (o.details?.items || [])){
 
-      const key =
-        normaliseProductName(
-          getDisplayItemName(it)
+        const key =
+          normaliseProductName(
+            getDisplayItemName(it)
+          );
+
+        prodCount.set(
+          key,
+          (prodCount.get(key)||0)+
+          Number(it?.qty || 1)
         );
-
-      prodCount.set(
-        key,
-        (prodCount.get(key)||0)+
-        Number(it?.qty || 1)
-      );
+      }
     }
   }
 
