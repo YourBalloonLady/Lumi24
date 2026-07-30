@@ -2440,6 +2440,25 @@ let basketRefreshTimer = null;
 
     window.copyOrderField = copyOrderField;
 
+    async function copyAddressAndOpenRoyalMail(orderId){
+      const order = ordersCache[orderId];
+      if(!order) return alert("Order not found.");
+
+      const address = buildAddressText(order);
+      if(!address.trim()) return alert("No address found on this order.");
+
+      try{
+        await navigator.clipboard.writeText(address);
+        showToast("Address copied — opening Royal Mail ✅", "success");
+      }catch(e){
+        showToast("Opening Royal Mail — use Copy full address if needed", "warning");
+      }
+
+      window.open("https://business.parcel.royalmail.com/", "_blank", "noopener,noreferrer");
+    }
+
+    window.copyAddressAndOpenRoyalMail = copyAddressAndOpenRoyalMail;
+
     function buildAddressHtml(order){
       const c = getCustomer(order);
       const orderId = order.id;
@@ -2465,6 +2484,7 @@ let basketRefreshTimer = null;
           </div>
           <div class="copy-address-actions">
             <button type="button" class="btn btn-sm btn-dark" onclick="copyAddressById('${orderId}')">📋 Copy full address</button>
+            <button type="button" class="btn btn-sm btn-danger" onclick="copyAddressAndOpenRoyalMail('${orderId}')">🏷️ Open Royal Mail Click &amp; Drop</button>
           </div>
         </div>
       `;
