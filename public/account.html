@@ -202,7 +202,7 @@
       <h2 class="h5 mb-3">Change Password</h2>
       <form id="pwForm" class="row g-2">
         <div class="col-12 col-md-6">
-          <input id="pw1" type="password" class="form-control" placeholder="New password" minlength="8" required>
+          <input id="pw1" type="password" class="form-control" placeholder="8+ characters with upper, lower, number and symbol" minlength="8" required>
         </div>
         <div class="col-12 col-md-6">
           <input id="pw2" type="password" class="form-control" placeholder="Confirm new password" minlength="8" required>
@@ -454,7 +454,7 @@
 
     pwMsg.textContent = "";
 
-    if (pw1.value !== pw2.value) {
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(pw1.value)) {\n      pwMsg.textContent = "Use at least 8 characters including uppercase, lowercase, a number and a symbol.";\n      return;\n    }\n\n    if (pw1.value !== pw2.value) {
       pwMsg.textContent = "Passwords do not match.";
       pwMsg.className = "text-danger small mt-2";
       return;
