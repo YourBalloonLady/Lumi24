@@ -1193,7 +1193,7 @@
 
           <div class="mb-3">
             <label class="form-label">Password</label>
-            <input type="password" class="form-control" id="signup-password" required>
+            <input type="password" class="form-control" id="signup-password" minlength="8" placeholder="8+ characters with upper, lower, number and symbol" required>\n            <div class="form-text">Use at least 8 characters including uppercase, lowercase, a number and a symbol.</div>
           </div>
 
           <button type="submit" class="btn btn-outline-success w-100 rounded-pill">Sign up</button>
@@ -1710,7 +1710,7 @@ if (signupForm) {
     const email = document.getElementById("signup-email").value;
     const password = document.getElementById("signup-password").value;
 
-    const { error } = await supabaseClient.auth.signUp({ email, password });
+    if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)) {\n      authMessage.textContent = "Use at least 8 characters including uppercase, lowercase, a number and a symbol.";\n      authMessage.classList.add("text-danger");\n      return;\n    }\n\n    const { error } = await supabaseClient.auth.signUp({ email, password });
 
     if (error) {
       authMessage.textContent = error.message;
