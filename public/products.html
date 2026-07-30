@@ -1698,7 +1698,7 @@ function saveCart() {
 
       if (activeCategory !== 'all') {
         filtered = filtered.filter(item => {
-          const isKlowBlend = cleanText(item.name).includes('klow blend');
+          const isKlowBlend = getItemSearchText(item).includes('klow blend');
           return getItemCategory(item).key === activeCategory || (isKlowBlend && (activeCategory === 'cosmetic' || activeCategory === 'recovery'));
         });
       }
