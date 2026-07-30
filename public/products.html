@@ -966,7 +966,7 @@
 
       <p class="hero-subtitle">
         Browse the full Lumina range of laboratory research materials supplied from the UK.
-        Where possible, orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
+        Orders placed before <strong>3PM</strong> are dispatched the same working day with discreet packaging.
         <br><br>
         All products listed on this site are supplied strictly for <strong>laboratory research purposes only</strong> and are <strong>not intended for human consumption or medical use</strong>.
       </p>
@@ -1949,7 +1949,7 @@ function saveCart() {
           name: row.name,
           price: Number(row.price || 0),
           compare_at_price: Number(row.compare_at_price || 0),
-          image: row.image || '20mg Tirz Vial.png',
+          image: getCorrectedProductImage(row),
           stock: row.stock ?? 0,
           description: row.description || '',
           type: cleanText(row.type).trim(),
@@ -1968,6 +1968,17 @@ function saveCart() {
       displayItems = makeGroupedDisplayItems(products);
       updateProductStructuredData(products);
       renderProducts();
+    }
+
+    function getCorrectedProductImage(product) {
+      const name = cleanText(product?.name);
+      const is60mg = /(^|[^0-9])60\s*mg([^0-9]|$)/.test(name);
+
+      if (is60mg && /(retatrutide|reta)/.test(name)) {
+        return name.includes('pen') ? 'ret 60 pen.png' : 'ret 60 vial.png';
+      }
+
+      return product?.image || '20mg Tirz Vial.png';
     }
 
     function updateProductStructuredData(items) {
@@ -2189,7 +2200,7 @@ function saveCart() {
       offerEl.textContent = offer ? `Special offer: ${offer.label} — applied automatically at checkout.` : '';
 
       const qtyInput = document.getElementById('modalQty');
-      qtyInput.value = offer && stockNum >= 3 ? 3 : 1;
+      qtyInput.value = 1;
       qtyInput.max = stockNum;
 
       const img = document.getElementById('modalImg');
@@ -2277,7 +2288,7 @@ function saveCart() {
       variantWrap.innerHTML = optionsHtml;
 
       const qtyInput = document.getElementById('modalQty');
-      qtyInput.value = offer && stockNum >= 3 ? 3 : 1;
+      qtyInput.value = 1;
       qtyInput.max = stockNum;
 
       document.getElementById('modalAddBtn').onclick = () => {
