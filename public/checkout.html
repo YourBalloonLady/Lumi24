@@ -1446,8 +1446,56 @@ Payments are checked manually. If you pay late evening, overnight, or early morn
   });
 }
 
+function normaliseReferralCode(value) {
+  const code = typeof value === 'string'
+    ? value.trim().toUpperCase()
+    : '';
+
+  return code || null;
+}
+
+async function getValidReferralCode() {
+  const code = normaliseReferralCode(localStorage.getItem('referral_code'));
+
+  if (!code) {
+    localStorage.removeItem('referral_code');
+    return null;
+  }
+
+  const { data, error } = await supabaseClient
+    .from('ReferralCodes')
+    .select('code')
+    .eq('code', code)
+    .eq('active', true)
+    .maybeSingle();
+
+  if (error) {
+    console.warn('Referral code could not be verified; continuing without it.', error);
+    return null;
+  }
+
+  const validCode = normaliseReferralCode(data?.code);
+
+  if (!validCode) {
+    localStorage.removeItem('referral_code');
+  }
+
+  return validCode;
+}
+
+function isReferralConstraintError(error) {
+  const message = String(error?.message || '').toLowerCase();
+  const details = String(error?.details || '').toLowerCase();
+
+  return (
+    error?.code === '23503' &&
+    `${message} ${details}`.includes('referral_code')
+  );
+}
+
 async function saveOrderToSupabase(details) {
-  const { data, error } = await supabaseClient.rpc('place_order', {
+  const referralCode = await getValidReferralCode();
+  const orderParams = {
     p_customer: {
       name: details.name,
       email: details.email,
@@ -1467,9 +1515,22 @@ async function saveOrderToSupabase(details) {
       penColour: item.penColour || ''
     })),
     p_delivery_method: deliveryMethod,
-    p_referral_code: (localStorage.getItem('referral_code') || null),
+    p_referral_code: referralCode,
     p_telegram_token: details.telegramToken || null
-  });
+  };
+
+  let { data, error } = await supabaseClient.rpc('place_order', orderParams);
+
+  // A code can be removed after validation. Retry the failed transaction
+  // without referral tracking so a stale code never blocks checkout.
+  if (referralCode && isReferralConstraintError(error)) {
+    console.warn('Referral code became invalid; retrying checkout without it.', error);
+    localStorage.removeItem('referral_code');
+    ({ data, error } = await supabaseClient.rpc('place_order', {
+      ...orderParams,
+      p_referral_code: null
+    }));
+  }
 
   if (error) {
     console.error('Secure checkout failed:', error);
