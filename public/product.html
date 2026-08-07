@@ -61,10 +61,11 @@
   </main>
 
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/lumina-auth.js"></script>
   <script>
     const SUPABASE_URL='https://qketnqhfjfxbqiuqevnh.supabase.co';
     const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys';
-    const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let product=null;
+    const db=LuminaAuth.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);let product=null;
     const id=new URLSearchParams(location.search).get('id');
     const imageUrl=image=>image?`/${String(image).split('/').map(encodeURIComponent).join('/')}`:'';
     const fallbackImage=item=>{const name=String(item?.name||'').toLowerCase();const is60=/(^|[^0-9])60\s*mg([^0-9]|$)/.test(name);if(is60&&/(tirzepatide|tirz)/.test(name)&&name.includes('vial'))return '/Tirz%2060%20vial.png';if(is60&&/(tirzepatide|tirz)/.test(name)&&name.includes('pen'))return '/tirz%2060%20pen.png';if(is60&&/(retatrutide|reta)/.test(name)&&name.includes('pen'))return '/ret%2060%20pen.png';if(is60&&/(retatrutide|reta)/.test(name))return '/ret%2060%20vial.png';return '/Lumina-logo.png'};
