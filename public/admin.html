@@ -6723,8 +6723,12 @@ async function saveInventoryStock(
       statusEl.textContent = "Checking access…";
       operationsAccessStatus.textContent = "Checking access…";
 
-      const { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
+      let { data: sessionData, error: sessionError } = await supabaseClient.auth.getSession();
       if (sessionError || !sessionData?.session?.user) {
+        const recoveredSession = await LuminaAuth.recoverOwnerSession(supabaseClient);
+        sessionData = recoveredSession ? { session: recoveredSession } : sessionData;
+      }
+      if (!sessionData?.session?.user) {
         window.location.href = "index.html";
         return;
       }
@@ -6813,6 +6817,12 @@ async function saveInventoryStock(
       if (inactivityTimer) clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(async () => {
         try {
+          const { data } = await supabaseClient.auth.getSession();
+          const email = String(data?.session?.user?.email || "").trim().toLowerCase();
+          if (email === ADMIN_EMAIL.toLowerCase()) {
+            resetInactivityTimer();
+            return;
+          }
           await supabaseClient.auth.signOut();
           window.location.href = "account.html?timeout=1";
         } catch (e) {
