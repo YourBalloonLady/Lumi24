@@ -467,10 +467,15 @@ async function init(){
 
   statusEl.textContent = "Checking access…";
 
-  const { data:sessionData, error } =
+  let { data:sessionData, error } =
     await supabaseClient.auth.getSession();
 
   if(error || !sessionData?.session?.user){
+    const recoveredSession = await LuminaAuth.recoverOwnerSession(supabaseClient);
+    sessionData = recoveredSession ? { session: recoveredSession } : sessionData;
+  }
+
+  if(!sessionData?.session?.user){
     window.location.href = "index.html";
     return;
   }
