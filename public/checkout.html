@@ -1185,8 +1185,19 @@ function getVolumeOffer(item) {
   const name = String(item?.name || '').toLowerCase();
   const is60mg = /(^|[^0-9])60\s*mg([^0-9]|$)/.test(name);
   if (!is60mg) return null;
-  if (/(tirzepatide|tirz)/.test(name)) return { price: 400, label: 'Tirzepatide 60mg — 3 for £400' };
-  if (/(retatrutide|reta)/.test(name)) return { price: 490, label: 'Retatrutide 60mg — 3 for £490' };
+  const cartridgeOnly = item?.variant === 'cartridge-only';
+  if (/(tirzepatide|tirz)/.test(name)) {
+    return {
+      price: cartridgeOnly ? 370 : 400,
+      label: `Tirzepatide 60mg ${cartridgeOnly ? 'Cartridges' : 'Full Kits'} — 3 for £${cartridgeOnly ? 370 : 400}`
+    };
+  }
+  if (/(retatrutide|reta)/.test(name)) {
+    return {
+      price: cartridgeOnly ? 460 : 490,
+      label: `Retatrutide 60mg ${cartridgeOnly ? 'Cartridges' : 'Full Kits'} — 3 for £${cartridgeOnly ? 460 : 490}`
+    };
+  }
   return null;
 }
 
