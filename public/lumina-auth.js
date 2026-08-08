@@ -53,6 +53,39 @@
     } catch (_) {}
   }
 
+  async function recoverOwnerSession(client) {
+    const store = storage();
+    try {
+      const current = await client.auth.getSession();
+      const session = current?.data?.session;
+      const email = String(session?.user?.email || '').trim().toLowerCase();
+      if (session && email === ADMIN_EMAIL) {
+        saveAdminSession(store, session);
+        return session;
+      }
+    } catch (_) {}
+
+    const backup = readBackup(store);
+    if (!backup) return null;
+
+    try {
+      const restored = await client.auth.setSession({
+        access_token: backup.access_token,
+        refresh_token: backup.refresh_token
+      });
+      const session = restored?.data?.session;
+      const email = String(session?.user?.email || '').trim().toLowerCase();
+      if (!restored?.error && session && email === ADMIN_EMAIL) {
+        saveAdminSession(store, session);
+        return session;
+      }
+      clearAdminSession(store);
+    } catch (_) {
+      clearAdminSession(store);
+    }
+    return null;
+  }
+
   function createClient(url, anonKey, options) {
     const store = storage();
     const storageKey = projectStorageKey(url);
@@ -97,6 +130,7 @@
 
   window.LuminaAuth = Object.freeze({
     createClient,
+    recoverOwnerSession,
     clearAdminSession: function () {
       clearAdminSession(storage());
     }
