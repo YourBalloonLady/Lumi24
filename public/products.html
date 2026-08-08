@@ -976,11 +976,11 @@
         <div class="multibuy-offers">
           <div class="multibuy-offer">
             <span class="multibuy-name">Tirzepatide 60mg</span>
-            <span class="multibuy-price">Buy 3 for £400</span>
+            <span class="multibuy-price">Full Kit: 3 for £400 • Cartridges: 3 for £370</span>
           </div>
           <div class="multibuy-offer">
             <span class="multibuy-name">Retatrutide 60mg</span>
-            <span class="multibuy-price">Buy 3 for £490</span>
+            <span class="multibuy-price">Full Kit: 3 for £490 • Cartridges: 3 for £460</span>
           </div>
         </div>
         <p class="multibuy-note"><i class="fa-solid fa-circle-check me-1"></i> No code needed — the offer applies automatically when three matching units are added.</p>
@@ -1418,11 +1418,13 @@ function saveCart() {
       return String(value || '').toLowerCase();
     }
 
-    function getVolumeOffer(item) {
+    function getVolumeOffer(item, selectedVariant) {
       const name = cleanText(item?.name);
       if (!/(^|[^0-9])60\s*mg([^0-9]|$)/.test(name)) return null;
-      if (/(tirzepatide|tirz)/.test(name)) return { price: 400, label: '3 for £400' };
-      if (/(retatrutide|reta)/.test(name)) return { price: 490, label: '3 for £490' };
+      const variant = selectedVariant || item?.variant || '';
+      const cartridgeOnly = variant === 'cartridge-only';
+      if (/(tirzepatide|tirz)/.test(name)) return { price: cartridgeOnly ? 370 : 400, label: `3 for £${cartridgeOnly ? 370 : 400}` };
+      if (/(retatrutide|reta)/.test(name)) return { price: cartridgeOnly ? 460 : 490, label: `3 for £${cartridgeOnly ? 460 : 490}` };
       return null;
     }
 
@@ -2186,7 +2188,7 @@ function saveCart() {
       const price = currentVariant ? Number(getVariantPrice(selectedProduct, currentVariant)) : Number(selectedProduct.price || 0);
       const compareAt = Number(selectedProduct.compare_at_price || 0);
       const stockNum = Number(selectedProduct.stock || 0);
-      const offer = getVolumeOffer(selectedProduct);
+      const offer = getVolumeOffer(selectedProduct, currentVariant);
 
       document.getElementById('modalPrice').innerHTML = compareAt > price
         ? `<span class="sale-old">£${compareAt.toFixed(2)}</span> <span class="sale-new">£${price.toFixed(2)}</span>`
