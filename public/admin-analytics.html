@@ -246,7 +246,7 @@
     }
 
     async function init(){
-      const {data,error}=await db.auth.getSession();const user=data?.session?.user;if(error||!user){location.href='index.html';return}if(String(user.email||'').toLowerCase()!==ADMIN_EMAIL){$('access-status').className='alert alert-danger';$('access-status').textContent='Access denied.';return}
+      let {data,error}=await db.auth.getSession();let user=data?.session?.user;if(error||!user){const recovered=await LuminaAuth.recoverOwnerSession(db);user=recovered?.user}if(!user){location.href='index.html';return}if(String(user.email||'').toLowerCase()!==ADMIN_EMAIL){$('access-status').className='alert alert-danger';$('access-status').textContent='Access denied.';return}
       $('access-status').className='alert alert-success';$('access-status').textContent='Administrator verified.';$('dashboard').hidden=false;await loadDashboard();
     }
 
