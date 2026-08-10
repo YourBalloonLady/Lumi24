@@ -3353,6 +3353,16 @@ async function changeStatusFromSelect(orderId) {
   const order = ordersCache[orderId];
   const currentStatus = String(order?.status || "Pending");
 
+  if (newStatus.toLowerCase() === "shipped") {
+    const trackingInput = document.getElementById(`trk-${orderId}`);
+    const tracking = String(trackingInput?.value || order?.details?.meta?.tracking_number || "").trim();
+    if (!tracking) {
+      alert("Tracking number is required before this order can be marked as Shipped.");
+      trackingInput?.focus();
+      return;
+    }
+  }
+
   if (newStatus === currentStatus) {
     showToast("Status is already set to that.", "warning");
     return;
@@ -3672,12 +3682,17 @@ loadOrders();
       const order = ordersCache[orderId];
       if (!order) return alert("Order not found.");
 
+      const input = document.getElementById(`trk-${orderId}`);
+      const trackingClean = String(input?.value || order.details?.meta?.tracking_number || "").trim();
+      if (!trackingClean) {
+        alert("Tracking number is required before this order can be marked as Shipped.");
+        input?.focus();
+        return;
+      }
+
       const addrWarnings = validateAddress(order).filter(x => x.toLowerCase().includes("address") || x.toLowerCase().includes("postcode"));
       if(!confirmProceedWithWarnings(addrWarnings, "Send SHIPPED email + mark as SHIPPED?")) return;
       if (!confirm("Send SHIPPED email to customer and mark as SHIPPED?")) return;
-
-      const input = document.getElementById(`trk-${orderId}`);
-      const trackingClean = String(input?.value || order.details?.meta?.tracking_number || "").trim();
 
       setBusy(true, "Shipping…", `Order ${order.reference || order.id}`);
       try {
@@ -4119,6 +4134,17 @@ startBasketAutoRefresh();
     async function bulkMarkShippedNoEmail(){
       const ids = Array.from(selectedIds);
       if(!ids.length) return alert("No orders selected.");
+
+      const missingTrackingRefs = ids
+        .map(id => ordersCache[id])
+        .filter(order => order && !String(order.details?.meta?.tracking_number || "").trim())
+        .map(order => order.reference || order.id);
+
+      if (missingTrackingRefs.length) {
+        alert(`Tracking number required for: ${missingTrackingRefs.join(", ")}. Add and save tracking before bulk shipping.`);
+        return;
+      }
+
       if(!confirm(`Mark ${ids.length} order(s) as SHIPPED (no emails)?`)) return;
 
       setBusy(true, "Bulk updating…", `Updated 0/${ids.length}`);
@@ -4495,7 +4521,8 @@ startBasketAutoRefresh();
                       <strong>📦 Tracking number</strong>
                       <div class="d-flex gap-2 flex-wrap">
                         <input id="trk-${order.id}" class="form-control form-control-sm small-input"
-                          placeholder="Add tracking (optional)" value="${escapeHtml(tracking)}">
+                          placeholder="Tracking number required" value="${escapeHtml(tracking)}" required
+                          aria-required="true">
                         <button class="btn btn-sm btn-outline-success" onclick="saveTrackingFromInput('${order.id}')">Save</button>
                       </div>
                     </div>
