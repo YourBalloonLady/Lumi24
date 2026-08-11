@@ -240,7 +240,7 @@
           <div class="col-12"><div class="section-card"><div class="fw-bold mb-2">Top products — last 30 days</div><canvas id="chartTopProducts"></canvas></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Restock radar</div><span class="badge text-bg-light">Velocity</span></div><div id="restockRadar" class="insight-list"></div></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Frequently bought together</div><span class="badge text-bg-light">Pairs</span></div><div id="boughtTogether" class="insight-list"></div></div></div>
-          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Customers</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
+          <div class="col-12 col-lg-6"><div class="section-card"><div class="d-flex justify-content-between align-items-center mb-2"><div class="fw-bold">Reorder watchlist</div><span class="badge text-bg-light">Last 8 weeks</span></div><div id="reorderWatchlist" class="insight-list"></div></div></div>
           <div class="col-12 col-lg-6"><div class="section-card"><div class="fw-bold mb-2">Order heatmap</div><div id="orderHeatmap" class="table-responsive"></div></div></div>
         </div>
       </div>
@@ -1230,13 +1230,15 @@ function renderBoughtTogether(orders){
 
   const byEmail = new Map();
   const now = new Date();
+  const eightWeeksAgo = new Date(now);
+  eightWeeksAgo.setDate(now.getDate()-56);
 
   for(const o of orders){
 
     const email = getOrderEmail(o);
     const d = getOrderDate(o);
 
-    if(!email || !d) continue;
+    if(!email || !d || d < eightWeeksAgo) continue;
 
     const c = getCustomer(o);
 
@@ -1321,14 +1323,14 @@ function renderBoughtTogether(orders){
           items
         };
       })
-      .filter(r => r.daysSince >= 21)
+      .filter(r => r.daysSince >= 21 && r.daysSince <= 56)
       .sort((a,b)=>a.dueIn-b.dueIn)
       .slice(0,10);
 
   if(!rows.length){
 
     el.innerHTML =
-      `<div class="text-muted small">No obvious reorder customers yet.</div>`;
+      `<div class="text-muted small">No reorder customers from the last 8 weeks yet.</div>`;
 
     return;
   }
