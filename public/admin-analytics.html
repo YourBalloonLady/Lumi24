@@ -131,6 +131,8 @@
         <div class="row g-3 mt-1">
           <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Most visited pages</h3><div id="top-pages"></div></div></div>
           <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Top referrers</h3><div id="top-referrers"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6 mb-1">Traffic sources</h3><p class="small text-muted mb-2">Tagged links, external referrals and direct visits.</p><div id="traffic-sources"></div></div></div>
+          <div class="col-lg-6"><div class="panel h-100"><h3 class="h6 mb-1">Campaigns</h3><p class="small text-muted mb-2">Campaign names from links containing <code>utm_campaign</code>.</p><div id="traffic-campaigns"></div></div></div>
           <div class="col-12"><div class="panel"><h3 class="h6 mb-1">Daily visits — last 30 days</h3><p class="small text-muted mb-3">Calendar-day page views and unique browser sessions.</p><div id="daily-visits" class="daily-visits"></div></div></div>
         </div>
       </section>
@@ -225,6 +227,19 @@
       rank('top-pages',top(counts('page_path')),'No page views recorded yet.');
       rank('top-referrers',top(counts('referrer_host')),'No external referrers recorded yet.');
 
+      const sourceCounts=new Map(),campaignCounts=new Map();
+      pageViews.forEach(event=>{
+        const detail=event.event_data&&typeof event.event_data==='object'?event.event_data:{};
+        const source=String(detail.traffic_source||event.referrer_host||'direct').trim().toLowerCase();
+        const medium=String(detail.traffic_medium||'').trim().toLowerCase();
+        const sourceLabel=source==='direct'?'Direct':medium&&medium!=='referral'?source+' · '+medium:source;
+        sourceCounts.set(sourceLabel,(sourceCounts.get(sourceLabel)||0)+1);
+        const campaign=String(detail.traffic_campaign||'').trim();
+        if(campaign)campaignCounts.set(campaign,(campaignCounts.get(campaign)||0)+1);
+      });
+      rank('traffic-sources',top(sourceCounts),'No traffic sources recorded yet.');
+      rank('traffic-campaigns',top(campaignCounts),'No tagged campaigns yet. Campaign results will appear after tagged links are visited.');
+
       const dailyMap=new Map();
       pageViews.forEach(event=>{
         const key=dayKey(new Date(event.occurred_at));
@@ -276,7 +291,7 @@
         db.from('Orders').select('id,total_amount,status,details,created_at').order('created_at',{ascending:false}).limit(5000),
         db.from('Products').select('id,name,price,stock,type').order('name'),
         db.from('Reviews').select('id,name,rating,review_text,created_at').eq('approved',false).order('created_at',{ascending:false}),
-        db.from('site_events').select('occurred_at,session_id,event_name,page_path,referrer_host').gte('occurred_at',thirtyDaysAgo).order('occurred_at',{ascending:false}).limit(50000)
+        db.from('site_events').select('occurred_at,session_id,event_name,page_path,referrer_host,event_data').gte('occurred_at',thirtyDaysAgo).order('occurred_at',{ascending:false}).limit(50000)
       ]);
       const failure=[basketResult,orderResult,productResult,reviewResult,visitResult].find(result=>result.error);if(failure){$('basket-status').textContent=`Could not load dashboard: ${failure.error.message}`;$('refresh').disabled=false;return}
       baskets=basketResult.data||[];orders=orderResult.data||[];products=productResult.data||[];reviews=reviewResult.data||[];siteEvents=visitResult.data||[];
