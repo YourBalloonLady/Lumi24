@@ -2076,9 +2076,15 @@ let basketRefreshTimer = null;
 
     function isVialItem(item = {}) {
       const format = getItemFormatValue(item);
-      const name = String(item?.name || "").toLowerCase();
+      const name = String(item?.name || "").toLowerCase().trim();
 
-      return format.includes("vial") || name.includes("vial");
+      if (name.includes("pen")) return false;
+
+      return (
+        format.includes("vial") ||
+        name.includes("vial") ||
+        name === "ghk-cu 100mg"
+      );
     }
 
     function getDisplayItemName(item = {}) {
