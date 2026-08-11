@@ -115,6 +115,18 @@
 
   recordSiteEvent('page_view');
 
+  const isAdminPath = /^\/(admin(?:-analytics)?|analytics)(?:\.html)?$/.test(window.location.pathname);
+  if (!isAdminPath && !document.getElementById('lumina-site-offer')) {
+    const offerStyle = document.createElement('style');
+    offerStyle.textContent = '#lumina-site-offer{position:relative;z-index:1100;padding:9px 16px;background:linear-gradient(90deg,#052e16,#15803d);color:#fff;text-align:center;font:800 .86rem/1.35 Inter,system-ui,-apple-system,sans-serif;letter-spacing:.01em}#lumina-site-offer span{color:#bbf7d0}@media(max-width:600px){#lumina-site-offer{padding:9px 12px;font-size:.78rem}}';
+    document.head.appendChild(offerStyle);
+    const offerBanner = document.createElement('div');
+    offerBanner.id = 'lumina-site-offer';
+    offerBanner.setAttribute('role', 'status');
+    offerBanner.innerHTML = 'Mix & match any 3+ products — <span>save 10% automatically</span>';
+    document.body.prepend(offerBanner);
+  }
+
   if (document.getElementById('lumina-quick-nav')) return;
 
   const page = window.location.pathname.split('/').pop() || 'index.html';
