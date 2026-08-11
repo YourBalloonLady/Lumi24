@@ -20,8 +20,15 @@
     .rank-row{display:flex;justify-content:space-between;gap:16px;padding:10px 0;border-bottom:1px solid #e5e7eb}.rank-row:last-child{border-bottom:0}
     .stock-low{background:#fffbeb}.stock-out{background:#fef2f2}.stock-input{max-width:100px}
     .review{border:1px solid #e5e7eb;border-radius:14px;padding:15px;margin-bottom:12px}
-    .section-anchor{scroll-margin-top:20px}
-    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    .section-anchor{scroll-margin-top:92px}
+    .jump-nav{position:sticky;top:12px;z-index:1025;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border:1px solid #dbe3ec;border-radius:16px;padding:10px;box-shadow:0 8px 24px rgba(15,23,42,.12);display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+    .jump-nav::-webkit-scrollbar{display:none}
+    .jump-nav a{flex:1 0 auto;min-width:130px;text-align:center;font-weight:700;border-radius:10px}
+    .daily-visits{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .daily-visit{border:1px solid #e5e7eb;border-radius:12px;padding:12px;background:#f8fafc}
+    .daily-visit strong{display:block;margin-bottom:3px}
+    .daily-visit span{color:#475569;font-size:.9rem}
+    @media(max-width:900px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.daily-visits{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:520px){.kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
     @media(max-width:767.98px){
       body{overflow-x:hidden}
@@ -33,6 +40,9 @@
       .topbar nav a,.topbar nav button{flex:0 0 auto;min-height:42px;display:flex;align-items:center;padding-inline:10px;border:1px solid rgba(255,255,255,.14);border-radius:10px}
       main.container{padding:12px 10px!important}
       .panel{padding:13px;border-radius:14px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+      .jump-nav{top:8px;margin-bottom:12px;padding:8px}
+      .jump-nav a{min-width:112px}
+      .daily-visits{grid-template-columns:1fr}
       .panel .panel{padding:12px}
       .kpi-grid{gap:8px}
       .kpi{padding:13px;min-height:104px}
@@ -64,6 +74,7 @@
       <nav class="d-flex gap-3 flex-wrap">
         <a href="admin.html">Orders</a>
         <a href="#baskets">Baskets</a>
+        <a href="#visits">Site Visits</a>
         <a href="#inventory">Inventory</a>
         <a href="#reviews">Reviews</a>
         <a href="analytics.html">Sales Analytics</a>
@@ -77,6 +88,13 @@
     <div id="access-status" class="alert alert-light border">Checking administrator access…</div>
 
     <div id="dashboard" hidden>
+      <nav class="jump-nav mb-4" aria-label="Jump to analytics section">
+        <a class="btn btn-outline-dark" href="#baskets">🛒 Baskets</a>
+        <a class="btn btn-outline-primary" href="#visits">📈 Site Visits</a>
+        <a class="btn btn-outline-success" href="#inventory">📦 Inventory</a>
+        <a class="btn btn-outline-warning" href="#reviews">⭐ Reviews</a>
+      </nav>
+
       <section id="baskets" class="panel section-anchor mb-4">
         <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
           <div><h2 class="h4 mb-1">Basket Intelligence</h2><p class="text-muted mb-0">Live, checkout, abandoned and completed shopping baskets.</p></div>
@@ -113,6 +131,7 @@
         <div class="row g-3 mt-1">
           <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Most visited pages</h3><div id="top-pages"></div></div></div>
           <div class="col-lg-6"><div class="panel h-100"><h3 class="h6">Top referrers</h3><div id="top-referrers"></div></div></div>
+          <div class="col-12"><div class="panel"><h3 class="h6 mb-1">Daily visits — last 30 days</h3><p class="small text-muted mb-3">Calendar-day page views and unique browser sessions.</p><div id="daily-visits" class="daily-visits"></div></div></div>
         </div>
       </section>
 
@@ -191,7 +210,9 @@
       const now=Date.now();
       const since=days=>pageViews.filter(event=>new Date(event.occurred_at).getTime()>=now-(days*86400000));
       const unique=events=>new Set(events.map(event=>event.session_id)).size;
-      const today=since(1),week=since(7),month=since(30);
+      const dayKey=date=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+      const todayKey=dayKey(new Date());
+      const today=pageViews.filter(event=>dayKey(new Date(event.occurred_at))===todayKey),week=since(7),month=since(30);
       $('visit-kpis').innerHTML=[
         ['live','Today',today.length,`${unique(today)} sessions`],
         ['checkout','7 days',week.length,`${unique(week)} sessions`],
@@ -203,6 +224,23 @@
       const top=map=>[...map.entries()].sort((a,b)=>b[1]-a[1]).slice(0,10).map(([label,value])=>({label,value}));
       rank('top-pages',top(counts('page_path')),'No page views recorded yet.');
       rank('top-referrers',top(counts('referrer_host')),'No external referrers recorded yet.');
+
+      const dailyMap=new Map();
+      pageViews.forEach(event=>{
+        const key=dayKey(new Date(event.occurred_at));
+        if(!dailyMap.has(key))dailyMap.set(key,{views:0,sessions:new Set()});
+        const day=dailyMap.get(key);
+        day.views++;
+        if(event.session_id)day.sessions.add(event.session_id);
+      });
+      const dailyRows=Array.from({length:30},(_,index)=>{
+        const date=new Date();
+        date.setHours(12,0,0,0);
+        date.setDate(date.getDate()-index);
+        const data=dailyMap.get(dayKey(date))||{views:0,sessions:new Set()};
+        return {date,label:date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'}),views:data.views,sessions:data.sessions.size};
+      });
+      $('daily-visits').innerHTML=dailyRows.map(day=>`<div class="daily-visit"><strong>${esc(day.label)}</strong><span>${day.views} page view${day.views===1?'':'s'} • ${day.sessions} session${day.sessions===1?'':'s'}</span></div>`).join('');
       $('visit-status').textContent=`${pageViews.length} page views across ${unique(pageViews)} sessions in the last 30 days.`;
     }
 
