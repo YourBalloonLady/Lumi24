@@ -35,7 +35,39 @@
     }
   }
 
+  function trafficContext() {
+    const key = 'lumina_analytics_attribution';
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const tagged = {
+        source: params.get('utm_source') || '',
+        medium: params.get('utm_medium') || '',
+        campaign: params.get('utm_campaign') || '',
+        content: params.get('utm_content') || '',
+        term: params.get('utm_term') || ''
+      };
+      const hasTags = Object.values(tagged).some(Boolean);
+      if (hasTags) {
+        sessionStorage.setItem(key, JSON.stringify(tagged));
+        return tagged;
+      }
+      const saved = JSON.parse(sessionStorage.getItem(key) || 'null');
+      if (saved && typeof saved === 'object') return saved;
+      const source = referrerHost();
+      return {
+        source: source || 'direct',
+        medium: source ? 'referral' : 'direct',
+        campaign: '',
+        content: '',
+        term: ''
+      };
+    } catch (_) {
+      return { source: referrerHost() || 'direct', medium: referrerHost() ? 'referral' : 'direct', campaign: '', content: '', term: '' };
+    }
+  }
+
   const analyticsSession = analyticsSessionId();
+  const attribution = trafficContext();
   function recordSiteEvent(eventName, detail) {
     if (navigator.doNotTrack === '1' || window.doNotTrack === '1') return;
     if (/^\/(admin(?:-analytics)?|analytics)\.html$/.test(window.location.pathname)) return;
@@ -52,7 +84,14 @@
         p_event_name: String(eventName || '').slice(0, 64),
         p_page_path: window.location.pathname.slice(0, 300),
         p_referrer_host: referrerHost(),
-        p_event_data: detail && typeof detail === 'object' ? detail : {}
+        p_event_data: {
+          ...(detail && typeof detail === 'object' ? detail : {}),
+          traffic_source: attribution.source,
+          traffic_medium: attribution.medium,
+          traffic_campaign: attribution.campaign,
+          traffic_content: attribution.content,
+          traffic_term: attribution.term
+        }
       })
     }).catch(() => {});
   }
