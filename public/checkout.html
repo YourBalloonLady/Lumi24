@@ -1122,9 +1122,16 @@ async function syncCartPricesFromSupabase() {
 
       if (!p || Number(p.stock || 0) < 1) return [];
 
-      const variant = ['full-kit', 'cartridge-only'].includes(item.variant)
-        ? item.variant
-        : null;
+      const productName = String(p.name || '').toLowerCase();
+      const productSupportsVariants =
+        productName.includes('pen') &&
+        !productName.includes('refill pen') &&
+        !productName.includes('empty pen storage case');
+      const variant =
+        productSupportsVariants &&
+        ['full-kit', 'cartridge-only'].includes(item.variant)
+          ? item.variant
+          : null;
       const qty = Math.max(1, Math.min(
         Math.trunc(Number(item.qty) || 1),
         Math.trunc(Number(p.stock) || 0)
