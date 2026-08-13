@@ -1462,7 +1462,9 @@ function saveCart() {
 
     function imgSrc(image) {
       if (!image) return '';
-      return './' + encodeURIComponent(image);
+      const value = String(image).trim();
+      if (/^https?:\/\//i.test(value)) return value;
+      return './' + encodeURIComponent(value);
     }
 
     function getDisplayPriceHtml(p, unitSuffix) {
