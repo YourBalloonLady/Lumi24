@@ -75,6 +75,11 @@
     color: #ffffff;
   }
 
+  body.modal-open #lumina-site-offer,
+  body.modal-open #lumina-quick-nav {
+    visibility: hidden;
+  }
+
   .addon-row {
     margin-top: 6px;
   }
@@ -102,6 +107,7 @@
   }
 
   .payment-detail-row strong {
+    overflow-wrap: anywhere;
     text-align: right;
   }
 
@@ -110,6 +116,176 @@
     border: 1px solid #e2e8f0;
     border-radius: 18px;
     padding: 18px;
+  }
+
+  .payment-choice-notice {
+    background: #f0fdf4;
+    border-left: 5px solid #16a34a;
+    border-radius: 14px;
+    color: #14532d;
+    padding: 14px 16px;
+  }
+
+  .payment-choice-notice span {
+    color: #3f6212;
+  }
+
+  .stripe-payment-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #052e16 0%, #166534 58%, #16a34a 100%);
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 24px;
+    box-shadow: 0 18px 38px rgba(22,101,52,.24);
+    color: #ffffff;
+    padding: 24px;
+  }
+
+  .stripe-payment-card::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    right: -105px;
+    top: -115px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.10);
+  }
+
+  .stripe-payment-card > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .stripe-payment-card p {
+    color: #dcfce7;
+  }
+
+  .stripe-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #dcfce7;
+    border-radius: 999px;
+    color: #14532d;
+    font-size: .76rem;
+    font-weight: 850;
+    letter-spacing: .03em;
+    padding: 7px 11px;
+    text-transform: uppercase;
+  }
+
+  .stripe-payment-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .stripe-payment-meta-item {
+    background: rgba(255,255,255,.13);
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 14px;
+    padding: 12px 14px;
+  }
+
+  .stripe-payment-meta-item span {
+    display: block;
+    color: #bbf7d0;
+    font-size: .75rem;
+    margin-bottom: 2px;
+  }
+
+  .stripe-payment-meta-item strong {
+    display: block;
+    color: #ffffff;
+    font-size: 1.12rem;
+    overflow-wrap: anywhere;
+  }
+
+  .stripe-payment-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 2px solid #ffffff;
+    box-shadow: 0 10px 22px rgba(5,46,22,.26);
+    color: #14532d;
+    font-size: 1.04rem;
+    line-height: 1.25;
+    min-height: 54px;
+    padding: 13px 18px;
+    white-space: normal;
+    transition: transform .16s ease, background-color .16s ease, color .16s ease;
+  }
+
+  .stripe-payment-button:hover,
+  .stripe-payment-button:focus-visible {
+    background: #f0fdf4;
+    border-color: #f0fdf4;
+    color: #052e16;
+    transform: translateY(-1px);
+  }
+
+  .stripe-payment-methods {
+    color: #bbf7d0;
+  }
+
+  .bank-transfer-panel {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    color: #475569;
+    overflow: hidden;
+  }
+
+  .bank-transfer-panel summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    list-style: none;
+    padding: 16px 18px;
+  }
+
+  .bank-transfer-panel summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .bank-transfer-panel summary::after {
+    content: "+";
+    flex: 0 0 auto;
+    color: #64748b;
+    font-size: 1.45rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .bank-transfer-panel[open] summary::after {
+    content: "−";
+  }
+
+  .bank-transfer-panel summary small {
+    color: #64748b;
+  }
+
+  .bank-transfer-panel summary:hover {
+    background: #f1f5f9;
+  }
+
+  .bank-transfer-panel summary:focus-visible {
+    outline: 3px solid rgba(34,197,94,.35);
+    outline-offset: -3px;
+  }
+
+  .bank-transfer-content {
+    border-top: 1px solid #e2e8f0;
+    padding: 16px 18px 18px;
+  }
+
+  .bank-transfer-note {
+    color: #64748b;
+    font-size: .85rem;
   }
 
   .telegram-box {
@@ -184,7 +360,17 @@
   .checkout-reassurance{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px}
   .reassurance-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border:1px solid #e5e7eb;border-radius:12px;background:#f8fafc;color:#475569;font-size:.82rem;font-weight:650}
   .reassurance-item span{color:#16a34a;font-weight:900}
-  @media(max-width:520px){.checkout-reassurance{grid-template-columns:1fr}.card-body{padding:1.5rem!important}}
+  @media(max-width:520px){
+    .checkout-reassurance{grid-template-columns:1fr}
+    .card-body{padding:1.5rem!important}
+    #paymentModal .modal-dialog{margin:.5rem}
+    #paymentModal .modal-body{padding:1rem}
+    .stripe-payment-card{padding:20px}
+    .stripe-payment-meta{grid-template-columns:1fr}
+    .stripe-payment-button{font-size:.96rem}
+    .payment-detail-row{align-items:flex-start;flex-direction:column;gap:2px}
+    .payment-detail-row strong{text-align:left}
+  }
 </style>
 </head>
 
@@ -353,16 +539,18 @@
   tabindex="-1"
   data-bs-backdrop="static"
   data-bs-keyboard="false"
+  aria-labelledby="paymentModalLabel"
+  aria-describedby="paymentModalIntro"
 >
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">Order confirmed</h5>
+        <h2 id="paymentModalLabel" class="modal-title h5 mb-0">Order received — payment required</h2>
         <button
           type="button"
           class="btn-close btn-close-white"
-          aria-label="Back to shop"
+          aria-label="Close payment details and return to shop"
           onclick="backToShop()"
         ></button>
       </div>
@@ -370,94 +558,123 @@
       <div class="modal-body">
 
         <div class="alert alert-success">
-          Thank you <strong id="customerName"></strong>! Your order has been recorded.
+          Thank you <strong id="customerName"></strong>! Your order has been recorded. Complete payment below.
         </div>
 
-        <h5 class="fw-semibold">Your order</h5>
-
-        <div id="payment-summary" class="mb-3"></div>
-
-        <h4 class="text-success mb-3">
-          Total: <span id="payment-total"></span>
-        </h4>
-
-        <div class="alert alert-warning border-0 rounded-4">
-          <strong>Payment required to complete your order.</strong><br>
-          Choose card or bank transfer below and use the exact order total shown.
+        <div id="paymentModalIntro" class="payment-choice-notice mb-3">
+          <strong class="d-block">One step left: make payment</strong>
+          <span class="small">Card payment is the recommended and quickest way to complete your order.</span>
         </div>
 
-        <div
-          class="payment-box mb-3"
-          style="background:#f0fdf4; border-color:#bbf7d0;"
-        >
-          <h5 class="fw-bold mb-2">Pay by Card</h5>
+        <section class="stripe-payment-card mb-4" aria-labelledby="stripe-payment-title">
+          <span class="stripe-badge mb-3">Recommended · Fastest option</span>
 
-          <p class="small text-muted mb-3">
-            Click below and enter the <strong>exact total</strong> shown above
-            (<span id="card-payment-amount" class="fw-bold text-success"></span>).
+          <h4 id="stripe-payment-title" class="fw-bold mb-2">Pay securely by card</h4>
+
+          <p id="cardPaymentHelp" class="mb-3">
+            Continue to Stripe and enter the exact amount shown below.
           </p>
+
+          <div class="stripe-payment-meta">
+            <div class="stripe-payment-meta-item">
+              <span>Amount to enter on Stripe</span>
+              <strong id="card-payment-amount"></strong>
+            </div>
+
+            <div class="stripe-payment-meta-item">
+              <span>Your order reference</span>
+              <strong id="card-payment-reference"></strong>
+            </div>
+          </div>
 
           <a
             id="stripe-payment-link"
             href="https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn btn-success w-100 rounded-pill fw-bold"
+            class="btn stripe-payment-button w-100 rounded-pill fw-bold"
+            aria-describedby="cardPaymentHelp"
           >
-            Pay with Card / Apple Pay / Google Pay
+            Continue to secure card payment →
+            <span class="visually-hidden">(opens in a new tab)</span>
           </a>
 
-          <small class="d-block mt-2 text-muted text-center">
-            Use your order reference as the payment description if asked.
+          <small class="stripe-payment-methods d-block mt-2 text-center">
+            Powered by Stripe. Apple Pay or Google Pay may appear when supported.
           </small>
-        </div>
+        </section>
 
-        <div class="payment-box mb-3">
+        <h5 class="fw-semibold">Your order</h5>
 
-          <h5 class="fw-bold mb-3">Bank Transfer Details</h5>
+        <div id="payment-summary" class="mb-3"></div>
 
-          <div class="payment-detail-row">
-            <span>Account Name</span>
-            <strong id="bank-account-name">Lumina (Name Wont Match)</strong>
+        <h4 class="text-success mb-4">
+          Total: <span id="payment-total"></span>
+        </h4>
+
+        <details class="bank-transfer-panel mb-4">
+          <summary>
+            <span>
+              <strong class="d-block">Alternative: bank transfer</strong>
+              <small class="d-block">Open these details only if card payment is not suitable.</small>
+            </span>
+          </summary>
+
+          <div class="bank-transfer-content">
+            <p class="bank-transfer-note mb-3">
+              Bank transfers are matched manually and may take longer to confirm.
+            </p>
+
+            <div class="payment-box mb-3">
+
+              <h5 class="fw-bold mb-3">Bank transfer details</h5>
+
+              <div class="payment-detail-row">
+                <span>Account Name</span>
+                <strong id="bank-account-name">Lumina (Name Wont Match)</strong>
+              </div>
+
+              <div class="payment-detail-row">
+                <span>Sort Code</span>
+                <strong id="bank-sort-code">20-19-96</strong>
+              </div>
+
+              <div class="payment-detail-row">
+                <span>Account Number</span>
+                <strong id="bank-account-number">63112098</strong>
+              </div>
+
+              <div class="payment-detail-row">
+                <span>Reference</span>
+                <strong id="order-ref" class="text-primary fw-bold"></strong>
+              </div>
+
+              <div class="payment-detail-row">
+                <span>Amount</span>
+                <strong id="payment-total-copy" class="text-success"></strong>
+              </div>
+
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-outline-secondary w-100 rounded-pill"
+              onclick="copyPaymentDetails()"
+            >
+              Copy bank transfer details
+            </button>
+
+            <div
+              id="copy-status"
+              class="small text-success text-center mt-2"
+              style="display:none;"
+              role="status"
+              aria-live="polite"
+            >
+              Bank transfer details copied.
+            </div>
           </div>
-
-          <div class="payment-detail-row">
-            <span>Sort Code</span>
-            <strong id="bank-sort-code">20-19-96</strong>
-          </div>
-
-          <div class="payment-detail-row">
-            <span>Account Number</span>
-            <strong id="bank-account-number">63112098</strong>
-          </div>
-
-          <div class="payment-detail-row">
-            <span>Reference</span>
-            <strong id="order-ref" class="text-primary fw-bold"></strong>
-          </div>
-
-          <div class="payment-detail-row">
-            <span>Amount</span>
-            <strong id="payment-total-copy" class="text-success"></strong>
-          </div>
-
-        </div>
-
-        <button
-          type="button"
-          class="btn btn-success w-100 rounded-pill mb-3"
-          onclick="copyPaymentDetails()"
-        >
-          Copy Payment Details
-        </button>
-
-        <div
-          id="copy-status"
-          class="small text-success text-center mb-3"
-          style="display:none;"
-        >
-          Payment details copied.
-        </div>
+        </details>
 
         <div class="telegram-box mb-3">
           <h5 class="fw-bold mb-2">Get Telegram order updates</h5>
@@ -482,7 +699,7 @@
         </div>
 
         <div class="alert alert-info border-0 rounded-4 mb-0">
-          <strong id="email-delivery-status">We’re sending these payment details to your email.</strong><br>
+          <strong id="email-delivery-status" role="status" aria-live="polite">We’re sending these payment details to your email.</strong><br>
 
           If the email does not arrive, please use the details shown on this page.
           We recommend taking a screenshot before closing this page.
@@ -1725,6 +1942,7 @@ await markTrackedCartCompleted(details.ref);
     document.getElementById('payment-total').textContent = formattedTotal;
     document.getElementById('payment-total-copy').textContent = formattedTotal;
     document.getElementById('card-payment-amount').textContent = formattedTotal;
+    document.getElementById('card-payment-reference').textContent = details.ref;
     document.getElementById('order-ref').textContent = details.ref;
 
     updateTelegramConnectButton(telegramToken);
