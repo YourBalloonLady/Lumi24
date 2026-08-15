@@ -347,13 +347,24 @@
   </div>
 </div>
 
-<div class="modal fade" id="paymentModal" tabindex="-1">
+<div
+  class="modal fade"
+  id="paymentModal"
+  tabindex="-1"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+>
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
 
       <div class="modal-header">
         <h5 class="modal-title">Order confirmed</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          aria-label="Back to shop"
+          onclick="backToShop()"
+        ></button>
       </div>
 
       <div class="modal-body">
@@ -372,7 +383,33 @@
 
         <div class="alert alert-warning border-0 rounded-4">
           <strong>Payment required to complete your order.</strong><br>
-          Please make your bank transfer using your order reference exactly.
+          Choose card or bank transfer below and use the exact order total shown.
+        </div>
+
+        <div
+          class="payment-box mb-3"
+          style="background:#f0fdf4; border-color:#bbf7d0;"
+        >
+          <h5 class="fw-bold mb-2">Pay by Card</h5>
+
+          <p class="small text-muted mb-3">
+            Click below and enter the <strong>exact total</strong> shown above
+            (<span id="card-payment-amount" class="fw-bold text-success"></span>).
+          </p>
+
+          <a
+            id="stripe-payment-link"
+            href="https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-success w-100 rounded-pill fw-bold"
+          >
+            Pay with Card / Apple Pay / Google Pay
+          </a>
+
+          <small class="d-block mt-2 text-muted text-center">
+            Use your order reference as the payment description if asked.
+          </small>
         </div>
 
         <div class="payment-box mb-3">
@@ -445,7 +482,7 @@
         </div>
 
         <div class="alert alert-info border-0 rounded-4 mb-0">
-          <strong>We’ve also emailed these payment details to you.</strong><br>
+          <strong id="email-delivery-status">We’re sending these payment details to your email.</strong><br>
 
           If the email does not arrive, please use the details shown on this page.
           We recommend taking a screenshot before closing this page.
@@ -1573,11 +1610,16 @@ function sendCustomerEmail(details) {
 }
 
 const checkoutStatus = document.getElementById('checkout-status');
+let checkoutCompleted = false;
 
 document.getElementById('addressForm').onsubmit = async function(e) {
   e.preventDefault();
 
   const btn = this.querySelector('button[type="submit"]');
+
+  if (checkoutCompleted || btn.disabled) {
+    return;
+  }
 
   const firstName = document.getElementById('firstName').value.trim();
   const lastName = document.getElementById('lastName').value.trim();
@@ -1653,19 +1695,13 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       price: Number(item.price_each || 0)
     }));
     renderOrderSummary(total);
+    checkoutCompleted = true;
 
 /*
   The order now definitely exists, so mark its tracked
   shopping basket as successfully completed.
 */
 await markTrackedCartCompleted(details.ref);
-
-    const emailResults = await Promise.allSettled([
-      sendAdminEmail(details),
-      sendCustomerEmail(details)
-    ]);
-
-    console.log('Email results:', emailResults);
 
     document.getElementById('payment-summary').innerHTML = cart.map(i => `
       <div class="d-flex justify-content-between">
@@ -1683,26 +1719,41 @@ await markTrackedCartCompleted(details.ref);
       </div>
     `;
 
+    const formattedTotal = `£${Number(total || 0).toFixed(2)}`;
+
     document.getElementById('customerName').textContent = name;
-    document.getElementById('payment-total').textContent = `£${Number(total || 0).toFixed(2)}`;
-    document.getElementById('payment-total-copy').textContent = `£${Number(total || 0).toFixed(2)}`;
+    document.getElementById('payment-total').textContent = formattedTotal;
+    document.getElementById('payment-total-copy').textContent = formattedTotal;
+    document.getElementById('card-payment-amount').textContent = formattedTotal;
     document.getElementById('order-ref').textContent = details.ref;
 
     updateTelegramConnectButton(telegramToken);
 
-    new bootstrap.Modal(document.getElementById('paymentModal')).show();
+    bootstrap.Modal
+      .getOrCreateInstance(document.getElementById('paymentModal'))
+      .show();
 
     clearStoredCart();
 
-    const customerEmailOk = emailResults[1]?.status === 'fulfilled';
+    Promise.allSettled([
+      Promise.resolve().then(() => sendAdminEmail(details)),
+      Promise.resolve().then(() => sendCustomerEmail(details))
+    ]).then(emailResults => {
+      console.log('Email results:', emailResults);
 
-    if (customerEmailOk) {
-      checkoutStatus.textContent = "We've emailed your payment instructions.";
-      checkoutStatus.className = 'small text-success mt-2';
-    } else {
-      checkoutStatus.textContent = 'Order saved. Email may not have sent, but payment details are shown above.';
-      checkoutStatus.className = 'small text-warning mt-2';
-    }
+      const customerEmailOk = emailResults[1]?.status === 'fulfilled';
+      const emailStatus = document.getElementById('email-delivery-status');
+
+      if (customerEmailOk) {
+        if (emailStatus) emailStatus.textContent = 'We’ve also emailed these payment details to you.';
+        checkoutStatus.textContent = "We've emailed your payment instructions.";
+        checkoutStatus.className = 'small text-success mt-2';
+      } else {
+        if (emailStatus) emailStatus.textContent = 'Your order is saved; please use the payment details shown here.';
+        checkoutStatus.textContent = 'Order saved. Email may not have sent, but payment details are shown above.';
+        checkoutStatus.className = 'small text-warning mt-2';
+      }
+    });
 
   } catch (err) {
     console.error('Checkout flow error', err);
@@ -1716,8 +1767,13 @@ await markTrackedCartCompleted(details.ref);
     checkoutStatus.textContent = `Checkout error: ${realMessage}`;
     checkoutStatus.className = 'small text-danger mt-2';
   } finally {
-    btn.disabled = false;
-    btn.textContent = 'Confirm order → Payment details';
+    if (checkoutCompleted) {
+      btn.disabled = true;
+      btn.textContent = 'Order confirmed';
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Confirm order → Payment details';
+    }
   }
 };
 
