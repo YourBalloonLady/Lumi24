@@ -2233,8 +2233,8 @@ function saveCart() {
             : `<span class="text-success fw-bold">In stock • ${stockNum} available</span>`;
 
       const offerEl = document.getElementById('modalOffer');
-      offerEl.hidden = !offer;
-      offerEl.textContent = offer ? `Special offer: ${offer.label} — applied automatically at checkout.` : '';
+      offerEl.hidden = false;
+      offerEl.textContent = 'Mix and match any 3 or more products to save 10% automatically.';
 
       document.getElementById('modalDescription').innerHTML = `
         <p>${escapeHtml(p.description || 'Research material supplied for laboratory environments.')}</p>
