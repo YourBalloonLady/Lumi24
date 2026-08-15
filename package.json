@@ -1,0 +1,7 @@
+{
+  "name": "lumi24",
+  "private": true,
+  "dependencies": {
+    "@google/genai": "2.17.1"
+  }
+}
