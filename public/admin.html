@@ -1468,6 +1468,7 @@ body.orders-mode #operations-page-header {
     // CONFIG
     // ────────────────────────────────────────────────
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
+    const STRIPE_PAYMENT_URL = "https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
     const ADMIN_EMAIL = "luminaweight@gmail.com";
     const ADMIN_PAGE_MODE = new URLSearchParams(window.location.search).get("view") === "operations"
@@ -2610,6 +2611,11 @@ ${items}
 
 Total: ${total}
 
+Pay securely by card:
+${STRIPE_PAYMENT_URL}
+
+Please enter the exact total shown above and use ${ref} as your order reference.
+
 Once payment is received, we’ll get your order moved along.
 
 Thanks,
@@ -3683,7 +3689,8 @@ loadOrders();
         customer_name: customerName,
         order_ref: ref,
         order_total: total,
-        order_items: items
+        order_items: items,
+        stripe_payment_url: STRIPE_PAYMENT_URL
       });
     }
 
