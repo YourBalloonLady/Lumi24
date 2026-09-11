@@ -1800,6 +1800,7 @@ async function saveOrderToSupabase(details) {
 }
 
 function sendAdminEmail(details) {
+  assertPersistedOrder(details);
   return emailjs.send('service_i5zi096', 'template_juevvvd', {
     to_email: 'luminaweight@gmail.com',
     customer_name: details.name,
@@ -1815,6 +1816,7 @@ function sendAdminEmail(details) {
 }
 
 function sendCustomerEmail(details) {
+  assertPersistedOrder(details);
   return emailjs.send('service_i5zi096', 'template_x5lnd1u', {
     to_email: details.email,
     customer_email: details.email,
@@ -1829,6 +1831,17 @@ function sendCustomerEmail(details) {
     delivery_method: getDeliveryLabel(),
     delivery_price: getDeliveryCost() > 0 ? `£${getDeliveryCost().toFixed(2)}` : 'FREE'
   });
+}
+
+function assertPersistedOrder(details) {
+  const validOrderId = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    String(details?.orderId || '')
+  );
+  const validReference = /^LW[0-9A-F]{8}$/i.test(String(details?.ref || ''));
+
+  if (!validOrderId || !validReference) {
+    throw new Error('Order email blocked because the live order record was not confirmed.');
+  }
 }
 
 const checkoutStatus = document.getElementById('checkout-status');
@@ -1854,8 +1867,9 @@ document.getElementById('addressForm').onsubmit = async function(e) {
   const postcode = document.getElementById('postcode').value.trim().toUpperCase();
   const addressConfirmed = document.getElementById('addressConfirmed')?.checked || false;
   const termsAccepted = document.getElementById('termsAccepted')?.checked || false;
-  const ref = 'LW' + Date.now().toString().slice(-6);
-  const telegramToken = generateTelegramToken(ref);
+  // This is an opaque connection token only. The customer-facing order
+  // reference must come back from the database after the order is persisted.
+  const telegramToken = generateTelegramToken('order');
 
   if (!firstName || !lastName || !phone || !email || !address1 || !city || !postcode || !cart.length) {
     checkoutStatus.textContent = 'Please provide your first and last name, phone, email, full address and cart.';
@@ -1903,13 +1917,13 @@ document.getElementById('addressForm').onsubmit = async function(e) {
       address2,
       city,
       postcode,
-      ref,
       telegramToken
     };
 
     const orderResult = await saveOrderToSupabase(details);
     window.luminaTrack?.('order_created', { order_reference: orderResult.reference, value: Number(orderResult.total_amount || 0) });
     details.ref = orderResult.reference;
+    details.orderId = orderResult.order_id;
     total = Number(orderResult.total_amount || 0);
     cart = orderResult.items.map(item => ({
       ...item,
