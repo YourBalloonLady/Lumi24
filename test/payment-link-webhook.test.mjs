@@ -6,6 +6,7 @@ import Stripe from 'stripe';
 import {
   handlePaymentLinkWebhook,
   interpretPaymentLinkEvent,
+  shouldDeliverPaidEffects,
   verifyStripeSignature,
 } from '../supabase/functions/stripe-payment-link-webhook/payment.js';
 
@@ -119,6 +120,47 @@ test('a bad signature never reaches the order update', async () => {
     /Invalid Stripe signature/,
   );
   assert.equal(called, false);
+});
+
+test('paid results run notifications once and a failure asks Stripe to retry', async () => {
+  assert.equal(shouldDeliverPaidEffects({ marked_paid: true }), true);
+  assert.equal(shouldDeliverPaidEffects({ outcome: 'not_pending' }), true);
+  assert.equal(shouldDeliverPaidEffects({ status: 'already_processed', outcome: 'paid' }), true);
+  assert.equal(shouldDeliverPaidEffects({ status: 'already_processed', outcome: 'unpaid' }), false);
+  assert.equal(shouldDeliverPaidEffects({ outcome: 'unpaid' }), false);
+
+  let calls = 0;
+  const paid = signed(paidEvent());
+  const delivered = await handlePaymentLinkWebhook({
+    payload: paid.payload,
+    signature: paid.header,
+    secret: SECRET,
+    applyEvent: async () => ({ marked_paid: true, outcome: 'paid' }),
+    onPaidOrder: async () => { calls += 1; },
+  });
+  assert.equal(delivered.status, 200);
+  assert.equal(calls, 1);
+
+  const unpaid = signed(paidEvent({ payment_status: 'unpaid', id: 'evt_unpaid' }));
+  await handlePaymentLinkWebhook({
+    payload: unpaid.payload,
+    signature: unpaid.header,
+    secret: SECRET,
+    applyEvent: async () => ({ marked_paid: false, outcome: 'unpaid' }),
+    onPaidOrder: async () => { calls += 1; },
+  });
+  assert.equal(calls, 1);
+
+  const failed = signed(paidEvent());
+  const retry = await handlePaymentLinkWebhook({
+    payload: failed.payload,
+    signature: failed.header,
+    secret: SECRET,
+    applyEvent: async () => ({ marked_paid: true, outcome: 'paid' }),
+    onPaidOrder: async () => { throw new Error('mail down'); },
+  });
+  assert.equal(retry.status, 500);
+  assert.equal(retry.body.error, 'Could not finish the paid order notifications.');
 });
 
 test('checkout and admin payment links append the order reference', () => {

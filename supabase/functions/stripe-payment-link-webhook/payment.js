@@ -76,7 +76,14 @@ export function interpretPaymentLinkEvent(event) {
   };
 }
 
-export async function handlePaymentLinkWebhook({ payload, signature, secret, nowSeconds, applyEvent }) {
+export function shouldDeliverPaidEffects(result) {
+  if (!result || typeof result !== 'object') return false;
+  if (result.marked_paid === true) return true;
+  if (result.outcome === 'not_pending') return true;
+  return result.status === 'already_processed' && result.outcome === 'paid';
+}
+
+export async function handlePaymentLinkWebhook({ payload, signature, secret, nowSeconds, applyEvent, onPaidOrder }) {
   await verifyStripeSignature(payload, signature, secret, nowSeconds);
   const event = JSON.parse(payload);
   const instruction = interpretPaymentLinkEvent(event);
@@ -88,6 +95,14 @@ export async function handlePaymentLinkWebhook({ payload, signature, secret, now
   }
 
   const result = await applyEvent(instruction);
+  if (shouldDeliverPaidEffects(result) && onPaidOrder) {
+    try {
+      await onPaidOrder(instruction, result);
+    } catch {
+      console.error('Paid order notifications failed.');
+      return { status: 500, body: { error: 'Could not finish the paid order notifications.' } };
+    }
+  }
   return {
     status: 200,
     body: { received: true, outcome: result?.outcome || result?.status || 'recorded' },

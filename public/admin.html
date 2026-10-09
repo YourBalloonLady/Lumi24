@@ -1477,26 +1477,6 @@ body.orders-mode #operations-page-header {
       ? "operations"
       : "orders";
 
-      // ────────────────────────────────────────────────
-    // REFERRALS CONFIG
-    // ────────────────────────────────────────────────
-    const REFERRAL_CODE_COL = "referral_code";
-    const REFERRED_BY_COL = "referred_by";
-    const REFERRAL_CREDIT = 10.00;  // £10 to referrer
-    const BUYER_CREDIT = 10.00;     // £10 to buyer
-
-    // ────────────────────────────────────────────────
-    // STORE CREDIT CONFIG
-    // ────────────────────────────────────────────────
-    const CUSTOMERS_TABLE = "customers";
-    const CREDIT_BALANCE_COL = "credit_balance";
-
-    // Flat £10 credit per paid order
-    const CREDIT_RATE = null;
-    const CREDIT_MIN = null;
-    const CREDIT_MAX = null;
-    const CREDIT_FLAT = 10.00;
-
     const supabaseClient = LuminaAuth.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     // ────────────────────────────────────────────────
@@ -2139,213 +2119,29 @@ let basketRefreshTimer = null;
       return `<span class="format-badge ${format.className}">${format.label}</span>`;
     }
 
-    /* =====================================================
-       REFERRAL HELPERS  (ADD THEM RIGHT HERE)
-    ===================================================== */
-
-    function getOrderReferralCode(order){
-      return String(
-        order?.details?.meta?.referral_code ||
-        order?.referral_code ||
-        ""
-      ).trim().toUpperCase();
-    }
-
-    function isPaidLikeStatus(status=""){
-      const s = String(status).toLowerCase();
-      return (s === "paid" || s === "packed" || s === "shipped");
-    }
-
-    async function isFirstPaidOrderForEmail(email, currentOrderId){
-      if(!email) return false;
-
-      const { data, error } = await supabaseClient
-        .from("Orders")
-        .select("id, status, customer_email, email, details")
-        .order("created_at", { ascending: true });
-
-      if(error) throw error;
-
-      const paidOrdersForEmail = (data || []).filter(o => {
-        if(o.id === currentOrderId) return false;
-        if(!isPaidLikeStatus(o.status)) return false;
-
-        const c = o?.details?.customer || {};
-        const e = String(c.email || o.customer_email || o.email || "")
-          .trim()
-          .toLowerCase();
-
-        return e === email;
-      });
-
-      return paidOrdersForEmail.length === 0;
-    }
-
-    async function findCustomerByReferralCode(code){
-      if(!code) return null;
-
-      const { data, error } = await supabaseClient
-        .from("ReferralCodes")
-        .select("owner_email, owner_name, code")
-        .eq("code", code)
-        .eq("active", true)
-        .maybeSingle();
-
-      if(error) throw error;
-      if(!data?.owner_email) return null;
-
-      return { email: data.owner_email, name: data.owner_name || "" };
-    }
-
-    /* =====================================================
-       END REFERRAL HELPERS
-    ===================================================== */
-    
-    function round2(n){
-      return Math.floor((Number(n || 0) + Number.EPSILON) * 100) / 100;
-    }
-
-    function calcCreditAmount(order){
-      // Flat £10 mode
-      if (typeof CREDIT_FLAT === "number") {
-        return round2(CREDIT_FLAT);
-      }
-
-      // Percentage mode (if you ever enable it)
-      const total = Number(order?.total_amount || 0);
-      let credit = total * CREDIT_RATE;
-
-      // Optional manual override per order
-      const override = order?.details?.meta?.credit_override;
-      if (override !== undefined && override !== null && String(override).trim() !== "") {
-        credit = Number(override);
-      }
-
-      if (CREDIT_MIN !== null) credit = Math.max(CREDIT_MIN, credit);
-      if (CREDIT_MAX !== null) credit = Math.min(CREDIT_MAX, credit);
-
-      return round2(credit);
-    }
-
-    function hasCreditAlready(order){
-      const meta = order?.details?.meta || {};
-      return !!meta.credit_awarded_at || !!meta.credit_awarded_amount;
-    }
-
-    async function awardCreditToCustomerByEmail(email, name, amount){
-      if(!email) throw new Error("No customer email");
-      if(!(amount > 0)) return; // nothing to award
-
-      // fetch existing balance
-      const { data: existing, error: selErr } = await supabaseClient
-        .from(CUSTOMERS_TABLE)
-        .select(`email, name, ${CREDIT_BALANCE_COL}`)
-        .eq("email", email)
-        .maybeSingle();
-
-      if(selErr) throw selErr;
-
-      if(!existing){
-        // create customer row
-        const { error: insErr } = await supabaseClient
-          .from(CUSTOMERS_TABLE)
-          .insert({
-            email,
-            name: name || "",
-            [CREDIT_BALANCE_COL]: amount
-          });
-
-        if(insErr) throw insErr;
-        return;
-      }
-
-      const current = Number(existing?.[CREDIT_BALANCE_COL] || 0);
-      const next = round2(current + amount);
-
-      const { error: upErr } = await supabaseClient
-        .from(CUSTOMERS_TABLE)
-        .update({
-          name: name || existing.name || "",
-          [CREDIT_BALANCE_COL]: next
-        })
-        .eq("email", email);
-
-      if(upErr) throw upErr;
-    }
-
-    async function awardCreditForPaidOrder(orderId){
-      const order = ordersCache[orderId];
-      if(!order) throw new Error("Order not found in cache");
-
-      // Only award when payment confirmed
-      if(!isPaidLikeStatus(order.status)) return;
-
-      const meta = order?.details?.meta || {};
-
-      // Idempotency: if already processed, stop
-      if(meta.referral_awarded_at) return;
-
-      const buyerEmail = getOrderEmail(order);
-      const buyerName = String(order?.details?.customer?.name || order.customer_name || order.name || "").trim();
-
-      if(!buyerEmail) return;
-
-      // Only FIRST paid order gets rewards
-      const firstPaid = await isFirstPaidOrderForEmail(buyerEmail, orderId);
-      if(!firstPaid) return;
-
-      // Referral code required for "both" mode
-      const code = getOrderReferralCode(order);
-      if(!code) return;
-
-      // Find referrer
-      const referrer = await findCustomerByReferralCode(code);
-      if(!referrer?.email) return;
-
-      const referrerEmail = String(referrer.email).trim().toLowerCase();
-      if(!referrerEmail) return;
-
-      // Block self-referral
-      if(referrerEmail === buyerEmail) return;
-
-      // Award buyer
-      await awardCreditToCustomerByEmail(buyerEmail, buyerName, round2(BUYER_CREDIT));
-
-      // Award referrer
-      await awardCreditToCustomerByEmail(referrerEmail, referrer.name || "", round2(REFERRAL_CREDIT));
-
-      // Mark on order meta + history
+    async function runPaidOrderEffects(orderId){
       const session = await supabaseClient.auth.getSession();
-      const who = session?.data?.session?.user?.email || "admin";
+      const token = session?.data?.session?.access_token || "";
+      if(!token) throw new Error("Admin login is required.");
 
-      let updatedDetails = order.details || {};
-      updatedDetails = pushHistory({ ...order, details: updatedDetails }, "referral_credit_awarded", {
-        note: `buyer £${BUYER_CREDIT.toFixed(2)} + referrer £${REFERRAL_CREDIT.toFixed(2)} • code ${code}`
+      const response = await fetch(`${SUPABASE_URL}/functions/v1/order-paid-effects`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ order_id: orderId })
       });
 
-      updatedDetails = {
-        ...updatedDetails,
-        meta: {
-          ...(updatedDetails.meta || {}),
-          referral_code: code,
-          referral_awarded_at: new Date().toISOString(),
-          referral_awarded_by: who,
-          referral_buyer_email: buyerEmail,
-          referral_referrer_email: referrerEmail,
-          referral_buyer_amount: round2(BUYER_CREDIT),
-          referral_referrer_amount: round2(REFERRAL_CREDIT)
-        }
-      };
-
-      const { error } = await supabaseClient
-        .from("Orders")
-        .update({ details: updatedDetails })
-        .eq("id", orderId);
-
-      if(error) throw error;
-
-      // Update cache
-      ordersCache[orderId].details = updatedDetails;
+      let body = {};
+      try { body = await response.json(); } catch(_) {}
+      if(!response.ok){
+        const error = new Error(body.error || "Paid notifications failed.");
+        error.effects = body.effects || body;
+        throw error;
+      }
+      return body;
     }
 
     function extrasLabel(item) {
@@ -3397,6 +3193,17 @@ async function changeStatusFromSelect(orderId) {
   }
 
   if (newStatus === currentStatus) {
+    if (newStatus.toLowerCase() === "paid") {
+      try {
+        const effects = await runPaidOrderEffects(orderId);
+        const sentNow = effects.email === "sent" || effects.telegram === "sent";
+        showToast(sentNow ? "Paid notifications sent ✅" : "Paid notifications were already sent.", sentNow ? "success" : "warning");
+      } catch (e) {
+        console.error("Paid notifications failed", e);
+        showToast("Paid notifications failed (check console)", "warning");
+      }
+      return;
+    }
     showToast("Status is already set to that.", "warning");
     return;
   }
@@ -3432,24 +3239,20 @@ async function changeStatusFromSelect(orderId) {
       }
 
       ordersCache[id].status = value;
-ordersCache[id].details = updatedDetails;
+      ordersCache[id].details = updatedDetails;
 
-const notifyTelegram = confirm(`Send Telegram update for status "${value}"?`);
-
-if (notifyTelegram) {
-  const tracking = String(ordersCache[id]?.details?.meta?.tracking_number || "").trim();
-  await sendTelegramOrderUpdate(ordersCache[id], value, tracking);
-}
-
-      // ✅ If admin manually sets to Paid, award credit too
-      if(String(value || "").toLowerCase() === "paid"){
-        try{
-          await awardCreditForPaidOrder(id);
-          const amt = Number(ordersCache[id]?.details?.meta?.referral_buyer_amount || 0);
-          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-        }catch(e){
-          console.error("Credit award failed", e);
-          showToast("Status updated but credit failed (check console)", "warning");
+      if (String(value || "").toLowerCase() === "paid") {
+        try {
+          await runPaidOrderEffects(id);
+        } catch (e) {
+          console.error("Paid notifications failed", e);
+          showToast("Status updated but paid notifications failed (check console)", "warning");
+        }
+      } else {
+        const notifyTelegram = confirm(`Send Telegram update for status "${value}"?`);
+        if (notifyTelegram) {
+          const tracking = String(ordersCache[id]?.details?.meta?.tracking_number || "").trim();
+          await sendTelegramOrderUpdate(ordersCache[id], value, tracking);
         }
       }
 
@@ -3648,6 +3451,8 @@ loadOrders();
     }
 
     function sendPaidEmail(order) {
+      // Automatic paid mail is sent by order-paid-effects with these same
+      // template_paid fields: email, customer_name, order_ref, order_total.
       if (!order || !window.emailjs) return;
       const customer = order.details?.customer || {};
       const toEmail = customer.email || order.customer_email || order.email || "";
@@ -3934,21 +3739,6 @@ loadOrders();
 
       setBusy(true, "Marking paid…", order.reference || order.id);
       try {
-        // email (best-effort)
-        try{
-          await sendPaidEmail(order);
-        }catch(emailErr){
-          console.error("Paid email failed", emailErr);
-          const customer = order.details?.customer || {};
-          const toEmail = customer.email || order.customer_email || order.email || "";
-          if(toEmail){
-            const ok = confirm("EmailJS failed. Open a mailto draft instead?");
-            if(ok){
-              openMailto(toEmail, `Payment received (${order.reference || order.id})`, buildPaidEmailText(order));
-            }
-          }
-        }
-
         // update status
         let updatedDetails = pushHistory(order, "status_paid");
         const session = await supabaseClient.auth.getSession();
@@ -3970,19 +3760,13 @@ loadOrders();
         }
 
         ordersCache[orderId].status = "Paid";
-ordersCache[orderId].details = updatedDetails;
+        ordersCache[orderId].details = updatedDetails;
 
-// Telegram update
-await sendTelegramOrderUpdate(ordersCache[orderId], "Paid", "");
-
-// award credit (idempotent)
-        try{
-          await awardCreditForPaidOrder(orderId);
-          const amt = Number(ordersCache[orderId]?.details?.meta?.referral_buyer_amount || 0);
-          if(amt > 0) showToast(`Credit awarded ✅ (£${amt.toFixed(2)})`, "success");
-        }catch(e){
-          console.error("Credit award failed", e);
-          showToast("Paid ✅ but credit failed (check console)", "warning");
+        try {
+          await runPaidOrderEffects(orderId);
+        } catch (notifyErr) {
+          console.error("Paid notifications failed", notifyErr);
+          showToast("Paid ✅ but notifications failed. Choosing Paid again will retry them.", "warning");
         }
 
         showToast("Marked paid ✅", "success");
