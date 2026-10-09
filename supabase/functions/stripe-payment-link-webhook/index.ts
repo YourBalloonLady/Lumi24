@@ -1,4 +1,14 @@
 import { handlePaymentLinkWebhook } from './payment.js';
+import {
+  createServiceRoleRpc,
+  deliverPaidOrderEffects,
+  sendPaidEmailThroughEmailJs,
+  sendPaidTelegramUpdate,
+} from '../_shared/paid-order-effects.js';
+
+const PAID_EMAIL_SERVICE_ID = 'service_i5zi096';
+const PAID_EMAIL_TEMPLATE_ID = 'template_paid';
+const PAID_EMAIL_PUBLIC_KEY = 'uZOuTrBdIAc6AmKjo';
 
 const MAX_BYTES = 1_000_000;
 
@@ -61,11 +71,35 @@ Deno.serve(async (request) => {
   if (!secret) return json({ error: 'Stripe webhook is not configured yet.' }, 500);
 
   try {
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') || '';
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
     const result = await handlePaymentLinkWebhook({
       payload,
       signature: request.headers.get('stripe-signature') || '',
       secret,
       applyEvent,
+      onPaidOrder: async (instruction) => {
+        if (!supabaseUrl || !serviceRoleKey || !instruction.orderReference) {
+          throw new Error('Paid notifications are not configured.');
+        }
+        await deliverPaidOrderEffects({
+          orderReference: instruction.orderReference,
+          actor: 'stripe-webhook',
+          rpc: createServiceRoleRpc({ supabaseUrl, serviceRoleKey }),
+          sendEmail: (params) => sendPaidEmailThroughEmailJs({
+            params,
+            serviceId: PAID_EMAIL_SERVICE_ID,
+            templateId: Deno.env.get('EMAILJS_PAID_TEMPLATE_ID') || PAID_EMAIL_TEMPLATE_ID,
+            publicKey: Deno.env.get('EMAILJS_PUBLIC_KEY') || PAID_EMAIL_PUBLIC_KEY,
+            privateKey: Deno.env.get('EMAILJS_PRIVATE_KEY') || '',
+          }),
+          sendTelegram: (orderReference) => sendPaidTelegramUpdate({
+            supabaseUrl,
+            serviceRoleKey,
+            orderReference,
+          }),
+        });
+      },
     });
     return json(result.body, result.status);
   } catch (error) {
