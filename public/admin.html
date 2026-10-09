@@ -2144,10 +2144,6 @@ let basketRefreshTimer = null;
       return body;
     }
 
-    async function awardCreditForPaidOrder(orderId){
-      return runPaidOrderEffects(orderId);
-    }
-
     function extrasLabel(item) {
       const penHeads = item?.pen_heads ? String(item.pen_heads).trim() : "";
       const syringes = item?.syringes ? String(item.syringes).trim() : "";
@@ -3200,7 +3196,7 @@ async function changeStatusFromSelect(orderId) {
     if (newStatus.toLowerCase() === "paid") {
       try {
         const effects = await runPaidOrderEffects(orderId);
-        const sentNow = effects.email === "sent" || effects.telegram === "sent" || effects.credit === "awarded";
+        const sentNow = effects.email === "sent" || effects.telegram === "sent";
         showToast(sentNow ? "Paid notifications sent ✅" : "Paid notifications were already sent.", sentNow ? "success" : "warning");
       } catch (e) {
         console.error("Paid notifications failed", e);
@@ -3247,8 +3243,7 @@ async function changeStatusFromSelect(orderId) {
 
       if (String(value || "").toLowerCase() === "paid") {
         try {
-          const effects = await runPaidOrderEffects(id);
-          if (effects.credit === "awarded") showToast("Credit awarded ✅ (£10.00)", "success");
+          await runPaidOrderEffects(id);
         } catch (e) {
           console.error("Paid notifications failed", e);
           showToast("Status updated but paid notifications failed (check console)", "warning");
@@ -3768,8 +3763,7 @@ loadOrders();
         ordersCache[orderId].details = updatedDetails;
 
         try {
-          const effects = await runPaidOrderEffects(orderId);
-          if (effects.credit === "awarded") showToast("Credit awarded ✅ (£10.00)", "success");
+          await runPaidOrderEffects(orderId);
         } catch (notifyErr) {
           console.error("Paid notifications failed", notifyErr);
           showToast("Paid ✅ but notifications failed. Choosing Paid again will retry them.", "warning");

@@ -127,7 +127,6 @@ export async function deliverPaidOrderEffects({
   if (!book || book.status !== 'ready') {
     return {
       status: book?.status || 'skipped',
-      credit: book?.credit || 'not_paid',
       email: 'skipped',
       telegram: 'skipped',
     };
@@ -135,7 +134,6 @@ export async function deliverPaidOrderEffects({
 
   const effects = {
     status: 'ready',
-    credit: book.credit,
     email: book.email,
     telegram: book.telegram,
   };

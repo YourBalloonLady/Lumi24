@@ -11,7 +11,6 @@ import {
 } from '../supabase/functions/_shared/paid-order-effects.js';
 
 const ORDER_ID = '7ad9fc6c-bc1a-43db-9ed0-c12ab3c71e18';
-const SECOND_ID = '8ad9fc6c-bc1a-43db-9ed0-c12ab3c71e19';
 
 async function database() {
   const db = new PGlite();
@@ -100,8 +99,11 @@ async function balances(db) {
   return result.rows;
 }
 
-test('a paid order sends each effect once and awards both £10 credits once', async () => {
+test('a paid order sends the email and Telegram update once and does not award credit', async () => {
   const db = await database();
+  await db.query(
+    `insert into public.customers (email, name, credit_balance) values ('buyer@example.com', 'Ada', 25)`,
+  );
   const emails = [];
   const telegrams = [];
   const run = () => deliverPaidOrderEffects({
@@ -113,9 +115,9 @@ test('a paid order sends each effect once and awards both £10 credits once', as
   });
 
   const first = await run();
-  assert.equal(first.credit, 'awarded');
   assert.equal(first.email, 'sent');
   assert.equal(first.telegram, 'sent');
+  assert.equal('credit' in first, false);
   assert.deepEqual(emails, [{
     email: 'Buyer@Example.com',
     customer_name: 'Ada',
@@ -124,94 +126,69 @@ test('a paid order sends each effect once and awards both £10 credits once', as
   }]);
   assert.deepEqual(telegrams, ['LWAB12CD34']);
   assert.deepEqual(await balances(db), [
-    { email: 'buyer@example.com', credit_balance: 10 },
-    { email: 'referrer@example.com', credit_balance: 10 },
+    { email: 'buyer@example.com', credit_balance: 25 },
   ]);
 
   const second = await run();
-  assert.equal(second.credit, 'already_awarded');
   assert.equal(second.email, 'sent');
   assert.equal(second.telegram, 'sent');
   assert.equal(emails.length, 1);
   assert.equal(telegrams.length, 1);
   assert.deepEqual(await balances(db), [
-    { email: 'buyer@example.com', credit_balance: 10 },
-    { email: 'referrer@example.com', credit_balance: 10 },
+    { email: 'buyer@example.com', credit_balance: 25 },
   ]);
 
-  const stored = await db.query(`select details from public."Orders" where id = $1`, [ORDER_ID]);
+  const stored = await db.query(`select details, referral_code from public."Orders" where id = $1`, [ORDER_ID]);
+  assert.equal(stored.rows[0].referral_code, 'LUM-FRIEND');
   assert.equal(stored.rows[0].details.meta.promotion_discount, '1.00');
-  assert.equal(stored.rows[0].details.meta.referral_buyer_amount, 10);
-  assert.equal(stored.rows[0].details.meta.referral_referrer_amount, 10);
+  assert.equal(stored.rows[0].details.meta.referral_awarded_at, undefined);
   assert.equal(stored.rows[0].details.meta.paid_email_result, 'sent');
   assert.equal(stored.rows[0].details.meta.paid_telegram_result, 'sent');
   await db.close();
 });
 
-test('credit is skipped for self-referral, inactive codes, later orders, and unpaid orders', async () => {
+test('an unpaid order is not notified and the old credit trigger can be removed', async () => {
   const db = await database();
   await db.query(
-    `update public."Orders" set referral_code = 'LUM-FRIEND', details = $2::jsonb where id = $1`,
-    [ORDER_ID, JSON.stringify({ customer: { email: 'referrer@example.com', name: 'Ref' } })],
+    `insert into public.customers (email, credit_balance) values ('referrer@example.com', 40)`,
   );
-  const self = await rpcFor(db)('prepare_paid_order_effects', {
-    p_order_id: ORDER_ID,
-    p_order_reference: null,
-    p_actor: 'admin',
-  });
-  assert.equal(self.credit, 'not_eligible');
-
-  await db.query(`delete from public.customers`);
-  await db.query(
-    `update public."Orders"
-     set referral_code = 'LUM-QUIET',
-         details = '{"customer":{"email":"buyer@example.com","name":"Ada"}}'::jsonb
-     where id = $1`,
-    [ORDER_ID],
-  );
-  const inactive = await rpcFor(db)('prepare_paid_order_effects', {
-    p_order_id: ORDER_ID,
-    p_order_reference: null,
-    p_actor: 'admin',
-  });
-  assert.equal(inactive.credit, 'not_eligible');
-
-  await db.query(
-    `update public."Orders"
-     set referral_code = 'LUM-FRIEND', status = 'Paid'
-     where id = $1`,
-    [ORDER_ID],
-  );
-  await rpcFor(db)('prepare_paid_order_effects', {
-    p_order_id: ORDER_ID,
-    p_order_reference: null,
-    p_actor: 'admin',
-  });
-  await db.query(
-    `insert into public."Orders" (id, reference, status, total_amount, referral_code, details)
-     values ($1, 'LWAB12CD35', 'Paid', 15, 'LUM-FRIEND', '{"customer":{"email":"buyer@example.com","name":"Ada"}}'::jsonb)`,
-    [SECOND_ID],
-  );
-  const later = await rpcFor(db)('prepare_paid_order_effects', {
-    p_order_id: SECOND_ID,
-    p_order_reference: null,
-    p_actor: 'admin',
-  });
-  assert.equal(later.credit, 'not_eligible');
-  assert.equal(later.email, 'pending');
-  assert.deepEqual(await balances(db), [
-    { email: 'buyer@example.com', credit_balance: 10 },
-    { email: 'referrer@example.com', credit_balance: 10 },
-  ]);
-
-  await db.query(`update public."Orders" set status = 'Pending' where id = $1`, [SECOND_ID]);
+  await db.exec(`
+    create or replace function public.award_referrer_on_paid()
+    returns trigger language plpgsql as $fn$ begin return new; end $fn$;
+    create trigger trg_award_referrer_on_paid
+    before update of status on public."Orders"
+    for each row execute function public.award_referrer_on_paid();
+  `);
   const pending = await rpcFor(db)('prepare_paid_order_effects', {
-    p_order_id: SECOND_ID,
+    p_order_id: null,
+    p_order_reference: 'LWAB12CD34',
+    p_actor: 'stripe-webhook',
+  });
+  assert.equal(pending.status, 'ready');
+
+  await db.query(`update public."Orders" set status = 'Pending' where id = $1`, [ORDER_ID]);
+  const notPaid = await rpcFor(db)('prepare_paid_order_effects', {
+    p_order_id: ORDER_ID,
     p_order_reference: null,
     p_actor: 'admin',
   });
-  assert.equal(pending.status, 'not_paid');
-  assert.equal(pending.credit, 'not_paid');
+  assert.equal(notPaid.status, 'not_paid');
+  assert.equal(notPaid.email, 'skipped');
+
+  const dropCredit = await readFile(
+    new URL('../supabase/migrations/20261009181000_stop_referral_credit.sql', import.meta.url),
+    'utf8',
+  );
+  await db.exec(dropCredit);
+  const triggers = await db.query(
+    `select count(*)::int as count from pg_trigger where tgname = 'trg_award_referrer_on_paid' and not tgisinternal`,
+  );
+  assert.equal(triggers.rows[0].count, 0);
+  assert.deepEqual(await balances(db), [
+    { email: 'referrer@example.com', credit_balance: 40 },
+  ]);
+  const codes = await db.query(`select count(*)::int as count from public."ReferralCodes"`);
+  assert.equal(codes.rows[0].count, 2);
   await db.close();
 });
 

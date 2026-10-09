@@ -1,5 +1,5 @@
--- Run the paid-order side effects once. The admin page and the Payment Link
--- webhook both call these functions. They are not applied by the pull request.
+-- Record paid-order email and Telegram once. The admin page and the Payment
+-- Link webhook both call these functions. Referral credit is not awarded.
 
 create or replace function public.prepare_paid_order_effects(
   p_order_id uuid,
@@ -13,24 +13,17 @@ as $function$
 declare
   v_order public."Orders"%rowtype;
   v_ref text;
-  v_actor text;
   v_meta jsonb;
   v_details jsonb;
-  v_history jsonb;
   v_buyer text;
   v_buyer_email text;
   v_buyer_name text;
-  v_code text;
-  v_referrer text;
-  v_credit text;
   v_email_state text;
   v_telegram_state text;
   v_changed boolean := false;
 begin
-  v_actor := pg_catalog.left(pg_catalog.btrim(coalesce(p_actor, 'system')), 200);
-  if v_actor = '' then
-    v_actor := 'system';
-  end if;
+  -- p_actor is kept so existing callers do not need a new signature.
+  perform p_actor;
 
   if p_order_id is not null then
     select * into v_order
@@ -68,7 +61,6 @@ begin
     return pg_catalog.jsonb_build_object(
       'status', 'not_paid',
       'order_id', v_order.id,
-      'credit', 'not_paid',
       'email', 'skipped',
       'telegram', 'skipped'
     );
@@ -77,85 +69,6 @@ begin
   v_buyer_email := pg_catalog.btrim(coalesce(v_details #>> '{customer,email}', ''));
   v_buyer := pg_catalog.lower(v_buyer_email);
   v_buyer_name := pg_catalog.btrim(coalesce(v_details #>> '{customer,name}', ''));
-  v_code := pg_catalog.upper(pg_catalog.btrim(coalesce(
-    v_order.referral_code,
-    v_details #>> '{meta,referral_code}',
-    ''
-  )));
-
-  if coalesce(v_meta->>'referral_awarded_at', '') <> '' then
-    v_credit := 'already_awarded';
-  elsif v_buyer = '' or v_code = '' then
-    v_credit := 'not_eligible';
-  elsif exists (
-    select 1
-    from public."Orders" earlier
-    where earlier.id is distinct from v_order.id
-      and pg_catalog.lower(coalesce(earlier.status, '')) in ('paid', 'packed', 'shipped')
-      and pg_catalog.lower(pg_catalog.btrim(coalesce(earlier.details #>> '{customer,email}', ''))) = v_buyer
-  ) then
-    v_credit := 'not_eligible';
-  else
-    select pg_catalog.lower(pg_catalog.btrim(owner_email))
-      into v_referrer
-    from public."ReferralCodes"
-    where pg_catalog.upper(code) = v_code
-      and is_active is true
-    limit 1;
-
-    if v_referrer is null or v_referrer = '' or v_referrer = v_buyer then
-      v_credit := 'not_eligible';
-    else
-      insert into public.customers (email, name, credit_balance)
-      values (v_buyer, nullif(v_buyer_name, ''), 10)
-      on conflict (email) do update
-      set credit_balance = coalesce(customers.credit_balance, 0) + 10,
-          name = case
-            when excluded.name is not null and pg_catalog.btrim(excluded.name) <> '' then excluded.name
-            else customers.name
-          end;
-
-      insert into public.customers (email, credit_balance)
-      values (v_referrer, 10)
-      on conflict (email) do update
-      set credit_balance = coalesce(customers.credit_balance, 0) + 10;
-
-      v_history := coalesce(v_meta->'history', '[]'::jsonb);
-      if pg_catalog.jsonb_typeof(v_history) is distinct from 'array' then
-        v_history := '[]'::jsonb;
-      end if;
-      v_history := v_history || pg_catalog.jsonb_build_array(pg_catalog.jsonb_build_object(
-        'at', pg_catalog.to_jsonb(pg_catalog.clock_timestamp()),
-        'by', v_actor,
-        'action', 'referral_credit_awarded',
-        'note', 'buyer £10.00 + referrer £10.00 • code ' || v_code
-      ));
-      if pg_catalog.jsonb_array_length(v_history) > 60 then
-        v_history := (
-          select pg_catalog.jsonb_agg(item order by ord)
-          from (
-            select item, ord
-            from pg_catalog.jsonb_array_elements(v_history) with ordinality as history_row(item, ord)
-            order by ord desc
-            limit 60
-          ) kept
-        );
-      end if;
-
-      v_meta := v_meta || pg_catalog.jsonb_build_object(
-        'history', v_history,
-        'referral_code', v_code,
-        'referral_awarded_at', pg_catalog.to_jsonb(pg_catalog.clock_timestamp()),
-        'referral_awarded_by', v_actor,
-        'referral_buyer_email', v_buyer,
-        'referral_referrer_email', v_referrer,
-        'referral_buyer_amount', 10,
-        'referral_referrer_amount', 10
-      );
-      v_credit := 'awarded';
-      v_changed := true;
-    end if;
-  end if;
 
   if coalesce(v_meta->>'paid_email_sent_at', '') <> '' then
     v_email_state := 'sent';
@@ -199,7 +112,6 @@ begin
     'total_amount', v_order.total_amount,
     'customer_email', nullif(v_buyer_email, ''),
     'customer_name', nullif(v_buyer_name, ''),
-    'credit', v_credit,
     'email', v_email_state,
     'telegram', v_telegram_state
   );
