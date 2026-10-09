@@ -1850,6 +1850,14 @@ let checkoutCompleted = false;
 document.getElementById('addressForm').onsubmit = async function(e) {
   e.preventDefault();
 
+  if (window.LuminaOrderPause?.isOrderingPaused()) {
+    const pausedButton = this.querySelector('button[type="submit"]');
+    if (pausedButton) pausedButton.disabled = true;
+    checkoutStatus.textContent = window.LuminaOrderPause.checkoutMessage;
+    checkoutStatus.className = 'small text-danger mt-2';
+    return;
+  }
+
   const btn = this.querySelector('button[type="submit"]');
 
   if (checkoutCompleted || btn.disabled) {
@@ -2071,6 +2079,7 @@ function backToShop() {
   saveDefaultRecoveryEmailPreference();
 })();
 </script>
+  <script src="/order-pause.js"></script>
   <script src="/site-nav.js"></script>
 </body>
 </html>

@@ -1580,6 +1580,7 @@ function toggleCart(force) {
 }
 
 function goToCheckout() {
+  if (window.LuminaOrderPause?.isOrderingPaused()) return;
   if (cart.length === 0) {
     alert("Your cart is empty!");
     return;
@@ -1759,6 +1760,7 @@ supabaseClient.auth.onAuthStateChange(() => {
   updateAccountUI();
 });
 </script>
+  <script src="/order-pause.js"></script>
   <script src="/site-nav.js"></script>
 </body>
 </html>
