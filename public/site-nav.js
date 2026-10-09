@@ -230,10 +230,10 @@
     if (!root.contains(event.target)) setOpen(false);
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Escape') {
-      setOpen(false);
-      button.focus();
-    }
+    if (event.key !== 'Escape') return;
+    if (document.getElementById('lumina-order-pause')) return;
+    setOpen(false);
+    button.focus();
   });
   document.addEventListener('click', event => {
     const tracked = event.target.closest('[data-track]');
@@ -242,4 +242,216 @@
 
   root.append(panel, button);
   document.body.appendChild(root);
+
+  // Visible through 26 October 2026 (Europe/London). Hidden from 27 October.
+  const ORDER_PAUSE_LAST_DAY = '2026-10-26';
+
+  function londonCalendarDate(now) {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/London',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(now);
+    const value = type => parts.find(part => part.type === type).value;
+    return `${value('year')}-${value('month')}-${value('day')}`;
+  }
+
+  function orderPauseNoticeDue(now) {
+    return londonCalendarDate(now) <= ORDER_PAUSE_LAST_DAY;
+  }
+
+  function showOrderPauseNotice() {
+    if (!document.body || document.getElementById('lumina-order-pause')) return;
+    if (!orderPauseNoticeDue(new Date())) return;
+
+    const storageKey = 'lumina_order_pause_dismissed';
+    try {
+      if (sessionStorage.getItem(storageKey) === '1') return;
+    } catch (_) {}
+
+    const style = document.createElement('style');
+    style.id = 'lumina-order-pause-style';
+    style.textContent = `
+      #lumina-order-pause,#lumina-order-pause *{box-sizing:border-box}
+      #lumina-order-pause{position:fixed;inset:0;z-index:2147483646;display:flex;align-items:center;justify-content:center;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:rgba(15,23,42,.58);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+      #lumina-order-pause-dialog{width:min(460px,100%);max-height:min(640px,calc(100dvh - 32px));overflow:auto;background:#fff;color:#0f172a;border:1px solid rgba(148,163,184,.22);border-radius:22px;box-shadow:0 24px 60px rgba(15,23,42,.24);outline:none}
+      #lumina-order-pause-dialog:focus-visible{outline:3px solid #4ade80;outline-offset:3px}
+      .lumina-order-pause-accent{height:6px;background:linear-gradient(90deg,#22c55e,#16a34a)}
+      .lumina-order-pause-body{position:relative;padding:22px 24px 24px}
+      .lumina-order-pause-logo{display:block;height:46px;width:auto;max-width:calc(100% - 56px);object-fit:contain;object-position:left center}
+      .lumina-order-pause-kicker{display:inline-flex;align-items:center;gap:8px;margin:16px 0 0;padding:6px 12px;border-radius:999px;background:rgba(34,197,94,.1);color:#15803d;font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+      .lumina-order-pause-kicker span{width:8px;height:8px;border-radius:50%;background:#22c55e}
+      #lumina-order-pause-title{margin:12px 36px 0 0;font-size:1.45rem;line-height:1.2;font-weight:850;letter-spacing:-.03em}
+      #lumina-order-pause-text{margin:12px 0 0;color:#1e293b;font-size:1rem;line-height:1.6}
+      .lumina-order-pause-close{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(148,163,184,.45);border-radius:999px;background:#fff;color:#0f172a;font-size:1.6rem;line-height:1;cursor:pointer}
+      .lumina-order-pause-close:hover{background:#f3f4f6}
+      .lumina-order-pause-confirm{display:block;width:100%;min-height:48px;margin-top:20px;padding:12px 20px;border:0;border-radius:999px;background:#15803d;color:#fff;font:800 1rem/1.2 Inter,system-ui,-apple-system,sans-serif;cursor:pointer;box-shadow:0 12px 24px rgba(21,128,61,.2)}
+      .lumina-order-pause-confirm:hover{background:#166534}
+      .lumina-order-pause-close:focus-visible,.lumina-order-pause-confirm:focus-visible{outline:3px solid #4ade80;outline-offset:3px}
+      @media(max-width:600px){
+        #lumina-order-pause-title{font-size:1.28rem}
+        .lumina-order-pause-body{padding:18px 16px 18px}
+        .lumina-order-pause-logo{height:40px}
+      }
+      @media(forced-colors:active){
+        #lumina-order-pause-dialog{border:2px solid CanvasText}
+        .lumina-order-pause-confirm,.lumina-order-pause-close{border:2px solid ButtonText}
+      }
+      @media print{#lumina-order-pause{display:none!important}}
+    `;
+    document.head.appendChild(style);
+
+    const overlay = document.createElement('div');
+    overlay.id = 'lumina-order-pause';
+
+    const dialog = document.createElement('div');
+    dialog.id = 'lumina-order-pause-dialog';
+    dialog.setAttribute('role', 'alertdialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', 'lumina-order-pause-title');
+    dialog.setAttribute('aria-describedby', 'lumina-order-pause-text');
+    dialog.tabIndex = -1;
+
+    const accent = document.createElement('div');
+    accent.className = 'lumina-order-pause-accent';
+    accent.setAttribute('aria-hidden', 'true');
+
+    const body = document.createElement('div');
+    body.className = 'lumina-order-pause-body';
+
+    const closeButton = document.createElement('button');
+    closeButton.type = 'button';
+    closeButton.className = 'lumina-order-pause-close';
+    closeButton.setAttribute('aria-label', 'Close order notice');
+    const closeGlyph = document.createElement('span');
+    closeGlyph.setAttribute('aria-hidden', 'true');
+    closeGlyph.textContent = '\u00d7';
+    closeButton.appendChild(closeGlyph);
+
+    const logo = document.createElement('img');
+    logo.className = 'lumina-order-pause-logo';
+    logo.src = '/Lumina-logo.png';
+    logo.alt = '';
+    logo.width = 92;
+    logo.height = 46;
+
+    const kicker = document.createElement('p');
+    kicker.className = 'lumina-order-pause-kicker';
+    const dot = document.createElement('span');
+    dot.setAttribute('aria-hidden', 'true');
+    kicker.append(dot, document.createTextNode('Order update'));
+
+    const title = document.createElement('h2');
+    title.id = 'lumina-order-pause-title';
+    title.textContent = 'Orders paused for one week';
+
+    const text = document.createElement('p');
+    text.id = 'lumina-order-pause-text';
+    text.textContent = 'Please note: all orders will be paused for one week from Monday 19th October. Ordering will reopen on Monday 26th October. Thank you for your patience!';
+
+    const confirmButton = document.createElement('button');
+    confirmButton.type = 'button';
+    confirmButton.className = 'lumina-order-pause-confirm';
+    confirmButton.textContent = 'Close';
+
+    body.append(closeButton, logo, kicker, title, text, confirmButton);
+    dialog.append(accent, body);
+    overlay.appendChild(dialog);
+
+    const previouslyFocused = document.activeElement;
+    const scrollY = window.scrollY;
+    const previousBodyStyle = {
+      position: document.body.style.position,
+      top: document.body.style.top,
+      left: document.body.style.left,
+      right: document.body.style.right,
+      width: document.body.style.width,
+      overflow: document.body.style.overflow
+    };
+    const madeInert = [];
+    let closed = false;
+
+    function restorePage() {
+      madeInert.forEach(element => element.removeAttribute('inert'));
+      document.body.style.position = previousBodyStyle.position;
+      document.body.style.top = previousBodyStyle.top;
+      document.body.style.left = previousBodyStyle.left;
+      document.body.style.right = previousBodyStyle.right;
+      document.body.style.width = previousBodyStyle.width;
+      document.body.style.overflow = previousBodyStyle.overflow;
+      window.scrollTo(0, scrollY);
+    }
+
+    function dismiss() {
+      if (closed) return;
+      closed = true;
+      try {
+        sessionStorage.setItem(storageKey, '1');
+      } catch (_) {}
+      document.removeEventListener('keydown', onKeydown, true);
+      restorePage();
+      overlay.remove();
+      if (previouslyFocused && previouslyFocused.isConnected && typeof previouslyFocused.focus === 'function') {
+        previouslyFocused.focus({ preventScroll: true });
+      }
+    }
+
+    function focusable() {
+      return [...dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')]
+        .filter(element => !element.disabled && element.getAttribute('aria-hidden') !== 'true');
+    }
+
+    function onKeydown(event) {
+      if (!overlay.isConnected) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        dismiss();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const items = focusable();
+      if (!items.length) {
+        event.preventDefault();
+        dialog.focus({ preventScroll: true });
+        return;
+      }
+      const first = items[0];
+      const last = items[items.length - 1];
+      const active = document.activeElement;
+      if (event.shiftKey) {
+        if (active === first || active === dialog || !dialog.contains(active)) {
+          event.preventDefault();
+          last.focus();
+        }
+      } else if (active === last || !dialog.contains(active)) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    closeButton.addEventListener('click', dismiss);
+    confirmButton.addEventListener('click', dismiss);
+    dialog.addEventListener('click', event => event.stopPropagation());
+    overlay.addEventListener('click', dismiss);
+
+    document.body.appendChild(overlay);
+    [...document.body.children].forEach(element => {
+      if (element === overlay || element.hasAttribute('inert')) return;
+      element.setAttribute('inert', '');
+      madeInert.push(element);
+    });
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onKeydown, true);
+    dialog.focus({ preventScroll: true });
+  }
+
+  showOrderPauseNotice();
 })();
