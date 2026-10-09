@@ -1468,8 +1468,7 @@ body.orders-mode #operations-page-header {
     // CONFIG
     // ────────────────────────────────────────────────
     const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
-    const STRIPE_PAYMENT_URL = "https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E";
-    const PAYMENT_CONFIRMATION_NOTICE = "Already paid? You can ignore this email and wait for your payment confirmation email. Payment confirmations are completed manually, so they may not be sent instantly—especially overnight. Please don’t worry; we’ll confirm your payment as soon as it has been checked.";
+    const PAYMENT_CONFIRMATION_NOTICE = "Card payments are confirmed automatically when Stripe accepts them. Bank transfers are still checked manually and may take longer, especially overnight.";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
     const ADMIN_EMAIL = "luminaweight@gmail.com";
     const ADMIN_PAGE_MODE = new URLSearchParams(window.location.search).get("view") === "operations"
@@ -2606,11 +2605,45 @@ let basketRefreshTimer = null;
       return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been cancelled.\n\nIf you need anything, reply to this email.\n\nThanks,\nLumina`;
     }
 
-    function buildPaymentEmailText(order){
+    function storedStripeCheckoutUrl(order) {
+      try {
+        const url = new URL(String(order?.details?.meta?.stripe_checkout_url || ""));
+        if (url.protocol !== "https:") return "";
+        if (url.hostname === "checkout.stripe.com" || url.hostname === "pay.stripe.com") return url.toString();
+      } catch (error) {}
+      return "";
+    }
+
+    async function stripePaymentUrlForOrder(order) {
+      const stored = storedStripeCheckoutUrl(order);
+      if (stored) return stored;
+      if (String(order?.status || "").toLowerCase() === "cancelled") return "";
+      if (!order?.id || !order?.reference) return "";
+
+      try {
+        const response = await fetch("/api/stripe-checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId: order.id, reference: order.reference })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (response.ok && typeof payload.url === "string") {
+          order.details = order.details || {};
+          order.details.meta = { ...(order.details.meta || {}), stripe_checkout_url: payload.url };
+          return payload.url;
+        }
+      } catch (error) {
+        console.error("Stripe checkout link failed", error);
+      }
+      return "";
+    }
+
+    function buildPaymentEmailText(order, stripeUrl = ""){
       const customer = order.details?.customer || {};
       const ref = order.reference || order.id;
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
       const items = buildItemsText(order);
+      const cardLink = stripeUrl || "Card checkout is unavailable. Please use the bank transfer details from your checkout page.";
 
       return `Hi ${customer.name || "there"},
 
@@ -2624,9 +2657,10 @@ ${items}
 Total: ${total}
 
 Pay securely by card:
-${STRIPE_PAYMENT_URL}
+${cardLink}
 
-Please enter the exact total shown above and use ${ref} as your order reference.
+The card page already has the amount for this order. You do not need to type it in.
+If you pay by bank transfer, use ${ref} as your payment reference.
 
 ${PAYMENT_CONFIRMATION_NOTICE}
 
@@ -3682,7 +3716,7 @@ loadOrders();
       });
     }
 
-    function sendPaymentPendingEmail(order){
+    async function sendPaymentPendingEmail(order){
       if (!order || !window.emailjs) return;
 
       const customer = order.details?.customer || {};
@@ -3691,6 +3725,7 @@ loadOrders();
       const ref = order.reference || order.id;
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
       const items = buildItemsText(order);
+      const stripeUrl = await stripePaymentUrlForOrder(order);
 
       if (!toEmail) {
         alert("No email found on this order.");
@@ -3705,8 +3740,10 @@ loadOrders();
         order_ref: ref,
         order_total: total,
         order_items: items,
-        stripe_payment_url: STRIPE_PAYMENT_URL,
-        payment_confirmation_notice: PAYMENT_CONFIRMATION_NOTICE
+        stripe_payment_url: stripeUrl,
+        payment_confirmation_notice: stripeUrl
+          ? PAYMENT_CONFIRMATION_NOTICE
+          : "Card checkout could not be started. Please pay by bank transfer and use your order reference."
       });
     }
 
@@ -3886,10 +3923,11 @@ loadOrders();
         if(toEmail){
           const ok = confirm("EmailJS failed. Open a mailto draft instead?");
           if(ok){
+            const stripeUrl = await stripePaymentUrlForOrder(order);
             openMailto(
               toEmail,
               `Payment needed for order ${order.reference || order.id}`,
-              buildPaymentEmailText(order)
+              buildPaymentEmailText(order, stripeUrl)
             );
           }
         } else {

@@ -572,12 +572,12 @@
           <h4 id="stripe-payment-title" class="fw-bold mb-2">Pay securely by card</h4>
 
           <p id="cardPaymentHelp" class="mb-3">
-            Continue to Stripe and enter the exact amount shown below.
+            Continue to Stripe. The amount is already set to your order total.
           </p>
 
           <div class="stripe-payment-meta">
             <div class="stripe-payment-meta-item">
-              <span>Amount to enter on Stripe</span>
+              <span>Amount</span>
               <strong id="card-payment-amount"></strong>
             </div>
 
@@ -589,10 +589,10 @@
 
           <a
             id="stripe-payment-link"
-            href="https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn stripe-payment-button w-100 rounded-pill fw-bold"
+            href="#"
+            role="link"
+            aria-disabled="true"
+            class="btn stripe-payment-button w-100 rounded-pill fw-bold disabled"
             aria-describedby="cardPaymentHelp"
           >
             Continue to secure card payment →
@@ -706,12 +706,12 @@
 
           <br><br>
 
-          Payments are checked manually. If you pay late evening, overnight, or early morning,
-          your order may remain pending until the next checking window.
+          Card payments are marked paid automatically once Stripe confirms them.
+          Bank transfers are still checked manually and can take longer, especially overnight.
 
           <br><br>
 
-          Please use your order reference <strong>only</strong>
+          If you pay by bank transfer, use your order reference <strong>only</strong>
           so we can match your payment quickly.
         </div>
 
@@ -739,9 +739,11 @@
 <script>
 emailjs.init('uZOuTrBdIAc6AmKjo');
 
-const STRIPE_PAYMENT_URL = 'https://buy.stripe.com/dRm9AL7bO3Yh0IsgBs2880E';
-const PAYMENT_CONFIRMATION_NOTICE = 'Already paid? You can ignore this email and wait for your payment confirmation email. Payment confirmations are completed manually, so they may not be sent instantly—especially overnight. Please don’t worry; we’ll confirm your payment as soon as it has been checked.';
-document.getElementById('stripe-payment-link')?.setAttribute('href', STRIPE_PAYMENT_URL);
+const PAYMENT_CONFIRMATION_NOTICE = 'Card payments are confirmed automatically when Stripe accepts them. Bank transfers are still checked manually and may take longer, especially overnight.';
+document.getElementById('stripe-payment-link')?.addEventListener('click', (event) => {
+  const link = event.currentTarget;
+  if (link.getAttribute('aria-disabled') === 'true') event.preventDefault();
+});
 const SUPABASE_URL = "https://qketnqhfjfxbqiuqevnh.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZXRucWhmamZ4YnFpdXFldm5oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ2NjkzMzAsImV4cCI6MjA4MDI0NTMzMH0.JIrgLIwWIA5Gwu9K4BsgS0Y_jyax2G6irqkaf35aPys";
 
@@ -1815,6 +1817,40 @@ function sendAdminEmail(details) {
   });
 }
 
+async function requestStripeCheckoutUrl(orderId, reference) {
+  const response = await fetch('/api/stripe-checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ orderId, reference })
+  });
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok || typeof payload.url !== 'string' || !payload.url.startsWith('https://')) {
+    throw new Error(payload.error || 'Card checkout could not be started.');
+  }
+  return payload.url;
+}
+
+function applyStripeCheckoutLink(url) {
+  const link = document.getElementById('stripe-payment-link');
+  const help = document.getElementById('cardPaymentHelp');
+  if (!link) return;
+
+  if (url) {
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    link.removeAttribute('aria-disabled');
+    link.classList.remove('disabled');
+    if (help) help.textContent = 'Continue to Stripe. The amount is already set to this order total, so you do not need to type it in.';
+    return;
+  }
+
+  link.removeAttribute('href');
+  link.setAttribute('aria-disabled', 'true');
+  link.classList.add('disabled');
+  if (help) help.textContent = 'Card checkout could not be started. Your order is saved. Please use the bank transfer details below, or contact us with your order reference.';
+}
+
 function sendCustomerEmail(details) {
   assertPersistedOrder(details);
   return emailjs.send('service_i5zi096', 'template_x5lnd1u', {
@@ -1826,8 +1862,10 @@ function sendCustomerEmail(details) {
     order_reference: details.ref,
     order_items: buildItemsText(),
     order_total: `£${Number(total || 0).toFixed(2)}`,
-    stripe_payment_url: STRIPE_PAYMENT_URL,
-    payment_confirmation_notice: PAYMENT_CONFIRMATION_NOTICE,
+    stripe_payment_url: details.stripePaymentUrl || '',
+    payment_confirmation_notice: details.stripePaymentUrl
+      ? PAYMENT_CONFIRMATION_NOTICE
+      : 'Card checkout could not be started. Please pay by bank transfer and use your order reference.',
     delivery_method: getDeliveryLabel(),
     delivery_price: getDeliveryCost() > 0 ? `£${getDeliveryCost().toFixed(2)}` : 'FREE'
   });
@@ -1963,6 +2001,15 @@ await markTrackedCartCompleted(details.ref);
     document.getElementById('card-payment-amount').textContent = formattedTotal;
     document.getElementById('card-payment-reference').textContent = details.ref;
     document.getElementById('order-ref').textContent = details.ref;
+
+    details.stripePaymentUrl = '';
+    try {
+      details.stripePaymentUrl = await requestStripeCheckoutUrl(details.orderId, details.ref);
+      applyStripeCheckoutLink(details.stripePaymentUrl);
+    } catch (stripeError) {
+      console.error('Stripe checkout session failed', stripeError);
+      applyStripeCheckoutLink('');
+    }
 
     updateTelegramConnectButton(telegramToken);
 
