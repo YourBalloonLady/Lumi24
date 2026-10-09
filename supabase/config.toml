@@ -1,0 +1,7 @@
+project_id = "qketnqhfjfxbqiuqevnh"
+
+# Stripe calls this endpoint without a Supabase login token.
+# The function checks the Stripe signature instead.
+
+[functions.stripe-payment-link-webhook]
+verify_jwt = false

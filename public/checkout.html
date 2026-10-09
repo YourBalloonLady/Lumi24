@@ -735,6 +735,7 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="/lumina-auth.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/stripe-payment-link.js"></script>
 
 <script>
 emailjs.init('uZOuTrBdIAc6AmKjo');
@@ -1826,7 +1827,7 @@ function sendCustomerEmail(details) {
     order_reference: details.ref,
     order_items: buildItemsText(),
     order_total: `£${Number(total || 0).toFixed(2)}`,
-    stripe_payment_url: STRIPE_PAYMENT_URL,
+    stripe_payment_url: window.LuminaStripePaymentLink?.forReference(details.ref) || STRIPE_PAYMENT_URL,
     payment_confirmation_notice: PAYMENT_CONFIRMATION_NOTICE,
     delivery_method: getDeliveryLabel(),
     delivery_price: getDeliveryCost() > 0 ? `£${getDeliveryCost().toFixed(2)}` : 'FREE'
@@ -1971,6 +1972,10 @@ await markTrackedCartCompleted(details.ref);
     document.getElementById('card-payment-amount').textContent = formattedTotal;
     document.getElementById('card-payment-reference').textContent = details.ref;
     document.getElementById('order-ref').textContent = details.ref;
+    document.getElementById('stripe-payment-link')?.setAttribute(
+      'href',
+      window.LuminaStripePaymentLink?.forReference(details.ref) || STRIPE_PAYMENT_URL
+    );
 
     updateTelegramConnectButton(telegramToken);
 

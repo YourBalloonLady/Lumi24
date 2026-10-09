@@ -1458,6 +1458,7 @@ body.orders-mode #operations-page-header {
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script src="/lumina-auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <script src="/stripe-payment-link.js"></script>
   <!-- SheetJS for XLSX export (Improvement #10) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
   <!-- ✅ Chart.js (Nice-to-have #3) -->
@@ -2624,7 +2625,7 @@ ${items}
 Total: ${total}
 
 Pay securely by card:
-${STRIPE_PAYMENT_URL}
+${window.LuminaStripePaymentLink?.forReference(order.reference) || STRIPE_PAYMENT_URL}
 
 Please enter the exact total shown above and use ${ref} as your order reference.
 
@@ -3705,7 +3706,7 @@ loadOrders();
         order_ref: ref,
         order_total: total,
         order_items: items,
-        stripe_payment_url: STRIPE_PAYMENT_URL,
+        stripe_payment_url: window.LuminaStripePaymentLink?.forReference(order.reference) || STRIPE_PAYMENT_URL,
         payment_confirmation_notice: PAYMENT_CONFIRMATION_NOTICE
       });
     }

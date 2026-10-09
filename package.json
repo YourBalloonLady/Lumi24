@@ -1,7 +1,15 @@
 {
   "name": "lumi24",
   "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
   "dependencies": {
     "@google/genai": "2.17.1"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8",
+    "stripe": "^23.0.0"
   }
 }
