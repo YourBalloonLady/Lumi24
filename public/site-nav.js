@@ -243,27 +243,10 @@
   root.append(panel, button);
   document.body.appendChild(root);
 
-  // Visible through 26 October 2026 (Europe/London). Hidden from 27 October.
-  const ORDER_PAUSE_LAST_DAY = '2026-10-26';
-
-  function londonCalendarDate(now) {
-    const parts = new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/London',
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).formatToParts(now);
-    const value = type => parts.find(part => part.type === type).value;
-    return `${value('year')}-${value('month')}-${value('day')}`;
-  }
-
-  function orderPauseNoticeDue(now) {
-    return londonCalendarDate(now) <= ORDER_PAUSE_LAST_DAY;
-  }
-
   function showOrderPauseNotice() {
-    if (!document.body || document.getElementById('lumina-order-pause')) return;
-    if (!orderPauseNoticeDue(new Date())) return;
+    const pauseConfig = window.LuminaOrderPause;
+    if (!document.body || document.getElementById('lumina-order-pause') || !pauseConfig) return;
+    if (!pauseConfig.isNoticeDue(new Date())) return;
 
     const storageKey = 'lumina_order_pause_dismissed';
     try {
@@ -348,7 +331,7 @@
 
     const text = document.createElement('p');
     text.id = 'lumina-order-pause-text';
-    text.textContent = 'Please note: all orders will be paused for one week from Monday 19th October. Ordering will reopen on Monday 26th October. Thank you for your patience!';
+    text.textContent = pauseConfig.noticeText;
 
     const confirmButton = document.createElement('button');
     confirmButton.type = 'button';
