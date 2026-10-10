@@ -10,3 +10,8 @@ verify_jwt = false
 # other caller. Stripe does not call it directly.
 [functions.order-paid-effects]
 verify_jwt = true
+
+# The database calls this after an order is inserted. It checks a vault secret
+# instead of a Supabase login token, and messages only the admin chat.
+[functions.notify-admin-new-order]
+verify_jwt = false
