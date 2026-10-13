@@ -78,12 +78,31 @@ export function interpretPaymentLinkEvent(event) {
 
 export function shouldDeliverPaidEffects(result) {
   if (!result || typeof result !== 'object') return false;
+  if (result.outcome === 'cancelled_paid') return false;
   if (result.marked_paid === true) return true;
   if (result.outcome === 'not_pending') return true;
   return result.status === 'already_processed' && result.outcome === 'paid';
 }
 
-export async function handlePaymentLinkWebhook({ payload, signature, secret, nowSeconds, applyEvent, onPaidOrder }) {
+export function shouldAlertCancelledPayment(result) {
+  return Boolean(result && result.outcome === 'cancelled_paid' && result.alert_admin === true);
+}
+
+export function cancelledPaymentAlertText(reference) {
+  const ref = String(reference || '').trim();
+  const safe = /^LW[0-9A-F]{8}$/i.test(ref) ? ref.toUpperCase() : 'unknown';
+  return `Payment arrived for cancelled order ${safe}. It was not marked Paid. Please sort this manually.`;
+}
+
+export async function handlePaymentLinkWebhook({
+  payload,
+  signature,
+  secret,
+  nowSeconds,
+  applyEvent,
+  onPaidOrder,
+  onCancelledPayment,
+}) {
   await verifyStripeSignature(payload, signature, secret, nowSeconds);
   const event = JSON.parse(payload);
   const instruction = interpretPaymentLinkEvent(event);
@@ -95,6 +114,17 @@ export async function handlePaymentLinkWebhook({ payload, signature, secret, now
   }
 
   const result = await applyEvent(instruction);
+  if (shouldAlertCancelledPayment(result)) {
+    if (!onCancelledPayment) {
+      return { status: 500, body: { error: 'Could not alert that a cancelled order was paid.' } };
+    }
+    try {
+      await onCancelledPayment(instruction, result);
+    } catch {
+      console.error('Cancelled payment alert failed.');
+      return { status: 500, body: { error: 'Could not alert that a cancelled order was paid.' } };
+    }
+  }
   if (shouldDeliverPaidEffects(result) && onPaidOrder) {
     try {
       await onPaidOrder(instruction, result);

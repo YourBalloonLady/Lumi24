@@ -1,10 +1,13 @@
-import { handlePaymentLinkWebhook } from './payment.js';
+import { sendAdminTelegram } from '../_shared/admin-new-order.js';
+import { handlePaymentLinkWebhook, cancelledPaymentAlertText } from './payment.js';
 import {
   createServiceRoleRpc,
   deliverPaidOrderEffects,
   sendPaidEmailThroughEmailJs,
   sendPaidTelegramUpdate,
 } from '../_shared/paid-order-effects.js';
+
+const ADMIN_PAYMENT_ALERT_CHAT_ID = '5839927114';
 
 const PAID_EMAIL_SERVICE_ID = 'service_i5zi096';
 const PAID_EMAIL_TEMPLATE_ID = 'template_paid';
@@ -58,6 +61,36 @@ async function applyEvent(instruction: {
   return response.json();
 }
 
+async function serviceRpc(name: string, args: Record<string, unknown>) {
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Supabase service role is not configured.');
+  }
+  const response = await fetch(`${supabaseUrl}/rest/v1/rpc/${name}`, {
+    method: 'POST',
+    headers: {
+      apikey: serviceRoleKey,
+      authorization: `Bearer ${serviceRoleKey}`,
+      'content-type': 'application/json',
+    },
+    body: JSON.stringify(args),
+  });
+  if (!response.ok) throw new Error('Could not record the cancelled payment alert.');
+  const text = await response.text();
+  return text ? JSON.parse(text) : null;
+}
+
+async function alertCancelledPayment(reference: string) {
+  const token = Deno.env.get('TELEGRAM_BOT_TOKEN') || '';
+  if (!token) throw new Error('Telegram is not configured.');
+  await sendAdminTelegram({
+    token,
+    chatId: ADMIN_PAYMENT_ALERT_CHAT_ID,
+    text: cancelledPaymentAlertText(reference),
+  });
+}
+
 Deno.serve(async (request) => {
   if (request.method !== 'POST') return json({ error: 'Method not allowed.' }, 405);
 
@@ -99,6 +132,25 @@ Deno.serve(async (request) => {
             orderReference,
           }),
         });
+      },
+      onCancelledPayment: async (_instruction, result) => {
+        const orderId = String(result?.order_id || '').trim();
+        if (!orderId) throw new Error('Cancelled order id is missing.');
+        const claimed = await serviceRpc('claim_cancelled_payment_alert', { p_order_id: orderId });
+        if (!claimed?.claimed) return;
+        try {
+          await alertCancelledPayment(String(claimed.reference || result?.reference || ''));
+          await serviceRpc('finish_cancelled_payment_alert', {
+            p_order_id: orderId,
+            p_result: 'sent',
+          });
+        } catch (error) {
+          await serviceRpc('finish_cancelled_payment_alert', {
+            p_order_id: orderId,
+            p_result: 'failed',
+          }).catch(() => {});
+          throw error;
+        }
       },
     });
     return json(result.body, result.status);

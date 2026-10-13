@@ -20,3 +20,8 @@ verify_jwt = false
 # Supabase login token.
 [functions.send-pay-before-3pm]
 verify_jwt = false
+
+# pg_cron calls this every 15 minutes. It checks a vault secret instead of a
+# Supabase login token.
+[functions.auto-cancel-pending-orders]
+verify_jwt = false
