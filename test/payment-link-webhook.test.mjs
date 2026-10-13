@@ -4,8 +4,10 @@ import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import Stripe from 'stripe';
 import {
+  cancelledPaymentAlertText,
   handlePaymentLinkWebhook,
   interpretPaymentLinkEvent,
+  shouldAlertCancelledPayment,
   shouldDeliverPaidEffects,
   verifyStripeSignature,
 } from '../supabase/functions/stripe-payment-link-webhook/payment.js';
@@ -125,6 +127,13 @@ test('a bad signature never reaches the order update', async () => {
 test('paid results run notifications once and a failure asks Stripe to retry', async () => {
   assert.equal(shouldDeliverPaidEffects({ marked_paid: true }), true);
   assert.equal(shouldDeliverPaidEffects({ outcome: 'not_pending' }), true);
+  assert.equal(shouldDeliverPaidEffects({ outcome: 'cancelled_paid', alert_admin: true }), false);
+  assert.equal(shouldAlertCancelledPayment({ outcome: 'cancelled_paid', alert_admin: true }), true);
+  assert.equal(shouldAlertCancelledPayment({ outcome: 'cancelled_paid', alert_admin: false }), false);
+  assert.equal(
+    cancelledPaymentAlertText('lwab12cd34'),
+    'Payment arrived for cancelled order LWAB12CD34. It was not marked Paid. Please sort this manually.',
+  );
   assert.equal(shouldDeliverPaidEffects({ status: 'already_processed', outcome: 'paid' }), true);
   assert.equal(shouldDeliverPaidEffects({ status: 'already_processed', outcome: 'unpaid' }), false);
   assert.equal(shouldDeliverPaidEffects({ outcome: 'unpaid' }), false);
@@ -161,6 +170,37 @@ test('paid results run notifications once and a failure asks Stripe to retry', a
   });
   assert.equal(retry.status, 500);
   assert.equal(retry.body.error, 'Could not finish the paid order notifications.');
+
+  let paidCalls = 0;
+  let alertCalls = 0;
+  const late = signed(paidEvent({ id: 'evt_late_cancel' }));
+  const alerted = await handlePaymentLinkWebhook({
+    payload: late.payload,
+    signature: late.header,
+    secret: SECRET,
+    applyEvent: async () => ({
+      outcome: 'cancelled_paid',
+      alert_admin: true,
+      marked_paid: false,
+      reference: 'LWAB12CD34',
+    }),
+    onPaidOrder: async () => { paidCalls += 1; },
+    onCancelledPayment: async () => { alertCalls += 1; },
+  });
+  assert.equal(alerted.status, 200);
+  assert.equal(alertCalls, 1);
+  assert.equal(paidCalls, 0);
+
+  const alertFailed = await handlePaymentLinkWebhook({
+    payload: late.payload,
+    signature: late.header,
+    secret: SECRET,
+    applyEvent: async () => ({ outcome: 'cancelled_paid', alert_admin: true, marked_paid: false }),
+    onPaidOrder: async () => { paidCalls += 1; },
+    onCancelledPayment: async () => { throw new Error('telegram down'); },
+  });
+  assert.equal(alertFailed.status, 500);
+  assert.equal(paidCalls, 0);
 });
 
 test('checkout and admin payment links append the order reference', () => {

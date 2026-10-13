@@ -23,7 +23,12 @@ async function database() {
     new URL('../supabase/migrations/20261009173000_payment_link_paid_event.sql', import.meta.url),
     'utf8',
   );
+  const alert = await readFile(
+    new URL('../supabase/migrations/20261013163100_cancelled_payment_alert.sql', import.meta.url),
+    'utf8',
+  );
   await db.exec(migration);
+  await db.exec(alert);
   await db.query(
     `insert into public."Orders" (id, reference, status, total_amount, details)
      values ($1, 'LWAB12CD34', 'Pending', 20.00, '{"meta":{"promotion_discount":"1.00"},"customer":{"email":"buyer@example.com"}}'::jsonb)`,
@@ -93,6 +98,33 @@ test('wrong amount, wrong reference, unpaid, and a packed order stay unmarked', 
   const packed = await apply(db, { eventId: 'evt_packed' });
   assert.equal(packed.outcome, 'not_pending');
   assert.equal((await statusOf(db)).status, 'Packed');
+  await db.close();
+});
+
+test('a payment for a cancelled order stays cancelled and asks Tim to sort it', async () => {
+  const db = await database();
+  await db.query(
+    `update public."Orders"
+     set status = 'Cancelled',
+         details = details || '{"meta":{"restocked_at":"2026-10-13T12:00:00Z"}}'::jsonb
+     where id = $1`,
+    [ORDER_ID],
+  );
+  const first = await apply(db, { eventId: 'evt_late' });
+  assert.equal(first.marked_paid, false);
+  assert.equal(first.outcome, 'cancelled_paid');
+  assert.equal(first.alert_admin, true);
+  assert.equal((await statusOf(db)).status, 'Cancelled');
+
+  const replay = await apply(db, { eventId: 'evt_late' });
+  assert.equal(replay.status, 'already_processed');
+  assert.equal(replay.alert_admin, true);
+  assert.equal((await statusOf(db)).status, 'Cancelled');
+
+  await db.query(`select public.finish_cancelled_payment_alert($1::uuid, 'sent')`, [ORDER_ID]);
+  const afterAlert = await apply(db, { eventId: 'evt_late' });
+  assert.equal(afterAlert.alert_admin, false);
+  assert.equal((await statusOf(db)).status, 'Cancelled');
   await db.close();
 });
 
