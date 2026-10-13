@@ -3619,13 +3619,44 @@ loadOrders();
     async function sendPayBefore3pmById(orderId){
       const order = ordersCache[orderId];
       if (!order) return alert("Order not found.");
+      if (order.details?.meta?.pay_before_3pm_sent_at) {
+        alert("This 3PM reminder was already sent for this order.");
+        return;
+      }
       if (!confirm("Send 'Pay before 3PM for next day delivery' reminder email?")) return;
 
       setBusy(true, "Sending reminder…", order.reference || order.id);
+      let sent = false;
       try{
-        await sendPayBefore3pmEmail(order);
+        const sending = sendPayBefore3pmEmail(order);
+        if (!sending) return;
+        await sending;
+        sent = true;
+
+        const session = await supabaseClient.auth.getSession();
+        const who = session?.data?.session?.user?.email || "admin";
+        let updatedDetails = pushHistory(order, "pay_before_3pm_sent");
+        updatedDetails = {
+          ...updatedDetails,
+          meta: {
+            ...(updatedDetails.meta || {}),
+            pay_before_3pm_sent_at: new Date().toISOString(),
+            pay_before_3pm_sent_by: who
+          }
+        };
+        const { error } = await supabaseClient
+          .from("Orders")
+          .update({ details: updatedDetails })
+          .eq("id", orderId);
+        if (error) throw error;
+        ordersCache[orderId].details = updatedDetails;
         showToast("Reminder sent ✅", "success");
       }catch(e){
+        if (sent) {
+          console.error("3PM reminder was sent but not recorded", e);
+          alert("The reminder was sent, but it could not be recorded. It may be sent again automatically.");
+          return;
+        }
         console.error("Reminder email failed", e);
         const customer = order.details?.customer || {};
         const toEmail = customer.email || order.customer_email || order.email || "";

@@ -15,3 +15,8 @@ verify_jwt = true
 # instead of a Supabase login token, and messages only the admin chat.
 [functions.notify-admin-new-order]
 verify_jwt = false
+
+# pg_cron calls this at 14:00 UK time. It checks a vault secret instead of a
+# Supabase login token.
+[functions.send-pay-before-3pm]
+verify_jwt = false
