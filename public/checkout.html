@@ -2008,13 +2008,19 @@ await markTrackedCartCompleted(details.ref);
   } catch (err) {
     console.error('Checkout flow error', err);
 
-    const realMessage =
-      err?.message ||
-      err?.details ||
-      err?.hint ||
-      JSON.stringify(err);
+    const neutralMessage = "We're unable to process this order. Please contact us.";
+    const serverMessage = String(err?.message || '').trim();
+    if (serverMessage === neutralMessage || serverMessage.includes(neutralMessage)) {
+      checkoutStatus.textContent = neutralMessage;
+    } else {
+      const realMessage =
+        serverMessage ||
+        err?.details ||
+        err?.hint ||
+        JSON.stringify(err);
 
-    checkoutStatus.textContent = `Checkout error: ${realMessage}`;
+      checkoutStatus.textContent = `Checkout error: ${realMessage}`;
+    }
     checkoutStatus.className = 'small text-danger mt-2';
   } finally {
     if (checkoutCompleted) {

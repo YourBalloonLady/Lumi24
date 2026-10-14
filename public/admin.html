@@ -962,6 +962,7 @@ body.orders-mode #operations-page-header {
     <div class="offcanvas-body">
       <a href="index.html#home" class="d-block mb-2">Store Home</a>
       <a href="admin.html" class="d-block mb-2">Orders</a>
+      <a href="admin.html#customer-blocklist-section" class="d-block mb-2">Blocklist</a>
       <a href="admin-analytics.html" class="d-block mb-2">Admin Analytics</a>
       <a href="analytics.html" class="d-block mb-2">Sales Analytics</a>
       <a href="products.html" class="d-block mb-2">Products</a>
@@ -976,6 +977,7 @@ body.orders-mode #operations-page-header {
       <div class="fw-bold mb-3"><img src="/lumina-favicon.png?v=2" alt="" width="24" height="24" style="object-fit:contain;vertical-align:middle;margin-right:6px">Lumina Admin</div>
       <a href="index.html#home">Store Home</a>
       <a href="admin.html">Orders</a>
+      <a href="admin.html#customer-blocklist-section">Blocklist</a>
       <a href="admin-analytics.html">Admin Analytics</a>
       <a href="analytics.html">Sales Analytics</a>
       <a href="products.html">Products</a>
@@ -1004,6 +1006,58 @@ body.orders-mode #operations-page-header {
     <h3 class="mb-0">Orders</h3>
     <div id="kpi-bar" class="d-flex gap-2 flex-wrap"></div>
   </div>
+
+  <details id="customer-blocklist-section" class="border rounded p-3 mt-3 d-none">
+    <summary class="fw-semibold" style="cursor:pointer">Customer blocklist</summary>
+    <p class="small text-muted mt-2 mb-3">Someone on this list cannot place an order. Checkout only says “We're unable to process this order. Please contact us.” A postcode on its own matches nobody. The house number or street word matches only together with the postcode, and a surname matches only with that postcode.</p>
+    <form id="blocklist-form" class="row g-2" autocomplete="off">
+      <div class="col-md-4">
+        <label class="form-label small mb-1" for="block-name">Name</label>
+        <input id="block-name" class="form-control form-control-sm" maxlength="120">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small mb-1" for="block-email">Email</label>
+        <input id="block-email" type="email" class="form-control form-control-sm" maxlength="200">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small mb-1" for="block-phone">Phone</label>
+        <input id="block-phone" class="form-control form-control-sm" maxlength="40">
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small mb-1" for="block-address">Address</label>
+        <input id="block-address" class="form-control form-control-sm" maxlength="200">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1" for="block-city">City</label>
+        <input id="block-city" class="form-control form-control-sm" maxlength="100">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1" for="block-postcode">Postcode</label>
+        <input id="block-postcode" class="form-control form-control-sm" maxlength="20">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label small mb-1" for="block-house">House number</label>
+        <input id="block-house" class="form-control form-control-sm" maxlength="20">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1" for="block-street">Street word</label>
+        <input id="block-street" class="form-control form-control-sm" maxlength="80">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small mb-1" for="block-surname">Surname</label>
+        <input id="block-surname" class="form-control form-control-sm" maxlength="80">
+      </div>
+      <div class="col-md-4">
+        <label class="form-label small mb-1" for="block-note">Note</label>
+        <input id="block-note" class="form-control form-control-sm" maxlength="300">
+      </div>
+      <div class="col-12">
+        <button class="btn btn-sm btn-dark" type="submit">Add to blocklist</button>
+        <span id="blocklist-status" class="small text-muted ms-2"></span>
+      </div>
+    </form>
+    <div id="blocklist-list" class="mt-3"></div>
+  </details>
 
   <div id="quick-stats" class="d-flex gap-2 flex-wrap mt-2"></div>
 
@@ -6542,6 +6596,115 @@ async function saveInventoryStock(
     }
 
     // ────────────────────────────────────────────────
+    // CUSTOMER BLOCKLIST
+    // ────────────────────────────────────────────────
+    function blocklistValue(id) {
+      return document.getElementById(id)?.value.trim() || "";
+    }
+
+    function blocklistMatcherError(entry) {
+      if (entry.email || entry.phone) return "";
+      if (entry.postcode && (entry.house_number || entry.street_token || entry.surname)) return "";
+      if (entry.postcode) return "A postcode on its own is not saved. Add a house number, street word, or surname.";
+      return "Add an email, a phone, or a postcode together with a house number, street word, or surname.";
+    }
+
+    function renderBlocklist(rows) {
+      const list = document.getElementById("blocklist-list");
+      if (!list) return;
+      if (!rows.length) {
+        list.innerHTML = `<p class="small text-muted mb-0">No blocked customers.</p>`;
+        return;
+      }
+      list.innerHTML = rows.map((row) => {
+        if (!/^[0-9a-f-]{36}$/i.test(String(row.id || ""))) return "";
+        const bits = [
+          row.full_name,
+          row.email,
+          row.phone,
+          [row.address_line, row.city, row.postcode].filter(Boolean).join(", "),
+          row.house_number ? `House ${row.house_number}` : "",
+          row.street_token ? `Street ${row.street_token}` : "",
+          row.surname ? `Surname ${row.surname}` : "",
+          row.note
+        ].filter(Boolean).map((bit) => escapeHtml(bit));
+        return `
+          <div class="d-flex justify-content-between align-items-start gap-3 border-top py-2">
+            <div class="small">${bits.join("<br>")}</div>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeBlocklistEntry('${row.id}')">Remove</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function loadCustomerBlocklist() {
+      const status = document.getElementById("blocklist-status");
+      const { data, error } = await supabaseClient
+        .from("customer_blocklist")
+        .select("id, full_name, email, phone, address_line, city, postcode, house_number, street_token, surname, note, created_at")
+        .eq("active", true)
+        .order("created_at", { ascending: false });
+      if (error) {
+        console.error(error);
+        if (status) status.textContent = "Could not load the blocklist.";
+        return;
+      }
+      renderBlocklist(data || []);
+    }
+
+    async function addBlocklistEntry(event) {
+      event.preventDefault();
+      const status = document.getElementById("blocklist-status");
+      const entry = {
+        full_name: blocklistValue("block-name"),
+        email: blocklistValue("block-email"),
+        phone: blocklistValue("block-phone"),
+        address_line: blocklistValue("block-address"),
+        city: blocklistValue("block-city"),
+        postcode: blocklistValue("block-postcode").toUpperCase(),
+        house_number: blocklistValue("block-house"),
+        street_token: blocklistValue("block-street"),
+        surname: blocklistValue("block-surname"),
+        note: blocklistValue("block-note"),
+        created_by: ADMIN_EMAIL
+      };
+      const matcherError = blocklistMatcherError(entry);
+      if (matcherError) {
+        if (status) status.textContent = matcherError;
+        return;
+      }
+      if (status) status.textContent = "Saving…";
+      const { error } = await supabaseClient.from("customer_blocklist").insert(entry);
+      if (error) {
+        console.error(error);
+        if (status) {
+          status.textContent = String(error.message || "").includes("customer_blocklist_has_matcher")
+            ? "A postcode on its own is not saved."
+            : "Could not save that entry.";
+        }
+        return;
+      }
+      document.getElementById("blocklist-form")?.reset();
+      if (status) status.textContent = "Saved.";
+      await loadCustomerBlocklist();
+    }
+
+    async function removeBlocklistEntry(id) {
+      if (!confirm("Remove this blocklist entry? This person would be able to order again.")) return;
+      const status = document.getElementById("blocklist-status");
+      const { error } = await supabaseClient.from("customer_blocklist").delete().eq("id", id);
+      if (error) {
+        console.error(error);
+        if (status) status.textContent = "Could not remove that entry.";
+        return;
+      }
+      if (status) status.textContent = "Removed.";
+      await loadCustomerBlocklist();
+    }
+
+    document.getElementById("blocklist-form")?.addEventListener("submit", addBlocklistEntry);
+
+    // ────────────────────────────────────────────────
     // AUTH INIT
     // ────────────────────────────────────────────────
     async function init() {
@@ -6586,6 +6749,8 @@ async function saveInventoryStock(
 
       await refreshStatusCounts();
       await loadOrders();
+      document.getElementById("customer-blocklist-section")?.classList.remove("d-none");
+      await loadCustomerBlocklist();
     }
 
     async function doLogout() {
@@ -6752,6 +6917,7 @@ if (inventorySearchClearButton) {
 
     window.copyTimExcelTsvOne = copyTimExcelTsvOne;
     window.cancelAndRestockById = cancelAndRestockById;
+    window.removeBlocklistEntry = removeBlocklistEntry;
 
     window.setAdminView = setAdminView;
     window.toggleOrderExpanded = toggleOrderExpanded;

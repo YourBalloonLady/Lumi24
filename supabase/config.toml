@@ -25,3 +25,8 @@ verify_jwt = false
 # Supabase login token.
 [functions.auto-cancel-pending-orders]
 verify_jwt = false
+
+# The database calls this while rejecting a blocked checkout. It checks a
+# vault secret instead of a Supabase login token.
+[functions.notify-blocked-checkout]
+verify_jwt = false
