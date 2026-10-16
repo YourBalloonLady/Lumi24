@@ -36,6 +36,8 @@ export function londonTwoPm(date) {
   return new Date(utcGuess.getTime() - shiftHours * 60 * 60 * 1000);
 }
 
+// The live job passes orders_are_paused(). That is true from 16:00 UK on
+// Friday 16 October 2026 until 00:00 UK on Monday 26 October 2026.
 export function reminderDecision(date, paused) {
   const hour = londonParts(date).hour;
   const cutoff = londonTwoPm(date).toISOString();
