@@ -36,12 +36,10 @@ export function londonTwoPm(date) {
   return new Date(utcGuess.getTime() - shiftHours * 60 * 60 * 1000);
 }
 
-// The live job passes orders_are_paused(). That is true from 16:00 UK on
-// Friday 16 October 2026 until 00:00 UK on Monday 26 October 2026.
-export function reminderDecision(date, paused) {
+// Delivery delays do not stop payment reminders. The paused argument is ignored.
+export function reminderDecision(date) {
   const hour = londonParts(date).hour;
   const cutoff = londonTwoPm(date).toISOString();
-  if (paused) return { due: false, reason: 'ordering_paused', hour, cutoff };
   if (hour !== 14) return { due: false, reason: 'not_due', hour, cutoff };
   return { due: true, reason: null, hour, cutoff };
 }
@@ -107,9 +105,10 @@ export async function runPayBefore3pmReminders({
   sendEmail,
   sendTelegram,
 }) {
-  const decision = reminderDecision(now, paused);
+  void paused;
+  const decision = reminderDecision(now);
   if (dryRun) {
-    const rows = paused ? [] : await preview(decision.cutoff);
+    const rows = await preview(decision.cutoff);
     return {
       ok: true,
       dry_run: true,
