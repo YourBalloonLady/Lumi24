@@ -74,4 +74,8 @@ test('checkout keeps the tick box and the database reopens ordering', async () =
   assert.match(sql, /2026-10-26 00:00:00/);
   assert.equal(sql.includes('if public.orders_are_paused()'), false);
   assert.equal(reminder.includes('orders_are_paused'), false);
+  const pauseSource = await readFile(new URL('../public/order-pause.js', import.meta.url), 'utf8');
+  const nav = await readFile(new URL('../public/site-nav.js', import.meta.url), 'utf8');
+  assert.equal(pauseSource.includes('MutationObserver'), false);
+  assert.equal(nav.includes('MutationObserver'), false);
 });

@@ -81,11 +81,13 @@
     };
   }
 
+  function setText(node, value) {
+    if (node && node.textContent !== value) node.textContent = value;
+  }
+
   function paintBanner(banner, state) {
-    const text = banner.querySelector('.lumina-order-pause-banner-text');
-    const clock = banner.querySelector('.lumina-order-pause-banner-clock');
-    if (text) text.textContent = state.text;
-    if (clock) clock.textContent = state.countdownText;
+    setText(banner.querySelector('.lumina-order-pause-banner-text'), state.text);
+    setText(banner.querySelector('.lumina-order-pause-banner-clock'), state.countdownText);
     banner.hidden = !state.visible;
   }
 
@@ -192,11 +194,6 @@
     const box = document.getElementById('deliveryRestartAck');
     if (box) box.addEventListener('change', refreshCountdowns);
     refreshCountdowns();
-    const observer = new MutationObserver(function () {
-      mountBanners();
-      refreshCountdowns();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
     window.setInterval(refreshCountdowns, 1000);
   }
 
