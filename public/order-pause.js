@@ -1,18 +1,14 @@
 (function () {
-  // Canonical ordering pause. Keep the SQL migration in sync with these instants.
-  // Active from 16:00 UK time on Friday 16 October 2026
-  // until 00:00 UK time on Monday 26 October 2026.
-  // 16 October is still BST (UTC+1). 26 October 00:00 is GMT (UTC+0).
+  // Deliveries restart at 00:00 UK on Monday 26 October 2026.
+  // Ordering and payment stay open. 26 October 00:00 is GMT (UTC+0).
   const timeZone = 'Europe/London';
   const config = {
     timeZone: timeZone,
-    orderingStartsAt: { year: 2026, month: 10, day: 16, hour: 16, minute: 0 },
-    orderingEndsAt: { year: 2026, month: 10, day: 26, hour: 0, minute: 0 },
-    beforeTitle: 'Orders close at 4pm on Friday 16th October',
-    beforeText: 'Orders are paused from 4pm on Friday 16th October and reopen on Monday 26th October.',
-    duringTitle: 'Orders paused until Monday 26th October',
-    duringText: 'Orders are paused until Monday 26th October.',
-    checkoutMessage: 'Orders are paused until Monday 26th October'
+    deliveriesRestartAt: { year: 2026, month: 10, day: 26, hour: 0, minute: 0 },
+    title: 'Deliveries paused until Monday 26th October',
+    text: 'Deliveries paused until Monday 26th October. You can still order now and we\'ll dispatch from the 26th.',
+    countdownLabel: 'Deliveries restart in',
+    acknowledgementLabel: 'I understand that orders placed now will be dispatched when deliveries restart on Monday 26th October.'
   };
 
   function zonedWallTimeToUtc(parts) {
@@ -53,102 +49,44 @@
     return days > 0 ? days + 'd ' + clock : clock;
   }
 
-  const orderingStartsAtMs = zonedWallTimeToUtc(config.orderingStartsAt);
-  const orderingEndsAtMs = zonedWallTimeToUtc(config.orderingEndsAt);
+  const deliveriesRestartAtMs = zonedWallTimeToUtc(config.deliveriesRestartAt);
 
   function instantOf(now) {
     return now instanceof Date ? now : new Date(now || Date.now());
   }
 
-  function isOrderingPaused(now) {
-    const time = instantOf(now).getTime();
-    return time >= orderingStartsAtMs && time < orderingEndsAtMs;
+  function acknowledgementRequired(now) {
+    return instantOf(now).getTime() < deliveriesRestartAtMs;
   }
 
   function isNoticeDue(now) {
-    return instantOf(now).getTime() < orderingEndsAtMs;
+    return acknowledgementRequired(now);
   }
 
   function describe(now) {
     const time = instantOf(now).getTime();
-    const paused = time >= orderingStartsAtMs && time < orderingEndsAtMs;
-    const upcoming = time < orderingStartsAtMs;
-    const countdown = formatRemaining((paused ? orderingEndsAtMs : orderingStartsAtMs) - time);
-    const countdownLabel = paused ? 'Orders reopen in' : 'Orders close in';
+    const required = time < deliveriesRestartAtMs;
+    const countdown = formatRemaining(deliveriesRestartAtMs - time);
     return {
-      visible: time < orderingEndsAtMs,
-      paused: paused,
-      upcoming: upcoming,
-      title: paused ? config.duringTitle : config.beforeTitle,
-      text: paused ? config.duringText : config.beforeText,
-      countdownLabel: countdownLabel,
+      visible: required,
+      paused: false,
+      acknowledgementRequired: required,
+      acknowledgementLabel: config.acknowledgementLabel,
+      title: config.title,
+      text: config.text,
+      countdownLabel: config.countdownLabel,
       countdown: countdown,
-      countdownText: countdownLabel + ' ' + countdown,
-      checkoutMessage: config.checkoutMessage
+      countdownText: config.countdownLabel + ' ' + countdown,
+      checkoutMessage: config.text
     };
-  }
-
-  function isOrderControl(element) {
-    if (!element || element.nodeType !== 1) return false;
-    if (element.id === 'stripe-payment-link' || element.id === 'checkout-button') return true;
-    if (element.matches('#addressForm button[type="submit"]')) return true;
-    const onclick = element.getAttribute('onclick') || '';
-    if (onclick.includes('goToCheckout')) return true;
-    const label = (element.textContent || '').replace(/\s+/g, ' ').trim();
-    return label === 'Proceed to Checkout'
-      || label === 'Continue to checkout'
-      || label.startsWith('Confirm order')
-      || label.includes('secure card payment');
-  }
-
-  function ensureNote(control) {
-    const next = control.nextElementSibling;
-    if (next && next.classList.contains('lumina-order-pause-note')) return next;
-    const note = document.createElement('p');
-    note.className = 'lumina-order-pause-note';
-    note.textContent = config.checkoutMessage;
-    control.insertAdjacentElement('afterend', note);
-    return note;
-  }
-
-  let applying = false;
-  let noteSerial = 0;
-
-  function lockControl(control) {
-    if (!isOrderControl(control)) return;
-    if (control.tagName === 'BUTTON') {
-      if (!control.disabled) control.disabled = true;
-    } else if (control.getAttribute('href') !== '#orders-paused') {
-      control.setAttribute('href', '#orders-paused');
-      control.setAttribute('tabindex', '-1');
-    }
-    if (control.getAttribute('aria-disabled') !== 'true') control.setAttribute('aria-disabled', 'true');
-    if (!control.getAttribute('title')) control.setAttribute('title', config.checkoutMessage);
-    control.dataset.orderPauseLocked = '1';
-    const note = ensureNote(control);
-    if (!note.id) {
-      noteSerial += 1;
-      note.id = control.id ? control.id + '-pause-note' : 'order-pause-note-' + noteSerial;
-    }
-    if (control.getAttribute('aria-describedby') !== note.id) {
-      control.setAttribute('aria-describedby', note.id);
-    }
-  }
-
-  function apply(root) {
-    if (applying || !isOrderingPaused()) return;
-    applying = true;
-    try {
-      const scope = root && root.querySelectorAll ? root : document;
-      scope.querySelectorAll('button, a').forEach(lockControl);
-    } finally {
-      applying = false;
-    }
   }
 
   function paintBanner(banner, state) {
     const text = banner.querySelector('.lumina-order-pause-banner-text');
-    if (text) text.textContent = state.countdownText;
+    const clock = banner.querySelector('.lumina-order-pause-banner-clock');
+    if (text) text.textContent = state.text;
+    if (clock) clock.textContent = state.countdownText;
+    banner.hidden = !state.visible;
   }
 
   function makeBanner() {
@@ -157,7 +95,9 @@
     banner.setAttribute('role', 'status');
     const text = document.createElement('div');
     text.className = 'lumina-order-pause-banner-text';
-    banner.appendChild(text);
+    const clock = document.createElement('div');
+    clock.className = 'lumina-order-pause-banner-clock';
+    banner.append(text, clock);
     paintBanner(banner, describe(new Date()));
     return banner;
   }
@@ -170,6 +110,14 @@
     return banner;
   }
 
+  function isCheckoutControl(element) {
+    if (!element || element.nodeType !== 1) return false;
+    const onclick = element.getAttribute('onclick') || '';
+    if (onclick.includes('goToCheckout')) return true;
+    const label = (element.textContent || '').replace(/\s+/g, ' ').trim();
+    return label === 'Proceed to Checkout' || label === 'Continue to checkout';
+  }
+
   function ensureControlBanner(control) {
     const previous = control.previousElementSibling;
     if (previous && previous.classList.contains('lumina-order-pause-banner')) return previous;
@@ -179,14 +127,33 @@
   }
 
   function mountBanners() {
-    if (!document.body || !describe(new Date()).visible) return;
+    if (!document.body) return;
     const form = document.getElementById('addressForm');
     if (form) ensureFormBanner(form);
     document.querySelectorAll('button, a').forEach(function (control) {
-      if (!isOrderControl(control)) return;
+      if (!isCheckoutControl(control)) return;
       if (form && form.contains(control)) return;
       ensureControlBanner(control);
     });
+  }
+
+  function syncAcknowledgement(state) {
+    const row = document.getElementById('deliveryRestartAckRow');
+    const box = document.getElementById('deliveryRestartAck');
+    if (!row || !box) return;
+    const required = state.acknowledgementRequired;
+    row.hidden = !required;
+    box.required = required;
+    if (!required) box.checked = false;
+    const button = document.querySelector('#addressForm button[type="submit"]');
+    if (!button || button.dataset.cartInvalid === '1') return;
+    if (required && !box.checked) {
+      button.disabled = true;
+      button.dataset.deliveryAckLock = '1';
+    } else if (button.dataset.deliveryAckLock === '1') {
+      button.disabled = false;
+      delete button.dataset.deliveryAckLock;
+    }
   }
 
   function refreshCountdowns() {
@@ -194,49 +161,21 @@
     document.querySelectorAll('.lumina-order-pause-banner').forEach(function (banner) {
       paintBanner(banner, state);
     });
-    if (state.paused) apply(document);
-  }
-
-  function blockActivation(event) {
-    if (!isOrderingPaused()) return;
-    const control = event.target && event.target.closest
-      ? event.target.closest('button, a')
-      : null;
-    if (!isOrderControl(control)) return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    lockControl(control);
-  }
-
-  function blockSubmit(event) {
-    if (!isOrderingPaused()) return;
-    const form = event.target;
-    if (!form || form.id !== 'addressForm') return;
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    const button = form.querySelector('button[type="submit"]');
-    if (button) lockControl(button);
-    const status = document.getElementById('checkout-status');
-    if (status) {
-      status.textContent = config.checkoutMessage;
-      status.className = 'small text-danger mt-2';
-    }
+    syncAcknowledgement(state);
   }
 
   const initial = describe(new Date());
   window.LuminaOrderPause = {
     config: config,
-    orderingStartsAtMs: orderingStartsAtMs,
-    orderingEndsAtMs: orderingEndsAtMs,
-    isOrderingPaused: isOrderingPaused,
+    deliveriesRestartAtMs: deliveriesRestartAtMs,
+    orderingEndsAtMs: deliveriesRestartAtMs,
+    isOrderingPaused: function () { return false; },
     isNoticeDue: isNoticeDue,
+    acknowledgementRequired: acknowledgementRequired,
     describe: describe,
     formatRemaining: formatRemaining,
     noticeText: initial.text,
-    checkoutMessage: config.checkoutMessage,
-    apply: apply,
+    checkoutMessage: config.text,
     refreshCountdowns: refreshCountdowns
   };
 
@@ -244,20 +183,20 @@
 
   const style = document.createElement('style');
   style.id = 'lumina-order-pause-controls';
-  style.textContent = '.lumina-order-pause-note{margin:10px 0 0;padding:8px 12px;border-radius:12px;background:#ecfdf5;color:#14532d;font:700 .92rem/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}.lumina-order-pause-banner{margin:0 0 12px;padding:8px 12px;border-radius:12px;background:#ecfdf5;color:#14532d;border:1px solid rgba(22,163,74,.18);font:700 .92rem/1.35 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}.lumina-order-pause-banner-text{font-variant-numeric:tabular-nums;letter-spacing:.02em}#addressForm > .lumina-order-pause-banner{margin-bottom:18px}button[data-order-pause-locked="1"],a[data-order-pause-locked="1"]{cursor:not-allowed;opacity:.6}';
+  style.textContent = '.lumina-order-pause-banner{margin:0 0 12px;padding:10px 12px;border-radius:12px;background:#ecfdf5;color:#14532d;border:1px solid rgba(22,163,74,.18);font:700 .92rem/1.4 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-align:center}.lumina-order-pause-banner-clock{margin-top:4px;font-variant-numeric:tabular-nums;letter-spacing:.02em}#addressForm > .lumina-order-pause-banner{margin-bottom:18px}#deliveryRestartAckRow{padding:10px 12px;border-radius:12px;background:#ecfdf5;border:1px solid rgba(22,163,74,.18)}';
   document.head.appendChild(style);
 
   function boot() {
-    if (!document.body || !isNoticeDue()) return;
+    if (!document.body) return;
     mountBanners();
-    if (isOrderingPaused()) apply(document);
+    const box = document.getElementById('deliveryRestartAck');
+    if (box) box.addEventListener('change', refreshCountdowns);
+    refreshCountdowns();
     const observer = new MutationObserver(function () {
       mountBanners();
-      if (isOrderingPaused()) apply(document);
+      refreshCountdowns();
     });
-    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['href', 'hidden', 'disabled', 'onclick'] });
-    document.addEventListener('click', blockActivation, true);
-    document.addEventListener('submit', blockSubmit, true);
+    observer.observe(document.body, { childList: true, subtree: true });
     window.setInterval(refreshCountdowns, 1000);
   }
 

@@ -325,7 +325,7 @@
     kicker.className = 'lumina-order-pause-kicker';
     const dot = document.createElement('span');
     dot.setAttribute('aria-hidden', 'true');
-    kicker.append(dot, document.createTextNode('Order update'));
+    kicker.append(dot, document.createTextNode('Delivery update'));
 
     const title = document.createElement('h2');
     title.id = 'lumina-order-pause-title';
@@ -339,7 +339,7 @@
     function renderPauseCopy() {
       const state = typeof pauseConfig.describe === 'function'
         ? pauseConfig.describe(new Date())
-        : { title: 'Orders paused until Monday 26th October', text: pauseConfig.noticeText, countdownText: '' };
+        : { title: 'Deliveries paused until Monday 26th October', text: pauseConfig.noticeText, countdownText: '' };
       title.textContent = state.title;
       text.textContent = state.text;
       clock.textContent = state.countdownText || '';

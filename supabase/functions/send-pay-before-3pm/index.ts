@@ -52,11 +52,8 @@ Deno.serve(async (request) => {
     body = {};
   }
 
-  const { data: paused, error: pauseError } = await db.rpc('orders_are_paused');
-  if (pauseError) return json({ ok: false, skipped: 'pause_check_failed', sent: 0 });
-
   const result = await runPayBefore3pmReminders({
-    paused: paused === true,
+    paused: false,
     dryRun: body.dry_run === true,
     preview: async (cutoff) => {
       const { data, error } = await db.rpc('preview_pay_before_3pm_reminders', { p_cutoff: cutoff });

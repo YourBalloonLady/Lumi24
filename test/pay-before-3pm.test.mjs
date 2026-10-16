@@ -27,7 +27,8 @@ test('14:00 UK follows BST and GMT, including the clock changes', () => {
   assert.equal(reminderDecision(new Date('2026-03-29T13:00:00Z'), false).due, true);
   assert.equal(reminderDecision(new Date('2026-10-25T14:00:00Z'), false).due, true);
   assert.equal(reminderDecision(new Date('2026-10-25T13:00:00Z'), false).reason, 'not_due');
-  assert.equal(reminderDecision(new Date('2026-10-19T13:00:00Z'), true).reason, 'ordering_paused');
+  assert.equal(reminderDecision(new Date('2026-10-19T13:00:00Z'), true).due, true);
+  assert.equal(reminderDecision(new Date('2026-10-19T13:00:00Z'), true).reason, null);
 });
 
 test('the 3pm reminder uses the admin EmailJS template and the same fields', async () => {
@@ -96,7 +97,7 @@ test('a due run sends the template once and tells only the admin chat', async ()
   assert.equal(ADMIN_SUMMARY_CHAT_ID, '5839927114');
 });
 
-test('orders are not emailed before 14:00 UK, during the pause, or when EmailJS fails', async () => {
+test('orders are not emailed before 14:00 UK, and a delivery pause does not skip them', async () => {
   let calls = 0;
   const early = await runPayBefore3pmReminders({
     now: new Date('2026-10-13T12:30:00Z'),
@@ -113,8 +114,9 @@ test('orders are not emailed before 14:00 UK, during the pause, or when EmailJS 
     claim: async () => { calls += 1; return []; },
     sendEmail: async () => { calls += 1; },
   });
-  assert.equal(paused.skipped, 'ordering_paused');
-  assert.equal(calls, 0);
+  assert.equal(paused.skipped, null);
+  assert.equal(paused.sent, 0);
+  assert.equal(calls, 1);
 
   const finished = [];
   const failed = await runPayBefore3pmReminders({
@@ -300,13 +302,23 @@ test('only a pending order placed before 14:00 UK is claimed, and only once', as
   );
   assert.equal(stored.rows[0].sent_by, 'cron');
 
+  const reopen = await readFile(
+    new URL('../supabase/migrations/20261016160000_reopen_orders_delivery_ack.sql', import.meta.url),
+    'utf8',
+  );
+  await db.exec(reopen);
   await db.exec(`create or replace function public.orders_are_paused(p_at timestamptz default now())
     returns boolean language sql stable as $$ select true $$`);
+  await db.query(
+    `insert into public."Orders" (reference, status, total_amount, created_at, details)
+     values ('LWSTILL01', 'Pending', 11, '2026-10-13 11:00:00', $1::jsonb)`,
+    [orderDetails('Bea', 'still@example.com')],
+  );
   const paused = await db.query(
     `select public.preview_pay_before_3pm_reminders($1::timestamptz) as rows`,
     [CUTOFF],
   );
-  assert.deepEqual(paused.rows[0].rows, []);
+  assert.deepEqual(paused.rows[0].rows.map((row) => row.reference), ['LWSTILL01']);
 
   await db.exec('set role anon');
   await assert.rejects(

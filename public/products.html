@@ -1397,7 +1397,6 @@ function saveCart() {
     }
 
     function goToCheckout() {
-      if (window.LuminaOrderPause?.isOrderingPaused()) return;
       if (cart.length === 0) return alert('Your cart is empty!');
       const cartData = encodeURIComponent(JSON.stringify(cart));
       const ref = encodeURIComponent(localStorage.getItem('referral_code') || '');
