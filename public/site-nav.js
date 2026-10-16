@@ -340,9 +340,10 @@
       const state = typeof pauseConfig.describe === 'function'
         ? pauseConfig.describe(new Date())
         : { title: 'Deliveries paused until Monday 26th October', text: pauseConfig.noticeText, countdownText: '' };
-      title.textContent = state.title;
-      text.textContent = state.text;
-      clock.textContent = state.countdownText || '';
+      if (title.textContent !== state.title) title.textContent = state.title;
+      if (text.textContent !== state.text) text.textContent = state.text;
+      const countdownText = state.countdownText || '';
+      if (clock.textContent !== countdownText) clock.textContent = countdownText;
     }
     renderPauseCopy();
     const pauseClock = window.setInterval(renderPauseCopy, 1000);
