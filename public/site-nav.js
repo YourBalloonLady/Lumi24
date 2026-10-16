@@ -267,6 +267,7 @@
       .lumina-order-pause-kicker span{width:8px;height:8px;border-radius:50%;background:#22c55e}
       #lumina-order-pause-title{margin:12px 36px 0 0;font-size:1.45rem;line-height:1.2;font-weight:850;letter-spacing:-.03em}
       #lumina-order-pause-text{margin:12px 0 0;color:#1e293b;font-size:1rem;line-height:1.6}
+      #lumina-order-pause-clock{margin:14px 0 0;padding:10px 12px;border-radius:14px;background:#ecfdf5;color:#14532d;font-size:1.2rem;font-weight:850;line-height:1.3;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:.02em}
       .lumina-order-pause-close{position:absolute;top:12px;right:12px;display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;padding:0;border:1px solid rgba(148,163,184,.45);border-radius:999px;background:#fff;color:#0f172a;font-size:1.6rem;line-height:1;cursor:pointer}
       .lumina-order-pause-close:hover{background:#f3f4f6}
       .lumina-order-pause-confirm{display:block;width:100%;min-height:48px;margin-top:20px;padding:12px 20px;border:0;border-radius:999px;background:#15803d;color:#fff;font:800 1rem/1.2 Inter,system-ui,-apple-system,sans-serif;cursor:pointer;box-shadow:0 12px 24px rgba(21,128,61,.2)}
@@ -276,6 +277,7 @@
         #lumina-order-pause-title{font-size:1.28rem}
         .lumina-order-pause-body{padding:18px 16px 18px}
         .lumina-order-pause-logo{height:40px}
+        #lumina-order-pause-clock{font-size:1.05rem}
       }
       @media(forced-colors:active){
         #lumina-order-pause-dialog{border:2px solid CanvasText}
@@ -293,7 +295,7 @@
     dialog.setAttribute('role', 'alertdialog');
     dialog.setAttribute('aria-modal', 'true');
     dialog.setAttribute('aria-labelledby', 'lumina-order-pause-title');
-    dialog.setAttribute('aria-describedby', 'lumina-order-pause-text');
+    dialog.setAttribute('aria-describedby', 'lumina-order-pause-text lumina-order-pause-clock');
     dialog.tabIndex = -1;
 
     const accent = document.createElement('div');
@@ -327,18 +329,30 @@
 
     const title = document.createElement('h2');
     title.id = 'lumina-order-pause-title';
-    title.textContent = 'Orders paused for one week';
 
     const text = document.createElement('p');
     text.id = 'lumina-order-pause-text';
-    text.textContent = pauseConfig.noticeText;
+
+    const clock = document.createElement('p');
+    clock.id = 'lumina-order-pause-clock';
+
+    function renderPauseCopy() {
+      const state = typeof pauseConfig.describe === 'function'
+        ? pauseConfig.describe(new Date())
+        : { title: 'Orders paused until Monday 26th October', text: pauseConfig.noticeText, countdownText: '' };
+      title.textContent = state.title;
+      text.textContent = state.text;
+      clock.textContent = state.countdownText || '';
+    }
+    renderPauseCopy();
+    const pauseClock = window.setInterval(renderPauseCopy, 1000);
 
     const confirmButton = document.createElement('button');
     confirmButton.type = 'button';
     confirmButton.className = 'lumina-order-pause-confirm';
     confirmButton.textContent = 'Close';
 
-    body.append(closeButton, logo, kicker, title, text, confirmButton);
+    body.append(closeButton, logo, kicker, title, text, clock, confirmButton);
     dialog.append(accent, body);
     overlay.appendChild(dialog);
 
@@ -372,6 +386,7 @@
       try {
         sessionStorage.setItem(storageKey, '1');
       } catch (_) {}
+      window.clearInterval(pauseClock);
       document.removeEventListener('keydown', onKeydown, true);
       restorePage();
       overlay.remove();
