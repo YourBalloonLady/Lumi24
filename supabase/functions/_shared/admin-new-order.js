@@ -34,6 +34,7 @@ function itemLine(item) {
     extras.push(`Syringes: ${item.syringes === 'none' ? 'None required' : item.syringes}`);
   }
   if (item?.sema_form) extras.push(String(item.sema_form));
+  if (item?.bundle_includes) extras.push(String(item.bundle_includes));
   const colour = item?.pen_colour || item?.penColour;
   if (colour) extras.push(String(colour));
   const lineTotal = Number(item?.line_total ?? (Number(item?.price_each ?? item?.price ?? 0) * qty));

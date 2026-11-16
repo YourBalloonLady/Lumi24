@@ -219,6 +219,19 @@
     panel.appendChild(link);
   });
 
+  const blackFridayEndsAt = Date.parse('2026-11-27T23:59:59Z');
+  if (!isAdminArea && Date.now() <= blackFridayEndsAt && !panel.querySelector('a[href="/products.html#black-friday"]')) {
+    const link = document.createElement('a');
+    link.href = '/products.html#black-friday';
+    link.textContent = 'Black Friday';
+    const arrow = document.createElement('span');
+    arrow.textContent = '→';
+    arrow.setAttribute('aria-hidden', 'true');
+    link.appendChild(arrow);
+    const productsLink = panel.querySelector('a[href="/products.html"]');
+    if (productsLink) productsLink.insertAdjacentElement('afterend', link);
+  }
+
   function setOpen(open) {
     panel.hidden = !open;
     button.setAttribute('aria-expanded', String(open));
