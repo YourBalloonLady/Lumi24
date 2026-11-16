@@ -707,7 +707,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'Cagrilintide 10mg Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -724,7 +724,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'GHK-CU 100mg Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -742,7 +742,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'Nad+1000mg Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -760,7 +760,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'SS-31 Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -777,7 +777,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'MOTS-C 40mg Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -794,7 +794,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'Klow Blend 80mg Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   ),
   (
@@ -811,7 +811,7 @@ values
       pg_catalog.jsonb_build_object('product_id', (select id from public."Products" where pg_catalog.btrim(name) = 'SLU-PP-332 Pen'), 'qty', 1)
     ),
     '{}'::jsonb,
-    '[]'::jsonb,
+    '{}'::text[],
     false
   )
 on conflict (id) do update

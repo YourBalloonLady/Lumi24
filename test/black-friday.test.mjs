@@ -61,4 +61,6 @@ test('the database script enforces the cutoff without replacing the outer checko
   assert.match(sql, /order_stock_demand/);
   assert.match(sql, /An included material in this bundle could not be restocked/);
   assert.doesNotMatch(sql, /customer_block|pay_before_3pm|stripe/i);
+  assert.equal(sql.match(/'\{\}'::text\[\]/g)?.length, 7);
+  assert.doesNotMatch(sql, /'\[\]'::jsonb,\s*\n\s*false/);
 });
