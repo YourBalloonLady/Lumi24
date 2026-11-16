@@ -56,6 +56,47 @@
     return match ? match.image : '';
   }
 
+  function pad(value) {
+    return value < 10 ? '0' + value : String(value);
+  }
+
+  function formatRemaining(now) {
+    var instant = typeof now === 'number' ? now : Date.now();
+    var remaining = OFFER_ENDS_AT - instant;
+    if (remaining < 0) return 'Ended';
+    var total = Math.floor(remaining / 1000);
+    var days = Math.floor(total / 86400);
+    var hours = Math.floor((total % 86400) / 3600);
+    var minutes = Math.floor((total % 3600) / 60);
+    var seconds = total % 60;
+    return days + 'd ' + pad(hours) + ':' + pad(minutes) + ':' + pad(seconds);
+  }
+
+  var countdownTimer = 0;
+
+  function paintCountdown() {
+    if (typeof document === 'undefined') return;
+    var text = formatRemaining(Date.now());
+    var nodes = document.querySelectorAll('[data-bf-countdown-value]');
+    for (var i = 0; i < nodes.length; i++) {
+      if (nodes[i].textContent !== text) nodes[i].textContent = text;
+    }
+    if (!offerOpen()) {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = 0;
+      }
+      hideOffer();
+    }
+  }
+
+  function startCountdown() {
+    if (typeof document === 'undefined' || countdownTimer) return;
+    paintCountdown();
+    if (!offerOpen()) return;
+    countdownTimer = setInterval(paintCountdown, 1000);
+  }
+
   function hideOffer() {
     if (typeof document === 'undefined') return;
     document.querySelectorAll('[data-bf-nav], #black-friday, #black-friday-home').forEach(function (element) {
@@ -83,12 +124,11 @@
   }
 
   if (typeof document !== 'undefined') {
-    document.addEventListener('DOMContentLoaded', function () {
-      if (!offerOpen()) hideOffer();
-    });
-    setInterval(function () {
-      if (!offerOpen()) hideOffer();
-    }, 30000);
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', startCountdown);
+    } else {
+      startCountdown();
+    }
   }
 
   var api = {
@@ -99,6 +139,7 @@
     isBundleItem: isBundleItem,
     priceSummary: priceSummary,
     imageFor: imageFor,
+    formatRemaining: formatRemaining,
     hideOffer: hideOffer,
     showNavigation: showNavigation,
     reveal: reveal

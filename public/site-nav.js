@@ -172,6 +172,8 @@
     #lumina-nav-panel a[aria-current="page"]{background:#111827;color:#fff!important}
     #lumina-nav-panel a span{opacity:.65}
     @media(max-width:600px){#lumina-quick-nav{left:12px;bottom:12px}#lumina-quick-nav.lumina-admin-nav{left:auto;right:12px;bottom:64px}#lumina-nav-toggle{padding:11px 15px}}
+    .bf-nav-link{box-shadow:inset 0 -2px 0 #c9a227;animation:bf-nav-glow 2.8s ease-in-out infinite}
+    @keyframes bf-nav-glow{0%,100%{box-shadow:inset 0 -2px 0 #c9a227}50%{box-shadow:inset 0 -2px 0 #b91c1c}}
     @media print{#lumina-quick-nav{display:none!important}}
     @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
   `;
@@ -223,6 +225,7 @@
   if (!isAdminArea && Date.now() <= blackFridayEndsAt && !panel.querySelector('a[href="/products.html#black-friday"]')) {
     const link = document.createElement('a');
     link.href = '/products.html#black-friday';
+    link.className = 'bf-nav-link';
     link.textContent = 'Black Friday';
     const arrow = document.createElement('span');
     arrow.textContent = '→';

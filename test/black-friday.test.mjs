@@ -18,6 +18,11 @@ test('the offer stays open through 23:59:59 UK on 27 November 2026 and then stop
   assert.equal(bf.offerOpen(Date.parse('2026-11-27T23:59:59Z')), true);
   assert.equal(bf.offerOpen(Date.parse('2026-11-28T00:00:00Z')), false);
   assert.equal(bf.offerOpen(Date.parse('2026-11-16T17:00:00Z')), true);
+  assert.equal(bf.formatRemaining(bf.OFFER_ENDS_AT - 1000), '0d 00:00:01');
+  assert.equal(bf.formatRemaining(bf.OFFER_ENDS_AT), '0d 00:00:00');
+  assert.equal(bf.formatRemaining(bf.OFFER_ENDS_AT + 1), 'Ended');
+  assert.equal(bf.formatRemaining(bf.OFFER_ENDS_AT - ((11 * 86400) + (3 * 3600) + (4 * 60) + 5) * 1000), '11d 03:04:05');
+  assert.doesNotMatch(source, /MutationObserver/);
 });
 
 test('bundle lines keep their Black Friday price outside the 10% mix-and-match discount', () => {
