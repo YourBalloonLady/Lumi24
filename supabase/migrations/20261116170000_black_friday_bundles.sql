@@ -2,7 +2,8 @@
 -- UK time is GMT on that date, so the cutoff is 2026-11-27 23:59:59+00.
 -- Idempotent. Safe to run more than once. Does not replace the outer place_order
 -- wrapper, so the customer blocklist stays in front of checkout.
--- Until this script is run, the website hides the Black Friday tab.
+-- The website already shows the deals. Until this script is run, each button
+-- stays on "Available shortly" and a bundle cannot be purchased.
 
 create or replace function public.black_friday_offer_open(
   p_at timestamp with time zone default pg_catalog.now()
