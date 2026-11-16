@@ -160,6 +160,7 @@
 
     #black-friday {
       padding: 28px 0 8px;
+      scroll-margin-top: 108px;
     }
 
     #black-friday[hidden],
@@ -167,25 +168,72 @@
       display: none !important;
     }
 
-    .bf-banner {
-      background: #000;
+    .bf-hero {
+      background: #0b1220;
       color: #fff;
+      border-radius: 18px;
+      padding: 20px 16px 16px;
       text-align: center;
-      font-weight: 800;
-      letter-spacing: .16em;
-      padding: 16px 14px;
-      font-size: clamp(1.2rem, 3vw, 1.8rem);
+      box-shadow: 0 16px 36px rgba(11, 18, 32, .16);
     }
 
-    .bf-rule {
+    .bf-kicker {
+      margin: 0;
+      color: #e7c766;
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .bf-hero-title {
+      margin: 4px 0 0;
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: .12em;
+      line-height: 1.05;
+    }
+
+    .bf-hero-sub {
+      margin: 8px 0 0;
+      color: #e2e8f0;
+      font-size: .98rem;
+    }
+
+    .bf-hero-accent {
+      width: min(180px, 46%);
       height: 4px;
-      background: #22d3ee;
+      margin: 14px auto 0;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #c9a227, #dc2626);
+    }
+
+    .bf-countdown {
+      display: flex;
+      justify-content: center;
+      align-items: baseline;
+      gap: 8px;
+      min-height: 1.7rem;
+      margin: 12px 0 0;
+    }
+
+    .bf-countdown-label {
+      color: #cbd5e1;
+      font-size: .85rem;
+    }
+
+    .bf-countdown-value {
+      min-width: 12ch;
+      color: #fff;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: .03em;
     }
 
     .bf-intro {
       text-align: center;
       max-width: 720px;
-      margin: 18px auto 0;
+      margin: 14px auto 0;
       color: #64748b;
     }
 
@@ -203,6 +251,14 @@
       box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
       display: flex;
       flex-direction: column;
+      transition: transform .18s ease, box-shadow .18s ease;
+    }
+
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      .bf-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 36px rgba(15, 23, 42, .14);
+      }
     }
 
     .bf-card img {
@@ -286,8 +342,18 @@
         grid-template-columns: 1fr;
       }
 
-      .bf-banner {
+      .bf-hero {
+        padding: 16px 12px 14px;
+      }
+
+      .bf-hero-title {
         letter-spacing: .08em;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bf-card {
+        transition: none;
       }
     }
 
@@ -1031,7 +1097,7 @@
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
           <li class="nav-item"><a class="nav-link" href="index.html#home">Home</a></li>
           <li class="nav-item"><a class="nav-link active" href="products.html">Products</a></li>
-          <li class="nav-item" data-bf-nav hidden><a class="nav-link" href="#black-friday">Black Friday</a></li>
+          <li class="nav-item" data-bf-nav hidden><a class="nav-link bf-nav-link" href="#black-friday">Black Friday</a></li>
           <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
           <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
           <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
@@ -1118,7 +1184,7 @@
 
       <div class="category-strip">
         <button class="category-chip active" data-category="all">All</button>
-        <button class="category-chip" type="button" data-bf-nav data-bf-jump hidden>Black Friday</button>
+        <button class="category-chip bf-nav-link" type="button" data-bf-nav data-bf-jump hidden>Black Friday</button>
         <button class="category-chip" data-category="metabolic">Fat Loss Research</button>
         <button class="category-chip" data-category="cognitive">Cognitive Research</button>
         <button class="category-chip" data-category="cellular-energy">Cellular Energy</button>
@@ -1131,9 +1197,17 @@
 
   <section id="black-friday" hidden>
     <div class="container">
-      <div class="bf-banner">BLACK FRIDAY</div>
-      <div class="bf-rule" aria-hidden="true"></div>
-      <p class="bf-intro">Bundle deals until Friday 27 November 2026, 23:59 UK. Each bundle is one catalogue item and is supplied for laboratory research use only.</p>
+      <div class="bf-hero">
+        <p class="bf-kicker">Lumina bundle deals</p>
+        <h2 class="bf-hero-title">BLACK FRIDAY</h2>
+        <p class="bf-hero-sub">Bundle deals, ends midnight Fri 27 Nov</p>
+        <p class="bf-countdown">
+          <span class="bf-countdown-label">Ends in</span>
+          <span class="bf-countdown-value" data-bf-countdown-value>--d --:--:--</span>
+        </p>
+        <div class="bf-hero-accent" aria-hidden="true"></div>
+      </div>
+      <p class="bf-intro">Each bundle is one catalogue item and is supplied for laboratory research use only.</p>
       <div id="black-friday-list" class="bf-grid"></div>
       <p class="bf-note">For laboratory research use only. Not for human consumption.</p>
     </div>
@@ -2150,7 +2224,7 @@ function saveCart() {
               <p class="bf-price">
                 <s>£${compareAt.toFixed(2)}</s>
                 <strong>£${price.toFixed(2)}</strong>
-                <span class="bf-save">SAVE £${save.toFixed(0)}</span>
+                <span class="bf-save">Save £${save.toFixed(0)}</span>
               </p>
               <p class="bf-includes">Includes ${escapeHtml(spec.contents.join(' + '))}. ${available > 0 ? `${available} available from the included materials.` : 'One included material is out of stock.'} For laboratory research use only.</p>
               <button type="button" ${ready ? '' : 'disabled'} data-bf-add="${escapeHtml(saved?.id || '')}">${label}</button>

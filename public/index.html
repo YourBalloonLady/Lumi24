@@ -688,7 +688,7 @@
       <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
         <li class="nav-item"><a class="nav-link active" href="#home">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="products.html">Products</a></li>
-        <li class="nav-item" data-bf-nav hidden><a class="nav-link" href="products.html#black-friday">Black Friday</a></li>
+        <li class="nav-item" data-bf-nav hidden><a class="nav-link bf-nav-link" href="products.html#black-friday">Black Friday</a></li>
         <li class="nav-item"><a class="nav-link" href="peptides.html">Peptide Library</a></li>
         <li class="nav-item"><a class="nav-link" href="calculator.html">Calculator</a></li>
         <li class="nav-item"><a class="nav-link" href="reviews.html">Feedback</a></li>
@@ -965,10 +965,14 @@
 <!-- PRODUCTS -->
 <section id="black-friday-home" data-bf-nav hidden>
   <div class="container py-4">
-    <a href="products.html#black-friday" class="text-decoration-none d-block">
-      <div class="bf-banner">BLACK FRIDAY</div>
-      <div class="bf-rule" aria-hidden="true"></div>
-      <p class="text-center text-muted mt-3 mb-0">Bundle deals are open until Friday 27 November 2026, 23:59 UK. For laboratory research use only.</p>
+    <a href="products.html#black-friday" class="bf-home-link">
+      <p class="bf-kicker">Lumina bundle deals</p>
+      <p class="bf-home-title">BLACK FRIDAY</p>
+      <p class="bf-home-sub">Bundle deals, ends midnight Fri 27 Nov</p>
+      <p class="bf-countdown">
+        <span>Ends in</span>
+        <span class="bf-countdown-value" data-bf-countdown-value>--d --:--:--</span>
+      </p>
     </a>
   </div>
 </section>
@@ -1239,9 +1243,13 @@
 <script src="/black-friday.js"></script>
 <style>
   #black-friday-home[hidden],[data-bf-nav][hidden]{display:none!important}
-  .bf-banner{background:#000;color:#fff;text-align:center;font-weight:800;letter-spacing:.16em;padding:16px 14px;font-size:clamp(1.2rem,3vw,1.8rem)}
-  .bf-rule{height:4px;background:#22d3ee}
-  @media(max-width:600px){.bf-banner{letter-spacing:.08em}}
+  .bf-home-link{display:block;background:#0b1220;color:#fff;text-decoration:none;border-radius:18px;padding:18px 16px;text-align:center;box-shadow:0 16px 36px rgba(11,18,32,.16)}
+  .bf-kicker{margin:0;color:#e7c766;font-size:.72rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+  .bf-home-title{margin:4px 0 0;font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;letter-spacing:.12em}
+  .bf-home-sub{margin:8px 0 0;color:#e2e8f0}
+  .bf-countdown{display:flex;justify-content:center;gap:8px;min-height:1.6rem;margin:10px 0 0;color:#cbd5e1}
+  .bf-countdown-value{min-width:12ch;color:#fff;font-weight:800;font-variant-numeric:tabular-nums}
+  @media(max-width:600px){.bf-home-title{letter-spacing:.08em}}
 </style>
 
 <script>
