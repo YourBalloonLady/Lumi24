@@ -158,6 +158,27 @@ begin
       message = 'This Black Friday bundle is no longer available.';
   end if;
 
+  perform 1
+  from public.stock_groups g
+  where g.id in (
+    select d.stock_group_id
+    from public.order_stock_demand(p_items) d
+    where d.stock_group_id is not null
+  )
+  order by g.id
+  for update;
+
+  perform 1
+  from public."Products" p
+  where p.id in (
+    select d.product_id
+    from public.order_stock_demand(p_items) d
+    where d.stock_group_id is null
+      and d.bundle_qty > 0
+  )
+  order by p.id
+  for update;
+
   for v_shared in
     select
       demand.stock_group_id,
@@ -170,7 +191,6 @@ begin
     where demand.stock_group_id is not null
     group by demand.stock_group_id, g.stock, g.label
     order by demand.stock_group_id
-    for update of g
   loop
     if v_shared.requested_quantity > v_shared.stock then
       raise exception using
@@ -200,7 +220,6 @@ begin
     where demand.stock_group_id is null
       and demand.bundle_qty > 0
     order by demand.product_id
-    for update of p
   loop
     if v_plain.bundle_qty > v_plain.stock then
       raise exception using

@@ -63,4 +63,8 @@ test('the database script enforces the cutoff without replacing the outer checko
   assert.doesNotMatch(sql, /customer_block|pay_before_3pm|stripe/i);
   assert.equal(sql.match(/'\{\}'::text\[\]/g)?.length, 7);
   assert.doesNotMatch(sql, /'\[\]'::jsonb,\s*\n\s*false/);
+  assert.match(sql, /from public\.stock_groups g\n\s+where g\.id in/);
+  assert.match(sql, /order by g\.id\n\s+for update;/);
+  assert.doesNotMatch(sql, /group by demand\.stock_group_id, g\.stock, g\.label\n\s+order by demand\.stock_group_id\n\s+for update/);
+  assert.doesNotMatch(sql, /for update of [gp]/);
 });
