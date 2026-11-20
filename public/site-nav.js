@@ -127,6 +127,38 @@
     document.body.prepend(offerBanner);
   }
 
+  // 24 November 2026 is GMT, so 23:59 UK is 23:59:59Z. The notice is
+  // information only: it never disables checkout. Text is written once.
+  const DISPATCH_NOTICE_ENDS_AT = Date.parse('2026-11-24T23:59:59Z');
+  const DISPATCH_NOTICE_TEXT = "Orders will be sent from Tuesday 24 November. We're sorry for any inconvenience.";
+
+  function dispatchNoticeOpen(now) {
+    return (typeof now === 'number' ? now : Date.now()) <= DISPATCH_NOTICE_ENDS_AT;
+  }
+
+  function removeDispatchNotice() {
+    const notice = document.getElementById('lumina-dispatch-notice');
+    if (notice) notice.remove();
+  }
+
+  if (dispatchNoticeOpen() && !document.getElementById('lumina-dispatch-notice')) {
+    const noticeStyle = document.createElement('style');
+    noticeStyle.textContent = '#lumina-dispatch-notice{position:relative;z-index:1;margin:0;padding:10px 16px;background:#0b1220;color:#fff;text-align:center;font:600 .92rem/1.45 Inter,system-ui,-apple-system,sans-serif}#lumina-dispatch-notice[hidden]{display:none!important}@media(max-width:600px){#lumina-dispatch-notice{padding:10px 12px;font-size:.84rem}}';
+    document.head.appendChild(noticeStyle);
+    const notice = document.createElement('p');
+    notice.id = 'lumina-dispatch-notice';
+    notice.setAttribute('role', 'status');
+    notice.textContent = DISPATCH_NOTICE_TEXT;
+    const offer = document.getElementById('lumina-site-offer');
+    if (offer) offer.insertAdjacentElement('beforebegin', notice);
+    else document.body.prepend(notice);
+    const noticeTimer = setInterval(() => {
+      if (dispatchNoticeOpen()) return;
+      clearInterval(noticeTimer);
+      removeDispatchNotice();
+    }, 30000);
+  }
+
   if (document.getElementById('lumina-quick-nav')) return;
 
   const page = window.location.pathname.split('/').pop() || 'index.html';
