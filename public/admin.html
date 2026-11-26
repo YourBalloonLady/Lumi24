@@ -1513,6 +1513,7 @@ body.orders-mode #operations-page-header {
 <script src="/lumina-auth.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script src="/stripe-payment-link.js"></script>
+  <script src="/losewell-email.js"></script>
   <!-- SheetJS for XLSX export (Improvement #10) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
   <!-- ✅ Chart.js (Nice-to-have #3) -->
@@ -2401,7 +2402,8 @@ let basketRefreshTimer = null;
       const items = buildItemsText(order);
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
       const tracking = String(order.details?.meta?.tracking_number || "").trim() || "Not provided";
-      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}\n\nThanks,\nLumina`;
+      const losewell = window.LuminaLoseWell?.sectionText(order) || '';
+      return `Hi ${customer.name || "there"},\n\nYour order ${ref} has been shipped.\n\nItems:\n${items}\n\nTotal: ${total}\nTracking: ${tracking}${losewell ? `\n\n${losewell}` : ''}\n\nThanks,\nLumina`;
     }
 
     async function copyOrderForText(orderId){
@@ -2448,7 +2450,8 @@ let basketRefreshTimer = null;
       const customer = order.details?.customer || {};
       const ref = order.reference || order.id;
       const total = `£${Number(order.total_amount || 0).toFixed(2)}`;
-      return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}\n\nThanks,\nLumina`;
+      const losewell = window.LuminaLoseWell?.sectionText(order) || '';
+      return `Hi ${customer.name || "there"},\n\nPayment received for order ${ref}.\nTotal: ${total}${losewell ? `\n\n${losewell}` : ''}\n\nThanks,\nLumina`;
     }
 
     function buildCancelledEmailText(order){
@@ -3482,7 +3485,8 @@ loadOrders();
         order_total: total,
         tracking_number: trackingUrl || tracking,
         tracking_code: tracking,
-        tracking_url: trackingUrl
+        tracking_url: trackingUrl,
+        ...(window.LuminaLoseWell?.emailParams(order) || {})
       });
     }
 
@@ -3520,7 +3524,8 @@ loadOrders();
         email: toEmail,
         customer_name: customerName,
         order_ref: ref,
-        order_total: total
+        order_total: total,
+        ...(window.LuminaLoseWell?.emailParams(order) || {})
       });
     }
 

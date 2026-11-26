@@ -1,4 +1,12 @@
-export function paidEmailTemplateParams({ email, customerName, reference, totalAmount }) {
+import { ensureLoseWellCode, losewellEmailFields } from './losewell-gift.js';
+
+export function paidEmailTemplateParams({
+  email,
+  customerName,
+  reference,
+  totalAmount,
+  losewellCode = undefined,
+}) {
   const toEmail = String(email || '').trim();
   if (!toEmail) return null;
   const name = String(customerName || '').trim() || 'Customer';
@@ -8,6 +16,7 @@ export function paidEmailTemplateParams({ email, customerName, reference, totalA
     customer_name: name,
     order_ref: ref,
     order_total: `£${Number(totalAmount || 0).toFixed(2)}`,
+    ...(losewellCode === undefined ? {} : losewellEmailFields(losewellCode)),
   };
 }
 
@@ -47,12 +56,7 @@ export async function sendPaidEmailThroughEmailJs({
       template_id: templateId,
       user_id: publicKey,
       ...(privateKey ? { accessToken: privateKey } : {}),
-      template_params: {
-        email: params.email,
-        customer_name: params.customer_name,
-        order_ref: params.order_ref,
-        order_total: params.order_total,
-      },
+      template_params: { ...params },
     }),
   });
   if (!response.ok) throw new Error('Paid email was rejected.');
@@ -117,6 +121,7 @@ export async function deliverPaidOrderEffects({
   rpc,
   sendEmail,
   sendTelegram,
+  issueLoseWell = null,
 }) {
   const book = await rpc('prepare_paid_order_effects', {
     p_order_id: orderId,
@@ -136,8 +141,29 @@ export async function deliverPaidOrderEffects({
     status: 'ready',
     email: book.email,
     telegram: book.telegram,
+    losewell: 'skipped',
   };
   const errors = [];
+  let losewellCode;
+
+  if (issueLoseWell) {
+    try {
+      const gift = await ensureLoseWellCode({
+        book,
+        rpc,
+        requestGift: issueLoseWell,
+      });
+      effects.losewell = gift.status;
+      if (gift.status === 'pending') {
+        effects.email = 'waiting';
+        return effects;
+      }
+      losewellCode = gift.code || '';
+    } catch {
+      effects.losewell = 'failed';
+      losewellCode = '';
+    }
+  }
 
   try {
     effects.email = await deliverOne({
@@ -150,6 +176,7 @@ export async function deliverPaidOrderEffects({
           customerName: book.customer_name,
           reference: book.reference || book.order_id,
           totalAmount: book.total_amount,
+          losewellCode,
         });
         if (!params) return 'skipped';
         await sendEmail(params);
