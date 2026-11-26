@@ -4,6 +4,7 @@ import {
   sendPaidEmailThroughEmailJs,
   sendPaidTelegramUpdate,
 } from '../_shared/paid-order-effects.js';
+import { LOSEWELL_GIFT_URL, requestLoseWellGift } from '../_shared/losewell-gift.js';
 
 const ADMIN_EMAIL = 'luminaweight@gmail.com';
 const PAID_EMAIL_SERVICE_ID = 'service_i5zi096';
@@ -81,6 +82,11 @@ Deno.serve(async (request) => {
         supabaseUrl,
         serviceRoleKey,
         orderReference,
+      }),
+      issueLoseWell: (order) => requestLoseWellGift({
+        secret: Deno.env.get('LOSEWELL_GIFT_SECRET') || '',
+        url: Deno.env.get('LOSEWELL_GIFT_URL') || LOSEWELL_GIFT_URL,
+        order,
       }),
     });
     return json(effects);

@@ -6,6 +6,7 @@ import {
   sendPaidEmailThroughEmailJs,
   sendPaidTelegramUpdate,
 } from '../_shared/paid-order-effects.js';
+import { LOSEWELL_GIFT_URL, requestLoseWellGift } from '../_shared/losewell-gift.js';
 
 const ADMIN_PAYMENT_ALERT_CHAT_ID = '5839927114';
 
@@ -130,6 +131,11 @@ Deno.serve(async (request) => {
             supabaseUrl,
             serviceRoleKey,
             orderReference,
+          }),
+          issueLoseWell: (order) => requestLoseWellGift({
+            secret: Deno.env.get('LOSEWELL_GIFT_SECRET') || '',
+            url: Deno.env.get('LOSEWELL_GIFT_URL') || LOSEWELL_GIFT_URL,
+            order,
           }),
         });
       },
