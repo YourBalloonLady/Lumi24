@@ -25,16 +25,39 @@ test('the offer stays open through 23:59:59 UK on 27 November 2026 and then stop
   assert.doesNotMatch(source, /MutationObserver/);
 });
 
-test('bundle lines keep their Black Friday price outside the 10% mix-and-match discount', () => {
+test('two eligible products save 15% during the Black Friday window', () => {
+  const during = Date.parse('2026-11-26T12:00:00Z');
   const summary = bf.priceSummary([
+    { name: 'One', price: 40, qty: 1 },
+    { name: 'Two', price: 60, qty: 1 }
+  ], during);
+  assert.equal(summary.offerOpen, true);
+  assert.equal(summary.eligibleCount, 2);
+  assert.equal(summary.discount, 15);
+  assert.equal(summary.finalTotal, 85);
+  assert.equal(summary.label, '15% Black Friday discount (2+ products)');
+  assert.equal(bf.priceSummary([{ name: 'One', price: 40, qty: 1 }], during).prompt, 'Add 1 more product to save 15% automatically');
+});
+
+test('after the cutoff, two products are full price and three save 10%', () => {
+  const after = Date.parse('2026-11-28T00:00:00Z');
+  const two = bf.priceSummary([
+    { name: 'One', price: 40, qty: 1 },
+    { name: 'Two', price: 60, qty: 1 }
+  ], after);
+  assert.equal(two.offerOpen, false);
+  assert.equal(two.discount, 0);
+  assert.equal(two.finalTotal, 100);
+  const three = bf.priceSummary([
     { name: 'Weight Research Duo', price: 189, qty: 1, bundle: true },
     { name: 'Other', price: 10, qty: 1 },
     { name: 'Another', price: 20, qty: 1 },
     { name: 'Third', price: 30, qty: 1 }
-  ]);
-  assert.equal(summary.eligibleCount, 3);
-  assert.equal(summary.discount, 6);
-  assert.equal(summary.finalTotal, 243);
+  ], after);
+  assert.equal(three.eligibleCount, 3);
+  assert.equal(three.discount, 6);
+  assert.equal(three.finalTotal, 243);
+  assert.equal(three.label, '10% multi-product discount');
 });
 
 test('the seven promo prices match the requested savings', () => {

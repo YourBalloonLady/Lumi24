@@ -159,6 +159,97 @@
     }, 30000);
   }
 
+  const BF_MIX_ENDS_AT = Date.parse('2026-11-27T23:59:59Z');
+
+  function bfMixOpen(now) {
+    return (typeof now === 'number' ? now : Date.now()) <= BF_MIX_ENDS_AT;
+  }
+
+  function bfMixPad(value) {
+    return value < 10 ? `0${value}` : String(value);
+  }
+
+  function bfMixRemaining(now) {
+    const remaining = BF_MIX_ENDS_AT - (typeof now === 'number' ? now : Date.now());
+    if (remaining < 0) return 'Ended';
+    const total = Math.floor(remaining / 1000);
+    const days = Math.floor(total / 86400);
+    const hours = Math.floor((total % 86400) / 3600);
+    const minutes = Math.floor((total % 3600) / 60);
+    const seconds = total % 60;
+    return `${days}d ${bfMixPad(hours)}:${bfMixPad(minutes)}:${bfMixPad(seconds)}`;
+  }
+
+  function removeBfMixBanner() {
+    const banner = document.getElementById('lumina-bf-mix');
+    if (banner) banner.remove();
+    const offer = document.getElementById('lumina-site-offer');
+    if (offer) offer.hidden = false;
+  }
+
+  if (!isAdminPath && bfMixOpen() && !document.getElementById('lumina-bf-mix')) {
+    const offer = document.getElementById('lumina-site-offer');
+    if (offer) offer.hidden = true;
+    const mixStyle = document.createElement('style');
+    mixStyle.textContent = `
+      #lumina-bf-mix{position:relative;z-index:1;margin:0;padding:12px;background:#f8fafc}
+      #lumina-bf-mix a{display:grid;grid-template-columns:112px minmax(0,1fr) 190px;gap:14px;align-items:center;max-width:1120px;margin:0 auto;padding:14px;border-radius:22px;background:#140b2e;color:#fff;text-decoration:none;box-shadow:0 0 0 3px #ff7a18,0 0 0 6px #ff2f86}
+      #lumina-bf-mix .bf-mix-logo{background:#fff;border-radius:16px;min-height:108px;display:flex;align-items:center;justify-content:center;padding:10px}
+      #lumina-bf-mix .bf-mix-logo img{width:100%;height:auto;max-height:92px;object-fit:contain}
+      #lumina-bf-mix .bf-mix-pills{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+      #lumina-bf-mix .bf-pill{display:inline-flex;align-items:center;border-radius:999px;padding:6px 12px;font:800 .72rem/1 Inter,system-ui,sans-serif;letter-spacing:.04em}
+      #lumina-bf-mix .bf-pill-hot{background:linear-gradient(90deg,#ff7a18,#ff2f86);color:#fff}
+      #lumina-bf-mix .bf-pill-end{background:#241447;color:#fff;border:1px solid rgba(255,255,255,.18);font-variant-numeric:tabular-nums;min-width:18ch}#lumina-bf-mix .bf-count{margin-left:.35em}
+      #lumina-bf-mix .bf-off{margin:8px 0 6px;font:900 clamp(2rem,5vw,3.3rem)/.9 Inter,system-ui,sans-serif;letter-spacing:-.03em}
+      #lumina-bf-mix .bf-any{display:inline-block;margin:0 0 8px;padding:8px 14px;border-radius:12px;background:linear-gradient(90deg,#ff7a18,#ff3d8a);font:900 .95rem/1 Inter,system-ui,sans-serif;letter-spacing:.04em}
+      #lumina-bf-mix .bf-note{margin:0;color:#e2e8f0;font:600 .92rem/1.35 Inter,system-ui,sans-serif}
+      #lumina-bf-mix .bf-fine{margin:8px 0 0;color:#cbd5e1;font:700 .62rem/1.3 Inter,system-ui,sans-serif;letter-spacing:.04em}
+      #lumina-bf-mix .bf-side{border:2px solid #ff4d8d;border-radius:16px;padding:12px;text-align:center;background:rgba(20,8,48,.55)}
+      #lumina-bf-mix .bf-side strong{display:block;font-size:1.05rem}
+      #lumina-bf-mix .bf-side span{display:block;margin-top:4px;color:#e2e8f0;font-size:.82rem}
+      #lumina-bf-mix .bf-shop{margin-top:10px!important;border-radius:999px;padding:8px 12px;background:linear-gradient(90deg,#ff7a18,#ff2f86);color:#fff!important;font-weight:800}
+      @media(max-width:760px){#lumina-bf-mix{padding:8px}#lumina-bf-mix a{grid-template-columns:72px minmax(0,1fr);gap:10px;padding:10px}#lumina-bf-mix .bf-side{grid-column:1 / -1}#lumina-bf-mix .bf-mix-logo{min-height:72px}#lumina-bf-mix .bf-fine{font-size:.58rem}}
+      @media(prefers-reduced-motion:reduce){#lumina-bf-mix *{animation:none!important;transition:none!important}}
+    `;
+    document.head.appendChild(mixStyle);
+    const banner = document.createElement('aside');
+    banner.id = 'lumina-bf-mix';
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('aria-label', 'Black Friday offer');
+    banner.innerHTML = `
+      <a href="/products.html">
+        <div class="bf-mix-logo"><img src="/Lumina-logo.png" alt="Lumina"></div>
+        <div>
+          <div class="bf-mix-pills">
+            <span class="bf-pill bf-pill-hot">BLACK FRIDAY</span>
+            <span class="bf-pill bf-pill-end">ENDS IN <span class="bf-count" data-bf-mix-countdown>--d --:--:--</span></span>
+          </div>
+          <div class="bf-off">15% OFF</div>
+          <div class="bf-any">ANY TWO PRODUCTS</div>
+          <p class="bf-note">Pick any two items across the range and save 15% automatically.</p>
+          <p class="bf-fine">LUMI24.ORG · VALID UNTIL FRIDAY 27 NOVEMBER 2026 AT MIDNIGHT · FOR RESEARCH USE ONLY</p>
+        </div>
+        <div class="bf-side">
+          <strong>Mix &amp; Match</strong>
+          <span>Applied at checkout</span>
+          <span class="bf-shop">SHOP LUMI24.ORG</span>
+        </div>
+      </a>`;
+    if (offer) offer.insertAdjacentElement('afterend', banner);
+    else document.body.prepend(banner);
+    const paintMix = () => {
+      const node = document.querySelector('[data-bf-mix-countdown]');
+      const text = bfMixRemaining(Date.now());
+      if (node && node.textContent !== text) node.textContent = text;
+      if (!bfMixOpen()) {
+        clearInterval(mixTimer);
+        removeBfMixBanner();
+      }
+    };
+    paintMix();
+    const mixTimer = setInterval(paintMix, 1000);
+  }
+
   if (document.getElementById('lumina-quick-nav')) return;
 
   const page = window.location.pathname.split('/').pop() || 'index.html';

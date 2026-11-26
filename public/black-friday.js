@@ -28,7 +28,14 @@
     return String(item.type || '').toLowerCase() === 'black-friday';
   }
 
-  function priceSummary(items) {
+  function mixOffer(now) {
+    var open = offerOpen(typeof now === 'number' ? now : Date.now());
+    return open
+      ? { open: true, minQty: 2, percent: 15, label: '15% Black Friday discount (2+ products)' }
+      : { open: false, minQty: 3, percent: 10, label: '10% multi-product discount' };
+  }
+
+  function priceSummary(items, now) {
     var rows = (Array.isArray(items) ? items : []).map(function (item) {
       return {
         qty: Math.max(0, Number(item.qty != null ? item.qty : item.quantity) || 0),
@@ -41,13 +48,25 @@
     var eligibleCount = eligible.reduce(function (sum, row) { return sum + row.qty; }, 0);
     var eligibleSubtotal = eligible.reduce(function (sum, row) { return sum + (row.price * row.qty); }, 0);
     var bundleSubtotal = bundles.reduce(function (sum, row) { return sum + (row.price * row.qty); }, 0);
-    var discount = eligibleCount >= 3 ? Math.round(eligibleSubtotal * 10) / 100 : 0;
+    var offer = mixOffer(now);
+    var discount = eligibleCount >= offer.minQty
+      ? Math.round(eligibleSubtotal * offer.percent) / 100
+      : 0;
+    var stillNeeded = Math.max(0, offer.minQty - eligibleCount);
     return {
       itemCount: rows.reduce(function (sum, row) { return sum + row.qty; }, 0),
       eligibleCount: eligibleCount,
+      eligibleSubtotal: eligibleSubtotal,
       discount: discount,
       baseTotal: eligibleSubtotal + bundleSubtotal,
-      finalTotal: eligibleSubtotal - discount + bundleSubtotal
+      finalTotal: eligibleSubtotal - discount + bundleSubtotal,
+      minQty: offer.minQty,
+      percent: offer.percent,
+      label: offer.label,
+      offerOpen: offer.open,
+      prompt: eligibleCount > 0 && stillNeeded > 0
+        ? 'Add ' + stillNeeded + ' more product' + (stillNeeded === 1 ? '' : 's') + ' to save ' + offer.percent + '% automatically'
+        : ''
     };
   }
 
@@ -87,12 +106,16 @@
         countdownTimer = 0;
       }
       hideOffer();
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('lumina:offer-ended'));
+      }
     }
   }
 
   function startCountdown() {
     if (typeof document === 'undefined' || countdownTimer) return;
     paintCountdown();
+    syncCatalogueOffer();
     if (!offerOpen()) return;
     countdownTimer = setInterval(paintCountdown, 1000);
   }
@@ -105,6 +128,26 @@
     document.querySelectorAll('#lumina-nav-panel a[href$="#black-friday"]').forEach(function (link) {
       link.remove();
     });
+    var promo = document.getElementById('lumina-bf-mix');
+    if (promo) promo.remove();
+    var standardOffer = document.getElementById('lumina-site-offer');
+    if (standardOffer) standardOffer.hidden = false;
+    syncCatalogueOffer();
+  }
+
+  function syncCatalogueOffer() {
+    if (typeof document === 'undefined') return;
+    var open = offerOpen();
+    var name = document.querySelector('.multibuy-name');
+    var price = document.querySelector('.multibuy-price');
+    var note = document.querySelector('.multibuy-note');
+    if (name) name.textContent = open ? 'Buy any 2 or more products' : 'Buy any 3 or more products';
+    if (price) price.textContent = open ? 'Save 15% across the product subtotal' : 'Save 10% across the product subtotal';
+    if (note) {
+      note.textContent = open
+        ? 'Black Friday: mix and match any two catalogue products. The 15% discount applies automatically in your basket.'
+        : 'Mix and match across the catalogue. No code needed — the discount applies automatically in your basket.';
+    }
   }
 
   function showNavigation() {
@@ -137,6 +180,7 @@
     offerOpen: offerOpen,
     bundleContents: bundleContents,
     isBundleItem: isBundleItem,
+    mixOffer: mixOffer,
     priceSummary: priceSummary,
     imageFor: imageFor,
     formatRemaining: formatRemaining,
