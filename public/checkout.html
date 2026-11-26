@@ -1460,9 +1460,17 @@ function calculateBundle(cart) {
     baseTotal: priced.baseTotal,
     discount: priced.discount,
     finalTotal: priced.finalTotal,
-    messages: priced.discount > 0 ? ['10% multi-product discount'] : []
+    minQty: priced.minQty || 3,
+    percent: priced.percent || 10,
+    label: priced.label || '10% multi-product discount',
+    prompt: priced.prompt || '',
+    messages: priced.discount > 0 ? [priced.label || '10% multi-product discount'] : []
   };
 }
+
+window.addEventListener('lumina:offer-ended', () => {
+  if (Array.isArray(cart)) renderOrderSummary();
+});
 
 function getPromotionalLineTotal(item) {
   return Math.max(0, Number(item?.qty || 0)) * Number(item?.price || 0);
@@ -1624,15 +1632,15 @@ function renderOrderSummary(payableOverride = null) {
       ${accessoryDropdownHTML(i, idx)}
     </div>
   `).join('') + `
-    ${(bundle.eligibleCount || 0) > 0 && (bundle.eligibleCount || 0) < 3 ? `
+    ${bundle.prompt ? `
       <div class="py-2 border-bottom text-muted">
-        <small>Add ${3 - bundle.eligibleCount} more product${3 - bundle.eligibleCount === 1 ? '' : 's'} to save 10% automatically.</small>
+        <small>${bundle.prompt}.</small>
       </div>
     ` : ''}
     ${bundle.discount > 0 ? `
       <div class="py-2 border-bottom text-success">
         <div class="d-flex justify-content-between">
-          <strong>10% multi-product discount</strong>
+          <strong>${bundle.label}</strong>
           <strong>−£${bundle.discount.toFixed(2)}</strong>
         </div>
       </div>
@@ -1667,7 +1675,7 @@ function buildItemsText() {
 
   const bundle = calculateBundle(cart);
   if (bundle.discount > 0) {
-    itemLines.push(`10% multi-product discount: −£${bundle.discount.toFixed(2)}`);
+    itemLines.push(`${bundle.label}: −£${bundle.discount.toFixed(2)}`);
   }
 
   itemLines.push(

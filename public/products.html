@@ -1555,12 +1555,12 @@ function saveCart() {
       const totalItems = priced.itemCount;
       const discount = priced.discount;
       const total = priced.finalTotal;
-      const remainingForDiscount = Math.max(0, 3 - priced.eligibleCount);
+      const remainingForDiscount = Math.max(0, (priced.minQty || 3) - priced.eligibleCount);
       const offerText = priced.eligibleCount === 0
         ? 'Black Friday bundle price'
         : discount > 0
-          ? '10% multi-product discount applied ✓'
-          : `Add ${remainingForDiscount} more product${remainingForDiscount === 1 ? '' : 's'} to save 10%`;
+          ? `${priced.label} applied ✓`
+          : (priced.prompt || `Add ${remainingForDiscount} more product${remainingForDiscount === 1 ? '' : 's'} to save ${priced.percent}% automatically`);
 
       document.getElementById('cart-count').textContent = totalItems;
       document.getElementById('cart-items-count').textContent = totalItems;
@@ -1588,12 +1588,13 @@ function saveCart() {
         `).join('') + (cart.length ? `
           <div class="rounded-3 p-3 ${discount > 0 ? 'bg-success-subtle text-success-emphasis' : 'bg-light'}">
             <strong>${offerText}</strong>
-            ${discount > 0 ? `<div class="small">You saved £${discount.toFixed(2)}.</div>` : '<div class="small">Mix and match any three products. No code needed.</div>'}
+            ${discount > 0 ? `<div class="small">You saved £${discount.toFixed(2)}.</div>` : `<div class="small">Mix and match any ${priced.minQty} products. No code needed.</div>`}
           </div>
         ` : '');
     }
 
     updateCart();
+    window.addEventListener('lumina:offer-ended', () => updateCart());
     if (cart.length > 0) {
   scheduleCartTracking();
 }
@@ -2475,7 +2476,9 @@ function saveCart() {
 
       const offerEl = document.getElementById('modalOffer');
       offerEl.hidden = false;
-      offerEl.textContent = 'Mix and match any 3 or more products to save 10% automatically.';
+      offerEl.textContent = LuminaBlackFriday.offerOpen()
+        ? 'Mix and match any 2 or more products to save 15% automatically.'
+        : 'Mix and match any 3 or more products to save 10% automatically.';
 
       const qtyInput = document.getElementById('modalQty');
       qtyInput.value = 1;
@@ -2524,7 +2527,9 @@ function saveCart() {
 
       const offerEl = document.getElementById('modalOffer');
       offerEl.hidden = false;
-      offerEl.textContent = 'Mix and match any 3 or more products to save 10% automatically.';
+      offerEl.textContent = LuminaBlackFriday.offerOpen()
+        ? 'Mix and match any 2 or more products to save 15% automatically.'
+        : 'Mix and match any 3 or more products to save 10% automatically.';
 
       document.getElementById('modalDescription').innerHTML = `
         <p>${escapeHtml(p.description || 'Research material supplied for laboratory environments.')}</p>
